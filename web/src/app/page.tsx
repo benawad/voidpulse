@@ -5,6 +5,11 @@ const myFont = localFont({ src: "./castledown-regular-trial.otf" });
 
 export default function Home() {
   const charts = [
+    {
+      title: "Starter picks",
+      subtitle: "Which Voidpet did players choose?",
+      chartType: "donut",
+    },
     { title: "Downloads", subtitle: "Downloads by day" },
     { title: "Retention", subtitle: "Last month retention" },
     { title: "MAU & DAU", subtitle: "Active users" },
@@ -31,7 +36,12 @@ export default function Home() {
       <div className="grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         {charts.map((chart) => {
           return (
-            <ChartThumbnail title={chart.title} subtitle={chart.subtitle} />
+            <ChartThumbnail
+              key={chart.title}
+              title={chart.title}
+              subtitle={chart.subtitle}
+              chartType={chart.chartType}
+            />
           );
         })}
       </div>
