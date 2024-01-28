@@ -36,12 +36,14 @@ export default function Home() {
       <div className="grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         {charts.map((chart) => {
           return (
-            <ChartThumbnail
-              key={chart.title}
-              title={chart.title}
-              subtitle={chart.subtitle}
-              chartType={chart.chartType}
-            />
+            <div className="m-2">
+              <ChartThumbnail
+                key={chart.title}
+                title={chart.title}
+                subtitle={chart.subtitle}
+                chartType={chart.chartType}
+              />
+            </div>
           );
         })}
       </div>

@@ -59,9 +59,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
 
   const doughnutOptions = {
     layout: {
-      padding: {
-        left: 0,
-      },
+      autoPadding: true,
     },
     plugins: {
       legend: {
@@ -70,25 +68,20 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
 
       tooltip: {
         enabled: false,
-        position: "nearest",
         // external: externalTooltipHandler,
-        backgroundColor: colors.primary[900],
-        titleFont: { weight: "bold", family: "Helvetica Neue" },
-        padding: 12,
-        borderWidth: 1,
-        borderColor: colors.primary[700],
-        caretSize: 10,
+        // backgroundColor: colors.primary[900],
+        // titleFont: { weight: "bold", family: "Helvetica Neue" },
+        // padding: 12,
+        // borderWidth: 1,
+        // borderColor: colors.primary[700],
+        // caretSize: 10,
       },
     },
   };
 
   return (
-    <a
-      href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-      className="bg-primary-900 m-3 group rounded-lg overflow-hidden border border-primary-800 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-primary-600 hover:dark:bg-primary-900/30"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <div className="bg-primary-900 w-full relative m-3 rounded-lg overflow-hidden border border-primary-800 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-primary-600 hover:dark:bg-primary-900/30">
+      {/* Chart thumbnail header */}
       <div className="px-5 py-4">
         <h2 className={`mb-3 text-l font-semibold text-primary-100`}>
           {title}
@@ -100,17 +93,29 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
           {subtitle}
         </p>
       </div>
-      <div className="bg-primary-800 mt-1" style={{}}>
-        <div className="m-2 p-4">
-          <ChartLegend
-            labels={doughnutData.labels}
-            colors={doughnutData.datasets[0].backgroundColor}
-          />
+
+      {/* Chart display */}
+      <div className="bg-primary-800 mt-1">
+        <div>
+          {/* Donut chart */}
           {chartType === "donut" ? (
-            <Doughnut data={doughnutData} options={doughnutOptions} />
+            <div className="">
+              <ChartLegend
+                labels={doughnutData.labels}
+                colors={doughnutData.datasets[0].backgroundColor}
+              />
+              <div className="p-3 relative flex justify-center items-center margin-0">
+                <Doughnut data={doughnutData} options={doughnutOptions} />
+                {/* Total events center label */}
+                <div className="absolute top-0 bottom-0 my-auto right-0 left-0 mx-auto h-12">
+                  <div className="text-3xl font-bold text-center">99</div>
+                  <div className="text-xs text-center">total</div>
+                </div>
+              </div>
+            </div>
           ) : null}
         </div>
       </div>
-    </a>
+    </div>
   );
 };
