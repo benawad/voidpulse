@@ -1,2 +1,2 @@
-# VoidPulse
+# voidpulse
 Open source Mixpanel
