@@ -1,0 +1,31 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "env": "gen-env-types .env -o src/types/env.d.ts -e .",
+    "mig": "drizzle-kit generate:pg && ts-node src/migrate.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clickhouse/client": "^0.2.9",
+    "@trpc/client": "^11.0.0-next-beta.242",
+    "@trpc/server": "^11.0.0-next-beta.242",
+    "dotenv-safe": "^8.2.0",
+    "drizzle-orm": "^0.29.3",
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/pg": "^8.11.0",
+    "drizzle-kit": "^0.20.13",
+    "gen-env-types": "^1.3.4",
+    "ts-node": "^10.9.2"
+  }
+}
