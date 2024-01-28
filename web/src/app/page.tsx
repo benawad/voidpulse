@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <main
       style={{ backgroundColor: "#23222E" }}
-      className="flex min-h-screen flex-col items-center justify-between"
+      className="flex min-h-screen flex-col items-center"
     >
       <div className="z-10 max-w-5xl w-full items-center justify-between p-24 font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
@@ -25,10 +25,10 @@ export default function Home() {
           <div className="bg-secondary-mind-100 w-5 h-5 rounded-full"></div>
           <div className="bg-secondary-body-100 w-5 h-5 rounded-full"></div>
         </div>
-        <div className={myFont.className}>Dashboard</div>
+        <div className={myFont.className}>voidpulse says hello</div>
       </div>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+      <div className="grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         {charts.map((chart) => {
           return (
             <ChartThumbnail title={chart.title} subtitle={chart.subtitle} />

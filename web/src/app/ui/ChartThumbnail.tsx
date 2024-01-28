@@ -18,17 +18,17 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
       rel="noopener noreferrer"
     >
       <div className="px-5 py-4">
-        <h2 className={`mb-3 text-xl font-semibold text-primary-100`}>
+        <h2 className={`mb-3 text-l font-semibold text-primary-100`}>
           {title}
           <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
             -&gt;
           </span>
         </h2>
-        <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-primary-200`}>
+        <p className={`m-0 max-w-[30ch] text-xs opacity-50 text-primary-200`}>
           {subtitle}
         </p>
       </div>
-      <div className="bg-primary-800 mt-2" style={{ height: 300 }}></div>
+      <div className="bg-primary-800 mt-1" style={{ height: 300 }}></div>
     </a>
   );
 };
