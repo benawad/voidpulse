@@ -1,6 +1,6 @@
 # voidpulse
 
-Open source Mixpanel
+Open source Mixpanel with AI
 
 ![voidpulse graph ui](/assets/readme-visual2.jpeg)
 
