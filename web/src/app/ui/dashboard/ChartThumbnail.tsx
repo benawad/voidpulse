@@ -49,7 +49,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
       <Link href="/chart">
         <div className="px-5 py-4 h-24 hoverable area group">
           <h2
-            className={`mb-3 text-l font-semibold text-primary-100 group-hover:text-secondary-main-100 transition-colors`}
+            className={`mb-3 text-l font-semibold text-primary-100 group-hover:text-secondary-signature-100 transition-colors`}
           >
             {title}
             {/* <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">

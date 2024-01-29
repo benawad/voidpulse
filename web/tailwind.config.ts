@@ -14,37 +14,10 @@ const config = {
 
       colors: {
         secondary: {
-          //Currently similar to Mixpanel's color for easy testing.
-          "main-100": "#676BF6",
-
-          //Old colors from game - need to be changed.
-          //Should probably be renamed to something easier to edit.
-          "zen-100": "#89E0D7",
-          "zen-200": "#61A99C",
-
-          "body-100": "#D6545A",
-          "body-200": "#A6363B",
-
-          "mind-100": "#6EA0C2",
-          "mind-200": "#386B8E",
-
-          "aura-100": "#B8C9EA",
-          "aura-200": "#7D92BC",
-
-          "energy-100": "#E59963",
-          "energy-200": "#B86D37",
-
-          "ego-100": "#F3B63E",
-          "ego-200": "#D39112",
-
-          "psyche-100": "#A39ED3",
-          "psyche-200": "#7873AA",
-
-          "heart-100": "#B21E4A",
-          "heart-200": "#6C0A28",
-
-          "soul-100": "#5D677A",
-          "soul-200": "#374664",
+          // "main-100": "#676BF6",
+          "signature-100": "#466FFF",
+          "signature-200": "#2C3D95",
+          "complement-100": "#24F0E1",
         },
         primary: {
           100: "#F1F1F7",

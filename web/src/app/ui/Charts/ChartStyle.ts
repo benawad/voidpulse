@@ -4,19 +4,19 @@ const colors = config.theme.extend.colors;
 export const lineChartStyle = {
   fill: false,
   tension: 0.1,
-  borderColor: colors.secondary["zen-100"],
+  borderColor: colors.secondary["signature-100"],
   pointRadius: 0,
   pointHitRadius: 16,
   pointHoverRadius: 8,
-  pointBorderColor: colors.secondary["zen-100"],
+  pointBorderColor: colors.secondary["signature-100"],
 };
 
 export const donutChartStyle = {
   backgroundColor: [
-    colors.secondary["zen-100"],
-    colors.secondary["energy-100"],
-    colors.secondary["mind-100"],
-    colors.secondary["body-100"],
+    colors.secondary["signature-100"],
+    colors.secondary["complement-100"],
+    "#00B2FF",
+    "#2C3D95",
   ],
   borderColor: ["transparent"],
   hoverOffset: 4,
@@ -24,13 +24,13 @@ export const donutChartStyle = {
 
 export const barChartStyle = {
   backgroundColor: [
-    colors.secondary["zen-100"],
-    colors.secondary["energy-100"],
-    colors.secondary["mind-100"],
-    colors.secondary["body-100"],
-    colors.secondary["ego-100"],
-    colors.secondary["aura-100"],
-    colors.secondary["psyche-100"],
+    colors.secondary["signature-100"],
+    colors.secondary["complement-100"],
+    "#00B2FF",
+    colors.secondary["signature-200"],
+    "#F2BF3C",
+    "#EF8C34",
+    "#DC5068",
   ],
   borderColor: ["transparent"],
   borderWidth: 2,
