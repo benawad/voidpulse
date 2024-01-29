@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { generalChartOptions } from "./PlaceholderChartData";
+import { generalChartOptions } from "./ChartStyle";
 
 interface BarChartProps {
   data: any;

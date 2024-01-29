@@ -2,7 +2,7 @@ import React from "react";
 import { ChartLegend } from "./ChartLegend";
 import { Doughnut } from "react-chartjs-2";
 import { ChartData } from "chart.js";
-import { generalChartOptions } from "./PlaceholderChartData";
+import { generalChartOptions } from "./ChartStyle";
 
 // Note: I am choosing to spell Donut the shorter way for convenience.
 interface DonutChartProps {
