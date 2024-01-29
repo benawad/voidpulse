@@ -4,7 +4,7 @@ export const up = async (clickhouse: ClickHouseClient) => {
   await clickhouse.command({
     query: `
     CREATE TABLE events (
-        id UUID,
+        id UUID DEFAULT generateUUIDv4(),
         insert_id UUID,
         name LowCardinality(String),
         created_at DateTime,

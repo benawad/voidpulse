@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon --files src/index.ts",
     "env": "gen-env-types .env -o src/types/env.d.ts -e .",
-    "mig": "drizzle-kit generate:pg && ts-node src/migrate.ts"
+    "mig": "drizzle-kit generate:pg && ts-node src/migrate.ts",
+    "dummy": "ts-node --files src/scripts/dummy.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,12 +17,14 @@
     "@trpc/client": "^11.0.0-next-beta.242",
     "@trpc/server": "^11.0.0-next-beta.242",
     "argon2": "^0.31.2",
+    "axios": "^1.6.7",
     "cookie-parser": "^1.4.6",
     "dotenv-safe": "^8.2.0",
     "drizzle-orm": "^0.29.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -29,6 +32,7 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/pg": "^8.11.0",
+    "@types/uuid": "^9.0.8",
     "drizzle-kit": "^0.20.13",
     "gen-env-types": "^1.3.4",
     "nodemon": "^3.0.3",

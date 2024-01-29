@@ -1,10 +1,10 @@
 require("dotenv").config();
 import express from "express";
-import { clickhouse, runClickhouseMigrations } from "./clickhouse";
-import { app } from "./appRouter";
 import z from "zod";
-import { reservedPropKeys } from "./constants/reserved-keys";
+import { app } from "./appRouter";
+import { clickhouse, runClickhouseMigrations } from "./clickhouse";
 import { dateInputRegex } from "./constants/regex";
+import { reservedPropKeys } from "./constants/reserved-keys";
 
 const eventSchema = z.object({
   name: z.string(),
@@ -52,6 +52,7 @@ const startServer = async () => {
       ok: true,
     });
   });
+
   app.listen(4000, () => {
     console.log("server started on http://localhost:4000/trpc");
   });
