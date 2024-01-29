@@ -35,7 +35,7 @@ export default function Home() {
           <div className={"bg-secondary-mind-100" + dotStyle}></div>
           <div className={"bg-secondary-body-100" + dotStyle}></div>
         </div>
-        <div className={myFont.className}>voidpulse says hello</div>
+        <div className={myFont.className}>voidpulse says: hello</div>
       </div>
 
       <ChartViewPage />

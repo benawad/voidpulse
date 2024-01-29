@@ -12,7 +12,34 @@ export const generalChartOptions = {
     },
 
     tooltip: {
-      enabled: false,
+      borderColor: colors.primary[700],
+      borderWidth: 1,
+      backgroundColor: colors.primary[800],
+      padding: 16,
+      displayColors: true,
+      boxPadding: 8,
+      caretSize: 10,
+
+      callbacks: {
+        //TO DO: Fill this properly, this is placeholder function
+        label: (context: {
+          dataset: { label: string };
+          parsed: { y: number | bigint | null };
+        }) => {
+          let label = context.dataset.label || "";
+
+          // if (label) {
+          //   label += ": ";
+          // }
+          // if (context.parsed.y !== null) {
+          //   label += new Intl.NumberFormat("en-US", {
+          //     style: "currency",
+          //     currency: "USD",
+          //   }).format(context.parsed.y);
+          // }
+          return label + ": " + context.parsed.y;
+        },
+      },
     },
   },
 
