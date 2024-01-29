@@ -2,8 +2,6 @@
 import React from "react";
 import "chart.js/auto";
 import config from "../../../tailwind.config";
-import { Bar, Doughnut } from "react-chartjs-2";
-import { ChartLegend } from "./Charts/ChartLegend";
 import { DonutChart } from "./Charts/DonutChart";
 import { LineChart } from "./Charts/LineChart";
 import { BarChart } from "./Charts/BarChart";
@@ -62,7 +60,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
       </div>
 
       {/* Chart display */}
-      <div className="bg-primary-800 mt-1 h-full">
+      <div className="bg-primary-800/30 pt-1 h-full">
         <div>{chartToDisplay}</div>
       </div>
     </div>

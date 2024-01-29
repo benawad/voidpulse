@@ -16,7 +16,7 @@ export const ChartLegend: React.FC<ChartLegendProps> = ({ labels, colors }) => {
         return (
           <div
             key={i + label}
-            className="flex bg-primary-700 rounded-md px-2 py-1 m-1"
+            className="flex bg-primary-700/50 rounded-md px-2 py-1 m-1"
           >
             <div
               className="rounded-sm h-3 w-3 my-auto"

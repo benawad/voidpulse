@@ -2,6 +2,21 @@ import config from "../../../../tailwind.config";
 const months = ["January", "February", "March", "April", "May", "June", "July"];
 const colors = config.theme.extend.colors;
 
+export const genericChartOptions = {
+  layout: {
+    autoPadding: true,
+  },
+  plugins: {
+    legend: {
+      display: false,
+    },
+
+    tooltip: {
+      enabled: false,
+    },
+  },
+};
+
 export const placeholderLineData = {
   labels: months,
   datasets: [
@@ -40,24 +55,16 @@ export const placeholderBarData = {
       label: "My First Dataset",
       data: [65, 59, 80, 81, 56, 55, 40],
       backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(255, 159, 64, 0.2)",
-        "rgba(255, 205, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(153, 102, 255, 0.2)",
-        "rgba(201, 203, 207, 0.2)",
+        colors.secondary["zen-100"],
+        colors.secondary["energy-100"],
+        colors.secondary["mind-100"],
+        colors.secondary["body-100"],
+        colors.secondary["ego-100"],
+        colors.secondary["aura-100"],
+        colors.secondary["heart-100"],
       ],
-      borderColor: [
-        "rgb(255, 99, 132)",
-        "rgb(255, 159, 64)",
-        "rgb(255, 205, 86)",
-        "rgb(75, 192, 192)",
-        "rgb(54, 162, 235)",
-        "rgb(153, 102, 255)",
-        "rgb(201, 203, 207)",
-      ],
-      borderWidth: 1,
+      borderColor: ["transparent"],
+      borderWidth: 0,
     },
   ],
 };
