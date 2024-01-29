@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon --files src/index.ts",
     "env": "gen-env-types .env -o src/types/env.d.ts -e .",
     "mig": "drizzle-kit generate:pg && ts-node src/migrate.ts"
   },
@@ -32,6 +32,7 @@
     "drizzle-kit": "^0.20.13",
     "gen-env-types": "^1.3.4",
     "nodemon": "^3.0.3",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

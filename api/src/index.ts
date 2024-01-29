@@ -1,7 +1,7 @@
 require("dotenv").config();
 import express from "express";
 import { clickhouse, runClickhouseMigrations } from "./clickhouse";
-import { app } from "./trpc";
+import { app } from "./appRouter";
 import z from "zod";
 import { reservedPropKeys } from "./constants/reserved-keys";
 import { dateInputRegex } from "./constants/regex";

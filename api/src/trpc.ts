@@ -1,7 +1,5 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
-import express from "express";
-import cookieParser from "cookie-parser";
 import { verify } from "jsonwebtoken";
 import {
   AccessTokenData,
@@ -20,68 +18,48 @@ import {
 import { getChartData } from "./routes/main/chart-builder";
 
 // created for each request
-const createContext = ({
+export const createContext = ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => ({ req, res, userId: "" }); // no context
 type Context = Awaited<ReturnType<typeof createContext> & { userId: string }>;
 
-const t = initTRPC.context<Context>().create();
+export const t = initTRPC.context<Context>().create();
 export const publicProcedure = t.procedure;
-export const protectedProcedure = t.procedure.use(
-  t.middleware(async (opts) => {
-    const { ctx } = opts;
-    if (!ctx.req.cookies.id && !ctx.req.cookies.rid) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
+export const protectedProcedure = t.procedure.use(async (opts) => {
+  const { ctx } = opts;
+  if (!ctx.req.cookies.id && !ctx.req.cookies.rid) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
 
-    const { id, rid } = ctx.req.cookies;
+  const { id, rid } = ctx.req.cookies;
 
-    try {
-      const data = <AccessTokenData>verify(id, process.env.ACCESS_TOKEN_SECRET);
-      ctx.userId = data.userId;
-      return opts.next(opts);
-    } catch {}
-
-    if (!rid) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-
-    let data;
-    try {
-      data = <RefreshTokenData>verify(rid, process.env.REFRESH_TOKEN_SECRET);
-    } catch {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, data.userId),
-    });
-    if (!user || user.refreshTokenVersion !== data.refreshTokenVersion) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-
-    ctx.userId = user.id;
-    sendAuthCookies(ctx.res, user);
-
+  try {
+    const data = <AccessTokenData>verify(id, process.env.ACCESS_TOKEN_SECRET);
+    ctx.userId = data.userId;
     return opts.next(opts);
-  })
-);
-const appRouter = t.router({
-  getBoards,
-  updateBoard,
-  createBoard,
-  deleteBoard,
-  getChartData,
+  } catch {}
+
+  if (!rid) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  let data;
+  try {
+    data = <RefreshTokenData>verify(rid, process.env.REFRESH_TOKEN_SECRET);
+  } catch {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, data.userId),
+  });
+  if (!user || user.refreshTokenVersion !== data.refreshTokenVersion) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  ctx.userId = user.id;
+  sendAuthCookies(ctx.res, user);
+
+  return opts.next(opts);
 });
-
-export const app = express();
-
-app.use(
-  "/trpc",
-  cookieParser(),
-  trpcExpress.createExpressMiddleware({
-    router: appRouter,
-    createContext,
-  })
-);
