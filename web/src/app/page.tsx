@@ -1,6 +1,10 @@
+"use client";
 import Image from "next/image";
 import localFont from "next/font/local";
 import { ChartThumbnail } from "./ui/ChartThumbnail";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { ChartViewPage } from "./ui/ChartViewPage";
+
 const myFont = localFont({ src: "./castledown-regular-trial.otf" });
 
 export default function Home() {
@@ -10,9 +14,11 @@ export default function Home() {
       subtitle: "Which Voidpet did players choose?",
       chartType: "donut",
     },
-    { title: "Downloads", subtitle: "Downloads by day", chartType: "bar" },
+    { title: "Downloads", subtitle: "Downloads by month", chartType: "bar" },
     { title: "MAU & DAU", subtitle: "Active users", chartType: "line" },
   ];
+
+  const dotStyle = " w-5 h-5 rounded-full mx-1";
 
   return (
     <main
@@ -24,15 +30,18 @@ export default function Home() {
           voidpulse
         </p>
         <div className="items-center flex-row flex">
-          <div className="bg-secondary-zen-100 w-5 h-5 rounded-full"></div>
-          <div className="bg-secondary-energy-100 w-5 h-5 rounded-full"></div>
-          <div className="bg-secondary-mind-100 w-5 h-5 rounded-full"></div>
-          <div className="bg-secondary-body-100 w-5 h-5 rounded-full"></div>
+          <div className={"bg-secondary-zen-100" + dotStyle}></div>
+          <div className={"bg-secondary-energy-100" + dotStyle}></div>
+          <div className={"bg-secondary-mind-100" + dotStyle}></div>
+          <div className={"bg-secondary-body-100" + dotStyle}></div>
         </div>
         <div className={myFont.className}>voidpulse says hello</div>
       </div>
 
-      <div className="grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+      <ChartViewPage />
+
+      {/* Dashboard of chart thumbnails shows up here */}
+      <div className="grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-3 lg:text-left">
         {charts.map((chart) => {
           return (
             <div className="m-2">

@@ -1,5 +1,5 @@
 import config from "../../../../tailwind.config";
-const months = ["January", "February", "March", "April", "May", "June", "July"];
+const months = ["Jan 1", "Feb 1", "Mar 1", "Apr 1", "May 1", "Jun 1", "Jul 1"];
 const colors = config.theme.extend.colors;
 
 export const genericChartOptions = {
@@ -64,7 +64,10 @@ export const placeholderBarData = {
         colors.secondary["heart-100"],
       ],
       borderColor: ["transparent"],
-      borderWidth: 0,
+      borderWidth: 2,
+      borderRadius: 4,
+      hoverBorderColor: [colors.primary[300]],
+      hoverBorderRadius: 4,
     },
   ],
 };
