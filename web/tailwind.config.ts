@@ -14,10 +14,14 @@ const config = {
 
       colors: {
         secondary: {
-          // "main-100": "#676BF6",
           "signature-100": "#466FFF",
           "signature-200": "#2C3D95",
           "complement-100": "#24F0E1",
+          "red-100": "#DC5068",
+          "orange-100": "#EF8C34",
+          "yellow-100": "#F2BF3C",
+          "green-100": "#17B4A1",
+          "purple-100": "#8C67F6",
         },
         primary: {
           100: "#F1F1F7",

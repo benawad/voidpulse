@@ -1,6 +1,16 @@
 import config from "../../../../tailwind.config";
 const colors = config.theme.extend.colors;
 
+export const colorOrder = [
+  colors.secondary["signature-100"],
+  colors.secondary["complement-100"],
+  colors.secondary["orange-100"],
+  colors.secondary["red-100"],
+  colors.secondary["yellow-100"],
+  colors.secondary["purple-100"],
+  colors.secondary["green-100"],
+];
+
 export const lineChartStyle = {
   fill: false,
   tension: 0.1,
@@ -12,26 +22,13 @@ export const lineChartStyle = {
 };
 
 export const donutChartStyle = {
-  backgroundColor: [
-    colors.secondary["signature-100"],
-    colors.secondary["complement-100"],
-    "#00B2FF",
-    "#2C3D95",
-  ],
+  backgroundColor: [...colorOrder],
   borderColor: ["transparent"],
   hoverOffset: 4,
 };
 
 export const barChartStyle = {
-  backgroundColor: [
-    colors.secondary["signature-100"],
-    colors.secondary["complement-100"],
-    "#00B2FF",
-    colors.secondary["signature-200"],
-    "#F2BF3C",
-    "#EF8C34",
-    "#DC5068",
-  ],
+  backgroundColor: [...colorOrder],
   borderColor: ["transparent"],
   borderWidth: 2,
   borderRadius: 4,

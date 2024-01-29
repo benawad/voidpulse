@@ -11,7 +11,7 @@ function Home() {
   if (isLoading) {
     return null;
   }
-  if (true || !data?.user) {
+  if (!data?.user) {
     return <RegisterForm />;
   }
 
