@@ -31,3 +31,18 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Custom styles */
+.card {
+  @apply bg-primary-800/10 rounded-lg overflow-hidden border border-primary-800 
+}
+.card.padded {
+  @apply p-3;
+}
+.card.hoverable {
+  @apply transition-colors hover:border-primary-600 hover:bg-primary-900/30 hover:shadow-lg hover:border-2;
+}
+
+.area.hoverable {
+  @apply transition-colors hover:bg-primary-100/5;
+}

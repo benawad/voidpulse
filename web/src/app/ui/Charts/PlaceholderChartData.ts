@@ -1,4 +1,19 @@
 import config from "../../../../tailwind.config";
+
+//NOTE: This file has important style info in the chart options.
+//Some of the info is placeholder, but some needs to be kept.
+//TODO: Separate placeholder data from style data.
+
+export const placeholderCharts = [
+  {
+    title: "Starter picks",
+    subtitle: "Which Voidpet did players choose?",
+    chartType: "donut",
+  },
+  { title: "Downloads", subtitle: "Downloads by month", chartType: "bar" },
+  { title: "MAU & DAU", subtitle: "Active users", chartType: "line" },
+];
+
 const months = ["Jan 1", "Feb 1", "Mar 1", "Apr 1", "May 1", "Jun 1", "Jul 1"];
 const colors = config.theme.extend.colors;
 

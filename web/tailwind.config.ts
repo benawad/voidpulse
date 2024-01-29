@@ -14,6 +14,11 @@ const config = {
 
       colors: {
         secondary: {
+          //Currently similar to Mixpanel's color for easy testing.
+          "main-100": "#676BF6",
+
+          //Old colors from game - need to be changed.
+          //Should probably be renamed to something easier to edit.
           "zen-100": "#89E0D7",
           "zen-200": "#61A99C",
 

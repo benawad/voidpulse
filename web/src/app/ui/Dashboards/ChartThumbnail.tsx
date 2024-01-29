@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
 import "chart.js/auto";
-import config from "../../../tailwind.config";
-import { DonutChart } from "./Charts/DonutChart";
-import { LineChart } from "./Charts/LineChart";
-import { BarChart } from "./Charts/BarChart";
+import config from "../../../../tailwind.config";
+import { DonutChart } from "../Charts/DonutChart";
+import { LineChart } from "../Charts/LineChart";
+import { BarChart } from "../Charts/BarChart";
 import {
   placeholderBarData,
   placeholderDonutData,
   placeholderLineData,
-} from "./Charts/PlaceholderChartData";
+} from "../Charts/PlaceholderChartData";
 interface ChartThumbnailProps {
   title: string;
   subtitle: string;
@@ -43,14 +43,16 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
   console.log(chartType);
 
   return (
-    <div className="bg-primary-900 w-full h-full relative m-3 rounded-lg overflow-hidden border border-primary-800 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-primary-600 hover:dark:bg-primary-900/30">
+    <div className="card w-full h-full">
       {/* Chart thumbnail header */}
-      <div className="px-5 py-4 h-24">
-        <h2 className={`mb-3 text-l font-semibold text-primary-100`}>
+      <div className="px-5 py-4 h-24 hoverable area group">
+        <h2
+          className={`mb-3 text-l font-semibold text-primary-100 group-hover:text-secondary-main-100 transition-colors`}
+        >
           {title}
-          <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
+          {/* <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
             -&gt;
-          </span>
+          </span> */}
         </h2>
         <p
           className={`m-0 max-w-[30ch] text-xs opacity-50 text-primary-200 overflow-hidden`}

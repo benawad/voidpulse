@@ -1,6 +1,6 @@
 import React from "react";
-import { LineChart } from "./Charts/LineChart";
-import { placeholderLineData } from "./Charts/PlaceholderChartData";
+import { LineChart } from "../Charts/LineChart";
+import { placeholderLineData } from "../Charts/PlaceholderChartData";
 
 interface ChartViewPageProps {}
 
