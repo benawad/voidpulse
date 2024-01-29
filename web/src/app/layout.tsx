@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "chart.js/auto";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { trpc } from "./utils/trpc";
 
 const inter = Inter({ subsets: ["latin"] });
 

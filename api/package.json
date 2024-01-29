@@ -1,8 +1,9 @@
 {
-  "name": "api",
+  "name": "@voidpulse/api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/app-router-type.ts",
+  "types": "src/app-router-type.ts",
   "scripts": {
     "dev": "nodemon --files src/index.ts",
     "env": "gen-env-types .env -o src/types/env.d.ts -e .",

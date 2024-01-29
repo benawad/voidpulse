@@ -1,6 +1,6 @@
 import React from "react";
 import { LineChart } from "../charts/LineChart";
-import { placeholderLineData } from "../Charts/PlaceholderChartData";
+import { placeholderLineData } from "../charts/PlaceholderChartData";
 
 interface ChartEditorProps {}
 

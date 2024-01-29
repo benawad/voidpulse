@@ -10,7 +10,7 @@ import {
 } from "./routes/main/boards";
 import { getChartData } from "./routes/main/chart-builder";
 
-const appRouter = t.router({
+export const appRouter = t.router({
   getBoards,
   updateBoard,
   createBoard,

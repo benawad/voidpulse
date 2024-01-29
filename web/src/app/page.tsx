@@ -1,12 +1,10 @@
 "use client";
-import localFont from "next/font/local";
-import { InfoModal } from "./ui/charts/InfoModal";
 import { HeaderNav } from "./ui/HeaderNav";
+import { InfoModal } from "./ui/charts/InfoModal";
 import { DashboardView } from "./ui/dashboard/DashboardView";
+import { trpc } from "./utils/trpc";
 
-const myFont = localFont({ src: "./castledown-regular-trial.otf" });
-
-export default function Home() {
+function Home() {
   return (
     <main className="page flex-col">
       <HeaderNav />
@@ -15,3 +13,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default trpc.withTRPC(Home);
