@@ -1,6 +1,7 @@
 import React from "react";
 import { LineChart } from "../charts/LineChart";
 import { placeholderLineData } from "../charts/PlaceholderChartData";
+import Link from "next/link";
 interface ChartEditorProps {}
 
 //Error: "category" is not a registered scale.
@@ -8,20 +9,24 @@ interface ChartEditorProps {}
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   return (
     <div>
-      <div className="bg-primary-300">Top editor</div>
+      {/* Navigation that shows hierarchy of dashboards */}
+      <div className="h-14 border-b border-primary-700 items-center flex">
+        <Link href="/">
+          <div className="mx-4 text-sm text-primary-500">Back to dashboard</div>
+        </Link>
+      </div>
       {/* View that houses editor and chart side by side */}
-      <div className="flex grow-full h-full bg-slate-50">
+      <div className="flex grow w-full h-full">
         {/* Toolbar */}
-        <div className="px-12 bg-primary-700" style={{ width: 400 }}>
-          Toolbar
+        <div className="border-r p-4 border-primary-700" style={{ width: 400 }}>
+          <div className="hoverable area text p-2 rounded-md">Metrics</div>
+          <div className="hoverable area text p-2 rounded-md">Filter</div>
+          <div className="hoverable area text p-2 rounded-md">Breakdown</div>
         </div>
         {/* Chart view panel */}
         <div className="w-full">
           {/* Just the chart */}
-          <div
-            className="bg-primary-900"
-            style={{ minWidth: 800, minHeight: 500 }}
-          >
+          <div className="p-12" style={{ minWidth: 800, minHeight: 500 }}>
             <h1 className="font-bold text-lg text-primary-100 px-2">
               Chart title
             </h1>
