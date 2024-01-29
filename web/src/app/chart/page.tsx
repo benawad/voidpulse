@@ -1,14 +1,16 @@
 "use client";
 import React from "react";
-import { ChartViewPage } from "../ui/dashboard/ChartViewPage";
+import { ChartEditor } from "../ui/dashboard/ChartEditor";
 import Link from "next/link";
+import { HeaderNav } from "../ui/HeaderNav";
 
 interface pageProps {}
 
 export default function Page() {
   return (
-    <div>
-      <ChartViewPage></ChartViewPage>
+    <div className="page">
+      <HeaderNav />
+      <ChartEditor></ChartEditor>
     </div>
   );
 }

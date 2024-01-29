@@ -1,7 +1,5 @@
 import React from "react";
-import { Chart as ChartJS } from "chart.js/auto";
 import { Chart, Line } from "react-chartjs-2";
-
 import {
   generalChartOptions,
   placeholderLineData,

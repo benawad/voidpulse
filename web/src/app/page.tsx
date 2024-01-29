@@ -8,7 +8,7 @@ const myFont = localFont({ src: "./castledown-regular-trial.otf" });
 
 export default function Home() {
   return (
-    <main className="bg-primary-900 flex min-h-screen flex-col items-center overscroll-none py-16">
+    <main className="page flex-col">
       <HeaderNav />
       <InfoModal />
       <DashboardView />
