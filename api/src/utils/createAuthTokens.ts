@@ -1,7 +1,10 @@
-import { sign } from "jsonwebtoken";
-import { DbUser } from "../db";
+import { sign, verify } from "jsonwebtoken";
+import { DbUser, db } from "../db";
 import { Response } from "express";
 import { __prod__ } from "../constants/prod";
+import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
+import { users } from "../schema/users";
 
 export type RefreshTokenData = {
   userId: string;
@@ -44,4 +47,43 @@ export const sendAuthCookies = (res: Response, user: DbUser) => {
   };
   res.cookie("id", accessToken, opts);
   res.cookie("rid", refreshToken, opts);
+};
+
+export const checkTokens = async (
+  accessToken: string,
+  refreshToken: string
+) => {
+  try {
+    const data = <AccessTokenData>(
+      verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
+    );
+    return {
+      userId: data.userId,
+    };
+  } catch {}
+
+  if (!refreshToken) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  let data;
+  try {
+    data = <RefreshTokenData>(
+      verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+    );
+  } catch {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, data.userId),
+  });
+  if (!user || user.refreshTokenVersion !== data.refreshTokenVersion) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return {
+    userId: data.userId,
+    user,
+  };
 };
