@@ -2,9 +2,9 @@
 
 Open source Mixpanel
 
-![voidpulse graph ui](/assets/readme-visual.jpeg)
+![voidpulse graph ui](/assets/readme-visual2.jpeg)
 
-This project is a WIP. 
+This project is a WIP.
 
 v0 should be done in a few days.
 
