@@ -1,4 +1,5 @@
 import * as trpcExpress from "@trpc/server/adapters/express";
+import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { createContext, t } from "./trpc";
@@ -9,8 +10,15 @@ import {
   deleteBoard,
 } from "./routes/main/boards";
 import { getChartData } from "./routes/main/chart-builder";
+import { login } from "./routes/auth/login";
+import { __prod__ } from "./constants/prod";
+import { register } from "./routes/auth/register";
+import { getMe } from "./routes/auth/getMe";
 
 export const appRouter = t.router({
+  getMe,
+  register,
+  login,
   getBoards,
   updateBoard,
   createBoard,
@@ -21,6 +29,11 @@ export const appRouter = t.router({
 export const app = express();
 app.use(
   "/trpc",
+  cors({
+    maxAge: __prod__ ? 86400 : undefined,
+    credentials: true,
+    origin: process.env.FRONTEND_URL,
+  }),
   cookieParser(),
   trpcExpress.createExpressMiddleware({
     router: appRouter,
