@@ -34,7 +34,7 @@ body {
 
 /* Custom styles */
 .page {
-  @apply bg-primary-900 flex min-h-screen overscroll-none py-16 items-center
+  @apply bg-primary-900 min-h-screen overscroll-none py-16
 }
 .card {
   @apply bg-primary-800/10 rounded-lg overflow-hidden border border-primary-800 
@@ -46,7 +46,7 @@ body {
   @apply transition-colors hover:border-primary-600 hover:bg-primary-900/30 hover:shadow-lg hover:border-2;
 }
 .area.hoverable {
-  @apply transition-colors hover:bg-primary-100/5;
+  @apply transition-colors hover:bg-primary-100/5 cursor-pointer;
 }
 
 .subtext {

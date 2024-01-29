@@ -6,7 +6,7 @@ import { trpc } from "./utils/trpc";
 
 function Home() {
   return (
-    <main className="page flex-col">
+    <main className="page flex flex-col items-center">
       <HeaderNav />
       <InfoModal />
       <DashboardView />

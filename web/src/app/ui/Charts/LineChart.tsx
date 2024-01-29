@@ -1,9 +1,6 @@
 import React from "react";
 import { Chart, Line } from "react-chartjs-2";
-import {
-  generalChartOptions,
-  placeholderLineData,
-} from "./PlaceholderChartData";
+import { placeholderLineData } from "./PlaceholderChartData";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +9,7 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
+import { generalChartOptions } from "./ChartStyle";
 
 // Register ChartJS components using ChartJS.register
 ChartJS.register(
