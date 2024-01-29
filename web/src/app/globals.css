@@ -37,7 +37,7 @@ body {
   @apply bg-primary-900 min-h-screen overscroll-none py-16
 }
 .card {
-  @apply bg-primary-800/10 rounded-lg overflow-hidden border border-primary-800 
+  @apply bg-primary-800/10 rounded-lg overflow-hidden border-2 border-primary-800 
 }
 .card.padded {
   @apply p-3;
@@ -53,4 +53,7 @@ body {
 }
 .subtext {
   @apply text-xs text-primary-500;
+}
+.focus-glow {
+  @apply focus:outline-none focus:ring-4 focus:ring-primary-100 focus:ring-opacity-10;
 }
