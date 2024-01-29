@@ -5,15 +5,16 @@ export const up = async (clickhouse: ClickHouseClient) => {
     query: `
     CREATE TABLE events (
         id UUID,
+        insert_id UUID,
         name LowCardinality(String),
-        createdAt DateTime,
+        created_at DateTime,
         properties JSON,
-        distinctId String,
-        projectId String
+        distinct_id String,
+        project_id String
     )
     ENGINE = MergeTree()
-    PARTITION BY toYYYYMMDD(createdAt)
-    ORDER BY (createdAt, name, distinctId)
+    PARTITION BY toYYYYMMDD(created_at)
+    ORDER BY (created_at, name, distinct_id)
     SETTINGS index_granularity = 8192;
   `,
   });
