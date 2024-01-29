@@ -11,6 +11,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
         <div className={headerItemStyle}>boards</div>
         <div className={headerItemStyle}>users</div>
         <div className={headerItemStyle}>events</div>
+        <div className={headerItemStyle}>assistant</div>
       </div>
     </div>
   );

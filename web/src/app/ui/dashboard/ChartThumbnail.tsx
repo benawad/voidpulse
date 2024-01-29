@@ -2,14 +2,15 @@
 import React from "react";
 import "chart.js/auto";
 import config from "../../../../tailwind.config";
-import { DonutChart } from "../Charts/DonutChart";
-import { LineChart } from "../Charts/LineChart";
-import { BarChart } from "../Charts/BarChart";
+import { DonutChart } from "../charts/DonutChart";
+import { LineChart } from "../charts/LineChart";
+import { BarChart } from "../charts/BarChart";
 import {
   placeholderBarData,
   placeholderDonutData,
   placeholderLineData,
-} from "../Charts/PlaceholderChartData";
+} from "../charts/PlaceholderChartData";
+import Link from "next/link";
 interface ChartThumbnailProps {
   title: string;
   subtitle: string;
@@ -45,21 +46,21 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
   return (
     <div className="card w-full h-full">
       {/* Chart thumbnail header */}
-      <div className="px-5 py-4 h-24 hoverable area group">
-        <h2
-          className={`mb-3 text-l font-semibold text-primary-100 group-hover:text-secondary-main-100 transition-colors`}
-        >
-          {title}
-          {/* <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
+      <Link href="/chart">
+        <div className="px-5 py-4 h-24 hoverable area group">
+          <h2
+            className={`mb-3 text-l font-semibold text-primary-100 group-hover:text-secondary-main-100 transition-colors`}
+          >
+            {title}
+            {/* <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
             -&gt;
           </span> */}
-        </h2>
-        <p
-          className={`m-0 max-w-[30ch] text-xs opacity-50 text-primary-200 overflow-hidden`}
-        >
-          {subtitle}
-        </p>
-      </div>
+          </h2>
+          <p className={`m-0 max-w-[30ch] subtext overflow-hidden`}>
+            {subtitle}
+          </p>
+        </div>
+      </Link>
 
       {/* Chart display */}
       <div className="bg-primary-800/30 pt-1 h-full">
