@@ -1,12 +1,19 @@
 "use client";
+import { ProjectProvider } from "../../../providers/ProjectProvider";
 import { HeaderNav } from "../ui/HeaderNav";
-import { ChartEditor } from "../ui/dashboard/ChartEditor";
+import { trpc } from "../utils/trpc";
+import { ChartEditor } from "./ChartEditor";
 
-export default function Page() {
+function Page() {
+  const { data } = trpc.getProjects.useQuery();
   return (
     <div className="page">
-      <HeaderNav />
-      <ChartEditor />
+      <ProjectProvider id={data?.projects[0].id || ""}>
+        <HeaderNav />
+        <ChartEditor />
+      </ProjectProvider>
     </div>
   );
 }
+
+export default trpc.withTRPC(Page);

@@ -10,7 +10,7 @@ export const up = async (clickhouse: ClickHouseClient) => {
         created_at DateTime,
         properties JSON,
         distinct_id String,
-        project_id String
+        project_id UUID
     )
     ENGINE = MergeTree()
     PARTITION BY toYYYYMMDD(created_at)

@@ -37,11 +37,8 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
       chartToDisplay = <BarChart data={placeholderBarData} />;
       break;
     default:
-      console.log("no chart type specified");
       chartToDisplay = null;
   }
-
-  console.log(chartType);
 
   return (
     <div className="card w-full h-full">

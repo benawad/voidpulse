@@ -7,6 +7,7 @@ import { sendAuthCookies } from "../../utils/createAuthTokens";
 import { projects } from "../../schema/projects";
 import { genApiKey } from "../../utils/genApiKey";
 import { projectUsers } from "../../schema/project-users";
+import { boards } from "../../schema/boards";
 
 export const register = publicProcedure
   .input(
@@ -44,11 +45,22 @@ export const register = publicProcedure
       userId: newUser.id,
     });
 
+    const [board] = await db
+      .insert(boards)
+      .values({
+        creatorId: newUser.id,
+        name: "My First Board",
+        projectId: project.id,
+      })
+      .returning();
+
     sendAuthCookies(ctx.res, newUser);
 
     return {
       user: {
         id: newUser.id,
       },
+      project,
+      board,
     };
   });

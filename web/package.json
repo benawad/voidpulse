@@ -16,6 +16,7 @@
     "@trpc/server": "11.0.0-next-beta.242",
     "@voidpulse/api": "workspace:^",
     "chart.js": "^4.4.1",
+    "downshift": "^8.3.1",
     "next": "14.1.0",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",

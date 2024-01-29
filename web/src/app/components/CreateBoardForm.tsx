@@ -11,7 +11,7 @@ type Inputs = {
   password: string;
 };
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
+export const CreateBoardForm: React.FC<RegisterFormProps> = ({}) => {
   const utils = trpc.useUtils();
   const { mutateAsync } = trpc.register.useMutation({
     onSuccess: (data) => {

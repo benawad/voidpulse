@@ -10,19 +10,27 @@ export const getEventNames = protectedProcedure
     })
   )
   .query(async ({ input: { projectId }, ctx: { userId } }) => {
+    console.log("here");
     await assertProjectMember({ projectId, userId });
 
-    const resp = await clickhouse.query({
-      query: `
-			select distinct name from events where project_id = {projectId: UUID} order by name asc;
+    try {
+      const resp = await clickhouse.query({
+        query: `
+			select distinct name from events where project_id = {projectId:UUID} order by name asc;
 		`,
-      query_params: {
-        projectId,
-      },
-    });
-    const { data } = await resp.json<
-      ClickHouseQueryResponse<{ name: string }>
-    >();
+        query_params: {
+          projectId,
+        },
+      });
+      console.log("2");
+      const { data } = await resp.json<
+        ClickHouseQueryResponse<{ name: string }>
+      >();
+      console.log("3");
 
-    return { names: data.map((x) => x.name) };
+      return { names: data.map((x) => x.name) };
+    } catch (e) {
+      console.log(e);
+      return { names: [] };
+    }
   });

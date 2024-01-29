@@ -18,7 +18,9 @@ export const getBoards = protectedProcedure
       where: eq(boards.projectId, projectId),
     });
 
-    return data;
+    return {
+      boards: data,
+    };
   });
 
 export const createBoard = protectedProcedure
@@ -36,7 +38,7 @@ export const createBoard = protectedProcedure
       .values({ creatorId: userId, name, projectId })
       .returning();
 
-    return board;
+    return { board };
   });
 
 export const updateBoard = protectedProcedure
@@ -61,7 +63,7 @@ export const updateBoard = protectedProcedure
       .where(eq(boards.id, id))
       .returning();
 
-    return newBoard;
+    return { board: newBoard };
   });
 
 export const deleteBoard = protectedProcedure

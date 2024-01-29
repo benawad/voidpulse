@@ -15,8 +15,10 @@ import { __prod__ } from "./constants/prod";
 import { register } from "./routes/auth/register";
 import { getMe } from "./routes/auth/getMe";
 import { getEventNames } from "./routes/main/getEventNames";
+import { getProjects } from "./routes/main/getProjects";
 
 export const appRouter = t.router({
+  getProjects,
   getEventNames,
   getMe,
   register,
