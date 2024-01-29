@@ -4,6 +4,9 @@ import { db } from "../../db";
 import { users } from "../../schema/users";
 import argon2d from "argon2";
 import { sendAuthCookies } from "../../utils/createAuthTokens";
+import { projects } from "../../schema/projects";
+import { genApiKey } from "../../utils/genApiKey";
+import { projectUsers } from "../../schema/project-users";
 
 export const register = publicProcedure
   .input(
@@ -27,6 +30,19 @@ export const register = publicProcedure
         passwordHash: await argon2d.hash(input.password),
       })
       .returning();
+
+    const [project] = await db
+      .insert(projects)
+      .values({
+        name: "My First Project",
+        apiKey: genApiKey(),
+      })
+      .returning();
+
+    await db.insert(projectUsers).values({
+      projectId: project.id,
+      userId: newUser.id,
+    });
 
     sendAuthCookies(ctx.res, newUser);
 
