@@ -2,7 +2,7 @@ import React from "react";
 import { ChartLegend } from "./ChartLegend";
 import { Doughnut } from "react-chartjs-2";
 import { ChartData } from "chart.js";
-import { genericChartOptions } from "./PlaceholderChartData";
+import { generalChartOptions } from "./PlaceholderChartData";
 
 // Note: I am choosing to spell Donut the shorter way for convenience.
 interface DonutChartProps {
@@ -10,6 +10,17 @@ interface DonutChartProps {
 }
 
 export const DonutChart: React.FC<DonutChartProps> = ({ data }) => {
+  const donutOptions = {
+    ...generalChartOptions,
+    scales: {
+      x: {
+        display: false,
+      },
+      y: {
+        display: false,
+      },
+    },
+  };
   return (
     <div>
       <ChartLegend
@@ -17,7 +28,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({ data }) => {
         colors={data.datasets[0].backgroundColor}
       />
       <div className="p-3 relative flex justify-center items-center margin-0">
-        <Doughnut data={data} options={genericChartOptions} />
+        <Doughnut data={data} options={donutOptions} />
         {/* Total events center label */}
         <div className="absolute top-0 bottom-0 my-auto right-0 left-0 mx-auto h-12">
           <div className="text-3xl font-bold text-center">99</div>

@@ -1,18 +1,13 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { genericChartOptions } from "./PlaceholderChartData";
+import { generalChartOptions } from "./PlaceholderChartData";
 
 interface BarChartProps {
   data: any;
 }
 
 const barChartOptions = {
-  ...genericChartOptions,
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
+  ...generalChartOptions,
 };
 
 export const BarChart: React.FC<BarChartProps> = ({ data }) => {
