@@ -14,8 +14,10 @@ import { login } from "./routes/auth/login";
 import { __prod__ } from "./constants/prod";
 import { register } from "./routes/auth/register";
 import { getMe } from "./routes/auth/getMe";
+import { getEventNames } from "./routes/main/getEventNames";
 
 export const appRouter = t.router({
+  getEventNames,
   getMe,
   register,
   login,
