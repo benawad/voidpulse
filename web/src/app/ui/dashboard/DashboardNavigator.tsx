@@ -1,7 +1,8 @@
 import React from "react";
 import { PiCaretLeftFill } from "react-icons/pi";
 import config from "../../../../tailwind.config";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaUserGroup } from "react-icons/fa6";
+import { LineSeparator } from "../LineSeparator";
 const colors = config.theme.extend.colors;
 
 interface DashboardNavigatorProps {
@@ -13,19 +14,31 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
 }) => {
   //PLACEHOLDER
   const isSelectedBoard = true;
-
+  const sidebarButtonStyle =
+    "accent-hover border group flex p-2 rounded-lg w-full items-center relative ";
+  const iconBoxStyle =
+    "accent-hover group-hover:bg-secondary-signature-100 bg-primary-600 w-6 h-6 rounded-md mr-3 ";
+  const selectedBoardButtonStyle = "bg-primary-700 border-primary-600/50 ";
   return (
     <div className="w-1/6 bg-primary-800 border-r border border-primary-700 flex sticky top-16">
       <div className="w-full px-2 pt-4">
-        {/* New board button  */}
-        <div
-          className={
-            "border border-primary-800 " +
-            "accent-hover group flex p-2 rounded-lg w-full items-center relative "
-          }
-        >
+        {/* Team boards button  */}
+        <div className={sidebarButtonStyle + " border-transparent"}>
           <div className="flex items-center">
-            <div className="accent-hover group-hover:bg-secondary-signature-100 bg-primary-600 w-6 h-6 rounded-md mr-3">
+            <div className={iconBoxStyle}>
+              <FaUserGroup
+                className="m-auto group-hover:fill-white h-full w-full"
+                style={{ padding: 5 }}
+                size={12}
+              />
+            </div>
+            Team boards
+          </div>
+        </div>
+        {/* New board button  */}
+        <div className={sidebarButtonStyle + " border-transparent"}>
+          <div className="flex items-center">
+            <div className={iconBoxStyle}>
               <FaPlus
                 className="m-auto group-hover:fill-white h-full w-full"
                 style={{ padding: 5 }}
@@ -36,9 +49,7 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
           </div>
         </div>
 
-        {/* Line separator */}
-        <div className="w-full bg-primary-700 my-2" style={{ height: 1 }}></div>
-
+        <LineSeparator />
         <div className="subtext py-2">MY DASHBOARDS</div>
         {project && project.boards ? (
           project.boards.map((board: any) => {
@@ -47,9 +58,8 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
                 key={board.id}
                 className={
                   (isSelectedBoard
-                    ? "bg-primary-700 border border-primary-800 "
-                    : "") +
-                  "accent-hover flex p-2 rounded-lg w-full items-center relative"
+                    ? selectedBoardButtonStyle
+                    : "border-transparent") + sidebarButtonStyle
                 }
               >
                 <div className="mr-2">🥳</div>
@@ -59,7 +69,7 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
                   size={50}
                   className="absolute"
                   style={{ right: -30 }}
-                />{" "}
+                />
               </div>
             );
           })
@@ -68,9 +78,8 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
           <div
             className={
               (isSelectedBoard
-                ? "bg-primary-700 border border-primary-800 "
-                : "") +
-              "accent-hover flex p-2 rounded-lg w-full items-center relative "
+                ? selectedBoardButtonStyle
+                : "border-transparent") + sidebarButtonStyle
             }
           >
             <div className="mr-2">🥳</div>

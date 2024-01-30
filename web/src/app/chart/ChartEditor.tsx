@@ -6,6 +6,8 @@ import { MetricSelector } from "./MetricSelector";
 import { trpc } from "../utils/trpc";
 import { useProjectContext } from "../../../providers/ProjectProvider";
 import { lineChartStyle } from "../ui/charts/ChartStyle";
+import { FaPlus } from "react-icons/fa6";
+import { LineSeparator } from "../ui/LineSeparator";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
@@ -22,6 +24,17 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   );
 
   console.log(eventName, data, error);
+  const controlOptionsStyle =
+    "accent-hover p-2 my-4 rounded-md flex items-center group justify-between";
+  const plusIcon = (
+    <div className="w-6 h-6 rounded-md mr-3">
+      <FaPlus
+        className="m-auto group-hover:fill-white h-full w-full"
+        style={{ padding: 5 }}
+        size={12}
+      />
+    </div>
+  );
 
   return (
     <div>
@@ -35,13 +48,15 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
       <div className="flex grow w-full h-full">
         {/* Toolbar */}
         <div className="border-r p-4 border-primary-700" style={{ width: 400 }}>
-          <div className="hoverable area text p-2 rounded-md">Metrics</div>
+          <div className="subtext py-2">CUSTOMIZE MY CHART</div>
+
+          <div className={controlOptionsStyle}>Metrics {plusIcon}</div>
           <MetricSelector
             eventName={eventName}
             onEventNameChange={setEventName}
           />
-          <div className="hoverable area text p-2 rounded-md">Filter</div>
-          <div className="hoverable area text p-2 rounded-md">Breakdown</div>
+          <div className={controlOptionsStyle}>Filter {plusIcon}</div>
+          <div className={controlOptionsStyle}>Breakdown {plusIcon}</div>
         </div>
         {/* Chart view panel */}
         <div className="w-full">

@@ -37,13 +37,11 @@ body {
   @apply bg-primary-900 min-h-screen overscroll-none
 }
 .card {
-  @apply bg-primary-800/10 rounded-lg overflow-hidden border-2 border-primary-800 
+  @apply bg-primary-800/10 rounded-lg overflow-hidden border border-primary-800 
 }
-.card.padded {
-  @apply p-3;
-}
+
 .card.hoverable {
-  @apply hover:border-primary-600 hover:bg-primary-900/30 hover:shadow-lg hover:border-2;
+  @apply hover:border-primary-600 hover:bg-primary-900/30 hover:shadow-lg hover:border;
 }
 .area.hoverable {
   @apply hover:bg-primary-100/5 cursor-pointer;

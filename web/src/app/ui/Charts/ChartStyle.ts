@@ -4,11 +4,13 @@ const colors = config.theme.extend.colors;
 export const colorOrder = [
   colors.secondary["signature-100"],
   colors.secondary["complement-100"],
+  colors.secondary["blue-100"],
+  colors.secondary["indigo-100"],
+  colors.secondary["green-100"],
   colors.secondary["orange-100"],
+  colors.secondary["purple-100"],
   colors.secondary["red-100"],
   colors.secondary["yellow-100"],
-  colors.secondary["purple-100"],
-  colors.secondary["green-100"],
 ];
 
 export const lineChartStyle = {

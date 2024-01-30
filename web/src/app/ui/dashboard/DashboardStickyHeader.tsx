@@ -16,9 +16,9 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
       {/* Dashboard title */}
       <div className="py-4 flex-1 flex-row">
         {/* Note: might be preferable in the future to stick the route at the top for better navigation, but for now we'll stick the title.*/}
-        <div className="text-2xl font-bold flex flex-row py-1 ">
+        <div className="text-3xl font-bold flex flex-row py-1 ">
           {hasEmoji ? (
-            <div className="mr-2 hover:bg-primary-700 h-8 w-8 text-center rounded-lg">
+            <div className="mr-2 hover:bg-primary-700 h-8 w-8 text-center rounded-l cursor-pointer">
               🥳
             </div>
           ) : (
@@ -28,7 +28,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
             {board?.name ?? "No board selected"}
           </div>
         </div>
-        <div className="flex">
+        <div className="flex ml-10">
           <div className="hoverable area text-xs subtext px-1 rounded-md">
             Here are our main charts.
           </div>
