@@ -57,6 +57,9 @@ importers:
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.17
+      '@types/dotenv-safe':
+        specifier: ^8.1.5
+        version: 8.1.5
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
@@ -914,6 +917,13 @@ packages:
       '@types/node': 20.11.10
     dev: true
 
+  /@types/dotenv-safe@8.1.5:
+    resolution: {integrity: sha512-E8z+Z0+yE8eEZ8BcMnb3I31fV3ROxobooqEDRBoQDAs4lb0c9X6Va6P6z+svj/USxw4R7TErcfEuW0tk7ymaPA==}
+    dependencies:
+      '@types/node': 20.11.10
+      dotenv: 8.6.0
+    dev: true
+
   /@types/express-serve-static-core@4.17.42:
     resolution: {integrity: sha512-ckM3jm2bf/MfB3+spLPWYPUH573plBFwpOhqQ2WottxYV85j1HQFlxmnTq57X1yHY9awZPig06hL/cLMgNWHIQ==}
     dependencies:
@@ -1508,7 +1518,6 @@ packages:
   /dotenv@8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
     engines: {node: '>=10'}
-    dev: false
 
   /downshift@8.3.1(react@18.2.0):
     resolution: {integrity: sha512-djPzjGfTSEjOsfmlur4onCV3Mtd6oGI+eOQIBNwoS7oEYTjPrxk6n+sJLmndT/KKwHvUyBSh3AFb64eHIFifTQ==}

@@ -1,4 +1,4 @@
-require("dotenv-safe").config();
+import "dotenv-safe/config";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { db, pool } from "./db";
 import path from "path";
