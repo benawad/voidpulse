@@ -14,7 +14,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
         </Link>
         <div className={headerItemStyle}>users</div>
         <div className={headerItemStyle}>events</div>
-        <div className={headerItemStyle}>assistant</div>
+        <Link href="/assistant" className={headerItemStyle}>
+          assistant
+        </Link>
       </div>
     </div>
   );

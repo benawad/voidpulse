@@ -18,7 +18,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
         {/* Note: might be preferable in the future to stick the route at the top for better navigation, but for now we'll stick the title.*/}
         <div className="text-3xl font-bold flex flex-row py-1 ">
           {hasEmoji ? (
-            <div className="mr-2 hover:bg-primary-700 h-8 w-8 text-center rounded-l cursor-pointer">
+            <div className="mr-2 hover:bg-primary-700 h-8 w-8 text-center rounded-lg cursor-pointer">
               🥳
             </div>
           ) : (

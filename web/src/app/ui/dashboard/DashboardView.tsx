@@ -2,11 +2,8 @@ import React from "react";
 import { ChartThumbnail } from "./ChartThumbnail";
 import { placeholderCharts } from "../charts/PlaceholderChartData";
 import { trpc } from "../../utils/trpc";
-import { Button } from "../Button";
-import Link from "next/link";
 import { DashboardStickyHeader } from "./DashboardStickyHeader";
 import { DashboardNavigator } from "./DashboardNavigator";
-import { HeaderNav } from "../HeaderNav";
 
 interface DashboardViewProps {}
 let charts = placeholderCharts;

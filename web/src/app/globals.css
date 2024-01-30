@@ -33,6 +33,10 @@ body {
 }
 
 /* Custom styles */
+.debug {
+  @apply !bg-red-500/80 !text-red-200;
+
+}
 .page {
   @apply bg-primary-900 min-h-screen overscroll-none
 }
