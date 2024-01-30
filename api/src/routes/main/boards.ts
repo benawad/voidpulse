@@ -4,6 +4,7 @@ import { db } from "../../db";
 import { boards } from "../../schema/boards";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
+import { TRPCError } from "@trpc/server";
 
 export const getBoards = protectedProcedure
   .input(
@@ -45,16 +46,27 @@ export const updateBoard = protectedProcedure
   .input(
     z.object({
       id: z.string(),
-      title: z.string(),
+      title: z.string().optional(),
+      description: z.string().optional(),
     })
   )
-  .mutation(async ({ input: { id, title }, ctx: { userId } }) => {
+  .mutation(async ({ input: { id, title, description }, ctx: { userId } }) => {
+    if (!title && !description) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Must provide either title or description",
+      });
+    }
+
     const board = await db.query.boards.findFirst({
       where: and(eq(boards.id, id), eq(boards.creatorId, userId)),
     });
 
     if (!board) {
-      throw new Error("Board not found");
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Board not found",
+      });
     }
 
     const [newBoard] = await db
