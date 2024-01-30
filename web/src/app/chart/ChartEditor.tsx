@@ -3,10 +3,25 @@ import { LineChart } from "../ui/charts/LineChart";
 import { placeholderLineData } from "../ui/charts/PlaceholderChartData";
 import Link from "next/link";
 import { MetricSelector } from "./MetricSelector";
+import { trpc } from "../utils/trpc";
+import { useProjectContext } from "../../../providers/ProjectProvider";
+import { lineChartStyle } from "../ui/charts/ChartStyle";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   const [eventName, setEventName] = React.useState("");
+  const project = useProjectContext();
+  const { data, error } = trpc.getChartData.useQuery(
+    {
+      eventName,
+      from: "2024-01-19 00:00:00",
+      to: "2024-01-25 00:00:00",
+      projectId: project.id,
+    },
+    { enabled: !!eventName }
+  );
+
+  console.log(eventName, data, error);
 
   return (
     <div>
@@ -35,7 +50,20 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
             <h1 className="font-bold text-lg text-primary-100 px-2">
               Chart title
             </h1>
-            {eventName ? <LineChart data={placeholderLineData} /> : null}
+            {eventName && data?.data.length ? (
+              <LineChart
+                data={{
+                  labels: data.data.map((d) => d.day.split(" ")[0]),
+                  datasets: [
+                    {
+                      ...lineChartStyle,
+                      label: "My First Dataset",
+                      data: data.data.map((d) => d.count),
+                    },
+                  ],
+                }}
+              />
+            ) : null}
           </div>
           {/* Additional data at the bottom */}
           <div className="bg-primary-600">Data at the bottom</div>

@@ -1,8 +1,8 @@
 import { z } from "zod";
+import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
+import { dateInputRegex } from "../../constants/regex";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
-import { dateInputRegex } from "../../constants/regex";
-import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
 
 export const getChartData = protectedProcedure
   .input(
@@ -20,16 +20,16 @@ export const getChartData = protectedProcedure
       const resp = await clickhouse.query({
         query: `
 				SELECT
-					toStartOfDay(created_at) AS day,
-					count() AS count
-				FROM events
-				WHERE
-					projectId = {projectId:UUID}
-					AND created_at >= {from:DateTime}
-					AND created_at <= {to:DateTime}
-					AND name = {eventName:String}
-				GROUP BY created_at
-				ORDER BY created_at ASC
+            toStartOfDay(created_at) AS day,
+            toInt32(count()) AS count
+        FROM events
+        WHERE
+          project_id = {projectId:UUID}
+          AND created_at >= {from:DateTime}
+          AND created_at <= {to:DateTime}
+          AND name = {eventName:String}
+        GROUP BY day
+        ORDER BY day ASC
 			`,
         query_params: {
           projectId,
@@ -41,9 +41,6 @@ export const getChartData = protectedProcedure
       const { data } = await resp.json<
         ClickHouseQueryResponse<{ day: string; count: number }>
       >();
-
-      console.log(data);
-
       return { data };
     }
   );

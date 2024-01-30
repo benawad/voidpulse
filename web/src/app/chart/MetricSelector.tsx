@@ -3,6 +3,7 @@ import Downshift from "downshift";
 import { useProjectContext } from "../../../providers/ProjectProvider";
 import { trpc } from "../utils/trpc";
 import { Input } from "../ui/Input";
+import { on } from "events";
 
 interface MetricSelectorProps {
   eventName: string;
@@ -18,15 +19,12 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
     { projectId: p.id },
     { enabled: !!p.id }
   );
-  console.log(data);
 
   return (
     <div>
       <Downshift
         onChange={(selection) =>
-          alert(
-            selection ? `You selected ${selection.value}` : "Selection Cleared"
-          )
+          onEventNameChange(selection ? selection.value : "")
         }
         itemToString={(item) => (item ? item.value : "")}
       >
@@ -41,7 +39,7 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
           selectedItem,
           getRootProps,
         }) => (
-          <div>
+          <div className="bg-primary-700">
             {/* <label {...getLabelProps()}>Enter a fruit</label> */}
             <div
               style={{ display: "inline-block" }}
@@ -58,12 +56,10 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
                         {...getItemProps({
                           key: item,
                           index,
-                          item,
+                          item: { value: item },
                           style: {
                             backgroundColor:
-                              highlightedIndex === index
-                                ? "lightgray"
-                                : "white",
+                              highlightedIndex === index ? "lightgray" : "#000",
                             fontWeight:
                               selectedItem === item ? "bold" : "normal",
                           },
