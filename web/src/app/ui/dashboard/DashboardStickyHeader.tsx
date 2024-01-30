@@ -29,8 +29,15 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
           />
         </div>
         <div className="flex ml-10">
-          <div className="hoverable area text-xs subtext px-1 rounded-md">
-            Here are our main charts.
+          <div className="text-xs subtext px-1 rounded-md">
+            <EditableTextField
+              onTextChange={() => {}}
+              text={
+                board.description?.trim()
+                  ? board.description
+                  : "Add description..."
+              }
+            />
           </div>
         </div>
       </div>

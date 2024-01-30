@@ -47,16 +47,28 @@ export const EditableTextField: React.FC<EditableTextFieldProps> = ({
   };
 
   return isEditingTitle ? (
-    <Input
-      ref={inputRef}
-      value={text}
-      autoFocus
-      style={inputStyle}
-      onChange={(e) => {
-        setText(e.target.value);
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setIsEditingTitle(false);
+        if (text.trim()) {
+          onTextChange(text);
+        } else {
+          setText(startingText || "Untitled");
+        }
       }}
-      className="-mt-1"
-    />
+    >
+      <Input
+        ref={inputRef}
+        value={text}
+        autoFocus
+        style={inputStyle}
+        onChange={(e) => {
+          setText(e.target.value);
+        }}
+        className="-mt-1"
+      />
+    </form>
   ) : (
     <div
       className="hoverable area rounded-lg px-1"
