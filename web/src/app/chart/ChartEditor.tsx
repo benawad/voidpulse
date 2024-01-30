@@ -4,7 +4,7 @@ import { placeholderLineData } from "../ui/charts/PlaceholderChartData";
 import Link from "next/link";
 import { MetricSelector } from "./MetricSelector";
 import { trpc } from "../utils/trpc";
-import { useProjectContext } from "../../../providers/ProjectProvider";
+import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
 import { lineChartStyle } from "../ui/charts/ChartStyle";
 import { FaPlus } from "react-icons/fa6";
 import { LineSeparator } from "../ui/LineSeparator";
@@ -17,7 +17,7 @@ interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   const [eventName, setEventName] = React.useState("");
-  const project = useProjectContext();
+  const project = useProjectBoardContext();
   const { data, error } = trpc.getChartData.useQuery(
     {
       eventName,

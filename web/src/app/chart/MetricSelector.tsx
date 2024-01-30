@@ -1,6 +1,6 @@
 import React from "react";
 import Downshift from "downshift";
-import { useProjectContext } from "../../../providers/ProjectProvider";
+import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
 import { trpc } from "../utils/trpc";
 import { Input } from "../ui/Input";
 import { on } from "events";
@@ -14,7 +14,7 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
   eventName,
   onEventNameChange,
 }) => {
-  const p = useProjectContext();
+  const p = useProjectBoardContext();
   const { data } = trpc.getEventNames.useQuery(
     { projectId: p.id },
     { enabled: !!p.id }

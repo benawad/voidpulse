@@ -8,7 +8,7 @@ import {
   updateBoard,
   createBoard,
   deleteBoard,
-} from "./routes/main/boards";
+} from "./routes/main/board-crud";
 import { getChartData } from "./routes/main/chart-builder";
 import { login } from "./routes/auth/login";
 import { __prod__ } from "./constants/prod";
@@ -42,5 +42,13 @@ app.use(
   trpcExpress.createExpressMiddleware({
     router: appRouter,
     createContext,
+    onError(opts) {
+      const { error, type, path, input, ctx, req } = opts;
+      console.error("Error:", error);
+      if (error.code === "INTERNAL_SERVER_ERROR") {
+        console.log("Internal server error");
+        // send to bug reporting
+      }
+    },
   })
 );

@@ -8,6 +8,7 @@ import { projects } from "../../schema/projects";
 import { genApiKey } from "../../utils/genApiKey";
 import { projectUsers } from "../../schema/project-users";
 import { boards } from "../../schema/boards";
+import * as emoji from "node-emoji";
 
 export const register = publicProcedure
   .input(
@@ -49,6 +50,7 @@ export const register = publicProcedure
       .insert(boards)
       .values({
         creatorId: newUser.id,
+        emoji: emoji.random().emoji,
         title: "My First Board",
         projectId: project.id,
       })

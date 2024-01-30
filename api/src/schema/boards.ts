@@ -8,6 +8,7 @@ export const boards = pgTable("boards", {
   id: uuid("id")
     .primaryKey()
     .default(sql`uuid_generate_v4()`),
+  emoji: text("emoji"),
   title: text("title").notNull(),
   description: text("description"),
   projectId: uuid("project_id").notNull(),

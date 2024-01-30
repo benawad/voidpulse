@@ -1,4 +1,5 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, InferInsertModel } from "drizzle-orm";
+import * as emoji from "node-emoji";
 import { z } from "zod";
 import { db } from "../../db";
 import { boards } from "../../schema/boards";
@@ -46,15 +47,18 @@ export const updateBoard = protectedProcedure
   .input(
     z.object({
       id: z.string(),
-      title: z.string().optional(),
-      description: z.string().optional(),
+      data: z.object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        randomEmoji: z.boolean().optional(),
+      }),
     })
   )
-  .mutation(async ({ input: { id, title, description }, ctx: { userId } }) => {
-    if (!title && !description) {
+  .mutation(async ({ input: { id, data }, ctx: { userId } }) => {
+    if (Object.keys(data).length === 0) {
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "Must provide either title or description",
+        message: "Empty update",
       });
     }
 
@@ -69,9 +73,17 @@ export const updateBoard = protectedProcedure
       });
     }
 
+    const { randomEmoji, ...values } = data;
+
+    const setData: Partial<InferInsertModel<typeof boards>> = values;
+
+    if (randomEmoji) {
+      setData.emoji = emoji.random().emoji;
+    }
+
     const [newBoard] = await db
       .update(boards)
-      .set({ title })
+      .set(setData)
       .where(eq(boards.id, id))
       .returning();
 

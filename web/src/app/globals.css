@@ -38,10 +38,10 @@ body {
 
 }
 .page {
-  @apply bg-primary-900 min-h-screen overscroll-none
+  @apply bg-primary-900 min-h-screen overscroll-none;
 }
 .card {
-  @apply bg-primary-800/10 rounded-lg overflow-hidden border border-primary-800 
+  @apply bg-primary-800/10 rounded-lg overflow-hidden border border-primary-800;
 }
 
 .card.hoverable {
@@ -51,7 +51,7 @@ body {
   @apply hover:bg-primary-100/5 cursor-pointer;
 }
 .text.hoverable {
-  @apply hover:text-secondary-signature-100 ;
+  @apply hover:text-secondary-signature-100;
 }
 .subtext {
   @apply text-xs text-primary-500;
@@ -61,4 +61,7 @@ body {
 }
 .accent-hover {
   @apply hover:bg-secondary-signature-100/20 hover:text-secondary-signature-100 cursor-pointer;
+}
+.icon-box {
+  @apply accent-hover group-hover:bg-secondary-signature-100 bg-primary-600 w-6 h-6 rounded-md mr-3;
 }
