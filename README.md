@@ -2,7 +2,7 @@
 
 Open source Mixpanel with AI
 
-![voidpulse graph ui](/assets/readme-visual2.jpeg)
+![voidpulse graph ui](/assets/readme-visual3.jpeg)
 
 This project is a WIP.
 
