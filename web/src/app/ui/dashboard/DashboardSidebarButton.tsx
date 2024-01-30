@@ -4,6 +4,7 @@ import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvid
 import { RouterOutput } from "../../utils/trpc";
 import { PiCaretLeftFill } from "react-icons/pi";
 import config from "../../../../tailwind.config";
+import { MoreOptionsButton } from "../MoreOptionsButton";
 
 interface DashboardSidebarButtonProps {
   board: RouterOutput["getProjects"]["boards"][0];
@@ -18,8 +19,8 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
   const { boardId } = useProjectBoardContext();
   const isSelectedBoard = board.id === boardId;
   const sidebarButtonStyle =
-    "accent-hover ring-0 group flex p-2 rounded-lg w-full items-center relative ";
-  const selectedBoardButtonStyle = "bg-primary-700 ring-primary-600/50 ";
+    " accent-hover ring-0 group flex p-2 rounded-lg w-full items-center justify-between relative ";
+  const selectedBoardButtonStyle = " bg-primary-700 ring-primary-600/50 ";
 
   return (
     <button
@@ -28,12 +29,15 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
       }}
       key={board.id}
       className={
-        (isSelectedBoard ? selectedBoardButtonStyle : " !border-transparent") +
-        sidebarButtonStyle
+        sidebarButtonStyle +
+        (isSelectedBoard ? selectedBoardButtonStyle : " border-transparent")
       }
     >
-      <div className="mr-2">{board.emoji}</div>
-      {board.title}
+      <div className="flex flex-row">
+        <div className="mr-2">{board.emoji}</div>
+        {board.title}
+      </div>
+      <MoreOptionsButton />
       {boardId === board.id ? (
         <PiCaretLeftFill
           fill={colors.primary[900]}
