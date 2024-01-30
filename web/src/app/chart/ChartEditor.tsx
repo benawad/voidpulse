@@ -2,7 +2,7 @@ import React from "react";
 import { LineChart } from "../ui/charts/LineChart";
 import { placeholderLineData } from "../ui/charts/PlaceholderChartData";
 import Link from "next/link";
-import { MetricSelector } from "./MetricSelector";
+import { MetricSelector } from "./metric-selector/MetricSelector";
 import { trpc } from "../utils/trpc";
 import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
 import { lineChartStyle } from "../ui/charts/ChartStyle";
@@ -17,13 +17,13 @@ interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   const [eventName, setEventName] = React.useState("");
-  const project = useProjectBoardContext();
-  const { data, error } = trpc.getChartData.useQuery(
+  const { projectId } = useProjectBoardContext();
+  const { data, error } = trpc.getInsight.useQuery(
     {
       eventName,
       from: "2024-01-19 00:00:00",
       to: "2024-01-25 00:00:00",
-      projectId: project.id,
+      projectId: projectId,
     },
     { enabled: !!eventName }
   );
