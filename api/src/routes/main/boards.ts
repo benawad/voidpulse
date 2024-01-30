@@ -27,15 +27,15 @@ export const createBoard = protectedProcedure
   .input(
     z.object({
       projectId: z.string(),
-      name: z.string(),
+      title: z.string(),
     })
   )
-  .mutation(async ({ input: { projectId, name }, ctx: { userId } }) => {
+  .mutation(async ({ input: { projectId, title }, ctx: { userId } }) => {
     await assertProjectMember({ projectId, userId });
 
     const [board] = await db
       .insert(boards)
-      .values({ creatorId: userId, name, projectId })
+      .values({ creatorId: userId, title, projectId })
       .returning();
 
     return { board };
@@ -45,10 +45,10 @@ export const updateBoard = protectedProcedure
   .input(
     z.object({
       id: z.string(),
-      name: z.string(),
+      title: z.string(),
     })
   )
-  .mutation(async ({ input: { id, name }, ctx: { userId } }) => {
+  .mutation(async ({ input: { id, title }, ctx: { userId } }) => {
     const board = await db.query.boards.findFirst({
       where: and(eq(boards.id, id), eq(boards.creatorId, userId)),
     });
@@ -59,7 +59,7 @@ export const updateBoard = protectedProcedure
 
     const [newBoard] = await db
       .update(boards)
-      .set({ name })
+      .set({ title })
       .where(eq(boards.id, id))
       .returning();
 

@@ -8,7 +8,8 @@ export const boards = pgTable("boards", {
   id: uuid("id")
     .primaryKey()
     .default(sql`uuid_generate_v4()`),
-  name: text("name").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
   projectId: uuid("project_id").notNull(),
   creatorId: uuid("creator_id").notNull(),
 });
