@@ -1,9 +1,11 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Button } from "../Button";
 import { FaPlus } from "react-icons/fa6";
 import { RouterOutput } from "../../utils/trpc";
 import { AddRandomEmojiButton } from "../../components/AddRandomEmojiButton";
+import { Input } from "../Input";
+import { EditableTextField } from "../EditableTextField";
 
 interface DashboardStickyHeaderProps {
   board: RouterOutput["getProjects"]["boards"][0];
@@ -21,7 +23,10 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
           <div className="mr-2 hover:bg-primary-700 h-8 w-8 text-center rounded-lg cursor-pointer">
             {board.emoji ? board.emoji : <AddRandomEmojiButton />}
           </div>
-          <div className="hoverable area rounded-lg px-1">{board.title}</div>
+          <EditableTextField
+            onTextChange={() => {}}
+            text={board.title.trim() ? board.title : "Untitled"}
+          />
         </div>
         <div className="flex ml-10">
           <div className="hoverable area text-xs subtext px-1 rounded-md">
