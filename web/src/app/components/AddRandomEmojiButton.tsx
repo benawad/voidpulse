@@ -36,8 +36,8 @@ export const AddRandomEmojiButton: React.FC<AddEmojiButtonProps> = ({}) => {
       }}
     >
       <FaPlus
-        className="m-auto group-hover:fill-white h-full w-full"
-        style={{ padding: 5 }}
+        className="m-auto fill-white/30 group-hover:fill-white h-full w-full"
+        style={{ padding: 6 }}
         size={12}
       />
     </button>

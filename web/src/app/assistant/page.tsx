@@ -1,5 +1,4 @@
 "use client";
-import { ProjectProvider } from "../../../providers/ProjectProvider";
 import { HeaderNav } from "../ui/HeaderNav";
 import { trpc } from "../utils/trpc";
 import { PersonaCard } from "./PersonaCard";

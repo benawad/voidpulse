@@ -7,7 +7,7 @@ import { RouterOutput } from "../../utils/trpc";
 import { AddBoardButton } from "../../components/AddBoardButton";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
-const colors = config.theme.extend.colors;
+import { DashboardSidebarButton } from "./DashboardSidebarButton";
 
 interface DashboardNavigatorProps {
   boards: RouterOutput["getProjects"]["boards"];
@@ -16,13 +16,9 @@ interface DashboardNavigatorProps {
 export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
   boards,
 }) => {
-  const { set } = useLastSelectedProjectBoardStore();
-  const { boardId } = useProjectBoardContext();
-  //PLACEHOLDER
-  const isSelectedBoard = true;
   const sidebarButtonStyle =
-    "accent-hover border group flex p-2 rounded-lg w-full items-center relative ";
-  const selectedBoardButtonStyle = "bg-primary-700 border-primary-600/50 ";
+    "accent-hover ring-0 group flex p-2 rounded-lg w-full items-center relative ";
+  const selectedBoardButtonStyle = "bg-primary-700 ring-primary-600/50 ";
   return (
     <div className="w-1/6 bg-primary-800 border-r border border-primary-700 flex sticky top-16">
       <div className="w-full px-2 pt-4">
@@ -47,30 +43,7 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
         <LineSeparator />
         <div className="subtext py-2">MY DASHBOARDS</div>
         {boards.map((board) => {
-          return (
-            <button
-              onClick={() => {
-                set({ lastBoardId: board.id });
-              }}
-              key={board.id}
-              className={
-                (isSelectedBoard
-                  ? selectedBoardButtonStyle
-                  : "border-transparent") + sidebarButtonStyle
-              }
-            >
-              <div className="mr-2">{board.emoji}</div>
-              {board.title}
-              {boardId === board.id ? (
-                <PiCaretLeftFill
-                  fill={colors.primary[900]}
-                  size={50}
-                  className="absolute"
-                  style={{ right: -30 }}
-                />
-              ) : null}
-            </button>
-          );
+          return <DashboardSidebarButton board={board} />;
         })}
       </div>
     </div>
