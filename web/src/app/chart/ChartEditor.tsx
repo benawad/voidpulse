@@ -8,6 +8,11 @@ import { useProjectContext } from "../../../providers/ProjectProvider";
 import { lineChartStyle } from "../ui/charts/ChartStyle";
 import { FaPlus } from "react-icons/fa6";
 import { LineSeparator } from "../ui/LineSeparator";
+import { TbReportAnalytics } from "react-icons/tb";
+import { AiOutlineFunnelPlot } from "react-icons/ai";
+import { SlGraph } from "react-icons/sl";
+import { BsBarChart } from "react-icons/bs";
+import { LiaChartAreaSolid } from "react-icons/lia";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
@@ -29,12 +34,16 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   const plusIcon = (
     <div className="w-6 h-6 rounded-md mr-3">
       <FaPlus
-        className="m-auto group-hover:fill-white h-full w-full"
+        className="m-auto group-hover:fill-secondary-signature-100 h-full w-full"
         style={{ padding: 5 }}
         size={12}
       />
     </div>
   );
+
+  const chartTypeButtonStyle =
+    "accent-hover py-2 rounded-md w-full mr-2 flex items-center bg-primary-800/50 flex flex-col text-xs text-primary-600";
+  const chartTypeIconStyle = "w-8 h-8 rounded-md mb-2 text-primary-400";
 
   return (
     <div>
@@ -48,6 +57,25 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
       <div className="flex grow w-full h-full">
         {/* Toolbar */}
         <div className="border-r p-4 border-primary-700" style={{ width: 400 }}>
+          <div className="subtext py-2">CHART TYPE</div>
+          <div className="flex flex-row w-full justify-between">
+            <div className={chartTypeButtonStyle}>
+              <SlGraph className={chartTypeIconStyle} />
+              Insights
+            </div>
+            <div className={chartTypeButtonStyle}>
+              <BsBarChart className={"-scale-x-100 " + chartTypeIconStyle} />
+              Funnel
+            </div>
+            <div className={chartTypeButtonStyle}>
+              <LiaChartAreaSolid
+                className={"-scale-x-100 " + chartTypeIconStyle}
+              />
+              Retention
+            </div>
+          </div>
+
+          <LineSeparator />
           <div className="subtext py-2">CUSTOMIZE MY CHART</div>
 
           <div className={controlOptionsStyle}>Metrics {plusIcon}</div>
