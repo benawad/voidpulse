@@ -17,12 +17,13 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
   const { data } = trpc.getEventNames.useQuery({ projectId });
 
   return (
-    <div>
+    <div style={{ width: 320 }}>
       <Downshift
         onChange={(selection) =>
           onEventNameChange(selection ? selection.value : "")
         }
         itemToString={(item) => (item ? item.value : "")}
+        initialIsOpen
       >
         {({
           getInputProps,
@@ -39,9 +40,10 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
             {/* <label {...getLabelProps()}>Enter a fruit</label> */}
             <div
               style={{ display: "inline-block" }}
+              className="w-full"
               {...getRootProps({}, { suppressRefError: true })}
             >
-              <Input {...getInputProps()} />
+              <Input {...getInputProps({ autoFocus: true })} />
             </div>
             <ul {...getMenuProps()}>
               {isOpen

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { LineChart } from "../ui/charts/LineChart";
 import { placeholderLineData } from "../ui/charts/PlaceholderChartData";
 import Link from "next/link";
@@ -13,9 +13,11 @@ import { AiOutlineFunnelPlot } from "react-icons/ai";
 import { SlGraph } from "react-icons/sl";
 import { BsBarChart } from "react-icons/bs";
 import { LiaChartAreaSolid } from "react-icons/lia";
+import { Metric, MetricBlock } from "./metric-selector/MetricBlock";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
+  const [metrics, setMetrics] = useState<(Metric | null)[]>([null]);
   const [eventName, setEventName] = React.useState("");
   const { projectId } = useProjectBoardContext();
   const { data, error } = trpc.getInsight.useQuery(
@@ -28,7 +30,6 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
     { enabled: !!eventName }
   );
 
-  console.log(eventName, data, error);
   const controlOptionsStyle =
     "accent-hover p-2 my-4 rounded-md flex items-center group justify-between";
   const plusIcon = (
@@ -76,10 +77,19 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
           <div className="subtext py-2">CUSTOMIZE MY CHART</div>
 
           <div className={controlOptionsStyle}>Metrics {plusIcon}</div>
-          <MetricSelector
-            eventName={eventName}
-            onEventNameChange={setEventName}
-          />
+          {metrics.map((m, idx) => (
+            <MetricBlock
+              onEventNameChange={(name) => {
+                setMetrics(
+                  metrics.map((metric, i) =>
+                    i === idx ? { ...metric, name } : metric
+                  )
+                );
+              }}
+              idx={idx}
+              metric={m}
+            />
+          ))}
           <div className={controlOptionsStyle}>Filter {plusIcon}</div>
           <div className={controlOptionsStyle}>Breakdown {plusIcon}</div>
         </div>
