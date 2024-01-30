@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import { projectUsers } from "../schema/project-users";
+import { TRPCError } from "@trpc/server";
 
 export const assertProjectMember = async ({
   projectId,
@@ -17,6 +18,9 @@ export const assertProjectMember = async ({
       ),
     }))
   ) {
-    throw new Error("You are not a member of this project");
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You are not a member of this project",
+    });
   }
 };

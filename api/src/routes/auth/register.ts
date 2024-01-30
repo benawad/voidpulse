@@ -49,7 +49,7 @@ export const register = publicProcedure
       .insert(boards)
       .values({
         creatorId: newUser.id,
-        name: "My First Board",
+        title: "My First Board",
         projectId: project.id,
       })
       .returning();
