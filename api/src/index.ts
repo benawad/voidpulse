@@ -1,4 +1,4 @@
-require("dotenv").config();
+import "dotenv-safe/config";
 import express from "express";
 import z from "zod";
 import { app } from "./appRouter";
