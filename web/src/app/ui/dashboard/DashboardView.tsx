@@ -7,37 +7,27 @@ import { DashboardNavigator } from "./DashboardNavigator";
 import { HeaderNav } from "../HeaderNav";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { ProjectBoardProvider } from "../../../../providers/ProjectBoardProvider";
+import { useFetchProjectBoards } from "../../utils/useFetchProjectBoards";
 
 interface DashboardViewProps {}
 let charts = placeholderCharts;
 
 export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
-  const currIds = useLastSelectedProjectBoardStore();
-  const { data, isLoading } = trpc.getProjects.useQuery({
-    currProjectId: currIds.lastProjectId,
-  });
+  const { isLoading, board, project, projects, boards } =
+    useFetchProjectBoards();
 
   if (isLoading) {
     return null;
   }
 
-  if (!data?.boards) {
+  if (!board || !project || !projects || !boards) {
     return <div>no project or boards ?</div>;
   }
-
-  const project = currIds.lastProjectId
-    ? data.projects.find((p) => p.id === currIds.lastProjectId) ||
-      data.projects[0]
-    : data.projects[0];
-
-  const board = currIds.lastBoardId
-    ? data.boards.find((b) => b.id === currIds.lastBoardId) || data.boards[0]
-    : data.boards[0];
 
   return (
     <ProjectBoardProvider projectId={project.id} boardId={board.id}>
       <div className="flex flex-row flex-1">
-        <DashboardNavigator boards={data.boards} />
+        <DashboardNavigator boards={boards} />
         <div className="flex-1 relative">
           <DashboardStickyHeader board={board} />
           <div>

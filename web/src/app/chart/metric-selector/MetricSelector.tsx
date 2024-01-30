@@ -1,9 +1,8 @@
 import React from "react";
 import Downshift from "downshift";
-import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
-import { trpc } from "../utils/trpc";
-import { Input } from "../ui/Input";
-import { on } from "events";
+import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
+import { trpc } from "../../utils/trpc";
+import { Input } from "../../ui/Input";
 
 interface MetricSelectorProps {
   eventName: string;
@@ -14,11 +13,8 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
   eventName,
   onEventNameChange,
 }) => {
-  const p = useProjectBoardContext();
-  const { data } = trpc.getEventNames.useQuery(
-    { projectId: p.id },
-    { enabled: !!p.id }
-  );
+  const { projectId } = useProjectBoardContext();
+  const { data } = trpc.getEventNames.useQuery({ projectId });
 
   return (
     <div>

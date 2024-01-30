@@ -4,7 +4,7 @@ import { dateInputRegex } from "../../constants/regex";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 
-export const getChartData = protectedProcedure
+export const getInsight = protectedProcedure
   .input(
     z.object({
       projectId: z.string(),

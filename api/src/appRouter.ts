@@ -9,7 +9,7 @@ import {
   createBoard,
   deleteBoard,
 } from "./routes/main/board-crud";
-import { getChartData } from "./routes/main/chart-builder";
+import { getInsight } from "./routes/main/getInsight";
 import { login } from "./routes/auth/login";
 import { __prod__ } from "./constants/prod";
 import { register } from "./routes/auth/register";
@@ -27,7 +27,7 @@ export const appRouter = t.router({
   updateBoard,
   createBoard,
   deleteBoard,
-  getChartData,
+  getInsight,
 });
 
 export const app = express();
