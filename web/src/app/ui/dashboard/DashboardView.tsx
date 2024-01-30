@@ -5,6 +5,7 @@ import { trpc } from "../../utils/trpc";
 import { Button } from "../Button";
 import Link from "next/link";
 import { DashboardStickyHeader } from "./DashboardStickyHeader";
+import { DashboardNavigator } from "./DashboardNavigator";
 
 interface DashboardViewProps {}
 let charts = placeholderCharts;
@@ -29,25 +30,27 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
   const board = boardData.boards[0];
 
   return (
-    <>
-      <DashboardStickyHeader board={board} />
-
+    <div className="flex flex-row flex-1">
+      <DashboardNavigator project={null} />
       <div>
-        {/* Grid of charts */}
-        <div className="grid text-center mt-24 lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-3 lg:text-left">
-          {charts.map((chart) => {
-            return (
-              <div key={chart.title} className="m-2">
-                <ChartThumbnail
-                  title={chart.title}
-                  subtitle={chart.subtitle}
-                  chartType={chart.chartType}
-                />
-              </div>
-            );
-          })}
+        <DashboardStickyHeader board={board} />
+        <div>
+          {/* Grid of charts */}
+          <div className="grid text-center mt-24 p-8 lg:w-full lg:mb-0 lg:grid-cols-3 lg:text-left">
+            {charts.map((chart) => {
+              return (
+                <div key={chart.title} className="m-2">
+                  <ChartThumbnail
+                    title={chart.title}
+                    subtitle={chart.subtitle}
+                    chartType={chart.chartType}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };

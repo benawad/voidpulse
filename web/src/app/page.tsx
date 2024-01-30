@@ -17,10 +17,8 @@ function Home() {
   }
 
   return (
-    <main className="page flex flex-col items-center">
+    <main className="page flex flex-col">
       <HeaderNav />
-      {/* <InfoModal /> */}
-      {/* <DashboardStickyHeader /> */}
       <DashboardView />
     </main>
   );
