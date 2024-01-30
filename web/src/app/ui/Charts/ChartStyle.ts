@@ -40,6 +40,8 @@ export const generalChartOptions = {
   layout: {
     autoPadding: true,
   },
+  // responsive: true,
+  // maintainAspectRatio: false, // This is important to stretch in height
   plugins: {
     legend: {
       display: false,

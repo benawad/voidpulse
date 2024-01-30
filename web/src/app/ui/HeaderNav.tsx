@@ -7,7 +7,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
   const headerItemStyle =
     "p-3 lg:p-3 m-1 hoverable area rounded-lg items-center flex text-center";
   return (
-    <div className="w-full h-16 bg-gradient-to-r from-secondary-signature-100/80 to-secondary-signature-100/70 shadow-md fixed top-0 z-50">
+    <div className="w-full h-16 bg-gradient-to-r from-secondary-signature-100 to-secondary-signature-100 shadow-md fixed top-0 z-50">
       <div className="flex-row flex justify-start h-full">
         <Link href="/" className={headerItemStyle}>
           boards

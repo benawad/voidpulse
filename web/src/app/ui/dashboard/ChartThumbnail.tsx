@@ -26,15 +26,19 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
   chartType,
 }) => {
   let chartToDisplay;
+  let minChartDisplayWidth = 300;
   switch (chartType) {
     case "donut":
       chartToDisplay = <DonutChart data={placeholderDonutData} />;
+      minChartDisplayWidth = 300;
       break;
     case "line":
       chartToDisplay = <LineChart data={placeholderLineData} />;
+      minChartDisplayWidth = 400;
       break;
     case "bar":
       chartToDisplay = <BarChart data={placeholderBarData} />;
+      minChartDisplayWidth = 600;
       break;
     default:
       chartToDisplay = null;
@@ -44,9 +48,9 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
     <div className="card w-full h-full">
       {/* Chart thumbnail header */}
       <Link href="/chart">
-        <div className="px-5 py-4 h-24 hoverable area group">
+        <div className="px-5 py-3 h-18 hoverable area group">
           <h2
-            className={`mb-3 text-l font-semibold text-primary-100 group-hover:text-secondary-signature-100 transition-colors`}
+            className={`mb-2 text-l font-semibold text-primary-100 group-hover:text-secondary-signature-100 transition-colors`}
           >
             {title}
             {/* <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
@@ -60,8 +64,16 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
       </Link>
 
       {/* Chart display */}
-      <div className="bg-primary-800/30 pt-1 h-full">
-        <div>{chartToDisplay}</div>
+      <div className="bg-primary-800/30 pt-1 h-full overflow-x-scroll">
+        <div
+          style={{
+            minWidth: minChartDisplayWidth,
+            height: "100%",
+            // minHeight: "400px",
+          }}
+        >
+          {chartToDisplay}
+        </div>
       </div>
     </div>
   );

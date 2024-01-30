@@ -10,7 +10,7 @@ export const Button: React.FC<
 > = ({ className, ...props }) => {
   return (
     <button
-      className={`bg-secondary-main-100/70 rounded-lg hover:bg-secondary-main-100 hover:shadow-lg transition-colors area p-4 ${className}`}
+      className={`bg-secondary-signature-100/70 rounded-lg hover:bg-secondary-signature-100 hover:shadow-lg transition-colors area p-3 ${className}`}
       {...props}
     />
   );
