@@ -8,7 +8,7 @@ export const charts = pgTable("charts", {
   id: uuid("id")
     .primaryKey()
     .default(sql`uuid_generate_v4()`),
-  name: text("name").notNull(),
+  description: text("description"),
   boardId: uuid("board_id"),
   creatorId: uuid("creator_id").notNull(),
 });
