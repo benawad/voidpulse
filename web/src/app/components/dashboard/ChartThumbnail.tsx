@@ -2,14 +2,14 @@
 import React from "react";
 import "chart.js/auto";
 import config from "../../../../tailwind.config";
-import { DonutChart } from "../charts/DonutChart";
-import { LineChart } from "../charts/LineChart";
-import { BarChart } from "../charts/BarChart";
+import { DonutChart } from "../../ui/charts/DonutChart";
+import { LineChart } from "../../ui/charts/LineChart";
+import { BarChart } from "../../ui/charts/BarChart";
 import {
   placeholderBarData,
   placeholderDonutData,
   placeholderLineData,
-} from "../charts/PlaceholderChartData";
+} from "../../ui/charts/PlaceholderChartData";
 import Link from "next/link";
 interface ChartThumbnailProps {
   title: string;

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import React, { useEffect, useRef } from "react";
-import { Button } from "../Button";
+import { Button } from "../../ui/Button";
 import { FaPlus } from "react-icons/fa6";
 import { RouterOutput } from "../../utils/trpc";
-import { AddRandomEmojiButton } from "../../components/AddRandomEmojiButton";
-import { Input } from "../Input";
-import { EditableTextField } from "../EditableTextField";
+import { AddRandomEmojiButton } from "./AddRandomEmojiButton";
+import { Input } from "../../ui/Input";
+import { EditableTextField } from "../../ui/EditableTextField";
 
 interface DashboardStickyHeaderProps {
   board: RouterOutput["getProjects"]["boards"][0];

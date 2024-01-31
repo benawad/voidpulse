@@ -4,8 +4,8 @@ import { FloatingTrigger } from "./FloatingTrigger";
 import { FloatingTooltip } from "./FloatingTooltip";
 import { FloatingMenu } from "./FloatingMenu";
 import { IoTrashOutline } from "react-icons/io5";
-import { DeleteBoardButton } from "./dashboard/DeleteBoardButton";
-import { DeleteBoardConfirmationModal } from "../components/DeleteBoardConfirmationModal";
+import { DeleteBoardButton } from "../components/dashboard/DeleteBoardButton";
+import { DeleteBoardConfirmationModal } from "../components/dashboard/DeleteBoardConfirmationModal";
 
 interface MoreOptionsButtonProps {
   boardId: string;

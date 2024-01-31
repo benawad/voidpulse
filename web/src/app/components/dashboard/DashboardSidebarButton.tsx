@@ -4,7 +4,7 @@ import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvid
 import { RouterOutput } from "../../utils/trpc";
 import { PiCaretLeftFill } from "react-icons/pi";
 import config from "../../../../tailwind.config";
-import { MoreOptionsButton } from "../MoreOptionsButton";
+import { MoreOptionsButton } from "../../ui/MoreOptionsButton";
 
 interface DashboardSidebarButtonProps {
   board: RouterOutput["getProjects"]["boards"][0];

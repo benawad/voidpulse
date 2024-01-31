@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IoTrashOutline } from "react-icons/io5";
-import { DeleteBoardConfirmationModal } from "../../components/DeleteBoardConfirmationModal";
+import { DeleteBoardConfirmationModal } from "./DeleteBoardConfirmationModal";
 
 interface DeleteBoardButtonProps {
   onClick: () => void;

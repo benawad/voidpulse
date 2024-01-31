@@ -1,8 +1,8 @@
 import React from "react";
 import { FaPlus } from "react-icons/fa6";
-import { trpc } from "../utils/trpc";
-import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
-import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
+import { trpc } from "../../utils/trpc";
+import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
+import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 
 interface AddBoardButtonProps {}
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { FaPlus } from "react-icons/fa6";
-import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
-import { trpc } from "../utils/trpc";
-import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
+import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
+import { trpc } from "../../utils/trpc";
+import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 
 interface AddEmojiButtonProps {}
 

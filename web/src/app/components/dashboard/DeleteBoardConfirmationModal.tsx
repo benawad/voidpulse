@@ -1,9 +1,9 @@
 import React from "react";
 import Modal from "react-modal";
-import { trpc } from "../utils/trpc";
-import { Button } from "../ui/Button";
-import { FullScreenModalOverlay } from "../ui/FullScreenModalOverlay";
-import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
+import { trpc } from "../../utils/trpc";
+import { Button } from "../../ui/Button";
+import { FullScreenModalOverlay } from "../../ui/FullScreenModalOverlay";
+import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 
 if (typeof window !== "undefined") {
   Modal.setAppElement("body");

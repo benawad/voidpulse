@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { ChartThumbnail } from "./ChartThumbnail";
-import { placeholderCharts } from "../charts/PlaceholderChartData";
+import { placeholderCharts } from "../../ui/charts/PlaceholderChartData";
 import { trpc } from "../../utils/trpc";
 import { DashboardStickyHeader } from "./DashboardStickyHeader";
 import { DashboardNavigator } from "./DashboardNavigator";
-import { HeaderNav } from "../HeaderNav";
+import { HeaderNav } from "../../ui/HeaderNav";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { ProjectBoardProvider } from "../../../../providers/ProjectBoardProvider";
 import { useFetchProjectBoards } from "../../utils/useFetchProjectBoards";

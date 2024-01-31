@@ -1,9 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { HeaderNav } from "./ui/HeaderNav";
-import { DashboardView } from "./ui/dashboard/DashboardView";
+import { DashboardView } from "./components/dashboard/DashboardView";
 import { trpc } from "./utils/trpc";
-import { DeleteBoardConfirmationModal } from "./components/DeleteBoardConfirmationModal";
+import { DeleteBoardConfirmationModal } from "./components/dashboard/DeleteBoardConfirmationModal";
 import { useState } from "react";
 
 function Home() {
