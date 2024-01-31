@@ -44,16 +44,13 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
             {/* Title and description */}
             <div className="flex mb-1">
               <h1 className="font-bold text-2xl text-primary-100">
-                <EditableTextField
-                  text={"Chart Title"}
-                  onTextChange={() => {}}
-                />
+                <EditableTextField text={"Chart Title"} onDone={() => {}} />
               </h1>
             </div>
             <div className="flex">
               <div className="text-xs subtext px-1 rounded-md">
                 <EditableTextField
-                  onTextChange={() => {}}
+                  onDone={() => {}}
                   text={"Add description..."}
                 />
               </div>

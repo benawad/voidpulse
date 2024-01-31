@@ -2,10 +2,12 @@ import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 import { Button } from "../../ui/Button";
 import { FaPlus } from "react-icons/fa6";
-import { RouterOutput } from "../../utils/trpc";
+import { RouterOutput, trpc } from "../../utils/trpc";
 import { AddRandomEmojiButton } from "./AddRandomEmojiButton";
 import { Input } from "../../ui/Input";
 import { EditableTextField } from "../../ui/EditableTextField";
+import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
+import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 
 interface DashboardStickyHeaderProps {
   board: RouterOutput["getProjects"]["boards"][0];
@@ -14,6 +16,25 @@ interface DashboardStickyHeaderProps {
 export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
   board,
 }) => {
+  //API call for updating board info
+  const { lastProjectId } = useLastSelectedProjectBoardStore();
+  const { boardId } = useProjectBoardContext();
+  const utils = trpc.useUtils();
+  const { mutateAsync, isPending } = trpc.updateBoard.useMutation({
+    onSuccess: (data) => {
+      utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
+        if (!old) {
+          return old;
+        }
+
+        return {
+          boards: old.boards.map((b) => (b.id === boardId ? data.board : b)),
+          projects: old.projects,
+        };
+      });
+    },
+  });
+
   return (
     <div className="flex-1 flex flex-row items-center justify-between px-6 sticky top-16 bg-primary-900 z-10">
       {/* Dashboard title */}
@@ -25,14 +46,19 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
           </div>
           <EditableTextField
             key={board.id}
-            onTextChange={() => {}}
+            onDone={(newText) => {
+              mutateAsync({
+                id: boardId,
+                data: { title: newText },
+              });
+            }}
             text={board.title.trim() ? board.title : "Untitled"}
           />
         </div>
         <div className="flex ml-10">
           <div className="text-xs subtext px-1 rounded-md">
             <EditableTextField
-              onTextChange={() => {}}
+              onDone={() => {}}
               text={
                 board.description?.trim()
                   ? board.description

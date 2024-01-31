@@ -3,18 +3,18 @@ import { Input } from "./Input";
 
 interface EditableTextFieldProps {
   text: string;
-  onTextChange: (text: string) => void;
+  onDone: (text: string) => void;
 }
 
 export const EditableTextField: React.FC<EditableTextFieldProps> = ({
   text: startingText,
-  onTextChange,
+  onDone,
 }) => {
   const startingTextRef = useRef(startingText);
   startingTextRef.current = startingText;
 
-  const refOnTextChange = useRef(onTextChange);
-  refOnTextChange.current = onTextChange;
+  const refOnDone = useRef(onDone);
+  refOnDone.current = onDone;
 
   const [text, setText] = useState(startingText);
   const textRef = useRef(text);
@@ -28,7 +28,7 @@ export const EditableTextField: React.FC<EditableTextFieldProps> = ({
       if (inputRef.current && !inputRef.current.contains(e.target)) {
         setIsEditingTitle(false);
         if (textRef.current.trim()) {
-          refOnTextChange.current?.(textRef.current);
+          refOnDone.current?.(textRef.current);
         } else {
           setText(startingTextRef.current || "Untitled");
         }
@@ -52,7 +52,7 @@ export const EditableTextField: React.FC<EditableTextFieldProps> = ({
         e.preventDefault();
         setIsEditingTitle(false);
         if (text.trim()) {
-          onTextChange(text);
+          onDone(text);
         } else {
           setText(startingText || "Untitled");
         }
