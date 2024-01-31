@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { publicProcedure } from "../../trpc";
-import { db } from "../../db";
+import { DbUser, db } from "../../db";
 import { users } from "../../schema/users";
 import argon2d from "argon2";
 import { sendAuthCookies } from "../../utils/createAuthTokens";
@@ -9,6 +9,8 @@ import { genApiKey } from "../../utils/genApiKey";
 import { projectUsers } from "../../schema/project-users";
 import { boards } from "../../schema/boards";
 import * as emoji from "node-emoji";
+import { eq } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 
 export const register = publicProcedure
   .input(
@@ -18,20 +20,35 @@ export const register = publicProcedure
     })
   )
   .mutation(async ({ input, ctx }) => {
-    const user = await db.query.users.findFirst();
-    if (user) {
-      return {
-        error: "User already exists",
-      };
-    }
+    let newUser: DbUser;
 
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        email: input.email,
-        passwordHash: await argon2d.hash(input.password),
-      })
-      .returning();
+    try {
+      newUser = (
+        await db
+          .insert(users)
+          .values({
+            email: input.email,
+            passwordHash: await argon2d.hash(input.password),
+          })
+          .returning()
+      )[0];
+    } catch (e) {
+      if (
+        e.message.includes(
+          'duplicate key value violates unique constraint "users_email_unique"'
+        )
+      ) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User already exists",
+        });
+      }
+
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: e.message,
+      });
+    }
 
     const [project] = await db
       .insert(projects)
