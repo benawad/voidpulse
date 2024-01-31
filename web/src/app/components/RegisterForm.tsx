@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 import { trpc } from "../utils/trpc";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
@@ -9,26 +10,57 @@ interface RegisterFormProps {}
 type Inputs = {
   email: string;
   password: string;
+  repeatPassword: string;
 };
+
+type ServerInputs = Omit<Inputs, 'repeatPassword'>;
+
+type ServerKey = keyof ServerInputs;
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
   const utils = trpc.useUtils();
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    if (data.password !== data.repeatPassword) {
+      setError("repeatPassword", { type: "custom", message: "Passwords do not match" });
+      return;
+    }
+    let serverData: ServerInputs = {
+      email: data.email,
+      password: data.password
+    };
+    mutateAsync(serverData);
+  };
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<Inputs>();
   const { mutateAsync } = trpc.register.useMutation({
     onSuccess: (data) => {
       if ("user" in data) {
         utils.getMe.setData(undefined, { user: data.user });
       }
     },
+    onError: (err) => {
+      let keys: ServerKey[] = [
+        "email",
+        "password"
+      ];
+
+      let key = err.data?.path;
+
+      if (typeof key === "undefined") {
+        setError("root", { type: "custom", message: err.message });
+      } else {
+        if ((keys as string[]).includes(key)) {
+          setError(key as ServerKey, { type: "custom", message: err.message });
+        } else {
+          setError("root", { type: "custom", message: err.message });
+        }
+      }
+    },
   });
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    mutateAsync(data);
-  };
 
   return (
     <div className="page">
@@ -45,7 +77,22 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
                 placeholder="email"
                 autoComplete="email"
                 type="email"
-                {...register("email", { required: true })}
+                {...register("email", {
+                  required: true,
+                  minLength: {
+                    value: 3,
+                    message: "Must contain at least 3 characters",
+                  },
+                  maxLength: {
+                    value: 255,
+                    message: "Must contain at most 255 characters",
+                  },
+                })}
+              />
+              <ErrorMessage
+                errors={errors}
+                name="email"
+                render={({ message }) => <pre>{message}</pre>}
               />
 
               {/* include validation with required or other standard HTML validation rules */}
@@ -53,11 +100,48 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
                 placeholder="password"
                 autoComplete="current-password"
                 type="password"
-                {...register("password", { required: true })}
+                {...register("password", {
+                  required: true,
+                  minLength: {
+                    value: 6,
+                    message: "Must contain at least 6 characters",
+                  },
+                  maxLength: {
+                    value: 255,
+                    message: "Must contain at most 255 characters",
+                  },
+                })}
               />
-              <pre>{errors.email?.message}</pre>
-              <pre>{errors.password?.message}</pre>
-              <pre>{errors.root?.message}</pre>
+              <ErrorMessage
+                errors={errors}
+                name="password"
+                render={({ message }) => <pre>{message}</pre>}
+              />
+
+              {/* include validation with required or other standard HTML validation rules */}
+              <Input
+                placeholder="repeat password"
+                autoComplete="current-password"
+                type="password"
+                {...register("repeatPassword", {
+                  required: true,
+                  minLength: {
+                    value: 6,
+                    message: "Must contain at least 6 characters",
+                  },
+                  maxLength: {
+                    value: 255,
+                    message: "Must contain at most 255 characters",
+                  },
+                })}
+              />
+              <ErrorMessage
+                errors={errors}
+                name="repeatPassword"
+                render={({ message }) => <pre>{message}</pre>}
+              />
+
+              {errors.root && <pre className="mt-4">{errors.root.message}</pre>}
             </div>
             <Button type="submit" className="my-4">
               Enter
