@@ -2,10 +2,10 @@ import React from "react";
 import { text } from "stream/consumers";
 
 interface PulseLoaderProps {
-  isText?: boolean;
+  pulseType?: string;
 }
 
-export const PulseLoader: React.FC<PulseLoaderProps> = ({ isText }) => {
+export const PulseLoader: React.FC<PulseLoaderProps> = ({ pulseType }) => {
   const pulseColor = " bg-primary-400/50";
   const plainPulse = (
     <div className={"w-full h-8 animate-pulse rounded-lg" + pulseColor}></div>
@@ -21,5 +21,24 @@ export const PulseLoader: React.FC<PulseLoaderProps> = ({ isText }) => {
       </div>
     </div>
   );
-  return isText ? textPulse : plainPulse;
+  const listPulse = (
+    <div className="pt-4 px-1 space-y-2 animate-pulse overflow-hidden w-full h-full">
+      <div className={"h-8 rounded w-full" + pulseColor}></div>
+      <div className={"h-8 rounded w-full" + pulseColor}></div>
+      <div className={"h-8 rounded w-full" + pulseColor}></div>
+      <div className={"h-8 rounded w-full" + pulseColor}></div>
+      <div className={"h-8 rounded w-full" + pulseColor}></div>
+      <div className={"h-8 rounded w-full" + pulseColor}></div>
+      <div className={"h-8 rounded w-full" + pulseColor}></div>
+      <div className={"h-8 rounded w-full" + pulseColor}></div>
+    </div>
+  );
+  switch (pulseType) {
+    case "text":
+      return textPulse;
+    case "list":
+      return listPulse;
+    default:
+      return plainPulse;
+  }
 };

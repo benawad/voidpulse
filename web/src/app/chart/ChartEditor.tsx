@@ -6,14 +6,10 @@ import { MetricSelector } from "./metric-selector/MetricSelector";
 import { trpc } from "../utils/trpc";
 import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
 import { lineChartStyle } from "../ui/charts/ChartStyle";
-import { FaPlus } from "react-icons/fa6";
-import { LineSeparator } from "../ui/LineSeparator";
-import { TbReportAnalytics } from "react-icons/tb";
-import { AiOutlineFunnelPlot } from "react-icons/ai";
-import { SlGraph } from "react-icons/sl";
-import { BsBarChart } from "react-icons/bs";
-import { LiaChartAreaSolid } from "react-icons/lia";
-import { Metric, MetricBlock } from "./metric-selector/MetricBlock";
+import { Metric } from "./metric-selector/MetricBlock";
+import { DateRangePicker } from "./DateRangePicker";
+import { ChartEditorSidebar } from "./ChartEditorSidebar";
+import { EditableTextField } from "../ui/EditableTextField";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
@@ -30,25 +26,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
     { enabled: !!eventName }
   );
 
-  const controlOptionsStyle =
-    "accent-hover p-2 my-2 rounded-md flex items-center group justify-between text-primary-200 text-sm font-semibold";
-  const plusIcon = (
-    <div className="w-6 h-6 rounded-md mr-3">
-      <FaPlus
-        className="m-auto group-hover:fill-secondary-signature-100 h-full w-full"
-        style={{ padding: 5 }}
-        size={12}
-      />
-    </div>
-  );
-
-  const chartTypeButtonStyle =
-    "accent-hover py-2 rounded-md w-full m-1 flex items-center bg-primary-800/50 flex flex-col text-xs text-primary-600";
-  const chartTypeIconStyle = "w-8 h-8 rounded-md my-2 text-primary-400";
-
   return (
     <div>
-      {/* Navigation that shows hierarchy of dashboards */}
+      {/* Navigation bar that shows hierarchy of dashboards */}
       <div className="h-14 border-b border-primary-700 items-center flex">
         <Link href="/">
           <div className="mx-4 text-sm text-primary-500">Back to dashboard</div>
@@ -56,48 +36,30 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
       </div>
       {/* View that houses editor and chart side by side */}
       <div className="flex grow w-full h-full">
-        {/* Toolbar */}
-        <div
-          className="border-r p-4 bg-primary-900 border-primary-800"
-          style={{ width: 400 }}
-        >
-          <div className="flex flex-row w-full justify-between">
-            <div className={chartTypeButtonStyle}>
-              <SlGraph className={chartTypeIconStyle} />
-            </div>
-            <div className={chartTypeButtonStyle}>
-              <BsBarChart className={"-scale-x-100 " + chartTypeIconStyle} />
-            </div>
-            <div className={chartTypeButtonStyle}>
-              <LiaChartAreaSolid
-                className={"-scale-x-100 " + chartTypeIconStyle}
-              />
-            </div>
-          </div>
-          <div className={controlOptionsStyle}>Metrics {plusIcon}</div>
-          {metrics.map((m, idx) => (
-            <MetricBlock
-              onEventNameChange={(name) => {
-                setMetrics(
-                  metrics.map((metric, i) =>
-                    i === idx ? { ...metric, name } : metric
-                  )
-                );
-              }}
-              idx={idx}
-              metric={m}
-            />
-          ))}
-          <div className={controlOptionsStyle}>Filter {plusIcon}</div>
-          <div className={controlOptionsStyle}>Breakdown {plusIcon}</div>
-        </div>
-        {/* Chart view panel */}
+        <ChartEditorSidebar metrics={metrics} setMetrics={setMetrics} />
+        {/* Main section of the chart view */}
         <div className="w-full">
-          {/* Just the chart */}
+          {/* Div that stacks the chart and data at the bottom */}
           <div className="p-12" style={{ minWidth: 800, minHeight: 500 }}>
-            <h1 className="font-bold text-lg text-primary-100 px-2">
-              Chart title
-            </h1>
+            {/* Title and description */}
+            <div className="flex mb-1">
+              <h1 className="font-bold text-2xl text-primary-100">
+                <EditableTextField
+                  text={"Chart Title"}
+                  onTextChange={() => {}}
+                />
+              </h1>
+            </div>
+            <div className="flex">
+              <div className="text-xs subtext px-1 rounded-md">
+                <EditableTextField
+                  onTextChange={() => {}}
+                  text={"Add description..."}
+                />
+              </div>
+            </div>
+            <DateRangePicker />
+            {/* Chart  */}
             {eventName && data?.data.length ? (
               <LineChart
                 data={{

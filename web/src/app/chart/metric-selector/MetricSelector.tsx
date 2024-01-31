@@ -4,6 +4,7 @@ import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvid
 import { trpc } from "../../utils/trpc";
 import { Input } from "../../ui/Input";
 import { TbClick } from "react-icons/tb";
+import { PulseLoader } from "../../ui/PulseLoader";
 
 interface MetricSelectorProps {
   eventName: string;
@@ -49,34 +50,38 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
           </div>
 
           {/* Shows the list of event names */}
-          <div
-            {...getMenuProps({
-              className: "overflow-auto flex-1 mt-2",
-            })}
-          >
-            {data?.names
-              .filter((item) => !inputValue || item.includes(inputValue))
-              .map((item, index) => (
-                <div
-                  {...getItemProps({
-                    key: item,
-                    index,
-                    item: { value: item },
-                  })}
-                  className={
-                    "flex flex-row p-2 accent-hover group rounded-md " +
-                    (item === eventName
-                      ? "bg-secondary-signature-100 text-primary-100"
-                      : "")
-                  }
-                >
-                  <TbClick className="mr-2 opacity-40" />
-                  <div className="text-primary-200 group-hover:text-secondary-signature-100">
-                    {item}
+          {data ? (
+            <div
+              {...getMenuProps({
+                className: "overflow-auto flex-1 mt-2",
+              })}
+            >
+              {data?.names
+                .filter((item) => !inputValue || item.includes(inputValue))
+                .map((item, index) => (
+                  <div
+                    {...getItemProps({
+                      key: item,
+                      index,
+                      item: { value: item },
+                    })}
+                    className={
+                      "flex flex-row p-2 accent-hover group rounded-md " +
+                      (item === eventName
+                        ? "bg-secondary-signature-100 text-primary-100"
+                        : "")
+                    }
+                  >
+                    <TbClick className="mr-2 opacity-40" />
+                    <div className="text-primary-200 group-hover:text-secondary-signature-100">
+                      {item}
+                    </div>
                   </div>
-                </div>
-              ))}
-          </div>
+                ))}
+            </div>
+          ) : (
+            <PulseLoader pulseType="list" />
+          )}
         </div>
       )}
     </Downshift>
