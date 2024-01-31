@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { RegisterForm } from "./components/RegisterForm";
 import { HeaderNav } from "./ui/HeaderNav";
 import { InfoModal } from "./ui/charts/InfoModal";
@@ -9,11 +10,14 @@ import { trpc } from "./utils/trpc";
 function Home() {
   const { data, isLoading } = trpc.getMe.useQuery();
   const { mutateAsync } = trpc.login.useMutation();
+  let router = useRouter();
+
   if (isLoading) {
     return null;
   }
+
   if (!data?.user) {
-    return <RegisterForm />;
+    router.push("/register");
   }
 
   return (
