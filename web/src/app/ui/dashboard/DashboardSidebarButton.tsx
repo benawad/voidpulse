@@ -41,9 +41,9 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
       {boardId === board.id ? (
         <PiCaretLeftFill
           fill={colors.primary[900]}
-          size={50}
-          className="absolute"
-          style={{ right: -30 }}
+          size={40}
+          className="absolute -z-10"
+          style={{ right: -32 }}
         />
       ) : null}
     </button>
