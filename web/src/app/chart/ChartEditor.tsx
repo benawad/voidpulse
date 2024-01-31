@@ -31,7 +31,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   );
 
   const controlOptionsStyle =
-    "accent-hover p-2 my-4 rounded-md flex items-center group justify-between";
+    "accent-hover p-2 my-2 rounded-md flex items-center group justify-between text-primary-300 text-sm";
   const plusIcon = (
     <div className="w-6 h-6 rounded-md mr-3">
       <FaPlus

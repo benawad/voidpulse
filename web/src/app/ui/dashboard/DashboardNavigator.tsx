@@ -20,7 +20,10 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
     "accent-hover ring-0 group flex p-2 rounded-lg w-full items-center relative ";
   const selectedBoardButtonStyle = "bg-primary-700 ring-primary-600/50 ";
   return (
-    <div className="w-1/6 bg-primary-800 border-r border border-primary-700 flex sticky top-16">
+    <div
+      className="w-1/6 bg-primary-800 border-r border border-primary-700 flex sticky top-16"
+      style={{ minWidth: 200 }}
+    >
       <div className="w-full px-2 pt-4">
         {/* Team boards button  */}
         <div className={sidebarButtonStyle + " border-transparent"}>
