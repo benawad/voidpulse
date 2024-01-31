@@ -31,7 +31,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   );
 
   const controlOptionsStyle =
-    "accent-hover p-2 my-2 rounded-md flex items-center group justify-between text-primary-300 text-sm";
+    "accent-hover p-2 my-2 rounded-md flex items-center group justify-between text-primary-200 text-sm font-semibold";
   const plusIcon = (
     <div className="w-6 h-6 rounded-md mr-3">
       <FaPlus
@@ -57,8 +57,10 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
       {/* View that houses editor and chart side by side */}
       <div className="flex grow w-full h-full">
         {/* Toolbar */}
-        <div className="border-r p-4 border-primary-700" style={{ width: 400 }}>
-          <div className="subtext py-2">CHART TYPE</div>
+        <div
+          className="border-r p-4 bg-primary-900 border-primary-800"
+          style={{ width: 400 }}
+        >
           <div className="flex flex-row w-full justify-between">
             <div className={chartTypeButtonStyle}>
               <SlGraph className={chartTypeIconStyle} />
@@ -72,10 +74,6 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
               />
             </div>
           </div>
-
-          <LineSeparator />
-          <div className="subtext py-2">CUSTOMIZE MY CHART</div>
-
           <div className={controlOptionsStyle}>Metrics {plusIcon}</div>
           {metrics.map((m, idx) => (
             <MetricBlock

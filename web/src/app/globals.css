@@ -57,11 +57,15 @@ body {
   @apply text-xs text-primary-500;
 }
 .focus-glow {
-  @apply focus:outline-none focus:ring-4 focus:ring-primary-100 focus:ring-opacity-10;
+  @apply focus:outline-none focus:ring-1 focus:ring-secondary-signature-100 focus:ring-opacity-90;
 }
 .accent-hover {
   @apply hover:bg-secondary-signature-100/20 hover:text-secondary-signature-100 cursor-pointer;
 }
 .icon-box {
   @apply accent-hover group-hover:bg-secondary-signature-100 bg-primary-600 w-6 h-6 rounded-md mr-3;
+}
+
+.input-container:focus-within label {
+  transform: translate(0, 12px) scale(0.8);
 }

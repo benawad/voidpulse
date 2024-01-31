@@ -8,6 +8,7 @@ import {
 } from "@floating-ui/react";
 import { MetricSelector } from "./MetricSelector";
 import { IoIosArrowDown } from "react-icons/io";
+import { RxDragHandleDots2 } from "react-icons/rx";
 
 export type Metric = {
   name: string;
@@ -37,13 +38,13 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
   ]);
 
   return (
-    <div className="card py-1 px-3">
+    <div className="card py-1 px-1">
       <div className="flex flex-row">
         {/* Left side of the button for the label and drag handle*/}
-        <div className="cursor-grab">
+        <div className="cursor-grab group accent-hover rounded-md">
           {/* Square label for the dataset letter ID */}
           <div
-            className="text-primary-900 flex text-sm font-bold mr-2 bg-secondary-signature-100 rounded-md items-center"
+            className="text-primary-900 flex text-sm font-bold m-2 bg-secondary-signature-100 rounded-md items-center"
             style={{
               height: 18,
               width: 18,
@@ -54,6 +55,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
           >
             {String.fromCharCode(idx + "A".charCodeAt(0))}
           </div>
+          <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" />
         </div>
         {/* Main middle section for choosing events and units */}
         <div className="flex flex-col w-full">
