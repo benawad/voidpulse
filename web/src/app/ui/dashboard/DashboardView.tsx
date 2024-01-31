@@ -26,8 +26,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
 
   return (
     <ProjectBoardProvider projectId={project.id} boardId={board.id}>
-      <div className="flex flex-row flex-1">
-        <DashboardNavigator boards={boards} />
+      <div className="flex flex-row-reverse flex-1">
         <div className="flex-1 relative">
           <DashboardStickyHeader board={board} />
           <div>
@@ -47,6 +46,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
             </div>
           </div>
         </div>
+        <DashboardNavigator boards={boards} />
       </div>
     </ProjectBoardProvider>
   );

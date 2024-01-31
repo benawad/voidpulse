@@ -11,6 +11,7 @@ interface FloatingTriggerProps {
   className?: string;
   appearsOnHover?: boolean;
   appearsOnClick?: boolean;
+  hideIfOpen?: boolean;
   placement?:
     | "top"
     | "right"
@@ -32,8 +33,9 @@ export const FloatingTrigger: React.FC<
 > = ({
   className,
   children,
-  appearsOnHover,
-  appearsOnClick,
+  appearsOnHover = false,
+  appearsOnClick = false,
+  hideIfOpen,
   placement,
   floatingContent,
 }) => {
@@ -48,14 +50,11 @@ export const FloatingTrigger: React.FC<
 
   //Interactions
   //Here is where we decide what actions make the content spawn
-  const interactions = [useDismiss(context)];
-  if (appearsOnHover) {
-    interactions.push(useHover(context));
-  }
-  if (appearsOnClick) {
-    interactions.push(useClick(context));
-  }
-  const { getReferenceProps, getFloatingProps } = useInteractions(interactions);
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    useDismiss(context),
+    useHover(context, { enabled: appearsOnHover }),
+    useClick(context, { enabled: appearsOnClick }),
+  ]);
 
   return (
     <button
@@ -63,12 +62,15 @@ export const FloatingTrigger: React.FC<
       ref={refs.setReference}
       className={className}
     >
-      {children}
+      <div className="flex" style={{ opacity: hideIfOpen && isOpen ? 0 : 1 }}>
+        {children}
+      </div>
       {/* Floating content */}
       {isOpen ? (
         <div
           ref={refs.setFloating}
           {...getFloatingProps()}
+          className="z-10"
           style={floatingStyles}
         >
           {floatingContent}

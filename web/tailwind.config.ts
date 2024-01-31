@@ -14,7 +14,8 @@ const config = {
 
       colors: {
         secondary: {
-          "signature-100": "#466AE9",
+          // "signature-100": "#466AE9",
+          "signature-100": "#355CE9",
           "signature-200": "#2C3D95",
           "complement-100": "#40E4D8",
           "red-100": "#DC5068",
