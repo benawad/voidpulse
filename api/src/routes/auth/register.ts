@@ -9,6 +9,8 @@ import { genApiKey } from "../../utils/genApiKey";
 import { projectUsers } from "../../schema/project-users";
 import { boards } from "../../schema/boards";
 import * as emoji from "node-emoji";
+import { eq } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 
 export const register = publicProcedure
   .input(
@@ -18,11 +20,15 @@ export const register = publicProcedure
     })
   )
   .mutation(async ({ input, ctx }) => {
-    const user = await db.query.users.findFirst();
+    const user = await db.query.users.findFirst({
+      where: eq(users.email, input.email),
+    });
+
     if (user) {
-      return {
-        error: "User already exists",
-      };
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "User already exists",
+      });
     }
 
     const [newUser] = await db
