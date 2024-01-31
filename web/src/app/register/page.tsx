@@ -1,10 +1,10 @@
+"use client"
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { trpc } from "../utils/trpc";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
-
-interface RegisterFormProps {}
 
 type Inputs = {
   email: string;
@@ -16,7 +16,7 @@ type ServerInputs = Omit<Inputs, "repeatPassword">;
 
 type ServerKey = keyof ServerInputs;
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
+const Page: React.FC = () => {
   const utils = trpc.useUtils();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if (data.password !== data.repeatPassword) {
@@ -42,6 +42,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
     onSuccess: (data) => {
       if ("user" in data) {
         utils.getMe.setData(undefined, { user: data.user });
+		router.push("/");
       }
     },
     onError: (err) => {
@@ -60,13 +61,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
       }
     },
   });
+  let router = useRouter();
 
   return (
     <div className="page">
       <div className="flex justify-center">
         <div className="card p-12">
           <div className="text-center p-4 text-primary-500 font-bold">
-            Log in
+            Register
           </div>
           {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
@@ -141,3 +143,5 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
     </div>
   );
 };
+
+export default trpc.withTRPC(Page);
