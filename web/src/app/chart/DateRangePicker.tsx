@@ -13,7 +13,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({}) => {
         {timeUnits.map((unit, i) => {
           const isFirst = i === 0;
           return (
-            <div
+            <button
               className={
                 (isFirst ? "border-transparent " : "border-primary-600 ") +
                 "accent-hover border-l py-2 px-3 text-sm text-primary-500 flex flex-row items-center justify-center font-semibold"
@@ -21,7 +21,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({}) => {
             >
               {isFirst ? <FaRegCalendarAlt className="mr-2" /> : null}
               {unit}
-            </div>
+            </button>
           );
         })}
       </div>

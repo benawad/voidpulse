@@ -76,12 +76,12 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
               {metric?.name || "Select event"}
             </button>
             <div
-              className="rounded-md opacity-0 group-hover:opacity-100 hover:bg-secondary-red-100/20"
+              className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 hover:bg-secondary-red-100/20"
               onClick={onDelete}
             >
               <IoClose
                 size={36}
-                className="fill-primary-300 hover:fill-secondary-red-100 p-2"
+                className="fill-primary-500 hover:fill-secondary-red-100 p-2"
               />
             </div>
           </div>
