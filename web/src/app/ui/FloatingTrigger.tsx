@@ -56,6 +56,10 @@ export const FloatingTrigger: React.FC<
     useClick(context, { enabled: appearsOnClick }),
   ]);
 
+  //Fade in/out effect styles
+  const fadeIn = "transition-opacity duration-200 opacity-100";
+  const fadeOut = "transition-opacity duration-200 opacity-0";
+
   return (
     <button
       {...getReferenceProps()}
@@ -67,13 +71,15 @@ export const FloatingTrigger: React.FC<
       </div>
       {/* Floating content */}
       {isOpen ? (
-        <div
-          ref={refs.setFloating}
-          {...getFloatingProps()}
-          className="z-10"
-          style={floatingStyles}
-        >
-          {floatingContent}
+        <div className={"flex" + isOpen ? fadeIn : fadeOut}>
+          <div
+            ref={refs.setFloating}
+            {...getFloatingProps()}
+            className={"z-10"}
+            style={floatingStyles}
+          >
+            {floatingContent}
+          </div>
         </div>
       ) : null}
     </button>

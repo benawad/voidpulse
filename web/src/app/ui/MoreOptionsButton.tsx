@@ -4,12 +4,31 @@ import { FloatingTrigger } from "./FloatingTrigger";
 import { FloatingTooltip } from "./FloatingTooltip";
 import { FloatingMenu } from "./FloatingMenu";
 import { IoTrashOutline } from "react-icons/io5";
+import { DeleteBoardButton } from "./dashboard/DeleteBoardButton";
+import { DeleteBoardConfirmationModal } from "../components/DeleteBoardConfirmationModal";
 
-interface MoreOptionsButtonProps {}
+interface MoreOptionsButtonProps {
+  boardId: string;
+  boardTitle: string;
+}
 
-export const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({}) => {
+export const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({
+  boardId,
+  boardTitle,
+}) => {
+  const [openConfirmationModal, setOpenConfirmationModal] =
+    React.useState(false);
+
   return (
     <div className={"bg-transparent"}>
+      <DeleteBoardConfirmationModal
+        boardId={boardId}
+        boardTitle={boardTitle}
+        isOpen={openConfirmationModal}
+        onDismissModal={() => {
+          setOpenConfirmationModal(false);
+        }}
+      />
       {/* Outside component triggers click to open a menu */}
       <FloatingTrigger
         appearsOnClick
@@ -17,10 +36,11 @@ export const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({}) => {
         placement={"right"}
         floatingContent={
           <FloatingMenu>
-            <div className="flex justify-between items-center p-2 rounded-lg text-secondary-red-100 group-hover:text-secondary-red-100 hover:bg-secondary-red-100/30">
-              Delete
-              <IoTrashOutline />
-            </div>
+            <DeleteBoardButton
+              onClick={() => {
+                setOpenConfirmationModal(true);
+              }}
+            />
           </FloatingMenu>
         }
         className="flex"

@@ -35,17 +35,18 @@ body {
 /* Custom styles */
 .debug {
   @apply !bg-red-500/80 !text-red-200;
-
 }
 .page {
   @apply bg-primary-900 min-h-screen overscroll-none;
 }
 .card {
-  @apply bg-primary-800/10 rounded-lg overflow-hidden border border-primary-800;
+  @apply rounded-xl overflow-hidden border border-primary-700;
 }
-
+.card.standard {
+  @apply bg-primary-800;
+}
 .card.hoverable {
-  @apply hover:border-primary-600 hover:bg-primary-900/30 hover:shadow-lg hover:border;
+  @apply hover:border-primary-600 hover:shadow-lg;
 }
 .area.hoverable {
   @apply hover:bg-primary-100/5 cursor-pointer;
@@ -64,8 +65,4 @@ body {
 }
 .icon-box {
   @apply accent-hover group-hover:bg-secondary-signature-100 bg-primary-600 w-6 h-6 rounded-md mr-3;
-}
-
-.input-container:focus-within label {
-  transform: translate(0, 12px) scale(0.8);
 }

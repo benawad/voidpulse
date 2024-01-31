@@ -37,7 +37,7 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
         <div className="mr-2">{board.emoji}</div>
         {board.title}
       </div>
-      <MoreOptionsButton />
+      <MoreOptionsButton boardId={board.id} boardTitle={board.title} />
       {boardId === board.id ? (
         <PiCaretLeftFill
           fill={colors.primary[900]}
