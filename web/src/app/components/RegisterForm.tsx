@@ -1,6 +1,5 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
 import { trpc } from "../utils/trpc";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
@@ -13,7 +12,7 @@ type Inputs = {
   repeatPassword: string;
 };
 
-type ServerInputs = Omit<Inputs, 'repeatPassword'>;
+type ServerInputs = Omit<Inputs, "repeatPassword">;
 
 type ServerKey = keyof ServerInputs;
 
@@ -21,12 +20,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
   const utils = trpc.useUtils();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if (data.password !== data.repeatPassword) {
-      setError("repeatPassword", { type: "custom", message: "Passwords do not match" });
+      setError("repeatPassword", {
+        type: "custom",
+        message: "Passwords do not match",
+      });
       return;
     }
     let serverData: ServerInputs = {
       email: data.email,
-      password: data.password
+      password: data.password,
     };
     mutateAsync(serverData);
   };
@@ -43,10 +45,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
       }
     },
     onError: (err) => {
-      let keys: ServerKey[] = [
-        "email",
-        "password"
-      ];
+      let keys: ServerKey[] = ["email", "password"];
 
       let key = err.data?.path;
 
@@ -89,11 +88,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
                   },
                 })}
               />
-              <ErrorMessage
-                errors={errors}
-                name="email"
-                render={({ message }) => <pre>{message}</pre>}
-              />
+              {errors.email && <pre>{errors.email.message}</pre>}
 
               {/* include validation with required or other standard HTML validation rules */}
               <Input
@@ -112,11 +107,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
                   },
                 })}
               />
-              <ErrorMessage
-                errors={errors}
-                name="password"
-                render={({ message }) => <pre>{message}</pre>}
-              />
+              {errors.password && <pre>{errors.password.message}</pre>}
 
               {/* include validation with required or other standard HTML validation rules */}
               <Input
@@ -135,11 +126,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({}) => {
                   },
                 })}
               />
-              <ErrorMessage
-                errors={errors}
-                name="repeatPassword"
-                render={({ message }) => <pre>{message}</pre>}
-              />
+              {errors.repeatPassword && (
+                <pre>{errors.repeatPassword.message}</pre>
+              )}
 
               {errors.root && <pre className="mt-4">{errors.root.message}</pre>}
             </div>
