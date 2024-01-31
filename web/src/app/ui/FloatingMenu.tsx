@@ -7,7 +7,7 @@ export const FloatingMenu: React.FC<
 > = ({ children }) => {
   return (
     <div
-      className="p-4 ml-8 text-left bg-primary-800 border-primary-700 border rounded-lg shadow-xl"
+      className="p-2 ml-8 text-left bg-primary-800 border-primary-700 border rounded-lg shadow-xl "
       style={{ width: 200 }}
     >
       {children}
