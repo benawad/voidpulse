@@ -10,12 +10,13 @@ import { Metric } from "./metric-selector/MetricBlock";
 import { DateRangePicker } from "./DateRangePicker";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { EditableTextField } from "../ui/EditableTextField";
+import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   const [metrics, setMetrics] = useState<(Metric | null)[]>([null]);
   const [eventName, setEventName] = React.useState("");
-  const { projectId } = useProjectBoardContext();
+  const { projectId, boardId } = useProjectBoardContext();
   const { data, error } = trpc.getInsight.useQuery(
     {
       eventName,
@@ -25,13 +26,16 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
     },
     { enabled: !!eventName }
   );
+  const { board } = useFetchProjectBoards();
 
   return (
     <div>
       {/* Navigation bar that shows hierarchy of dashboards */}
       <div className="h-14 border-b border-primary-700 items-center flex">
         <Link href="/">
-          <div className="mx-4 text-sm text-primary-500">Back to dashboard</div>
+          <div className="mx-4 text-sm text-primary-500">
+            {board?.title || "Dashboard"}
+          </div>
         </Link>
       </div>
       {/* View that houses editor and chart side by side */}

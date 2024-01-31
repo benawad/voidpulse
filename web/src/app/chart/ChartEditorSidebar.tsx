@@ -4,6 +4,8 @@ import { FaPlus } from "react-icons/fa6";
 import { LiaChartAreaSolid } from "react-icons/lia";
 import { SlGraph } from "react-icons/sl";
 import { Metric, MetricBlock } from "./metric-selector/MetricBlock";
+import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
+import { MetricMeasurement } from "@voidpulse/api";
 
 interface ChartEditorSidebarProps {
   metrics: (Metric | null)[];
@@ -51,7 +53,14 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
       </div>
 
       {/* Choosing metrics */}
-      <div className={controlOptionsStyle}>Metrics {plusIcon}</div>
+      <div
+        className={controlOptionsStyle}
+        onClick={() => {
+          setMetrics([...metrics, null]);
+        }}
+      >
+        Metrics {plusIcon}
+      </div>
       {metrics.map((m, idx) => (
         <MetricBlock
           onEventNameChange={(name) => {
@@ -60,6 +69,9 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
                 i === idx ? { ...metric, name } : metric
               )
             );
+          }}
+          onDelete={() => {
+            setMetrics(metrics.filter((_, i) => i !== idx));
           }}
           idx={idx}
           metric={m}

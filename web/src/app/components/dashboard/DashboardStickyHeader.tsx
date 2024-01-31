@@ -58,7 +58,13 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
         <div className="flex ml-10">
           <div className="text-xs subtext px-1 rounded-md">
             <EditableTextField
-              onDone={() => {}}
+              key={board.id}
+              onDone={(newText) => {
+                mutateAsync({
+                  id: boardId,
+                  data: { description: newText },
+                });
+              }}
               text={
                 board.description?.trim()
                   ? board.description
