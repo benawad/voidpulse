@@ -24,6 +24,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
             {board.emoji ? board.emoji : <AddRandomEmojiButton />}
           </div>
           <EditableTextField
+            key={board.id}
             onTextChange={() => {}}
             text={board.title.trim() ? board.title : "Untitled"}
           />

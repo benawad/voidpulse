@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PiCaretLeftFill } from "react-icons/pi";
 import config from "../../../../tailwind.config";
 import { FaPlus, FaUserGroup } from "react-icons/fa6";
@@ -8,6 +8,7 @@ import { AddBoardButton } from "../../components/AddBoardButton";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 import { DashboardSidebarButton } from "./DashboardSidebarButton";
+import { useKeyPress } from "../../utils/useKeyPress";
 
 interface DashboardNavigatorProps {
   boards: RouterOutput["getProjects"]["boards"];
@@ -16,6 +17,26 @@ interface DashboardNavigatorProps {
 export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
   boards,
 }) => {
+  const { boardId } = useProjectBoardContext();
+  const { set } = useLastSelectedProjectBoardStore();
+
+  //Keyboard navigation
+  useKeyPress({
+    onLeftArrowKey() {
+      const index = boards.findIndex((b) => b.id === boardId);
+      if (index) {
+        set({ lastBoardId: boards[index - 1].id });
+      }
+    },
+    onRightArrowKey() {
+      const index = boards.findIndex((b) => b.id === boardId);
+      if (index < boards.length - 1) {
+        set({ lastBoardId: boards[index + 1].id });
+      }
+    },
+  });
+
+  //Styling buttons
   const sidebarButtonStyle =
     "accent-hover ring-0 group flex p-2 rounded-lg w-full items-center relative ";
   const selectedBoardButtonStyle = "bg-primary-700 ring-primary-600/50 ";
