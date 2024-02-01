@@ -10,6 +10,7 @@ import { MetricSelector } from "./MetricSelector";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { IoClose, IoFilter } from "react-icons/io5";
+import { MetricSpecificFilterBlock } from "./MetricSpecificFilterBlock";
 
 export type MetricFilter = {
   key: string;
@@ -28,6 +29,7 @@ interface MetricBlockProps {
   onEventNameChange: (eventName: string) => void;
   onDelete?: () => void;
   onAddFilter?: (f: MetricFilter) => void;
+  onDeleteFilter?: (f: MetricFilter) => void;
 }
 
 export const MetricBlock: React.FC<MetricBlockProps> = ({
@@ -36,6 +38,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
   onEventNameChange,
   onDelete,
   onAddFilter,
+  onDeleteFilter,
 }) => {
   const [isOpen, setIsOpen] = useState(!metric);
   const { refs, floatingStyles, context } = useFloating({
@@ -83,15 +86,18 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             >
               {metric?.eventName || "Select event"}
             </button>
-            {onDelete ? (
+            {onAddFilter ? (
               <div
                 className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
-                // onClick={onDelete}
+                onClick={() => {
+                  console.log("Adding filter");
+                  onAddFilter({ key: "key", value: "value" });
+                }}
               >
                 <IoFilter size={36} className="fill-primary-500 p-2" />
               </div>
             ) : null}
-            {onAddFilter ? (
+            {onDelete ? (
               <div
                 className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 hover:bg-secondary-red-100/20"
                 onClick={onDelete}
@@ -126,6 +132,18 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             {metric?.measurement || "Unique users"}
             <IoIosArrowDown className="ml-1" />
           </div>
+
+          {/* Metric specific filters */}
+          {metric?.filters
+            ? metric?.filters.map((metricSpecificFilter, i) => {
+                return (
+                  <MetricSpecificFilterBlock
+                    key={i}
+                    onDelete={onDeleteFilter}
+                  />
+                );
+              })
+            : null}
         </div>
       </div>
     </div>

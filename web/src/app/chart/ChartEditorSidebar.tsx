@@ -92,6 +92,22 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
               )
             );
           }}
+          onDeleteFilter={(deletedFilter) => {
+            setMetrics(
+              metrics.map((metric, i) =>
+                i === idx
+                  ? {
+                      ...metric,
+                      filters: [
+                        ...(metric?.filters?.filter(
+                          (f) => f !== deletedFilter
+                        ) || []),
+                      ],
+                    }
+                  : metric
+              )
+            );
+          }}
           idx={idx}
           metric={m}
         />
