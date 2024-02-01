@@ -1,8 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
-import { trpcServer } from "./app/utils/trpc";
 
 export async function middleware(request: NextRequest) {
-  let { user } = await trpcServer.getMe.query();
+  let user = await fetch("http://localhost:4000/trpc/getMe", {
+    headers: request.headers,
+  })
+    .then((res) => res.json())
+    .then((res) => res.result?.data?.user);
   const authenticated = user !== null;
 
   // If the user is authenticated, continue as normal
