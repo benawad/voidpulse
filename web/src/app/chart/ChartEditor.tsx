@@ -11,16 +11,30 @@ import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { DateRangePicker } from "./DateRangePicker";
 import { Metric } from "./metric-selector/MetricBlock";
+import { ChartType } from "@voidpulse/api";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   const router = useRouter();
+  const utils = trpc.useUtils();
+  const { projectId, boardId } = useProjectBoardContext();
   const { mutateAsync: createChart, isPending: pendingCreateChart } =
-    trpc.createChart.useMutation();
+    trpc.createChart.useMutation({
+      onSuccess: (data) => {
+        utils.getCharts.setData({ boardId, projectId }, (oldData) => {
+          if (oldData) {
+            return {
+              ...oldData,
+              charts: [...oldData.charts, data.chart],
+            };
+          }
+          return oldData;
+        });
+      },
+    });
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [metrics, setMetrics] = useState<Metric[]>([]);
-  const { projectId, boardId } = useProjectBoardContext();
   const { data, error } = trpc.getInsight.useQuery(
     {
       metrics,
@@ -81,6 +95,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
                       title,
                       boardId,
                       description,
+                      type: ChartType.line,
                       projectId,
                       metrics,
                       data: transformToChartData(data.datas),

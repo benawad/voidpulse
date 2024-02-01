@@ -5,6 +5,7 @@ import { metricSchema } from "./getInsight";
 import { db } from "../../db";
 import { charts } from "../../schema/charts";
 import { boardCharts } from "../../schema/board-charts";
+import { ChartType } from "../../app-router-type";
 
 export const chartDataSchema = z.object({
   labels: z.array(z.string()),
@@ -21,6 +22,7 @@ export const createChart = protectedProcedure
     z.object({
       title: z.string().optional(),
       description: z.string().optional(),
+      type: z.nativeEnum(ChartType),
       projectId: z.string(),
       boardId: z.string(),
       metrics: z.array(metricSchema),
@@ -29,7 +31,7 @@ export const createChart = protectedProcedure
   )
   .mutation(
     async ({
-      input: { projectId, title, boardId, data, description, metrics },
+      input: { projectId, title, boardId, data, description, metrics, type },
       ctx: { userId },
     }) => {
       await assertProjectMember({ projectId, userId });
@@ -38,6 +40,7 @@ export const createChart = protectedProcedure
         .insert(charts)
         .values({
           creatorId: userId,
+          type,
           data,
           metrics,
           boardId,

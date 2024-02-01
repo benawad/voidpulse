@@ -7,6 +7,7 @@ import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { chartDataSchema } from "./createChart";
 import { metricSchema } from "./getInsight";
+import { ChartType } from "../../app-router-type";
 
 export const updateChart = protectedProcedure
   .input(
@@ -15,6 +16,7 @@ export const updateChart = protectedProcedure
       projectId: z.string(),
       updateData: z.object({
         title: z.string().optional(),
+        type: z.nativeEnum(ChartType).optional(),
         description: z.string().optional(),
         metrics: z.array(metricSchema).optional(),
         data: chartDataSchema.optional(),

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { redirect, usePathname } from "next/navigation";
 import { trpc } from "./utils/trpc";
 
@@ -10,8 +10,8 @@ function Template({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  if (!data?.user && pathname !== "/login") {
-    redirect("/login")
+  if (!data?.user && pathname !== "/login" && pathname !== "/register") {
+    redirect("/login");
   }
 
   return children;

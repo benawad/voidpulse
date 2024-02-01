@@ -1,42 +1,36 @@
 "use client";
-import React from "react";
+import { ChartType } from "@voidpulse/api";
 import "chart.js/auto";
+import Link from "next/link";
+import React from "react";
 import config from "../../../../tailwind.config";
+import { BarChart } from "../../ui/charts/BarChart";
 import { DonutChart } from "../../ui/charts/DonutChart";
 import { LineChart } from "../../ui/charts/LineChart";
-import { BarChart } from "../../ui/charts/BarChart";
 import {
   placeholderBarData,
   placeholderDonutData,
-  placeholderLineData,
 } from "../../ui/charts/PlaceholderChartData";
-import Link from "next/link";
+import { RouterOutput } from "../../utils/trpc";
 interface ChartThumbnailProps {
-  title: string;
-  subtitle: string;
-  chartType?: string;
-  // chart: React.ReactNode;
+  chart: RouterOutput["getCharts"]["charts"][0];
 }
 
 const colors = config.theme.extend.colors;
 
-export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
-  title,
-  subtitle,
-  chartType,
-}) => {
+export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   let chartToDisplay;
   let minChartDisplayWidth = 300;
-  switch (chartType) {
-    case "donut":
+  switch (chart.type) {
+    case ChartType.donut:
       chartToDisplay = <DonutChart data={placeholderDonutData} />;
       minChartDisplayWidth = 300;
       break;
-    case "line":
-      chartToDisplay = <LineChart data={placeholderLineData} />;
+    case ChartType.line:
+      chartToDisplay = <LineChart data={chart.data} />;
       minChartDisplayWidth = 400;
       break;
-    case "bar":
+    case ChartType.bar:
       chartToDisplay = <BarChart data={placeholderBarData} />;
       minChartDisplayWidth = 600;
       break;
@@ -52,13 +46,13 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
           <h2
             className={`mb-2 text-l font-semibold text-primary-100 group-hover:text-secondary-signature-100 transition-colors`}
           >
-            {title}
+            {chart.title}
             {/* <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
             -&gt;
           </span> */}
           </h2>
           <p className={`m-0 max-w-[30ch] subtext overflow-hidden`}>
-            {subtitle}
+            {chart.description}
           </p>
         </div>
       </Link>
