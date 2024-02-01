@@ -6,6 +6,7 @@ import { users } from "../../schema/users";
 import argon2d from "argon2";
 import { __prod__ } from "../../constants/prod";
 import { sendAuthCookies } from "../../utils/createAuthTokens";
+import { TRPCError } from "@trpc/server";
 
 export const login = publicProcedure
   .input(
@@ -20,27 +21,32 @@ export const login = publicProcedure
     });
 
     if (!user) {
-      return {
-        error: "User not found",
-      };
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "User not found"
+      })
     }
 
     try {
       const valid = await argon2d.verify(user.passwordHash, input.password);
       if (!valid) {
-        return {
-          error: "Invalid password",
-        };
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Invalid password"
+        })
       }
-    } catch {
-      return {
-        error: "Something went wrong",
-      };
+    } catch (err) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: err.message
+      })
     }
 
     sendAuthCookies(ctx.res, user);
 
     return {
-      ok: true,
+      user: {
+        id: user.id,
+      },
     };
   });

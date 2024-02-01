@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { HeaderNav } from "./ui/HeaderNav";
 import { DashboardView } from "./components/dashboard/DashboardView";
 import { trpc } from "./utils/trpc";
@@ -7,17 +6,6 @@ import { DeleteBoardConfirmationModal } from "./components/dashboard/DeleteBoard
 import { useState } from "react";
 
 function Home() {
-  const { data, isLoading } = trpc.getMe.useQuery();
-  let router = useRouter();
-
-  if (isLoading) {
-    return null;
-  }
-
-  if (!data?.user) {
-    router.push("/register");
-  }
-
   return (
     <main className="page flex flex-col">
       <HeaderNav />
