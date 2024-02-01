@@ -5,6 +5,8 @@ import { LiaChartAreaSolid } from "react-icons/lia";
 import { SlGraph } from "react-icons/sl";
 import { Metric, MetricBlock } from "./metric-selector/MetricBlock";
 import { TiFlowSwitch } from "react-icons/ti";
+import { genId } from "../utils/genId";
+import { MetricMeasurement } from "@voidpulse/api";
 
 interface ChartEditorSidebarProps {
   metrics: Metric[];
@@ -55,7 +57,11 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
       {/* Choosing report type */}
       <div className="flex flex-row w-full justify-between">
         {reportTypes.map((type) => {
-          return <button className={reportTypeButtonStyle}>{type.icon}</button>;
+          return (
+            <button key={type.name} className={reportTypeButtonStyle}>
+              {type.icon}
+            </button>
+          );
         })}
       </div>
 
@@ -101,7 +107,15 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
       {addNewMetric ? (
         <MetricBlock
           onEventNameChange={(name) => {
-            setMetrics([...metrics, { eventName: name }]);
+            setMetrics([
+              ...metrics,
+              {
+                eventName: name,
+                id: genId(),
+                filters: [],
+                type: MetricMeasurement.totalEvents,
+              },
+            ]);
             setAddNewMetric(false);
           }}
           idx={metrics.length}

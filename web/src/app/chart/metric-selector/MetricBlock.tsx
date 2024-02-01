@@ -10,17 +10,12 @@ import { MetricSelector } from "./MetricSelector";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { IoClose, IoFilter } from "react-icons/io5";
+import { RouterInput } from "../../utils/trpc";
 
-export type MetricFilter = {
-  key: string;
-  value: any;
-};
+export type MetricFilter =
+  RouterInput["getInsight"]["metrics"][0]["filters"][0];
 
-export type Metric = {
-  eventName: string;
-  measurement?: MetricMeasurement;
-  filters?: MetricFilter[];
-};
+export type Metric = RouterInput["getInsight"]["metrics"][0] & { id: string };
 
 interface MetricBlockProps {
   idx: number;
@@ -123,7 +118,12 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
 
           {/* Metric measurement */}
           <div className="text-primary-200 text-xs accent-hover px-2 py-2 rounded-md flex items-center">
-            {metric?.measurement || "Unique users"}
+            {
+              {
+                [MetricMeasurement.totalEvents]: "Total events",
+                [MetricMeasurement.uniqueUsers]: "Unique users",
+              }[metric?.type || MetricMeasurement.totalEvents]
+            }
             <IoIosArrowDown className="ml-1" />
           </div>
         </div>

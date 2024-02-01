@@ -60,8 +60,8 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
                 .filter((item) => !inputValue || item.includes(inputValue))
                 .map((item, index) => (
                   <div
+                    key={item}
                     {...getItemProps({
-                      key: item,
                       index,
                       item: { value: item },
                     })}

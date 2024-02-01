@@ -19,12 +19,14 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
   const { projectId, boardId } = useProjectBoardContext();
   const { data, error } = trpc.getInsight.useQuery(
     {
-      eventName,
+      metrics,
+      breakdowns: [],
+      globalFilters: [],
       from: "2024-01-19 00:00:00",
       to: "2024-01-25 00:00:00",
       projectId: projectId,
     },
-    { enabled: !!eventName }
+    { enabled: !!metrics.length }
   );
   const { board } = useFetchProjectBoards();
 
@@ -61,17 +63,15 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
             </div>
             <DateRangePicker />
             {/* Chart  */}
-            {eventName && data?.data.length ? (
+            {data?.datas.length ? (
               <LineChart
                 data={{
-                  labels: data.data.map((d) => d.day.split(" ")[0]),
-                  datasets: [
-                    {
-                      ...lineChartStyle,
-                      label: "My First Dataset",
-                      data: data.data.map((d) => d.count),
-                    },
-                  ],
+                  labels: data.datas[0].map((d) => d.day.split(" ")[0]),
+                  datasets: data.datas.map((data) => ({
+                    ...lineChartStyle,
+                    label: "My First Dataset",
+                    data: data.map((d) => d.count),
+                  })),
                 }}
               />
             ) : null}

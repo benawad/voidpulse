@@ -1,15 +1,24 @@
 import { relations, sql } from "drizzle-orm";
-import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { date, jsonb, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { boards } from "./boards";
 import { users } from "./users";
 import { boardCharts } from "./board-charts";
+import { metricSchema } from "../routes/charts/getInsight";
+import { z } from "zod";
+import { chartDataSchema } from "../routes/charts/createChart";
 
 export const charts = pgTable("charts", {
   id: uuid("id")
     .primaryKey()
     .default(sql`uuid_generate_v4()`),
+  title: text("title"),
   description: text("description"),
+  metrics: jsonb("metrics").notNull().$type<z.infer<typeof metricSchema>[]>(),
+  data: jsonb("data").notNull().$type<z.infer<typeof chartDataSchema>>(),
   boardId: uuid("board_id"),
+  dataUpdatedAt: date("data_updated_at")
+    .notNull()
+    .default(sql`now()`),
   creatorId: uuid("creator_id").notNull(),
 });
 
