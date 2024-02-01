@@ -8,6 +8,7 @@ import { HeaderNav } from "../../ui/HeaderNav";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { ProjectBoardProvider } from "../../../../providers/ProjectBoardProvider";
 import { useFetchProjectBoards } from "../../utils/useFetchProjectBoards";
+import { ChartsGrid } from "./ChartsGrid";
 
 interface DashboardViewProps {}
 let charts = placeholderCharts;
@@ -31,19 +32,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
           <DashboardStickyHeader board={board} />
           <div>
             {/* Grid of charts */}
-            <div className="grid text-center p-8 lg:w-full lg:mb-0 lg:grid-cols-3 lg:text-left">
-              {charts.map((chart) => {
-                return (
-                  <div key={chart.title} className="m-2">
-                    <ChartThumbnail
-                      title={chart.title}
-                      subtitle={chart.subtitle}
-                      chartType={chart.chartType}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+            <ChartsGrid />
           </div>
         </div>
         <DashboardNavigator boards={boards} />

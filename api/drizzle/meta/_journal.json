@@ -43,6 +43,13 @@
       "when": 1706812921675,
       "tag": "0005_greedy_wither",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1706814556852,
+      "tag": "0006_fair_jubilee",
+      "breakpoints": true
     }
   ]
 }

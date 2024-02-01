@@ -59,3 +59,9 @@ export enum PropOrigin {
   event = 1,
   user,
 }
+
+export enum ChartType {
+  line = 1,
+  donut,
+  bar,
+}
