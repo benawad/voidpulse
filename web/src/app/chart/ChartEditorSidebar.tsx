@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BsBarChart } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { LiaChartAreaSolid } from "react-icons/lia";
@@ -7,14 +7,15 @@ import { Metric, MetricBlock } from "./metric-selector/MetricBlock";
 import { TiFlowSwitch } from "react-icons/ti";
 
 interface ChartEditorSidebarProps {
-  metrics: (Metric | null)[];
-  setMetrics: React.Dispatch<React.SetStateAction<(Metric | null)[]>>;
+  metrics: Metric[];
+  setMetrics: React.Dispatch<React.SetStateAction<Metric[]>>;
 }
 
 export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
   metrics,
   setMetrics,
 }) => {
+  const [addNewMetric, setAddNewMetric] = useState(false);
   const inputOptionsStyle =
     "accent-hover p-2 my-2 rounded-md flex items-center group justify-between text-primary-100 text-lg font-semibold";
   const plusIcon = (
@@ -62,7 +63,7 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
       <div
         className={inputOptionsStyle}
         onClick={() => {
-          setMetrics([...metrics, null]);
+          setAddNewMetric(true);
         }}
       >
         Metrics {plusIcon}
@@ -72,18 +73,42 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
           onEventNameChange={(name) => {
             setMetrics(
               metrics.map((metric, i) =>
-                i === idx ? { ...metric, name } : metric
+                i === idx ? { ...metric, eventName: name } : metric
               )
             );
           }}
           onDelete={() => {
             setMetrics(metrics.filter((_, i) => i !== idx));
           }}
+          onAddFilter={(newFilter) => {
+            setMetrics(
+              metrics.map((metric, i) =>
+                i === idx
+                  ? {
+                      ...metric,
+                      filters: [...(metric?.filters || []), newFilter],
+                    }
+                  : metric
+              )
+            );
+          }}
           idx={idx}
           metric={m}
         />
       ))}
+      {/* If a new metric is in the process of being added, display a new metric block UI as an input*/}
+      {/* Once the metric is successfully added, hide the new block and show it as part of the list above. */}
+      {addNewMetric ? (
+        <MetricBlock
+          onEventNameChange={(name) => {
+            setMetrics([...metrics, { eventName: name }]);
+            setAddNewMetric(false);
+          }}
+          idx={metrics.length}
+        />
+      ) : null}
 
+      {/* Choosing date range */}
       {/* Choosing filters */}
       <div className={inputOptionsStyle}>Filter {plusIcon}</div>
 

@@ -14,7 +14,7 @@ import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
-  const [metrics, setMetrics] = useState<(Metric | null)[]>([null]);
+  const [metrics, setMetrics] = useState<Metric[]>([]);
   const [eventName, setEventName] = React.useState("");
   const { projectId, boardId } = useProjectBoardContext();
   const { data, error } = trpc.getInsight.useQuery(
