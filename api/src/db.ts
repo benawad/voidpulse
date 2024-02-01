@@ -11,10 +11,6 @@ export const pool = new Pool({
 
 export type DbUser = typeof users.$inferSelect;
 
-export type DbProject = typeof projects.$inferInsert;
-
-export type DbBoard = typeof boards.$inferInsert;
-
 export const db = drizzle(pool, {
   schema: {
     users,
