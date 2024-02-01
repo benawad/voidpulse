@@ -26,8 +26,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({
 
   // Top section with square icons
   const reportTypeIconStyle = "w-8 h-8 rounded-md my-2 text-primary-400";
-  const reportTypeButtonStyle =
-    "accent-hover py-1 rounded-md w-full m-1 flex items-center flex flex-col text-xs border border-primary-800";
+  const reportTypeButtonStyle = `accent-hover py-1 rounded-md w-full m-1 flex items-center flex flex-col text-xs border border-primary-800`;
   const reportTypes = [
     {
       name: "Insights",
@@ -70,16 +69,20 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({
     <>
       {/* Choosing report type */}
       <div className="flex flex-row w-full justify-between my-2">
-        {reportTypes.map((reportType) => {
+        {reportTypes.map((rt) => {
           return (
             <button
-              key={reportType.name}
-              className={reportTypeButtonStyle}
+              key={rt.name}
+              className={
+                reportTypeButtonStyle +
+                " " +
+                (rt.type === reportType ? "bg-primary-700" : "")
+              }
               onClick={() => {
-                setReportType(reportType.type);
+                setReportType(rt.type);
               }}
             >
-              {reportType.icon}
+              {rt.icon}
             </button>
           );
         })}
