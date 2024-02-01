@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LineChart } from "../ui/charts/LineChart";
 import { placeholderLineData } from "../ui/charts/PlaceholderChartData";
 import Link from "next/link";

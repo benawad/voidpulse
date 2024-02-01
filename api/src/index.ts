@@ -5,6 +5,7 @@ import { app } from "./appRouter";
 import { clickhouse, runClickhouseMigrations } from "./clickhouse";
 import { dateInputRegex } from "./constants/regex";
 import { reservedPropKeys } from "./constants/reserved-keys";
+import { v4 } from "uuid";
 
 const eventSchema = z.object({
   name: z.string(),
@@ -32,6 +33,7 @@ type Event = z.infer<typeof eventSchema>;
 const startServer = async () => {
   await runClickhouseMigrations();
   app.post("/ingest", express.json(), async (req, res) => {
+    // @todo validation https://docs.mixpanel.com/docs/data-structure/property-reference#supported-data-types
     let event: Event;
     try {
       event = await eventSchema.parseAsync(req.body);
