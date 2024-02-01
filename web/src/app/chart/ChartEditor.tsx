@@ -1,20 +1,23 @@
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
 import { Button } from "../ui/Button";
 import { EditableTextField } from "../ui/EditableTextField";
 import { LineChart } from "../ui/charts/LineChart";
 import { transformToChartData } from "../utils/transformToChartData";
-import { trpc } from "../utils/trpc";
+import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { DateRangePicker } from "./DateRangePicker";
 import { Metric } from "./metric-selector/MetricBlock";
 import { ChartType } from "@voidpulse/api";
-interface ChartEditorProps {}
+import { genId } from "../utils/genId";
+interface ChartEditorProps {
+  chart?: RouterOutput["getCharts"]["charts"][0];
+}
 
-export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
+export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const router = useRouter();
   const utils = trpc.useUtils();
   const { projectId, boardId } = useProjectBoardContext();
@@ -32,9 +35,27 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
         });
       },
     });
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [metrics, setMetrics] = useState<Metric[]>([]);
+  const { mutateAsync: updateChart, isPending: pendingUpdateChart } =
+    trpc.updateChart.useMutation({
+      onSuccess: (data) => {
+        utils.getCharts.setData({ boardId, projectId }, (oldData) => {
+          if (oldData) {
+            return {
+              ...oldData,
+              charts: oldData.charts.map((x) =>
+                x.id === data.chart.id ? data.chart : x
+              ),
+            };
+          }
+          return oldData;
+        });
+      },
+    });
+  const [title, setTitle] = useState(chart?.title || "");
+  const [description, setDescription] = useState(chart?.description || "");
+  const [metrics, setMetrics] = useState<Metric[]>(() => {
+    return chart?.metrics.map((x) => ({ ...x, id: genId() })) || [];
+  });
   const { data, error } = trpc.getInsight.useQuery(
     {
       metrics,
@@ -88,20 +109,33 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
                 </div>
               </div>
               <Button
-                disabled={pendingCreateChart}
-                onClick={() => {
+                disabled={pendingCreateChart || pendingUpdateChart}
+                onClick={async () => {
                   if (metrics.length && data) {
-                    createChart({
-                      title,
-                      boardId,
-                      description,
-                      type: ChartType.line,
-                      projectId,
-                      metrics,
-                      data: transformToChartData(data.datas),
-                    }).then(() => {
-                      router.push(`/`);
-                    });
+                    if (chart) {
+                      updateChart({
+                        id: chart.id,
+                        projectId,
+                        updateData: {
+                          title,
+                          description,
+                          type: ChartType.line,
+                          metrics,
+                          data: transformToChartData(data.datas),
+                        },
+                      });
+                    } else {
+                      createChart({
+                        title,
+                        boardId,
+                        description,
+                        type: ChartType.line,
+                        projectId,
+                        metrics,
+                        data: transformToChartData(data.datas),
+                      });
+                    }
+                    router.push(`/`);
                   }
                 }}
               >
