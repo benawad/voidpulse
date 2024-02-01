@@ -8,16 +8,19 @@ import {
   updateBoard,
   createBoard,
   deleteBoard,
-} from "./routes/main/board-crud";
-import { getInsight } from "./routes/main/getInsight";
+} from "./routes/boards/board-crud";
+import { getInsight } from "./routes/charts/getInsight";
 import { login } from "./routes/auth/login";
 import { __prod__ } from "./constants/prod";
 import { register } from "./routes/auth/register";
 import { getMe } from "./routes/auth/getMe";
-import { getEventNames } from "./routes/main/getEventNames";
-import { getProjects } from "./routes/main/getProjects";
-import { getPropValues } from "./routes/main/getPropValues";
-import { getPropKeys } from "./routes/main/getPropKeys";
+import { getEventNames } from "./routes/charts/getEventNames";
+import { getProjects } from "./routes/boards/getProjects";
+import { getPropValues } from "./routes/charts/getPropValues";
+import { getPropKeys } from "./routes/charts/getPropKeys";
+import { createChart } from "./routes/charts/createChart";
+import { getCharts } from "./routes/charts/getCharts";
+import { updateChart } from "./routes/charts/updateChart";
 
 export const appRouter = t.router({
   getProjects,
@@ -32,6 +35,9 @@ export const appRouter = t.router({
   getInsight,
   getPropValues,
   getPropKeys,
+  createChart,
+  getCharts,
+  updateChart,
 });
 
 export const app = express();

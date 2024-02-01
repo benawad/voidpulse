@@ -4,9 +4,11 @@ import { Input } from "./Input";
 interface EditableTextFieldProps {
   text: string;
   onDone: (text: string) => void;
+  placeholder?: string;
 }
 
 export const EditableTextField: React.FC<EditableTextFieldProps> = ({
+  placeholder,
   text: startingText,
   onDone,
 }) => {
@@ -59,6 +61,7 @@ export const EditableTextField: React.FC<EditableTextFieldProps> = ({
       }}
     >
       <Input
+        placeholder={placeholder}
         ref={inputRef}
         value={text}
         autoFocus
@@ -76,7 +79,7 @@ export const EditableTextField: React.FC<EditableTextFieldProps> = ({
         setIsEditingTitle(true);
       }}
     >
-      {text}
+      {text || placeholder}
     </div>
   );
 };
