@@ -5,6 +5,7 @@ import { app } from "./appRouter";
 import { clickhouse, runClickhouseMigrations } from "./clickhouse";
 import { dateInputRegex } from "./constants/regex";
 import { reservedPropKeys } from "./constants/reserved-keys";
+import { kafkaProducer } from "./kafka/kafka";
 import { v4 } from "uuid";
 
 const eventSchema = z.object({
@@ -12,7 +13,7 @@ const eventSchema = z.object({
   insert_id: z.string(),
   created_at: z.string().regex(dateInputRegex),
   distinct_id: z.string(),
-  project_id: z.string(),
+  api_key: z.string(),
   properties: z.record(z.any()).refine(
     (obj) => {
       // Get all keys from the object
@@ -32,6 +33,7 @@ type Event = z.infer<typeof eventSchema>;
 
 const startServer = async () => {
   await runClickhouseMigrations();
+  await kafkaProducer.connect();
   app.post("/ingest", express.json(), async (req, res) => {
     // @todo validation https://docs.mixpanel.com/docs/data-structure/property-reference#supported-data-types
     let event: Event;
@@ -44,10 +46,19 @@ const startServer = async () => {
       });
       return;
     }
-    await clickhouse.insert({
-      table: "events",
-      values: [event],
-      format: "JSONEachRow",
+
+    await kafkaProducer.send({
+      topic: "events",
+      messages: [
+        {
+          value: JSON.stringify({
+            id: v4(),
+            project_id: v4(),
+            sign: 1,
+            ...event,
+          }),
+        },
+      ],
     });
 
     res.json({
