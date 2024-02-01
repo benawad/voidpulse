@@ -57,6 +57,13 @@
       "when": 1706823444710,
       "tag": "0007_round_logan",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1706827583172,
+      "tag": "0008_famous_sabra",
+      "breakpoints": true
     }
   ]
 }
