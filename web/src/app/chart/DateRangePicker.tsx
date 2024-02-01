@@ -1,31 +1,33 @@
 import { map } from "@trpc/server/observable";
 import React from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
+import { MultiToggleButtonBar } from "../ui/MultiToggleButtonBar";
 
 interface DateRangePickerProps {}
 
 export const DateRangePicker: React.FC<DateRangePickerProps> = ({}) => {
   const timeUnits = ["Custom", "Today", "Yesterday", "1M", "3M", "6M", "12M"];
+  const [selectedTimeUnit, setSelectedTimeUnit] = React.useState(timeUnits[0]);
+  const [selectedTimeUnitIdx, setSelectedTimeUnitIdx] = React.useState(0);
+  const nameActionPairs = timeUnits.map((unit, i) => {
+    return {
+      name: unit,
+      action: () => {
+        setSelectedTimeUnit(unit);
+        setSelectedTimeUnitIdx(i);
+      },
+      iconLeft: unit === "Custom" ? <FaRegCalendarAlt /> : undefined,
+    };
+  });
 
   return (
-    <div className="flex my-2">
-      <div className="flex flex-row border-primary-600 border rounded-lg">
-        {timeUnits.map((unit, i) => {
-          const isFirst = i === 0;
-          return (
-            <button
-              key={i}
-              className={
-                (isFirst ? "border-transparent " : "border-primary-600 ") +
-                "accent-hover border-l py-2 px-3 text-sm text-primary-500 flex flex-row items-center justify-center font-semibold"
-              }
-            >
-              {isFirst ? <FaRegCalendarAlt className="mr-2" /> : null}
-              {unit}
-            </button>
-          );
-        })}
-      </div>
+    <div className="flex">
+      <MultiToggleButtonBar
+        className="text-xs m-2"
+        buttonClassName="px-3"
+        buttonInfo={nameActionPairs}
+        selectedButtonIdx={selectedTimeUnitIdx}
+      />
     </div>
   );
 };
