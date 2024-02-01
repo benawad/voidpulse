@@ -76,6 +76,7 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
       </div>
       {metrics.map((m, idx) => (
         <MetricBlock
+          key={m.id}
           onEventNameChange={(name) => {
             setMetrics(
               metrics.map((metric, i) =>

@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { LineChart } from "../ui/charts/LineChart";
-import { placeholderLineData } from "../ui/charts/PlaceholderChartData";
 import Link from "next/link";
-import { MetricSelector } from "./metric-selector/MetricSelector";
-import { trpc } from "../utils/trpc";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
-import { lineChartStyle } from "../ui/charts/ChartStyle";
-import { Metric } from "./metric-selector/MetricBlock";
-import { DateRangePicker } from "./DateRangePicker";
-import { ChartEditorSidebar } from "./ChartEditorSidebar";
+import { Button } from "../ui/Button";
 import { EditableTextField } from "../ui/EditableTextField";
+import { LineChart } from "../ui/charts/LineChart";
+import { transformToChartData } from "../utils/transformToChartData";
+import { trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
+import { ChartEditorSidebar } from "./ChartEditorSidebar";
+import { DateRangePicker } from "./DateRangePicker";
+import { Metric } from "./metric-selector/MetricBlock";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
+  const router = useRouter();
+  const { mutateAsync: createChart, isPending: pendingCreateChart } =
+    trpc.createChart.useMutation();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [metrics, setMetrics] = useState<Metric[]>([]);
-  const [eventName, setEventName] = React.useState("");
   const { projectId, boardId } = useProjectBoardContext();
   const { data, error } = trpc.getInsight.useQuery(
     {
@@ -48,32 +52,51 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
           {/* Div that stacks the chart and data at the bottom */}
           <div className="p-12" style={{ minWidth: 800, minHeight: 500 }}>
             {/* Title and description */}
-            <div className="flex mb-1">
-              <h1 className="font-bold text-2xl text-primary-100">
-                <EditableTextField text={"Chart Title"} onDone={() => {}} />
-              </h1>
-            </div>
             <div className="flex">
-              <div className="text-xs subtext px-1 rounded-md">
-                <EditableTextField
-                  onDone={() => {}}
-                  text={"Add description..."}
-                />
+              <div className="flex-1">
+                <div className="flex mb-1">
+                  <h1 className="font-bold text-2xl text-primary-100">
+                    <EditableTextField
+                      placeholder="Chart title"
+                      text={title}
+                      onDone={setTitle}
+                    />
+                  </h1>
+                </div>
+                <div className="flex">
+                  <div className="text-xs subtext px-1 rounded-md">
+                    <EditableTextField
+                      onDone={setDescription}
+                      text={description}
+                      placeholder="Add description..."
+                    />
+                  </div>
+                </div>
               </div>
+              <Button
+                disabled={pendingCreateChart}
+                onClick={() => {
+                  if (metrics.length && data) {
+                    createChart({
+                      title,
+                      boardId,
+                      description,
+                      projectId,
+                      metrics,
+                      data: transformToChartData(data.datas),
+                    }).then(() => {
+                      router.push(`/`);
+                    });
+                  }
+                }}
+              >
+                Save
+              </Button>
             </div>
             <DateRangePicker />
             {/* Chart  */}
             {data?.datas.length ? (
-              <LineChart
-                data={{
-                  labels: data.datas[0].map((d) => d.day.split(" ")[0]),
-                  datasets: data.datas.map((data) => ({
-                    ...lineChartStyle,
-                    label: "My First Dataset",
-                    data: data.map((d) => d.count),
-                  })),
-                }}
-              />
+              <LineChart data={transformToChartData(data.datas)} />
             ) : null}
           </div>
           {/* Additional data at the bottom */}
