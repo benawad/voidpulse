@@ -65,3 +65,10 @@ export enum ChartType {
   donut,
   bar,
 }
+
+export enum ReportType {
+  insight = 1,
+  funnel,
+  retention,
+  flow,
+}

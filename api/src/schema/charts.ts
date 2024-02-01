@@ -6,7 +6,7 @@ import { boardCharts } from "./board-charts";
 import { metricSchema } from "../routes/charts/getInsight";
 import { z } from "zod";
 import { chartDataSchema } from "../routes/charts/createChart";
-import { ChartType } from "../app-router-type";
+import { ChartType, ReportType } from "../app-router-type";
 
 export const charts = pgTable("charts", {
   id: uuid("id")
@@ -14,7 +14,8 @@ export const charts = pgTable("charts", {
     .default(sql`uuid_generate_v4()`),
   title: text("title"),
   description: text("description"),
-  type: integer("type").notNull().$type<ChartType>(),
+  chartType: integer("chart_type").notNull().$type<ChartType>(),
+  reportType: integer("report_type").$type<ReportType>().notNull(),
   metrics: jsonb("metrics").notNull().$type<z.infer<typeof metricSchema>[]>(),
   data: jsonb("data").notNull().$type<z.infer<typeof chartDataSchema>>(),
   boardId: uuid("board_id"),

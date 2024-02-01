@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Metric } from "./metric-selector/Metric";
-import { MetricMeasurement } from "@voidpulse/api";
+import { MetricMeasurement, ReportType } from "@voidpulse/api";
 import { BsBarChart } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { LiaChartAreaSolid } from "react-icons/lia";
@@ -12,15 +12,48 @@ import { MetricBlock } from "./metric-selector/MetricBlock";
 interface ManualChartOptionsProps {
   metrics: Metric[];
   setMetrics: React.Dispatch<React.SetStateAction<Metric[]>>;
+  reportType: ReportType;
+  setReportType: React.Dispatch<React.SetStateAction<ReportType>>;
 }
 
 export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({
   metrics,
   setMetrics,
+  reportType,
+  setReportType,
 }) => {
   const [addNewMetric, setAddNewMetric] = useState(false);
 
+  // Top section with square icons
   const reportTypeIconStyle = "w-8 h-8 rounded-md my-2 text-primary-400";
+  const reportTypeButtonStyle =
+    "accent-hover py-1 rounded-md w-full m-1 flex items-center flex flex-col text-xs border border-primary-800";
+  const reportTypes = [
+    {
+      name: "Insights",
+      icon: <SlGraph className={reportTypeIconStyle} />,
+      type: ReportType.insight,
+    },
+    {
+      name: "Funnels",
+      icon: <BsBarChart className={"-scale-x-100 " + reportTypeIconStyle} />,
+      type: ReportType.funnel,
+    },
+    {
+      name: "Retention",
+      icon: (
+        <LiaChartAreaSolid className={"-scale-x-100 " + reportTypeIconStyle} />
+      ),
+      type: ReportType.retention,
+    },
+    {
+      name: "Flow",
+      icon: <TiFlowSwitch className={reportTypeIconStyle} />,
+      type: ReportType.flow,
+    },
+  ];
+
+  // For the lower sections where you toggle data, filters, breakdowns
   const inputOptionsStyle =
     "accent-hover p-2 my-2 rounded-md flex items-center group justify-between text-primary-100 text-lg font-semibold";
   const plusIcon = (
@@ -33,32 +66,20 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({
     </div>
   );
 
-  const reportTypeButtonStyle =
-    "accent-hover py-2 rounded-md w-full m-1 flex items-center bg-primary-800/50 flex flex-col text-xs text-primary-600";
-
-  const reportTypes = [
-    { name: "Insights", icon: <SlGraph className={reportTypeIconStyle} /> },
-    {
-      name: "Funnels",
-      icon: <BsBarChart className={"-scale-x-100 " + reportTypeIconStyle} />,
-    },
-    {
-      name: "Retention",
-      icon: (
-        <LiaChartAreaSolid className={"-scale-x-100 " + reportTypeIconStyle} />
-      ),
-    },
-    { name: "Flow", icon: <TiFlowSwitch className={reportTypeIconStyle} /> },
-  ];
-
   return (
     <>
       {/* Choosing report type */}
       <div className="flex flex-row w-full justify-between my-2">
-        {reportTypes.map((type) => {
+        {reportTypes.map((reportType) => {
           return (
-            <button key={type.name} className={reportTypeButtonStyle}>
-              {type.icon}
+            <button
+              key={reportType.name}
+              className={reportTypeButtonStyle}
+              onClick={() => {
+                setReportType(reportType.type);
+              }}
+            >
+              {reportType.icon}
             </button>
           );
         })}
@@ -71,7 +92,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({
           setAddNewMetric(true);
         }}
       >
-        Metrics {plusIcon}
+        Data {plusIcon}
       </div>
       {metrics.map((m, idx) => (
         <MetricBlock

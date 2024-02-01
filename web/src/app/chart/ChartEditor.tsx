@@ -10,7 +10,7 @@ import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { DateRangePicker } from "./DateRangePicker";
-import { ChartType } from "@voidpulse/api";
+import { ChartType, ReportType } from "@voidpulse/api";
 import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
 interface ChartEditorProps {
@@ -53,6 +53,12 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     });
   const [title, setTitle] = useState(chart?.title || "");
   const [description, setDescription] = useState(chart?.description || "");
+  const [reportType, setReportType] = useState(
+    chart?.reportType || ReportType.insight
+  );
+  const [chartType, setChartType] = useState(
+    chart?.chartType || ChartType.line
+  );
   const [metrics, setMetrics] = useState<Metric[]>(() => {
     return chart?.metrics.map((x) => ({ ...x, id: genId() })) || [];
   });
@@ -81,7 +87,12 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       </div>
       {/* View that houses editor and chart side by side */}
       <div className="flex grow w-full h-full">
-        <ChartEditorSidebar metrics={metrics} setMetrics={setMetrics} />
+        <ChartEditorSidebar
+          metrics={metrics}
+          setMetrics={setMetrics}
+          reportType={reportType}
+          setReportType={setReportType}
+        />
         {/* Main section of the chart view */}
         <div className="w-full">
           {/* Div that stacks the chart and data at the bottom */}
@@ -119,7 +130,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                         updateData: {
                           title,
                           description,
-                          type: ChartType.line,
+                          chartType,
+                          reportType,
                           metrics,
                           data: transformToChartData(data.datas),
                         },
@@ -129,7 +141,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                         title,
                         boardId,
                         description,
-                        type: ChartType.line,
+                        chartType,
+                        reportType,
                         projectId,
                         metrics,
                         data: transformToChartData(data.datas),

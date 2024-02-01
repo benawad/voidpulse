@@ -21,7 +21,7 @@ const colors = config.theme.extend.colors;
 export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   let chartToDisplay;
   let minChartDisplayWidth = 300;
-  switch (chart.type) {
+  switch (chart.chartType) {
     case ChartType.donut:
       chartToDisplay = <DonutChart data={placeholderDonutData} />;
       minChartDisplayWidth = 300;

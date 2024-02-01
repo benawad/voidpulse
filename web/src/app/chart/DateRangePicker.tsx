@@ -9,7 +9,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({}) => {
   const timeUnits = ["Custom", "Today", "Yesterday", "1M", "3M", "6M", "12M"];
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState(timeUnits[0]);
   const [selectedTimeUnitIdx, setSelectedTimeUnitIdx] = React.useState(0);
-  const nameActionPairs = timeUnits.map((unit, i) => {
+  const buttonInfoList = timeUnits.map((unit, i) => {
     return {
       name: unit,
       action: () => {
@@ -24,8 +24,8 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({}) => {
     <div className="flex">
       <MultiToggleButtonBar
         className="text-xs m-2"
-        buttonClassName="px-3"
-        buttonInfo={nameActionPairs}
+        buttonClassName="px-3 font-semibold"
+        buttonInfo={buttonInfoList}
         selectedButtonIdx={selectedTimeUnitIdx}
       />
     </div>

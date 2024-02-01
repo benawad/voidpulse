@@ -2,15 +2,20 @@ import React, { useState } from "react";
 import { MultiToggleButtonBar } from "../ui/MultiToggleButtonBar";
 import { ManualChartOptions } from "./ManualChartOptions";
 import { Metric } from "./metric-selector/Metric";
+import { ReportType } from "@voidpulse/api";
 
 interface ChartEditorSidebarProps {
   metrics: Metric[];
   setMetrics: React.Dispatch<React.SetStateAction<Metric[]>>;
+  reportType: ReportType;
+  setReportType: React.Dispatch<React.SetStateAction<ReportType>>;
 }
 
 export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
   metrics,
   setMetrics,
+  reportType,
+  setReportType,
 }) => {
   const [editorMode, setEditorMode] = useState("ai");
   return (
@@ -19,7 +24,7 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
       style={{ width: 400 }}
     >
       <MultiToggleButtonBar
-        className="font-bold text-md"
+        className="font-semibold text-md"
         buttonClassName="w-full"
         buttonInfo={[
           {
@@ -40,7 +45,12 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
       {editorMode === "ai" ? (
         <div>do stuff</div>
       ) : (
-        <ManualChartOptions metrics={metrics} setMetrics={setMetrics} />
+        <ManualChartOptions
+          metrics={metrics}
+          setMetrics={setMetrics}
+          reportType={reportType}
+          setReportType={setReportType}
+        />
       )}
     </div>
   );
