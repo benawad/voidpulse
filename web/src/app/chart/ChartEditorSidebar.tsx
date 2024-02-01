@@ -3,10 +3,12 @@ import { BsBarChart } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { LiaChartAreaSolid } from "react-icons/lia";
 import { SlGraph } from "react-icons/sl";
-import { Metric, MetricBlock } from "./metric-selector/MetricBlock";
+import { MetricBlock } from "./metric-selector/MetricBlock";
+import { Metric } from "./metric-selector/Metric";
 import { TiFlowSwitch } from "react-icons/ti";
 import { genId } from "../utils/genId";
 import { MetricMeasurement } from "@voidpulse/api";
+import { MultiToggleButtonBar } from "../ui/MultiToggleButtonBar";
 
 interface ChartEditorSidebarProps {
   metrics: Metric[];
@@ -18,6 +20,8 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
   setMetrics,
 }) => {
   const [addNewMetric, setAddNewMetric] = useState(false);
+  const [editorMode, setEditorMode] = useState("ai");
+
   const inputOptionsStyle =
     "accent-hover p-2 my-2 rounded-md flex items-center group justify-between text-primary-100 text-lg font-semibold";
   const plusIcon = (
@@ -54,6 +58,24 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
       className="border-r p-4 bg-primary-900 border-primary-800"
       style={{ width: 400 }}
     >
+      <MultiToggleButtonBar
+        nameActionPairs={[
+          {
+            name: "AI Chat ✨",
+            action: () => {
+              setEditorMode("ai");
+            },
+          },
+          {
+            name: "Manual 💪",
+            action: () => {
+              setEditorMode("manual");
+            },
+          },
+        ]}
+        selectedButtonIdx={editorMode === "ai" ? 0 : 1}
+      />
+
       {/* Choosing report type */}
       <div className="flex flex-row w-full justify-between">
         {reportTypes.map((type) => {

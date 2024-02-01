@@ -10,7 +10,7 @@ import { trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { DateRangePicker } from "./DateRangePicker";
-import { Metric } from "./metric-selector/MetricBlock";
+import { Metric } from "./metric-selector/Metric";
 interface ChartEditorProps {}
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({}) => {
