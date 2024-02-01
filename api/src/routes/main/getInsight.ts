@@ -24,6 +24,7 @@ export const getInsight = protectedProcedure
       projectId: z.string(),
       from: z.string().regex(dateInputRegex),
       to: z.string().regex(dateInputRegex),
+      eventName: z.string(),
       globalFilters: z.array(eventFilterSchema),
       breakdowns: z.array(eventFilterSchema),
       metrics: z.array(
