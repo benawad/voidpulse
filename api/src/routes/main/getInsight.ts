@@ -3,6 +3,20 @@ import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
 import { dateInputRegex } from "../../constants/regex";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
+import {
+  DataType,
+  FilterAndOr,
+  MetricMeasurement,
+  PropOrigin,
+} from "../../app-router-type";
+
+const eventFilterSchema = z.object({
+  propName: z.string(),
+  dataType: z.nativeEnum(DataType),
+  propOrigin: z.nativeEnum(PropOrigin),
+  value: z.any().optional(),
+  value2: z.any().optional(),
+});
 
 export const getInsight = protectedProcedure
   .input(
@@ -10,7 +24,16 @@ export const getInsight = protectedProcedure
       projectId: z.string(),
       from: z.string().regex(dateInputRegex),
       to: z.string().regex(dateInputRegex),
-      eventName: z.string(),
+      globalFilters: z.array(eventFilterSchema),
+      breakdowns: z.array(eventFilterSchema),
+      metrics: z.array(
+        z.object({
+          eventName: z.string(),
+          type: z.nativeEnum(MetricMeasurement),
+          andOr: z.nativeEnum(FilterAndOr).optional(),
+          filters: z.array(eventFilterSchema),
+        })
+      ),
     })
   )
   .query(

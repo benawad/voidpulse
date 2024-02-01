@@ -15,7 +15,10 @@ export const getEventNames = protectedProcedure
 
     const resp = await clickhouse.query({
       query: `
-			select distinct name from events where project_id = {projectId:UUID} order by name asc;
+			select distinct name
+      from events
+      where project_id = {projectId:UUID}
+      order by name asc limit 1500;
 		`,
       query_params: {
         projectId,

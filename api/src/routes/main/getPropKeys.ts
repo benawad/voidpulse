@@ -21,7 +21,7 @@ export const getPropKeys = protectedProcedure
 			from events
 			where name = {eventName:String} and project_id = {projectId:UUID}
 			order by value asc
-			limit 5;
+			limit 3;
 		`,
       query_params: {
         eventName,

@@ -14,3 +14,48 @@ export enum DataType {
   date,
   other,
 }
+
+export enum NumberFilterKey {
+  equals = 1,
+  notEqual,
+  greaterThan,
+  greaterThanOrEqual,
+  lessThan,
+  lessThanOrEqual,
+  between,
+  notBetween,
+  isNumeric,
+  isNotNumeric,
+}
+
+export enum StringFilterKey {
+  is = 1,
+  isNot,
+  contains,
+  notContains,
+  isSet,
+  isNotSet,
+}
+
+export enum DateFilterKey {
+  last = 1,
+  notInTheLast,
+  between,
+  notBetween,
+  on,
+  notOn,
+  beforeTheLast,
+  before,
+  since,
+  inTheNext,
+}
+
+export enum FilterAndOr {
+  and = 1,
+  or,
+}
+
+export enum PropOrigin {
+  event = 1,
+  user,
+}
