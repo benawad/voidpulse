@@ -17,6 +17,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
         <Link href="/assistant" className={headerItemStyle}>
           assistant
         </Link>
+        <Link href="/themes" className={headerItemStyle}>
+          themes
+        </Link>
       </div>
     </div>
   );
