@@ -16,6 +16,8 @@ import { register } from "./routes/auth/register";
 import { getMe } from "./routes/auth/getMe";
 import { getEventNames } from "./routes/main/getEventNames";
 import { getProjects } from "./routes/main/getProjects";
+import { getPropValues } from "./routes/main/getPropValues";
+import { getPropKeys } from "./routes/main/getPropKeys";
 
 export const appRouter = t.router({
   getProjects,
@@ -28,6 +30,8 @@ export const appRouter = t.router({
   createBoard,
   deleteBoard,
   getInsight,
+  getPropValues,
+  getPropKeys,
 });
 
 export const app = express();
