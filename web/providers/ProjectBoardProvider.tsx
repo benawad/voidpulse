@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from "react";
 
 type ProjectBoardContextType = {
   projectId: string;
-  boardId: string;
+  boardId?: string;
 };
 
 const ProjectBoardContext = React.createContext<ProjectBoardContextType>({

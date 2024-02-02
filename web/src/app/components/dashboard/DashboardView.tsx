@@ -21,21 +21,21 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
     return null;
   }
 
-  if (!board || !project || !projects || !boards) {
+  if (!project) {
     return <div>no project or boards ?</div>;
   }
 
   return (
-    <ProjectBoardProvider projectId={project.id} boardId={board.id}>
+    <ProjectBoardProvider projectId={project.id} boardId={board?.id}>
       <div className="flex flex-row-reverse flex-1">
         <div className="flex-1 relative">
-          <DashboardStickyHeader board={board} />
+          {board && <DashboardStickyHeader board={board} />}
           <div>
             {/* Grid of charts */}
             <ChartsGrid />
           </div>
         </div>
-        <DashboardNavigator boards={boards} />
+        <DashboardNavigator boards={boards || []} />
       </div>
     </ProjectBoardProvider>
   );
