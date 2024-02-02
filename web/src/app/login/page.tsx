@@ -53,8 +53,8 @@ const Page: React.FC = () => {
   return (
     <div className="page">
       <div className="flex justify-center">
-        <div className="card p-12">
-          <div className="text-center p-4 text-primary-500 font-bold">
+        <div className="card p-12 mt-8 max-w-md">
+          <div className="text-center mb-4 text-primary-500 font-bold">
             Log in
           </div>
           {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
@@ -100,13 +100,15 @@ const Page: React.FC = () => {
 
               {errors.root && <pre className="mt-4">{errors.root.message}</pre>}
             </div>
-            <Button type="submit" className="my-4">
+
+            <Button type="submit" className="my-4 text-primary-300">
               Enter
             </Button>
-          </form>
-          <Link href="/register" className="">
+
+          <Link href="/register" className="text-primary-500 underline self-center">
             don't have an account? create one
           </Link>
+          </form>
         </div>
       </div>
     </div>
