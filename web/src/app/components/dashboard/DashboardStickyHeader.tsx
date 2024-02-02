@@ -4,12 +4,10 @@ import { Button } from "../../ui/Button";
 import { FaPlus } from "react-icons/fa6";
 import { RouterOutput, trpc } from "../../utils/trpc";
 import { AddRandomEmojiButton } from "./AddRandomEmojiButton";
-import { Input } from "../../ui/Input";
 import { EditableTextField } from "../../ui/EditableTextField";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
-import EmojiPicker, { SuggestionMode, Theme } from "emoji-picker-react";
-import { MyEmojiPicker } from "./MyEmojiPicker";
+import { BoardEmojiPicker } from "./BoardEmojiPicker";
 
 interface DashboardStickyHeaderProps {
   board: RouterOutput["getProjects"]["boards"][0];
@@ -66,7 +64,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
           />
         </div>
         {emojiPickerOpen ? (
-          <MyEmojiPicker onEmojiPicked={() => setEmojiPickerOpen(false)} />
+          <BoardEmojiPicker onEmojiPicked={() => setEmojiPickerOpen(false)} />
         ) : null}
 
         <div className="flex ml-10">

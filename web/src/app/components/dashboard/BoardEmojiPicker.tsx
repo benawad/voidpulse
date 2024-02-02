@@ -4,11 +4,11 @@ import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvid
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { trpc } from "../../utils/trpc";
 
-interface MyEmojiPickerProps {
+interface BoardEmojiPickerProps {
   onEmojiPicked: () => void;
 }
 
-export const MyEmojiPicker: React.FC<MyEmojiPickerProps> = ({
+export const BoardEmojiPicker: React.FC<BoardEmojiPickerProps> = ({
   onEmojiPicked,
 }) => {
   const { lastProjectId } = useLastSelectedProjectBoardStore();
