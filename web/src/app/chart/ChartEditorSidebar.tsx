@@ -3,6 +3,7 @@ import { MultiToggleButtonBar } from "../ui/MultiToggleButtonBar";
 import { ManualChartOptions } from "./ManualChartOptions";
 import { Metric } from "./metric-selector/Metric";
 import { ReportType } from "@voidpulse/api";
+import { AiChatInterface } from "./metric-selector/ai-chart-editor/AiChatInterface";
 
 interface ChartEditorSidebarProps {
   metrics: Metric[];
@@ -43,7 +44,7 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
         selectedButtonIdx={editorMode === "ai" ? 0 : 1}
       />
       {editorMode === "ai" ? (
-        <div>do stuff</div>
+        <AiChatInterface />
       ) : (
         <ManualChartOptions
           metrics={metrics}

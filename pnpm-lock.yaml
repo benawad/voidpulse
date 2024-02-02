@@ -126,6 +126,9 @@ importers:
       downshift:
         specifier: ^8.3.1
         version: 8.3.1(react@18.2.0)
+      emoji-picker-react:
+        specifier: ^4.7.11
+        version: 4.7.11(react@18.2.0)
       next:
         specifier: 14.1.0
         version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -1725,6 +1728,16 @@ packages:
     resolution: {integrity: sha512-dq/owIaALxZGqWm5RXpKQ4baX6aDC19e2Z16c8SXYN+I71PyEKjbVqQUgm7kcuk8CRqljTKXbolo0XXDjxnh2w==}
     dev: true
 
+  /emoji-picker-react@4.7.11(react@18.2.0):
+    resolution: {integrity: sha512-2YLdy7Yp23c2LkRpQlXzP4vcxbc41pA2WgW5D2RnGwO2cpf6hgicCJn6hz7fuNOH8KXvP8OTW5mo7FKq7H4YPw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      flairup: 0.0.37
+      react: 18.2.0
+    dev: false
+
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
@@ -1959,6 +1972,10 @@ packages:
       unpipe: 1.0.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /flairup@0.0.37:
+    resolution: {integrity: sha512-GY7coNGpJQczEIfBsgByKhkclQZC2OosDyyGTfFfm2rXEzwq7MbWQgGo/GwM7TdU53Ow4rPznKPMC8Q3iympjQ==}
     dev: false
 
   /follow-redirects@1.15.5:

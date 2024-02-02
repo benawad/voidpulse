@@ -152,7 +152,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   }
                 }}
               >
-                Save
+                Save chart
               </Button>
             </div>
             <DateRangePicker />

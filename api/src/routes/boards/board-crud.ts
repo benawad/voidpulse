@@ -50,6 +50,7 @@ export const updateBoard = protectedProcedure
       data: z.object({
         title: z.string().optional(),
         description: z.string().optional(),
+        emoji: z.string().optional(),
         randomEmoji: z.boolean().optional(),
       }),
     })

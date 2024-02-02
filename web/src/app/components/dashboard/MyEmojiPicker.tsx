@@ -1,16 +1,20 @@
+import EmojiPicker, { SuggestionMode, Theme } from "emoji-picker-react";
 import React from "react";
-import { FaPlus } from "react-icons/fa6";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
-import { trpc } from "../../utils/trpc";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
-import EmojiPicker from "emoji-picker-react";
+import { trpc } from "../../utils/trpc";
 
-interface AddEmojiButtonProps {}
+interface MyEmojiPickerProps {
+  onEmojiPicked: () => void;
+}
 
-export const AddRandomEmojiButton: React.FC<AddEmojiButtonProps> = ({}) => {
+export const MyEmojiPicker: React.FC<MyEmojiPickerProps> = ({
+  onEmojiPicked,
+}) => {
   const { lastProjectId } = useLastSelectedProjectBoardStore();
   const { boardId } = useProjectBoardContext();
   const utils = trpc.useUtils();
+
   const { mutateAsync, isPending } = trpc.updateBoard.useMutation({
     onSuccess: (data) => {
       utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
@@ -27,22 +31,24 @@ export const AddRandomEmojiButton: React.FC<AddEmojiButtonProps> = ({}) => {
   });
 
   return (
-    <>
-      <button
-        disabled={isPending}
-        onClick={() => {
+    <div className="absolute">
+      <EmojiPicker
+        suggestedEmojisMode={SuggestionMode.RECENT}
+        autoFocusSearch={true}
+        theme={Theme.DARK}
+        width={300}
+        onEmojiClick={(emoji) => {
+          onEmojiPicked();
           mutateAsync({
             id: boardId,
-            data: { randomEmoji: true },
+            data: { emoji: emoji.emoji },
           });
+          console.log(emoji);
         }}
-      >
-        <FaPlus
-          className="m-auto fill-white/30 group-hover:fill-white h-full w-full"
-          style={{ padding: 6 }}
-          size={12}
-        />
-      </button>
-    </>
+        previewConfig={{
+          showPreview: false,
+        }}
+      />
+    </div>
   );
 };
