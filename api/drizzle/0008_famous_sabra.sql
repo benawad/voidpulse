@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "api_key_idx" ON "projects" ("name");
