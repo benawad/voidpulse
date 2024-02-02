@@ -1,19 +1,20 @@
 import EmojiPicker, { SuggestionMode, Theme } from "emoji-picker-react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { trpc } from "../../utils/trpc";
 
 interface BoardEmojiPickerProps {
-  onEmojiPicked: () => void;
+  onDone: () => void;
 }
 
 export const BoardEmojiPicker: React.FC<BoardEmojiPickerProps> = ({
-  onEmojiPicked,
+  onDone,
 }) => {
   const { lastProjectId } = useLastSelectedProjectBoardStore();
   const { boardId } = useProjectBoardContext();
   const utils = trpc.useUtils();
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   const { mutateAsync, isPending } = trpc.updateBoard.useMutation({
     onSuccess: (data) => {
@@ -30,15 +31,31 @@ export const BoardEmojiPicker: React.FC<BoardEmojiPickerProps> = ({
     },
   });
 
+  // Happens when you click outside the picker
+  useEffect(() => {
+    const handleOutsideClick = (e: any) => {
+      console.log("handling click");
+      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+        console.log("handling outside click");
+        onDone();
+      }
+    };
+    //Checks if you are outside the input once your mouse moves
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   return (
-    <div className="absolute">
+    <div className="absolute" ref={pickerRef}>
       <EmojiPicker
         suggestedEmojisMode={SuggestionMode.RECENT}
         autoFocusSearch={true}
         theme={Theme.DARK}
         width={300}
         onEmojiClick={(emoji) => {
-          onEmojiPicked();
+          onDone();
           mutateAsync({
             id: boardId,
             data: { emoji: emoji.emoji },

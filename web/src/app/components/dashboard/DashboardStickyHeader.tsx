@@ -64,7 +64,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
           />
         </div>
         {emojiPickerOpen ? (
-          <BoardEmojiPicker onEmojiPicked={() => setEmojiPickerOpen(false)} />
+          <BoardEmojiPicker onDone={() => setEmojiPickerOpen(false)} />
         ) : null}
 
         <div className="flex ml-10">
