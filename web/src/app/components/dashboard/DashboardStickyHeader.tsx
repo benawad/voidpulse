@@ -80,8 +80,9 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
               text={
                 board.description?.trim()
                   ? board.description
-                  : "Add description..."
+                  : ""
               }
+              placeholder="Add description"
             />
           </div>
         </div>
