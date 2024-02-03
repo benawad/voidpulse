@@ -67,7 +67,7 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
         <LineSeparator />
         <div className="subtext py-2">MY BOARDS</div>
         {boards.map((board) => {
-          return <DashboardSidebarButton board={board} />;
+          return <DashboardSidebarButton key={board.id} board={board} />;
         })}
       </div>
     </div>
