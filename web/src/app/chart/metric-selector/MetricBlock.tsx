@@ -18,6 +18,7 @@ import { FloatingMenu } from "../../ui/FloatingMenu";
 import { MeasurementSelector } from "../MeasurementSelector";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { set } from "react-hook-form";
+import { FloatingTooltip } from "../../ui/FloatingTooltip";
 
 interface MetricBlockProps {
   idx: number;
@@ -86,15 +87,28 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
               </button>
               {/* Only show filter option if an event has been chosen */}
               {onAddFilter ? (
-                <div
-                  className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
-                  onClick={() => {
-                    console.log("Adding filter");
-                    setAddNewFilter(true);
-                  }}
+                <FloatingTrigger
+                  appearsOnHover
+                  placement="top"
+                  floatingContent={
+                    <FloatingTooltip>
+                      Add a filter to this dataset
+                    </FloatingTooltip>
+                  }
                 >
-                  <IoFilter size={36} className="fill-primary-500 p-2" />
-                </div>
+                  <div
+                    className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
+                    onClick={() => {
+                      console.log("Adding filter");
+                      setAddNewFilter(true);
+                    }}
+                  >
+                    <IoFilter
+                      size={36}
+                      className="fill-primary-500 hover:fill-secondary-signature-100 p-2"
+                    />
+                  </div>
+                </FloatingTrigger>
               ) : null}
               {/* Only show delete option if an event has been chosen */}
               {onDelete ? (
