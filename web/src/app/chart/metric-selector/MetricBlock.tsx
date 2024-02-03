@@ -13,6 +13,9 @@ import { IoClose, IoFilter } from "react-icons/io5";
 import { FilterBlock } from "./FilterBlock";
 import { Metric, MetricFilter } from "./Metric";
 import { LineSeparator } from "../../ui/LineSeparator";
+import { FloatingTrigger } from "../../ui/FloatingTrigger";
+import { FloatingMenu } from "../../ui/FloatingMenu";
+import { MeasurementSelector } from "../MeasurementSelector";
 
 interface MetricBlockProps {
   idx: number;
@@ -122,16 +125,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             </div>
           ) : null}
 
-          {/* TODO: Metric measurement selector */}
-          <div className="text-primary-400 text-xs accent-hover px-2 py-2 rounded-md flex items-center">
-            {
-              {
-                [MetricMeasurement.totalEvents]: "Total events",
-                [MetricMeasurement.uniqueUsers]: "Unique users",
-              }[metric?.type || MetricMeasurement.totalEvents]
-            }
-            <IoIosArrowDown className="ml-1" />
-          </div>
+          <MeasurementSelector metric={metric} />
 
           {/* Metric specific filters */}
           {metric?.filters
@@ -153,7 +147,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
               })
             : null}
           {/* Show a shell filter block if we are about to add a new filter in here: */}
-          {/* Like with the Metric Block itself, once the filter is successfully added, 
+          {/* Like with the Metric Block itself, once the filter is successfully added,
           hide the new filter shell and show it as part of the list above. */}
           {/* This should only be happening in an established metric block where the onAddFilter function exists.*/}
           {addNewFilter && onAddFilter ? (
