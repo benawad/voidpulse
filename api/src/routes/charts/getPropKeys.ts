@@ -20,7 +20,6 @@ export const getPropKeys = protectedProcedure
 			select properties
 			from events
 			where name = {eventName:String} and project_id = {projectId:UUID}
-			order by value asc
 			limit 3;
 		`,
       query_params: {
@@ -53,8 +52,17 @@ export const getPropKeys = protectedProcedure
             }
           }
         });
-      } catch {}
+      } catch (err) {
+        console.log(data);
+        console.log(x);
+        console.log(err);
+      }
     });
 
-    return { propDefs };
+    return {
+      propDefs: Object.entries(propDefs).map(([key, value]) => ({
+        key,
+        type: value.type,
+      })),
+    };
   });

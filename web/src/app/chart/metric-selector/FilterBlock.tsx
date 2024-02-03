@@ -1,22 +1,48 @@
 import React, { useState } from "react";
 import { IoClose, IoFilter } from "react-icons/io5";
 import { MetricFilter } from "./Metric";
+import { FilterSelector } from "./FilterSelector";
+import {
+  useClick,
+  useDismiss,
+  useFloating,
+  useInteractions,
+} from "@floating-ui/react";
 
 interface FilterBlockProps {
   onDelete?: () => void;
   onFilterChosen: (filter: MetricFilter) => void;
+  filter?: MetricFilter;
+  eventName: string;
 }
 
 export const FilterBlock: React.FC<FilterBlockProps> = ({
   onDelete,
   onFilterChosen,
+  filter,
+  eventName,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  // Automatically open the selector if there's no filter, otherwise keep it closed.
+  const [isOpen, setIsOpen] = useState(!filter);
+  //Floating UI info to pass to the selector
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: setIsOpen,
+    placement: "bottom-start",
+  });
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    useClick(context),
+    useDismiss(context),
+  ]);
   return (
     <div className="flex accent-hover justify-between items-center rounded-lg">
-      <div className="flex flex-row group">
+      <div
+        className="flex flex-row group"
+        ref={refs.setReference}
+        {...getReferenceProps()}
+      >
         <IoFilter className="fill-secondary-complement-100 mx-2" />
-        <div className="text-sm">I am a new filter</div>
+        <div className="text-sm">{filter?.propName || "Select filter"}</div>
       </div>
       {/* Delete button shows up if it's an existing filter */}
       {onDelete || true ? (
@@ -32,7 +58,21 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
       ) : null}
 
       {/* Floating UI for choosing metric to add */}
-      {isOpen ? null : null}
+      {isOpen ? (
+        <div
+          ref={refs.setFloating}
+          {...getFloatingProps()}
+          style={floatingStyles}
+        >
+          <FilterSelector
+            eventName={eventName}
+            onFilterChosen={(filter) => {
+              setIsOpen(false);
+              onFilterChosen(filter);
+            }}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -97,6 +97,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({
       >
         Data {plusIcon}
       </div>
+      {/* Display all chosen metrics  */}
       {metrics.map((m, idx) => (
         <MetricBlock
           key={m.id}

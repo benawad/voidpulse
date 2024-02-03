@@ -34,9 +34,7 @@ export const BoardEmojiPicker: React.FC<BoardEmojiPickerProps> = ({
   // Happens when you click outside the picker
   useEffect(() => {
     const handleOutsideClick = (e: any) => {
-      console.log("handling click");
       if (pickerRef.current && !pickerRef.current.contains(e.target)) {
-        console.log("handling outside click");
         onDone();
       }
     };

@@ -40,7 +40,6 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
           style={{ width: 420, height: 360 }}
           className="bg-primary-900 border-primary-600 border shadow-xl flex flex-col p-4 rounded-md"
         >
-          {/* <label {...getLabelProps()}>Enter a fruit</label> */}
           <div
             style={{ display: "inline-block" }}
             className="w-full"

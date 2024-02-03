@@ -45,8 +45,8 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
 
   return (
     // Full metric block: label, drag handle, metric selector, and measurement.
-    // Can be empty if no metric is selected.
-    // Can be expanded to add metric specific filters.
+    // Can be an empty prompting box if no metric is selected.
+    // Also includes metric specific filters.
     <div className="standard card py-1 px-1 my-2" key={idx}>
       <div className="flex flex-row">
         {/* Left side of the button for the label and drag handle*/}
@@ -67,7 +67,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
           <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" />
         </div>
 
-        {/* Main middle section for choosing events and units */}
+        {/* Main middle section for selecting events and units */}
         <div className={"flex flex-col w-full"}>
           {/* Metric selector */}
           <div className="flex justify-between items-center group">
@@ -78,6 +78,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             >
               {metric?.eventName || "Select event"}
             </button>
+            {/* Only show filter option if an event has been chosen */}
             {onAddFilter ? (
               <div
                 className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
@@ -89,6 +90,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 <IoFilter size={36} className="fill-primary-500 p-2" />
               </div>
             ) : null}
+            {/* Only show delete option if an event has been chosen */}
             {onDelete ? (
               <div
                 className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 hover:bg-secondary-red-100/20"
@@ -102,7 +104,8 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             ) : null}
           </div>
 
-          {/* Floating UI for choosing metric to add */}
+          {/* Floating UI for choosing an event to add */}
+          {/* Automatically open when the metric is empty, and closed when a metric is chosen. */}
           {isOpen ? (
             <div
               ref={refs.setFloating}
@@ -119,7 +122,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             </div>
           ) : null}
 
-          {/* Metric measurement */}
+          {/* TODO: Metric measurement selector */}
           <div className="text-primary-400 text-xs accent-hover px-2 py-2 rounded-md flex items-center">
             {
               {
@@ -141,7 +144,8 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                         ? onDeleteFilter(metricSpecificFilter)
                         : undefined;
                     }}
-                    onFilterChosen={() => {
+                    eventName={metric?.eventName || ""}
+                    onFilterChosen={(filter) => {
                       console.log("Changing filter");
                     }}
                   />
@@ -162,6 +166,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                   //Hide the new filter shell
                   setAddNewFilter(false);
                 }}
+                eventName={metric?.eventName || ""}
               />
             </>
           ) : null}
