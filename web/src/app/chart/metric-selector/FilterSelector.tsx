@@ -5,6 +5,7 @@ import { trpc } from "../../utils/trpc";
 import Downshift from "downshift";
 import { Input } from "../../ui/Input";
 import { PulseLoader } from "../../ui/PulseLoader";
+import { DataType, PropOrigin } from "@voidpulse/api";
 
 interface FilterSelectorProps {
   eventName: string;
@@ -25,12 +26,20 @@ export const FilterSelector: React.FC<FilterSelectorProps> = ({
   });
 
   return (
-    <Downshift
+    <Downshift<{
+      type: DataType;
+      key: string;
+    }>
       onChange={(selection) => {
-        onFilterChosen(selection ? selection.value : "");
-        console.log(selection.value);
+        if (selection) {
+          onFilterChosen({
+            propName: selection.key,
+            dataType: selection.type,
+            propOrigin: PropOrigin.event,
+          });
+        }
       }}
-      itemToString={(item) => (item ? item.value : "")}
+      itemToString={(item) => (item ? item.key : "")}
       initialIsOpen
     >
       {({
@@ -72,7 +81,7 @@ export const FilterSelector: React.FC<FilterSelectorProps> = ({
                     key={item.key}
                     {...getItemProps({
                       index,
-                      item: { value: item },
+                      item,
                     })}
                     className={
                       "flex flex-row p-2 accent-hover group rounded-md " +
@@ -84,7 +93,6 @@ export const FilterSelector: React.FC<FilterSelectorProps> = ({
                     {/* <TbClick className="mr-2 opacity-40" /> */}
                     <div className="text-primary-200 group-hover:text-secondary-signature-100">
                       {item.key}
-                      {item.type}
                     </div>
                   </div>
                 ))}

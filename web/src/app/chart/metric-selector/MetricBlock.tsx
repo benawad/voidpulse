@@ -46,6 +46,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
     useDismiss(context),
   ]);
   const [addNewFilter, setAddNewFilter] = useState(false);
+  console.log("here: ", metric?.filters);
 
   return (
     // Full metric block: label, drag handle, metric selector, and measurement.
@@ -129,34 +130,33 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
           <MeasurementSelector metric={metric} />
 
           {/* Metric specific filters */}
-          {metric?.filters
-            ? metric?.filters.map((metricSpecificFilter, i) => {
-                return (
-                  <FilterBlock
-                    key={i}
-                    onDelete={() => {
-                      setState((prev) => ({
-                        ...prev,
-                        metrics: prev.metrics.map((m, j) =>
-                          m.id === metric?.id
-                            ? {
-                                ...m,
-                                filters: m.filters?.filter(
-                                  (f) => f !== metricSpecificFilter
-                                ),
-                              }
-                            : m
-                        ),
-                      }));
-                    }}
-                    eventName={metric?.eventName || ""}
-                    onFilterChosen={(filter) => {
-                      console.log("Changing filter");
-                    }}
-                  />
-                );
-              })
-            : null}
+          {metric?.filters.map((metricSpecificFilter, i) => {
+            return (
+              <FilterBlock
+                key={i}
+                onDelete={() => {
+                  setState((prev) => ({
+                    ...prev,
+                    metrics: prev.metrics.map((m, j) =>
+                      m.id === metric?.id
+                        ? {
+                            ...m,
+                            filters: m.filters?.filter(
+                              (f) => f !== metricSpecificFilter
+                            ),
+                          }
+                        : m
+                    ),
+                  }));
+                }}
+                filter={metricSpecificFilter}
+                eventName={metric?.eventName || ""}
+                onFilterChosen={(filter) => {
+                  console.log("Changing filter");
+                }}
+              />
+            );
+          })}
           {/* Show a shell filter block if we are about to add a new filter in here: */}
           {/* Like with the Metric Block itself, once the filter is successfully added,
           hide the new filter shell and show it as part of the list above. */}

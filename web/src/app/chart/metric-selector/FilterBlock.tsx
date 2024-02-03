@@ -35,6 +35,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
     useClick(context),
     useDismiss(context),
   ]);
+
   return (
     <div className="flex accent-hover justify-between items-center rounded-lg">
       <div
