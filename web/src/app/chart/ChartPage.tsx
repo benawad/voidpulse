@@ -5,6 +5,7 @@ import { HeaderNav } from "../ui/HeaderNav";
 import { trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartEditor } from "./ChartEditor";
+import { ChartStateProvider } from "../../../providers/ChartStateProvider";
 
 function Page() {
   const { isLoading, board, project, projects, boards } =
@@ -33,8 +34,10 @@ function Page() {
   return (
     <div className="page">
       <ProjectBoardProvider projectId={project.id} boardId={board.id}>
-        <HeaderNav />
-        <ChartEditor chart={chart} />
+        <ChartStateProvider chart={chart}>
+          <HeaderNav />
+          <ChartEditor chart={chart} />
+        </ChartStateProvider>
       </ProjectBoardProvider>
     </div>
   );

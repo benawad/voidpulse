@@ -13,11 +13,14 @@ import { DateRangePicker } from "./DateRangePicker";
 import { ChartType, ReportType } from "@voidpulse/api";
 import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
+import { useChartStateContext } from "../../../providers/ChartStateProvider";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
+  const [{ metrics, chartType, reportType, title, description }, setState] =
+    useChartStateContext();
   const router = useRouter();
   const utils = trpc.useUtils();
   const { projectId, boardId } = useProjectBoardContext();
@@ -51,17 +54,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
         });
       },
     });
-  const [title, setTitle] = useState(chart?.title || "");
-  const [description, setDescription] = useState(chart?.description || "");
-  const [reportType, setReportType] = useState(
-    chart?.reportType || ReportType.insight
-  );
-  const [chartType, setChartType] = useState(
-    chart?.chartType || ChartType.line
-  );
-  const [metrics, setMetrics] = useState<Metric[]>(() => {
-    return chart?.metrics.map((x) => ({ ...x, id: genId() })) || [];
-  });
+
   const { data, error } = trpc.getInsight.useQuery(
     {
       metrics,
@@ -87,12 +80,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       </div>
       {/* View that houses editor and chart side by side */}
       <div className="flex grow w-full h-full">
-        <ChartEditorSidebar
-          metrics={metrics}
-          setMetrics={setMetrics}
-          reportType={reportType}
-          setReportType={setReportType}
-        />
+        <ChartEditorSidebar />
         {/* Main section of the chart view */}
         <div className="w-full">
           {/* Div that stacks the chart and data at the bottom */}
@@ -105,14 +93,18 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     <EditableTextField
                       placeholder="Chart title"
                       text={title}
-                      onDone={setTitle}
+                      onDone={(text) =>
+                        setState((prev) => ({ ...prev, title: text }))
+                      }
                     />
                   </h1>
                 </div>
                 <div className="flex">
                   <div className="text-xs subtext px-1 rounded-md">
                     <EditableTextField
-                      onDone={setDescription}
+                      onDone={(text) =>
+                        setState((prev) => ({ ...prev, description: text }))
+                      }
                       text={description}
                       placeholder="Add description..."
                     />

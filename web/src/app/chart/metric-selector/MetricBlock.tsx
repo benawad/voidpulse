@@ -16,6 +16,8 @@ import { LineSeparator } from "../../ui/LineSeparator";
 import { FloatingTrigger } from "../../ui/FloatingTrigger";
 import { FloatingMenu } from "../../ui/FloatingMenu";
 import { MeasurementSelector } from "../MeasurementSelector";
+import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { set } from "react-hook-form";
 
 interface MetricBlockProps {
   idx: number;
@@ -23,7 +25,6 @@ interface MetricBlockProps {
   onEventNameChange: (eventName: string) => void;
   onDelete?: () => void;
   onAddFilter?: (f: MetricFilter) => void;
-  onDeleteFilter?: (f: MetricFilter) => void;
 }
 
 export const MetricBlock: React.FC<MetricBlockProps> = ({
@@ -32,8 +33,8 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
   onEventNameChange,
   onDelete,
   onAddFilter,
-  onDeleteFilter,
 }) => {
+  const [, setState] = useChartStateContext();
   const [isOpen, setIsOpen] = useState(!metric);
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
@@ -134,9 +135,19 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                   <FilterBlock
                     key={i}
                     onDelete={() => {
-                      onDeleteFilter
-                        ? onDeleteFilter(metricSpecificFilter)
-                        : undefined;
+                      setState((prev) => ({
+                        ...prev,
+                        metrics: prev.metrics.map((m, j) =>
+                          m.id === metric?.id
+                            ? {
+                                ...m,
+                                filters: m.filters?.filter(
+                                  (f) => f !== metricSpecificFilter
+                                ),
+                              }
+                            : m
+                        ),
+                      }));
                     }}
                     eventName={metric?.eventName || ""}
                     onFilterChosen={(filter) => {

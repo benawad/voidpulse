@@ -8,6 +8,7 @@ import {
   useFloating,
   useInteractions,
 } from "@floating-ui/react";
+import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 
 interface FilterBlockProps {
   onDelete?: () => void;

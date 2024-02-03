@@ -1,27 +1,22 @@
-import React, { useState } from "react";
-import { Metric } from "./metric-selector/Metric";
 import { MetricMeasurement, ReportType } from "@voidpulse/api";
+import React, { useState } from "react";
 import { BsBarChart } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { LiaChartAreaSolid } from "react-icons/lia";
 import { SlGraph } from "react-icons/sl";
 import { TiFlowSwitch } from "react-icons/ti";
+import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import { genId } from "../utils/genId";
+import { Metric } from "./metric-selector/Metric";
 import { MetricBlock } from "./metric-selector/MetricBlock";
 
-interface ManualChartOptionsProps {
-  metrics: Metric[];
-  setMetrics: React.Dispatch<React.SetStateAction<Metric[]>>;
-  reportType: ReportType;
-  setReportType: React.Dispatch<React.SetStateAction<ReportType>>;
-}
+interface ManualChartOptionsProps {}
 
-export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({
-  metrics,
-  setMetrics,
-  reportType,
-  setReportType,
-}) => {
+export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
+  const [{ metrics, reportType }, setState] = useChartStateContext();
+  const setMetrics = (newMetrics: Metric[]) => {
+    setState((prev) => ({ ...prev, metrics: newMetrics }));
+  };
   const [addNewMetric, setAddNewMetric] = useState(false);
 
   // Top section with square icons
@@ -79,7 +74,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({
                 (rt.type === reportType ? "bg-primary-700" : "")
               }
               onClick={() => {
-                setReportType(rt.type);
+                setState((prev) => ({ ...prev, reportType: rt.type }));
               }}
             >
               {rt.icon}
