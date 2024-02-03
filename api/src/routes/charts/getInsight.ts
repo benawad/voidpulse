@@ -65,7 +65,11 @@ const queryMetric = async ({
     query: `
     SELECT
         toStartOfDay(created_at) AS day,
-        toInt32(count()) AS count
+        toInt32(count(${
+          metric.type === MetricMeasurement.uniqueUsers
+            ? `DISTINCT distinct_id`
+            : ``
+        })) AS count
     FROM events
     WHERE
       project_id = {projectId:UUID}

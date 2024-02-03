@@ -6,7 +6,7 @@ import { AiChatInterface } from "./metric-selector/ai-chart-editor/AiChatInterfa
 interface ChartEditorSidebarProps {}
 
 export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = () => {
-  const [editorMode, setEditorMode] = useState("ai");
+  const [editorMode, setEditorMode] = useState("manual");
   return (
     <div
       className="border-r p-4 bg-primary-900 border-primary-800"
