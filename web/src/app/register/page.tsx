@@ -6,6 +6,7 @@ import Link from "next/link";
 import { trpc } from "../utils/trpc";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
+import { ErrorMessage } from "../ui/ErrorMessage";
 
 type Inputs = {
   email: string;
@@ -91,7 +92,9 @@ const Page: React.FC = () => {
                   },
                 })}
               />
-              {errors.email && <pre>{errors.email.message}</pre>}
+              {errors.email && (
+                <ErrorMessage>{errors.email.message}</ErrorMessage>
+              )}
 
               {/* include validation with required or other standard HTML validation rules */}
               <Input
@@ -110,7 +113,9 @@ const Page: React.FC = () => {
                   },
                 })}
               />
-              {errors.password && <pre>{errors.password.message}</pre>}
+              {errors.password && (
+                <ErrorMessage>{errors.password.message}</ErrorMessage>
+              )}
 
               {/* include validation with required or other standard HTML validation rules */}
               <Input
@@ -130,17 +135,24 @@ const Page: React.FC = () => {
                 })}
               />
               {errors.repeatPassword && (
-                <pre>{errors.repeatPassword.message}</pre>
+                <ErrorMessage>{errors.repeatPassword.message}</ErrorMessage>
               )}
 
-              {errors.root && <pre className="mt-4">{errors.root.message}</pre>}
+              {errors.root && (
+                <ErrorMessage className="mt-3">
+                  {errors.root.message}
+                </ErrorMessage>
+              )}
             </div>
 
             <Button type="submit" className="my-4 text-primary-300">
               Enter
             </Button>
 
-            <Link href="/login" className="text-primary-500 underline self-center">
+            <Link
+              href="/login"
+              className="text-primary-500 underline self-center"
+            >
               already have an account? log in
             </Link>
           </form>
