@@ -1,18 +1,19 @@
-import { Kafka } from "kafkajs";
+import { Kafka, Partitioners } from "kafkajs";
 
 const kafka = new Kafka({
   clientId: "my-app",
   brokers: ["localhost:9092"],
 });
 
-export const kafkaProducer = kafka.producer();
+export const kafkaProducer = kafka.producer({ createPartitioner: Partitioners.DefaultPartitioner });
 const errorTypes = ["unhandledRejection", "uncaughtException"];
 const signalTraps = ["SIGTERM", "SIGINT", "SIGUSR2"];
 
 errorTypes.forEach((type) => {
-  process.on(type, async () => {
+  process.on(type, async (error) => {
     try {
-      console.log(`process.on ${type}`);
+      console.error(`process exit on ${type}`);
+      console.error(error);
       await kafkaProducer.disconnect();
       process.exit(0);
     } catch (_) {
