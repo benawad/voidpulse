@@ -53,108 +53,115 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
     // Can be an empty prompting box if no metric is selected.
     // Also includes metric specific filters.
     <div className="standard card py-1 px-1 my-2" key={idx}>
-      <div className="flex flex-row">
+      {/* Top section for the event */}
+      <div className="flex flex-col">
         {/* Left side of the button for the label and drag handle*/}
-        <div className={"cursor-grab accent-hover group rounded-md"}>
+        <div className="flex flex-row">
           {/* Square label for the dataset letter ID */}
-          <div
-            className="text-primary-900 flex text-sm font-bold m-2 bg-secondary-signature-100 rounded-md items-center"
-            style={{
-              height: 18,
-              width: 18,
-              textAlign: "center",
-              justifyContent: "center",
-              marginTop: 8,
-            }}
-          >
-            {String.fromCharCode(idx + "A".charCodeAt(0))}
-          </div>
-          <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" />
-        </div>
-
-        {/* Main middle section for selecting events and units */}
-        <div className={"flex flex-col w-full"}>
-          {/* Metric selector */}
-          <div className="flex justify-between items-center group">
-            <button
-              {...getReferenceProps()}
-              ref={refs.setReference}
-              className="w-full text-primary-100 flex text-sm accent-hover p-2 font-semibold rounded-md"
+          <div className={"cursor-grab accent-hover group rounded-md"}>
+            <div
+              className="text-primary-900 flex text-sm font-bold m-2 bg-secondary-signature-100 rounded-md items-center"
+              style={{
+                height: 18,
+                width: 18,
+                textAlign: "center",
+                justifyContent: "center",
+                marginTop: 8,
+              }}
             >
-              {metric?.eventName || "Select event"}
-            </button>
-            {/* Only show filter option if an event has been chosen */}
-            {onAddFilter ? (
-              <div
-                className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
-                onClick={() => {
-                  console.log("Adding filter");
-                  setAddNewFilter(true);
-                }}
+              {String.fromCharCode(idx + "A".charCodeAt(0))}
+            </div>
+            <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" />
+          </div>
+          {/* Main middle section for selecting events and units */}
+          <div className={"flex flex-col w-full"}>
+            {/* Metric selector */}
+            <div className="flex justify-between items-center group">
+              <button
+                {...getReferenceProps()}
+                ref={refs.setReference}
+                className="w-full text-primary-100 flex text-sm accent-hover p-2 font-semibold rounded-md"
               >
-                <IoFilter size={36} className="fill-primary-500 p-2" />
-              </div>
-            ) : null}
-            {/* Only show delete option if an event has been chosen */}
-            {onDelete ? (
+                {metric?.eventName || "Select event"}
+              </button>
+              {/* Only show filter option if an event has been chosen */}
+              {onAddFilter ? (
+                <div
+                  className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
+                  onClick={() => {
+                    console.log("Adding filter");
+                    setAddNewFilter(true);
+                  }}
+                >
+                  <IoFilter size={36} className="fill-primary-500 p-2" />
+                </div>
+              ) : null}
+              {/* Only show delete option if an event has been chosen */}
+              {onDelete ? (
+                <div
+                  className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 hover:bg-secondary-red-100/20"
+                  onClick={onDelete}
+                >
+                  <IoClose
+                    size={36}
+                    className="fill-primary-500 hover:fill-secondary-red-100 p-2"
+                  />
+                </div>
+              ) : null}
+            </div>
+
+            {/* Floating UI for choosing an event to add */}
+            {/* Automatically open when the metric is empty, and closed when a metric is chosen. */}
+            {isOpen ? (
               <div
-                className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 hover:bg-secondary-red-100/20"
-                onClick={onDelete}
+                ref={refs.setFloating}
+                {...getFloatingProps()}
+                style={floatingStyles}
               >
-                <IoClose
-                  size={36}
-                  className="fill-primary-500 hover:fill-secondary-red-100 p-2"
+                <MetricSelector
+                  eventName={metric?.eventName || ""}
+                  onEventNameChange={(name) => {
+                    setIsOpen(false);
+                    onEventNameChange(name);
+                  }}
                 />
               </div>
             ) : null}
+
+            <MeasurementSelector metric={metric} />
           </div>
+        </div>
 
-          {/* Floating UI for choosing an event to add */}
-          {/* Automatically open when the metric is empty, and closed when a metric is chosen. */}
-          {isOpen ? (
-            <div
-              ref={refs.setFloating}
-              {...getFloatingProps()}
-              style={floatingStyles}
-            >
-              <MetricSelector
-                eventName={metric?.eventName || ""}
-                onEventNameChange={(name) => {
-                  setIsOpen(false);
-                  onEventNameChange(name);
-                }}
-              />
-            </div>
-          ) : null}
-
-          <MeasurementSelector metric={metric} />
-
-          {/* Metric specific filters */}
+        {/* Lower section for adding event specific filters */}
+        <div>
           {metric?.filters.map((metricSpecificFilter, i) => {
             return (
-              <FilterBlock
-                key={i}
-                onDelete={() => {
-                  setState((prev) => ({
-                    ...prev,
-                    metrics: prev.metrics.map((m, j) =>
-                      m.id === metric?.id
-                        ? {
-                            ...m,
-                            filters: m.filters?.filter(
-                              (f) => f !== metricSpecificFilter
-                            ),
-                          }
-                        : m
-                    ),
-                  }));
-                }}
-                filter={metricSpecificFilter}
-                eventName={metric?.eventName || ""}
-                onFilterChosen={(filter) => {
-                  console.log("Changing filter");
-                }}
-              />
+              <>
+                <LineSeparator className="my-0" />
+                <FilterBlock
+                  key={i}
+                  onDelete={() => {
+                    setState((prev) => ({
+                      ...prev,
+                      metrics: prev.metrics.map((m, j) =>
+                        m.id === metric?.id
+                          ? {
+                              ...m,
+                              filters: m.filters?.filter(
+                                (f) => f !== metricSpecificFilter
+                              ),
+                            }
+                          : m
+                      ),
+                    }));
+                  }}
+                  filter={metricSpecificFilter}
+                  eventName={metric?.eventName || ""}
+                  onFilterChosen={(filter) => {
+                    console.log("Changing filter");
+                  }}
+                />
+              </>
             );
           })}
           {/* Show a shell filter block if we are about to add a new filter in here: */}
