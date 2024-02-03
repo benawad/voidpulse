@@ -1,5 +1,5 @@
 {
-  "id": "ef3ea5a2-c870-4eae-a96d-281e9da913f1",
+  "id": "285ba8d9-4f3b-4cba-b30b-e1cb832e7aa0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -72,11 +72,23 @@
           "notNull": true,
           "default": "uuid_generate_v4()"
         },
-        "name": {
-          "name": "name",
+        "emoji": {
+          "name": "emoji",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "project_id": {
           "name": "project_id",
@@ -107,9 +119,39 @@
           "notNull": true,
           "default": "uuid_generate_v4()"
         },
-        "name": {
-          "name": "name",
+        "title": {
+          "name": "title",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chart_type": {
+          "name": "chart_type",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "report_type": {
+          "name": "report_type",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "metrics": {
+          "name": "metrics",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true
         },
@@ -118,6 +160,13 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "data_updated_at": {
+          "name": "data_updated_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         },
         "creator_id": {
           "name": "creator_id",
@@ -131,34 +180,47 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "clickhouse_migrations": {
-      "name": "clickhouse_migrations",
+    "people": {
+      "name": "people",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "uuid_generate_v4()"
-        },
-        "name": {
-          "name": "name",
+        "distinct_id": {
+          "name": "distinct_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "applied_on": {
-          "name": "applied_on",
+        "project_id": {
+          "name": "project_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "properties": {
+          "name": "properties",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
           "type": "date",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'now()'"
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "people_distinct_id_project_id_pk": {
+          "name": "people_distinct_id_project_id_pk",
+          "columns": [
+            "distinct_id",
+            "project_id"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "project_users": {
@@ -242,7 +304,15 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "api_key_idx": {
+          "name": "api_key_idx",
+          "columns": [
+            "api_key"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
@@ -264,6 +334,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "token_version": {
+          "name": "token_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
         "password_hash": {
           "name": "password_hash",
           "type": "text",
@@ -274,7 +351,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     }
   },
   "enums": {},

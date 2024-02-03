@@ -5,64 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1706478057190,
-      "tag": "0000_brief_puma",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1706487671542,
-      "tag": "0001_puzzling_wiccan",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1706488712591,
-      "tag": "0002_overconfident_rachel_grey",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1706635541286,
-      "tag": "0003_strong_rawhide_kid",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1706639243913,
-      "tag": "0004_breezy_bedlam",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1706812921675,
-      "tag": "0005_greedy_wither",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1706814556852,
-      "tag": "0006_fair_jubilee",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1706823444710,
-      "tag": "0007_round_logan",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "5",
-      "when": 1706827583172,
-      "tag": "0008_famous_sabra",
+      "when": 1706994104720,
+      "tag": "0000_rainy_rafael_vega",
       "breakpoints": true
     }
   ]

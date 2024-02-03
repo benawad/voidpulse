@@ -4,14 +4,13 @@ export const up = async (clickhouse: ClickHouseClient) => {
   await clickhouse.command({
     query: `
 		CREATE TABLE events_queue (
-			id UUID,
 			insert_id UUID,
 			name String,
-			created_at DateTime,
+			ingested_at DateTime,
+			time DateTime,
 			distinct_id String,
 			properties String,
-			project_id UUID,
-			sign Int8
+			project_id UUID
 	)
 	ENGINE = Kafka
 	SETTINGS kafka_broker_list = 'localhost:9092',

@@ -6,6 +6,8 @@ import { dateInputRegex } from "../../constants/regex";
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { projects } from "../../schema/projects";
+import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
+import { checkApiKeyMiddleware } from "./middleware/checkApiKeyMiddleware";
 
 const eventSchema = z.object({
   name: z.string().min(1).max(255),
@@ -16,7 +18,6 @@ const eventSchema = z.object({
 });
 
 const bodySchema = z.object({
-  api_key: z.string().regex(/^vp_[0-9a-f]{32}$/),
   events: z.array(eventSchema),
 });
 
@@ -25,14 +26,13 @@ type Body = z.infer<typeof bodySchema>;
 // 1mb - approx
 const maxPropsSize = 1048576;
 
-const apiKeyCache: Record<string, string> = {};
-
 export const addIngestRoute = (app: Express) => {
   app.post(
     "/ingest",
     express.json({
       limit: "100mb",
     }),
+    checkApiKeyMiddleware,
     async (req, res) => {
       let body: Body;
       try {
@@ -46,24 +46,12 @@ export const addIngestRoute = (app: Express) => {
           .status(400);
         return;
       }
-      if (!(body.api_key in apiKeyCache)) {
-        const project = await db.query.projects.findFirst({
-          where: eq(projects.apiKey, body.api_key),
-        });
-        if (!project) {
-          res
-            .json({
-              ok: false,
-              errors: ["Invalid api key"],
-            })
-            .status(401);
-          return;
-        }
-        apiKeyCache[body.api_key] = project.id;
-      }
-      const project_id = apiKeyCache[body.api_key];
+
+      // middlware adds this
+      const project_id = (req as any).project_id;
       const messages: Array<{ value: string }> = [];
       const warnings: Array<string> = [];
+      const ingest_at = dateToClickhouseDateString(new Date());
       for (const { properties, ...event } of body.events) {
         const str_props = JSON.stringify(properties);
         if (str_props.length > maxPropsSize) {
@@ -78,7 +66,7 @@ export const addIngestRoute = (app: Express) => {
           value: JSON.stringify({
             id: v4(),
             project_id,
-            sign: -1,
+            ingest_at,
             properties: str_props,
             ...event,
           }),

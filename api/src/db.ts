@@ -6,6 +6,7 @@ import { projects } from "./schema/projects";
 import { projectUsers } from "./schema/project-users";
 import { boards } from "./schema/boards";
 import { charts } from "./schema/charts";
+import { __prod__ } from "./constants/prod";
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -14,6 +15,7 @@ export const pool = new Pool({
 export type DbUser = typeof users.$inferSelect;
 
 export const db = drizzle(pool, {
+  logger: !__prod__,
   schema: {
     users,
     projects,

@@ -14,7 +14,7 @@ export const projects = pgTable(
   },
   (table) => {
     return {
-      apiKeyIdx: index("api_key_idx").on(table.name),
+      apiKeyIdx: index("api_key_idx").on(table.apiKey),
     };
   }
 );
