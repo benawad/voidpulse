@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
-import { metricSchema } from "./getInsight";
+import { metricSchema } from "./insight/eventFilterSchema";
 import { db } from "../../db";
 import { charts } from "../../schema/charts";
 import { boardCharts } from "../../schema/board-charts";

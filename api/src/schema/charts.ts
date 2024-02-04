@@ -3,10 +3,10 @@ import { date, integer, jsonb, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { boards } from "./boards";
 import { users } from "./users";
 import { boardCharts } from "./board-charts";
-import { metricSchema } from "../routes/charts/getInsight";
 import { z } from "zod";
 import { chartDataSchema } from "../routes/charts/createChart";
 import { ChartType, ReportType } from "../app-router-type";
+import { InputMetric } from "../routes/charts/insight/eventFilterSchema";
 
 export const charts = pgTable("charts", {
   id: uuid("id")
@@ -16,7 +16,7 @@ export const charts = pgTable("charts", {
   description: text("description"),
   chartType: integer("chart_type").notNull().$type<ChartType>(),
   reportType: integer("report_type").$type<ReportType>().notNull(),
-  metrics: jsonb("metrics").notNull().$type<z.infer<typeof metricSchema>[]>(),
+  metrics: jsonb("metrics").notNull().$type<InputMetric[]>(),
   data: jsonb("data").notNull().$type<z.infer<typeof chartDataSchema>>(),
   boardId: uuid("board_id"),
   dataUpdatedAt: date("data_updated_at")

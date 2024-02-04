@@ -1,29 +1,15 @@
 import { z } from "zod";
-import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
-import { dateInputRegex } from "../../constants/regex";
-import { protectedProcedure } from "../../trpc";
-import { assertProjectMember } from "../../utils/assertProjectMember";
+import { ClickHouseQueryResponse, clickhouse } from "../../../clickhouse";
+import { dateInputRegex } from "../../../constants/regex";
+import { protectedProcedure } from "../../../trpc";
+import { assertProjectMember } from "../../../utils/assertProjectMember";
+import { FilterAndOr, MetricMeasurement } from "../../../app-router-type";
 import {
-  DataType,
-  FilterAndOr,
-  MetricMeasurement,
-  PropOrigin,
-} from "../../app-router-type";
-
-const eventFilterSchema = z.object({
-  propName: z.string(),
-  dataType: z.nativeEnum(DataType),
-  propOrigin: z.nativeEnum(PropOrigin),
-  value: z.any().optional(),
-  value2: z.any().optional(),
-});
-
-export const metricSchema = z.object({
-  eventName: z.string(),
-  type: z.nativeEnum(MetricMeasurement),
-  andOr: z.nativeEnum(FilterAndOr).optional(),
-  filters: z.array(eventFilterSchema),
-});
+  InputMetric,
+  eventFilterSchema,
+  metricSchema,
+} from "./eventFilterSchema";
+import { filtersToSql } from "../../../utils/filtersToSql";
 
 type InsightData = { day: string; count: number };
 
@@ -39,7 +25,10 @@ export const getInsight = protectedProcedure
     })
   )
   .query(
-    async ({ input: { projectId, from, to, metrics }, ctx: { userId } }) => {
+    async ({
+      input: { projectId, from, to, metrics, globalFilters },
+      ctx: { userId },
+    }) => {
       await assertProjectMember({ projectId, userId });
 
       return {
@@ -59,12 +48,14 @@ const queryMetric = async ({
   projectId: string;
   from: string;
   to: string;
-  metric: z.infer<typeof metricSchema>;
+  metric: InputMetric;
 }) => {
+  const { paramMap, whereStrings } = filtersToSql(metric.filters);
+  const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
   const resp = await clickhouse.query({
     query: `
     SELECT
-        toStartOfDay(created_at) AS day,
+        toStartOfDay(time) AS day,
         toInt32(count(${
           metric.type === MetricMeasurement.uniqueUsers
             ? `DISTINCT distinct_id`
@@ -73,9 +64,12 @@ const queryMetric = async ({
     FROM events
     WHERE
       project_id = {projectId:UUID}
-      AND created_at >= {from:DateTime}
-      AND created_at <= {to:DateTime}
+      AND time >= {from:DateTime}
+      AND time <= {to:DateTime}
       AND name = {eventName:String}
+      ${
+        whereStrings.length > 0 ? `AND ${whereStrings.join(whereCombiner)}` : ""
+      }
     GROUP BY day
     ORDER BY day ASC
   `,
@@ -84,6 +78,7 @@ const queryMetric = async ({
       from,
       to,
       eventName: metric.eventName,
+      ...paramMap,
     },
   });
   const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();

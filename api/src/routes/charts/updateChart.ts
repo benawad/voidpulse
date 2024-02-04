@@ -6,7 +6,7 @@ import { charts } from "../../schema/charts";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { chartDataSchema } from "./createChart";
-import { metricSchema } from "./getInsight";
+import { metricSchema } from "./insight/eventFilterSchema";
 import { ChartType, ReportType } from "../../app-router-type";
 
 export const updateChart = protectedProcedure

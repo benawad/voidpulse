@@ -3,6 +3,8 @@ import { z } from "zod";
 import { db } from "../../db";
 import { SQL, sql } from "drizzle-orm";
 import { checkApiKeyMiddleware } from "./middleware/checkApiKeyMiddleware";
+import { kafkaProducer } from "../../kafka/kafka";
+import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
 
 const bodySchema = z.object({
   distinct_id: z.string().min(1).max(255),
@@ -76,7 +78,25 @@ export const addUpdatePeopleRoute = (app: Express) => {
         }
       }
 
-      await db.execute(sql.join(sqlChunks));
+      sqlChunks.push(sql`returning *`);
+
+      const {
+        rows: [row],
+      } = await db.execute(sql.join(sqlChunks));
+
+      if (row) {
+        await kafkaProducer.send({
+          topic: "people",
+          messages: [
+            {
+              value: JSON.stringify({
+                ...row,
+                ingested_at: dateToClickhouseDateString(new Date()),
+              }),
+            },
+          ],
+        });
+      }
 
       res.json({ ok: true });
     }

@@ -9,7 +9,7 @@ import {
   createBoard,
   deleteBoard,
 } from "./routes/boards/board-crud";
-import { getInsight } from "./routes/charts/getInsight";
+import { getInsight } from "./routes/charts/insight/getInsight";
 import { login } from "./routes/auth/login";
 import { __prod__ } from "./constants/prod";
 import { register } from "./routes/auth/register";
