@@ -38,16 +38,16 @@ export enum StringFilterOperation {
 }
 
 export enum DateFilterOperation {
-  last = 1,
-  notInTheLast,
-  between,
+  between = 1,
   notBetween,
   on,
   notOn,
-  beforeTheLast,
   before,
   since,
-  inTheNext,
+  // beforeTheLast,
+  // last,
+  // notInTheLast,
+  // inTheNext,
 }
 
 export enum FilterAndOr {
