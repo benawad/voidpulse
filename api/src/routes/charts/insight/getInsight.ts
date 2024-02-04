@@ -6,6 +6,7 @@ import { assertProjectMember } from "../../../utils/assertProjectMember";
 import { FilterAndOr, MetricMeasurement } from "../../../app-router-type";
 import {
   InputMetric,
+  MetricFilter,
   eventFilterSchema,
   metricSchema,
 } from "./eventFilterSchema";
@@ -20,20 +21,22 @@ export const getInsight = protectedProcedure
       from: z.string().regex(dateInputRegex),
       to: z.string().regex(dateInputRegex),
       globalFilters: z.array(eventFilterSchema),
-      breakdowns: z.array(eventFilterSchema),
+      breakdowns: z.array(eventFilterSchema).max(1),
       metrics: z.array(metricSchema),
     })
   )
   .query(
     async ({
-      input: { projectId, from, to, metrics, globalFilters },
+      input: { projectId, from, to, metrics, breakdowns },
       ctx: { userId },
     }) => {
       await assertProjectMember({ projectId, userId });
 
       return {
         datas: await Promise.all(
-          metrics.map((x) => queryMetric({ projectId, from, to, metric: x }))
+          metrics.map((x) =>
+            queryMetric({ projectId, from, to, metric: x, breakdowns })
+          )
         ),
       };
     }
@@ -48,6 +51,7 @@ const queryMetric = async ({
   projectId: string;
   from: string;
   to: string;
+  breakdowns: MetricFilter[];
   metric: InputMetric;
 }) => {
   const { paramMap, whereStrings } = filtersToSql(metric.filters);
