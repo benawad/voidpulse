@@ -22,4 +22,5 @@ export const metricSchema = z.object({
   filters: z.array(eventFilterSchema),
 });
 
+export type MetricFilter = z.infer<typeof eventFilterSchema>;
 export type InputMetric = z.infer<typeof metricSchema>;
