@@ -9,22 +9,33 @@ import {
   useInteractions,
 } from "@floating-ui/react";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { DataType, PropOrigin } from "@voidpulse/api";
 
 interface FilterBlockProps {
   onDelete?: () => void;
-  onFilterChosen: (filter: MetricFilter) => void;
+  onFilterDefined: (filter: MetricFilter) => void;
   filter?: MetricFilter;
   eventName: string;
+  // newFilterInfo?: {
+  //   propName: string;
+  //   dataType: DataType;
+  //   propOrigin: PropOrigin;
+  //   operation: number;
+  //   value?: any;
+  //   value2?: any;
+  // };
 }
 
 export const FilterBlock: React.FC<FilterBlockProps> = ({
   onDelete,
-  onFilterChosen,
+  onFilterDefined,
   filter,
   eventName,
+  newFilterInfo,
 }) => {
   // Automatically open the selector if there's no filter, otherwise keep it closed.
   const [isOpen, setIsOpen] = useState(!filter);
+
   //Floating UI info to pass to the selector
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
@@ -37,7 +48,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
   ]);
 
   return (
-    <div className="flex accent-hover items-center rounded-lg">
+    <div className="flex flex-col accent-hover items-center rounded-lg">
       <div
         className="flex flex-row group w-full justify-between items-center"
         ref={refs.setReference}
@@ -63,7 +74,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
         ) : null}
       </div>
 
-      {/* Floating UI for choosing metric to add */}
+      {/* Floating UI for choosing prop name to add */}
       {isOpen ? (
         <div
           ref={refs.setFloating}
@@ -72,13 +83,23 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
         >
           <FilterSelector
             eventName={eventName}
-            onFilterChosen={(filter) => {
+            onFilterPropNameChosen={(filterProps) => {
               setIsOpen(false);
-              onFilterChosen(filter);
             }}
           />
         </div>
       ) : null}
+
+      {/* {
+  propName: "numberBattles",
+  dataType: DataType.Number,
+  propOrigin: PropOrigin.event,
+  operation: NumberFilterOperation.GreaterThan,
+  value: 10
+} */}
+
+      {/* Filter operation appears once a filter is chosen */}
+      {eventName ? <div>{eventName} needs a specific operation</div> : null}
     </div>
   );
 };

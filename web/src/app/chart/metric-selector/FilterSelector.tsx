@@ -10,12 +10,12 @@ import { DataType, PropOrigin } from "@voidpulse/api";
 interface FilterSelectorProps {
   eventName: string;
   filter?: MetricFilter;
-  onFilterChosen: (filter: MetricFilter) => void;
+  onFilterPropNameChosen: (filter: MetricFilter) => void;
 }
 
 export const FilterSelector: React.FC<FilterSelectorProps> = ({
   filter,
-  onFilterChosen,
+  onFilterPropNameChosen,
   eventName,
 }) => {
   const { projectId } = useProjectBoardContext();
@@ -32,7 +32,7 @@ export const FilterSelector: React.FC<FilterSelectorProps> = ({
     }>
       onChange={(selection) => {
         if (selection) {
-          onFilterChosen({
+          onFilterPropNameChosen({
             propName: selection.key,
             dataType: selection.type,
             propOrigin: PropOrigin.event,

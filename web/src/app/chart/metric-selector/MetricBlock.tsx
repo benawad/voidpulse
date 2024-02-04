@@ -7,17 +7,14 @@ import {
   useInteractions,
 } from "@floating-ui/react";
 import { MetricSelector } from "./MetricSelector";
-import { IoIosArrowDown } from "react-icons/io";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { IoClose, IoFilter } from "react-icons/io5";
 import { FilterBlock } from "./FilterBlock";
 import { Metric, MetricFilter } from "./Metric";
 import { LineSeparator } from "../../ui/LineSeparator";
 import { FloatingTrigger } from "../../ui/FloatingTrigger";
-import { FloatingMenu } from "../../ui/FloatingMenu";
 import { MeasurementSelector } from "../MeasurementSelector";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
-import { set } from "react-hook-form";
 import { FloatingTooltip } from "../../ui/FloatingTooltip";
 
 interface MetricBlockProps {
@@ -46,8 +43,10 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
     useClick(context),
     useDismiss(context),
   ]);
-  const [addNewFilter, setAddNewFilter] = useState(false);
-  console.log("here: ", metric?.filters);
+  // const [addNewFilter, setAddNewFilter] = useState(false);
+  // Needs to temporarily know the filter value before it can finalize the filter object.
+  const [newFilterInfo, setNewFilterValueInfo] =
+    useState<Partial<MetricFilter> | null>(null);
 
   return (
     // Full metric block: label, drag handle, metric selector, and measurement.
@@ -100,7 +99,13 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                     className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
                     onClick={() => {
                       console.log("Adding filter");
-                      setAddNewFilter(true);
+                      // setAddNewFilter(true);
+                      setNewFilterValueInfo({
+                        propName: "",
+                        dataType: DataType.string,
+                        propOrigin: PropOrigin.event,
+                        operation: 0,
+                      });
                     }}
                   >
                     <IoFilter
@@ -171,7 +176,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                   }}
                   filter={metricSpecificFilter}
                   eventName={metric?.eventName || ""}
-                  onFilterChosen={(filter) => {
+                  onFilterDefined={(filter) => {
                     console.log("Changing filter");
                   }}
                 />
@@ -182,15 +187,16 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
           {/* Like with the Metric Block itself, once the filter is successfully added,
           hide the new filter shell and show it as part of the list above. */}
           {/* This should only be happening in an established metric block where the onAddFilter function exists.*/}
-          {addNewFilter && onAddFilter ? (
+          {newFilterInfo && onAddFilter ? (
             <>
               <LineSeparator />
               <FilterBlock
-                onFilterChosen={(filter) => {
+                filter={newFilterInfo}
+                onFilterDefined={(filter) => {
                   //Tell the parent to add a new filter to the metric
                   onAddFilter(filter);
                   //Hide the new filter shell
-                  setAddNewFilter(false);
+                  setNewFilterValueInfo(null);
                 }}
                 eventName={metric?.eventName || ""}
               />
