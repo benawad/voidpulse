@@ -15,7 +15,7 @@ export enum DataType {
   other,
 }
 
-export enum NumberFilterKey {
+export enum NumberFilterOperation {
   equals = 1,
   notEqual,
   greaterThan,
@@ -28,7 +28,7 @@ export enum NumberFilterKey {
   isNotNumeric,
 }
 
-export enum StringFilterKey {
+export enum StringFilterOperation {
   is = 1,
   isNot,
   contains,
@@ -37,7 +37,7 @@ export enum StringFilterKey {
   isNotSet,
 }
 
-export enum DateFilterKey {
+export enum DateFilterOperation {
   last = 1,
   notInTheLast,
   between,

@@ -1,4 +1,8 @@
-import { DataType, DateFilterKey, NumberFilterKey } from "../app-router-type";
+import {
+  DataType,
+  DateFilterOperation,
+  NumberFilterOperation,
+} from "../app-router-type";
 import { InputMetric } from "../routes/charts/insight/eventFilterSchema";
 
 export const filtersToSql = (
@@ -15,8 +19,8 @@ export const filtersToSql = (
         continue;
       }
       if (
-        filter.operation === NumberFilterKey.between ||
-        filter.operation === NumberFilterKey.notBetween
+        filter.operation === NumberFilterOperation.between ||
+        filter.operation === NumberFilterOperation.notBetween
       ) {
         if (typeof filter.value2 !== "number") {
           continue;
@@ -25,7 +29,7 @@ export const filtersToSql = (
         paramMap[`p${paramCount + 2}`] = filter.value;
         paramMap[`p${paramCount + 3}`] = filter.value2;
         const operator =
-          filter.operation === NumberFilterKey.between
+          filter.operation === NumberFilterOperation.between
             ? "BETWEEN"
             : "NOT BETWEEN";
         whereStrings.push(
@@ -37,13 +41,13 @@ export const filtersToSql = (
         );
         paramCount += 3;
       } else if (
-        filter.operation === NumberFilterKey.isNumeric ||
-        filter.operation === NumberFilterKey.isNotNumeric
+        filter.operation === NumberFilterOperation.isNumeric ||
+        filter.operation === NumberFilterOperation.isNotNumeric
       ) {
         paramMap[`p${paramCount + 1}`] = filter.propName;
         const operator = {
-          [NumberFilterKey.isNumeric]: "IS NOT NULL",
-          [NumberFilterKey.isNotNumeric]: "IS NULL",
+          [NumberFilterOperation.isNumeric]: "IS NOT NULL",
+          [NumberFilterOperation.isNotNumeric]: "IS NULL",
         }[filter.operation];
         whereStrings.push(
           `JSONExtractFloat(${propertiesName}, {p${
@@ -55,12 +59,12 @@ export const filtersToSql = (
         paramMap[`p${paramCount + 1}`] = filter.propName;
         paramMap[`p${paramCount + 2}`] = filter.value;
         const operator = {
-          [NumberFilterKey.equals]: "=",
-          [NumberFilterKey.notEqual]: "!=",
-          [NumberFilterKey.greaterThan]: ">",
-          [NumberFilterKey.greaterThanOrEqual]: ">=",
-          [NumberFilterKey.lessThan]: "<",
-          [NumberFilterKey.lessThanOrEqual]: "<=",
+          [NumberFilterOperation.equals]: "=",
+          [NumberFilterOperation.notEqual]: "!=",
+          [NumberFilterOperation.greaterThan]: ">",
+          [NumberFilterOperation.greaterThanOrEqual]: ">=",
+          [NumberFilterOperation.lessThan]: "<",
+          [NumberFilterOperation.lessThanOrEqual]: "<=",
         }[filter.operation];
         if (!operator) {
           continue;
