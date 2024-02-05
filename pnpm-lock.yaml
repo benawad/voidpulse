@@ -132,6 +132,9 @@ importers:
       emoji-picker-react:
         specifier: ^4.7.11
         version: 4.7.11(react@18.2.0)
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
       next:
         specifier: 14.1.0
         version: 14.1.0(react-dom@18.2.0)(react@18.2.0)

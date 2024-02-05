@@ -1,0 +1,15 @@
+..                                       | Progress: resolved 0, reused 1, downloaded 0, added 0
+..                                       | Progress: resolved 563, reused 512, downloaded 0, added 0, done
+
+ WARN  Issues with peer dependencies found
+web
+├─┬ react-dates 21.8.0
+│ ├── ✕ unmet peer react@"^0.14 || ^15.5.4 || ^16.1.1": found 18.2.0
+│ ├── ✕ unmet peer react-dom@"^0.14 || ^15.5.4 || ^16.1.1": found 18.2.0
+│ └─┬ airbnb-prop-types 2.16.0
+│   └── ✕ unmet peer react@"^0.14 || ^15.0.0 || ^16.0.0-alpha": found 18.2.0
+└─┬ react-with-direction 1.4.0
+  ├── ✕ unmet peer react@"^0.14 || ^15 || ^16": found 18.2.0
+  └── ✕ unmet peer react-dom@"^0.14 || ^15 || ^16": found 18.2.0
+
+Done in 1.5s

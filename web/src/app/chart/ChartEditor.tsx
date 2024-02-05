@@ -14,6 +14,7 @@ import { ChartType, ReportType } from "@voidpulse/api";
 import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
+import moment from "moment";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -21,6 +22,11 @@ interface ChartEditorProps {
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const [{ metrics, chartType, reportType, title, description }, setState] =
     useChartStateContext();
+  // @TODO: Decide if this variable should be housed here or in the ChartStateContext
+  const [dateRangePicked, setDateRangePicked] = useState({
+    startDate: moment() || null,
+    endDate: moment() || null,
+  });
   const router = useRouter();
   const utils = trpc.useUtils();
   const { projectId, boardId } = useProjectBoardContext();
@@ -147,7 +153,10 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 Save chart
               </Button>
             </div>
-            <ChartDateRangePicker />
+            <ChartDateRangePicker
+              dateRangePicked={dateRangePicked}
+              setDateRangePicked={setDateRangePicked}
+            />
             {/* Chart  */}
             {data?.datas.length ? (
               <LineChart
