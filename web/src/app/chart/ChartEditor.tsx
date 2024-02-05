@@ -24,8 +24,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     useChartStateContext();
   // @TODO: Decide if this variable should be housed here or in the ChartStateContext
   const [dateRangePicked, setDateRangePicked] = useState({
-    startDate: moment() || null,
-    endDate: moment() || null,
+    startDate: moment(),
+    endDate: moment().add(1, "days"),
   });
   const router = useRouter();
   const utils = trpc.useUtils();

@@ -1,27 +1,93 @@
 /* // NOTE: the order of these styles DO matter */
 
+.DateRangePickerInput {
+  @apply bg-transparent;
+}
+.DateInput {
+  @apply bg-transparent;
+}
+.DateInput_input {
+  @apply bg-primary-800 text-primary-100 text-xs font-semibold rounded-md border-0;
+}
+.DateInput_input__focused {
+  @apply ring-secondary-signature-100 ring-1 bg-secondary-signature-100/50;
+}
+/* Actually a dash - sits between start and end dates */
+.DateRangePickerInput_arrow {
+  @apply text-primary-100 mx-1;
+}
+/* Little triangle fang */
+.DateInput_fangStroke {
+  @apply fill-primary-800 border-0 stroke-primary-800;
+}
+.DayPicker {
+  @apply bg-transparent;
+}
+.DateRangePicker_picker {
+  @apply bg-transparent;
+}
+.DayPicker_transitionContainer {
+  @apply bg-primary-800 rounded-xl border border-primary-700;
+}
+
+/* Top arrows for left and right on the months */
+.DayPickerNavigation_button {
+  @apply bg-primary-800 border-0 hover:border-0 hover:bg-secondary-signature-100 rounded-lg;
+}
+.DayPickerNavigation_svg__horizontal {
+  @apply fill-primary-100;
+}
+.CalendarMonthGrid {
+  @apply bg-primary-800;
+}
+
+.CalendarMonth {
+  @apply bg-primary-800;
+}
+
+/* For the name of the month */
+.CalendarMonth_caption {
+  @apply text-primary-100;
+}
+
+/* Day squares */
+.CalendarDay {
+  @apply bg-primary-800 border-0;
+}
+.CalendarDay:hover {
+  @apply bg-transparent outline outline-secondary-signature-100 text-secondary-signature-100 border-0 font-bold rounded-lg;
+}
+
+.CalendarDay__default {
+  @apply text-primary-200;
+}
+
 /* // Will edit everything selected including everything between a range of dates */
 .CalendarDay__selected_span {
-  background: #82e0aa;
-  color: white;
-  border: 1px solid red;
+  @apply bg-secondary-signature-100/50 border-0 text-primary-100;
 }
 
 /* // Will edit selected date or the endpoints of a range of dates */
 .CalendarDay__selected {
-  background: red;
-  color: white;
+  @apply bg-secondary-signature-100/70 border-0;
+}
+.CalendarDay__selected_start {
+  @apply rounded-l-xl rounded-r-none;
+}
+.CalendarDay__selected_end {
+  @apply rounded-r-xl rounded-l-none;
 }
 
 /* // Will edit when hovered over. _span style also has this property */
 .CalendarDay__selected:hover {
-  background: orange;
-  color: white;
+  @apply bg-secondary-signature-100 border-0;
 }
 
 /* // Will edit when the second date (end date) in a range of dates
 // is not yet selected. Edits the dates between your mouse and said date */
-.CalendarDay__hovered_span:hover,
+.CalendarDay__hovered_span:hover {
+  @apply bg-secondary-signature-100/50 border-0;
+}
 .CalendarDay__hovered_span {
-  background: brown;
+  @apply bg-secondary-signature-100/50 border-0 text-primary-100;
 }

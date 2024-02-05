@@ -11,9 +11,10 @@ import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import "./react_dates_overrides.css";
 import moment from "moment";
+import { set } from "react-hook-form";
 
 interface ChartDateRangePickerProps {
-  dateRangePicked?: {
+  dateRangePicked: {
     startDate: moment.Moment;
     endDate: moment.Moment;
   };
@@ -35,9 +36,11 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
     null
   );
   const [localDateRange, setLocalDateRange] = useState({
-    startDate: dateRangePicked?.startDate || null,
-    endDate: dateRangePicked?.endDate || null,
+    startDate: dateRangePicked.startDate as moment.Moment | null,
+    endDate: dateRangePicked.endDate as moment.Moment | null,
   });
+  const isToday = (day: moment.Moment) => moment().isSame(day, "day");
+
   const buttonInfoList = timeUnits.map((unit, i) => {
     return {
       name: unit,
@@ -68,15 +71,32 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
             endDate={localDateRange.endDate} // momentPropTypes.momentObj or null,
             endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
             onDatesChange={({ startDate, endDate }) => {
-              localDateRange.startDate = startDate;
-              localDateRange.endDate = endDate;
+              setLocalDateRange({ startDate, endDate });
+            }}
+            onClose={({ startDate, endDate }) => {
               if (startDate && endDate) {
                 setDateRangePicked({ startDate, endDate });
                 setShowCustomDatePicker(false);
               }
             }}
             focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-            onFocusChange={(focusedInput) => setFocusedInput(focusedInput)} // PropTypes.func.isRequired,
+            onFocusChange={(focusedInput) => {
+              setFocusedInput(focusedInput);
+            }}
+            noBorder
+            small
+            numberOfMonths={1}
+            hideKeyboardShortcutsPanel
+            isOutsideRange={() => false}
+            renderDayContents={(day) => (
+              <div
+                className={
+                  isToday(day) ? "font-bold text-primary-100 underline" : ""
+                }
+              >
+                {day.format("D")}
+              </div>
+            )}
           />
         </div>
       ) : null}
