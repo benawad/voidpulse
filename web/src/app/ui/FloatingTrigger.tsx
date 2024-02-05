@@ -8,6 +8,7 @@ import {
 import React, { useState } from "react";
 
 interface FloatingTriggerProps {
+  startOpen?: boolean;
   className?: string;
   appearsOnHover?: boolean;
   appearsOnClick?: boolean;
@@ -31,6 +32,7 @@ interface FloatingTriggerProps {
 export const FloatingTrigger: React.FC<
   React.PropsWithChildren<FloatingTriggerProps>
 > = ({
+  startOpen = false,
   className,
   children,
   appearsOnHover = false,
@@ -40,7 +42,7 @@ export const FloatingTrigger: React.FC<
   floatingContent,
 }) => {
   //Floating content needs to know if it's open or not
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(startOpen);
   //Floating content needs to know where to position itself
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
@@ -71,15 +73,13 @@ export const FloatingTrigger: React.FC<
       </div>
       {/* Floating content */}
       {isOpen ? (
-        <div className={"flex" + isOpen ? fadeIn : fadeOut}>
-          <div
-            ref={refs.setFloating}
-            {...getFloatingProps()}
-            className={"z-10"}
-            style={floatingStyles}
-          >
-            {floatingContent}
-          </div>
+        <div
+          ref={refs.setFloating}
+          {...getFloatingProps()}
+          style={floatingStyles}
+          className={"z-10 flex" + isOpen ? fadeIn : fadeOut}
+        >
+          <div>{floatingContent}</div>
         </div>
       ) : null}
     </button>

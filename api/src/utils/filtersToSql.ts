@@ -180,6 +180,7 @@ export const filtersToSql = (
         if (!filter.value.every((x) => typeof x === "string")) {
           continue;
         }
+        paramMap[`p${paramCount + 1}`] = filter.propName;
         whereStrings.push(
           `JSONExtractString(${propertiesName}, {p${
             paramCount + 1

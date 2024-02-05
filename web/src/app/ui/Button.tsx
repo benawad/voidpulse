@@ -21,7 +21,9 @@ export const Button: React.FC<
     <button
       className={
         buttonStyles[buttonType] +
-        ` rounded-lg hover:shadow-lg transition-colors area p-3 ${className}`
+        ` rounded-lg ${
+          props.disabled ? "" : "hover:shadow-lg transition-colors area"
+        } p-3 ${className}`
       }
       {...props}
     />

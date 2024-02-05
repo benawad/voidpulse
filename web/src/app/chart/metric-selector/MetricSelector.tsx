@@ -28,6 +28,7 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
     }
     return null;
   }, [data]);
+
   return (
     <Downshift<NonNullable<typeof dataWithAutocompleteKey>["items"][0]>
       onChange={(selection) =>

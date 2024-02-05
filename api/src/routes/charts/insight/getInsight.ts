@@ -11,6 +11,8 @@ import {
   metricSchema,
 } from "./eventFilterSchema";
 import { filtersToSql } from "../../../utils/filtersToSql";
+import { __prod__ } from "../../../constants/prod";
+import { param } from "drizzle-orm";
 
 type InsightData = { day: string; count: number };
 
@@ -56,27 +58,29 @@ const queryMetric = async ({
 }) => {
   const { paramMap, whereStrings } = filtersToSql(metric.filters);
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
+  const query = `
+  SELECT
+      toStartOfDay(time) AS day,
+      toInt32(count(${
+        metric.type === MetricMeasurement.uniqueUsers
+          ? `DISTINCT distinct_id`
+          : ``
+      })) AS count
+  FROM events
+  WHERE
+    project_id = {projectId:UUID}
+    AND time >= {from:DateTime}
+    AND time <= {to:DateTime}
+    AND name = {eventName:String}
+    ${whereStrings.length > 0 ? `AND ${whereStrings.join(whereCombiner)}` : ""}
+  GROUP BY day
+  ORDER BY day ASC
+`;
+  if (!__prod__) {
+    console.log(query, paramMap);
+  }
   const resp = await clickhouse.query({
-    query: `
-    SELECT
-        toStartOfDay(time) AS day,
-        toInt32(count(${
-          metric.type === MetricMeasurement.uniqueUsers
-            ? `DISTINCT distinct_id`
-            : ``
-        })) AS count
-    FROM events
-    WHERE
-      project_id = {projectId:UUID}
-      AND time >= {from:DateTime}
-      AND time <= {to:DateTime}
-      AND name = {eventName:String}
-      ${
-        whereStrings.length > 0 ? `AND ${whereStrings.join(whereCombiner)}` : ""
-      }
-    GROUP BY day
-    ORDER BY day ASC
-  `,
+    query,
     query_params: {
       projectId,
       from,

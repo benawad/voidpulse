@@ -9,6 +9,6 @@ export const Input = React.forwardRef<
       ref={ref}
       className={`rounded-md w-full bg-primary-800 p-2 my-1 hover:bg-primary-700 focus:bg-primary-700 hover:border-primary-600 focus:border-primary-600 focus-glow border border-transparent text-primary-300 ${className}`}
       {...props}
-    ></input>
+    />
   );
 });
