@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { MultiToggleButtonBar } from "../ui/MultiToggleButtonBar";
 import {
@@ -40,20 +40,51 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
     endDate: dateRangePicked.endDate as moment.Moment | null,
   });
   const isToday = (day: moment.Moment) => moment().isSame(day, "day");
+  const dateRangeAsString = (dateRange: {
+    startDate: moment.Moment;
+    endDate: moment.Moment;
+  }) => {
+    return `${dateRange.startDate.format(
+      "MMM Do"
+    )} - ${dateRange.endDate.format("MMM Do")}`;
+  };
 
   const buttonInfoList = timeUnits.map((unit, i) => {
-    return {
-      name: unit,
-      action: () => {
-        setSelectedTimeUnit(unit);
-        setSelectedTimeUnitIdx(i);
-      },
-      iconLeft: unit === "Custom" ? <FaRegCalendarAlt /> : undefined,
-    };
+    if (unit === "Custom") {
+      return {
+        name: dateRangePicked ? dateRangeAsString(dateRangePicked) : "Custom",
+        action: () => {
+          setShowCustomDatePicker(true);
+        },
+        iconLeft: <FaRegCalendarAlt />,
+      };
+    } else {
+      return {
+        name: unit,
+        action: () => {
+          setSelectedTimeUnit(unit);
+          setSelectedTimeUnitIdx(i);
+        },
+      };
+    }
   });
 
+  //Dismissing the custom date picker when you click outside of it
+  const datePickerRef = React.useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const handleOutsideClick = (e: any) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
+        setShowCustomDatePicker(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   return (
-    <div className="flex" onClick={() => setShowCustomDatePicker(true)}>
+    <div className="flex">
       <MultiToggleButtonBar
         className="text-xs m-2"
         buttonClassName="px-3 font-semibold"
@@ -63,13 +94,14 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
       {showCustomDatePicker ? (
         <div
           className="absolute bg-primary-900 rounded-lg border border-primary-700 p-2"
-          style={{ width: 300 }}
+          ref={datePickerRef}
         >
           <DateRangePicker
             startDate={localDateRange.startDate} // momentPropTypes.momentObj or null,
             startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
             endDate={localDateRange.endDate} // momentPropTypes.momentObj or null,
             endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
+            displayFormat="MMM Do YYYY"
             onDatesChange={({ startDate, endDate }) => {
               setLocalDateRange({ startDate, endDate });
             }}
