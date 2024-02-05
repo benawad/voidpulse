@@ -13,13 +13,13 @@ import "./react_dates_overrides.css";
 import moment from "moment";
 
 interface ChartDateRangePickerProps {
-  dateRangePicked: {
-    startDate: moment.Moment | null;
-    endDate: moment.Moment | null;
+  dateRangePicked?: {
+    startDate: moment.Moment;
+    endDate: moment.Moment;
   };
   setDateRangePicked: (dateRange: {
-    startDate: moment.Moment | null;
-    endDate: moment.Moment | null;
+    startDate: moment.Moment;
+    endDate: moment.Moment;
   }) => void;
 }
 
@@ -34,6 +34,10 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
   const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(
     null
   );
+  const [localDateRange, setLocalDateRange] = useState({
+    startDate: dateRangePicked?.startDate || null,
+    endDate: dateRangePicked?.endDate || null,
+  });
   const buttonInfoList = timeUnits.map((unit, i) => {
     return {
       name: unit,
@@ -46,31 +50,30 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
   });
 
   return (
-    <div
-      className="flex"
-      onClick={() => setShowCustomDatePicker(!showCustomDatePicker)}
-    >
+    <div className="flex" onClick={() => setShowCustomDatePicker(true)}>
       <MultiToggleButtonBar
         className="text-xs m-2"
         buttonClassName="px-3 font-semibold"
         buttonInfo={buttonInfoList}
         selectedButtonIdx={selectedTimeUnitIdx}
       />
-      {showCustomDatePicker || true ? (
+      {showCustomDatePicker ? (
         <div
           className="absolute bg-primary-900 rounded-lg border border-primary-700 p-2"
           style={{ width: 300 }}
         >
-          Custom date picker goes here
           <DateRangePicker
-            startDate={dateRangePicked.startDate} // momentPropTypes.momentObj or null,
+            startDate={localDateRange.startDate} // momentPropTypes.momentObj or null,
             startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
-            endDate={dateRangePicked.endDate} // momentPropTypes.momentObj or null,
+            endDate={localDateRange.endDate} // momentPropTypes.momentObj or null,
             endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
             onDatesChange={({ startDate, endDate }) => {
-              // if (startDate && endDate) {
-              setDateRangePicked({ startDate, endDate });
-              // }
+              localDateRange.startDate = startDate;
+              localDateRange.endDate = endDate;
+              if (startDate && endDate) {
+                setDateRangePicked({ startDate, endDate });
+                setShowCustomDatePicker(false);
+              }
             }}
             focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
             onFocusChange={(focusedInput) => setFocusedInput(focusedInput)} // PropTypes.func.isRequired,
