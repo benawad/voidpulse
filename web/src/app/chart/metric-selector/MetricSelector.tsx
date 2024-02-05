@@ -94,9 +94,7 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
                       `}
                   >
                     <TbClick className="mr-2 opacity-40" />
-                    <div className="text-primary-200 group-hover:text-secondary-signature-100">
-                      {item.name}
-                    </div>
+                    <div>{item.name}</div>
                   </div>
                 ))}
             </div>

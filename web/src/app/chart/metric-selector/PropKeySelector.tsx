@@ -13,6 +13,11 @@ import {
   StringFilterOperation,
 } from "@voidpulse/api";
 import { genId } from "../../utils/genId";
+import { CiShoppingTag } from "react-icons/ci";
+import { FaCalendarCheck } from "react-icons/fa6";
+import { IoText } from "react-icons/io5";
+import { LiaHashtagSolid } from "react-icons/lia";
+import { TbCircleCheck } from "react-icons/tb";
 
 interface FilterSelectorProps {
   eventName: string;
@@ -42,6 +47,15 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
     }
     return null;
   }, [data]);
+
+  const dataTypeIconStyle = "mr-2 opacity-40 my-auto";
+  const dataTypeToIconMap = {
+    [DataType.string]: <IoText className={dataTypeIconStyle} />,
+    [DataType.number]: <LiaHashtagSolid className={dataTypeIconStyle} />,
+    [DataType.date]: <FaCalendarCheck className={dataTypeIconStyle} />,
+    [DataType.boolean]: <TbCircleCheck className={dataTypeIconStyle} />,
+    [DataType.other]: <CiShoppingTag className={dataTypeIconStyle} />,
+  };
 
   return (
     <Downshift<NonNullable<typeof dataWithAutocompleteKey>["items"][0]>
@@ -110,7 +124,7 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
                       index,
                       item,
                     })}
-                    className={`flex flex-row p-2 accent-hover group rounded-md
+                    className={`flex flex-row p-2 rounded-md
                     ${
                       item.key === currPropKey
                         ? "bg-secondary-signature-100 text-primary-100"
@@ -118,15 +132,14 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
                     }
                     ${
                       highlightedIndex === index
-                        ? "bg-secondary-signature-100/30 text-primary-100"
+                        ? "bg-secondary-signature-100/30 text-secondary-signature-100"
                         : ""
                     }
+                    ${highlightedIndex !== index ? "text-primary-100" : ""}
                     `}
                   >
-                    {/* <TbClick className="mr-2 opacity-40" /> */}
-                    <div className="text-primary-200 group-hover:text-secondary-signature-100">
-                      {item.key}
-                    </div>
+                    {dataTypeToIconMap[item.type]}
+                    <div>{item.key}</div>
                   </div>
                 ))}
             </div>

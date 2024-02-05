@@ -36,9 +36,7 @@ export function Dropdown<T>({
                     : "")
                 }
               >
-                <div className="text-primary-200 group-hover:text-secondary-signature-100">
-                  {opt.label}
-                </div>
+                <div>{opt.label}</div>
               </button>
             </div>
           ))}
