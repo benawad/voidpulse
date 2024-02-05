@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Downshift from "downshift";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 import { trpc } from "../../utils/trpc";
@@ -17,13 +17,25 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
 }) => {
   const { projectId } = useProjectBoardContext();
   const { data } = trpc.getEventNames.useQuery({ projectId });
+  const dataWithAutocompleteKey = useMemo(() => {
+    if (data) {
+      return {
+        items: data.items.map((x) => ({
+          name: x.name,
+          lowercaseName: x.name.toLowerCase(),
+        })),
+      };
+    }
+    return null;
+  }, [data]);
   return (
-    <Downshift
+    <Downshift<NonNullable<typeof dataWithAutocompleteKey>["items"][0]>
       onChange={(selection) =>
-        onEventNameChange(selection ? selection.value : "")
+        onEventNameChange(selection ? selection.name : "")
       }
-      itemToString={(item) => (item ? item.value : "")}
+      itemToString={(item) => (item ? item.name : "")}
       initialIsOpen
+      defaultHighlightedIndex={0}
     >
       {({
         getInputProps,
@@ -55,25 +67,35 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
                 className: "overflow-auto flex-1 mt-2",
               })}
             >
-              {data?.names
-                .filter((item) => !inputValue || item.includes(inputValue))
+              {dataWithAutocompleteKey?.items
+                .filter(
+                  (item) =>
+                    !inputValue ||
+                    item.lowercaseName.includes(inputValue.toLowerCase())
+                )
                 .map((item, index) => (
                   <div
-                    key={item}
+                    key={item.name}
                     {...getItemProps({
                       index,
-                      item: { value: item },
+                      item,
                     })}
-                    className={
-                      "flex flex-row p-2 accent-hover group rounded-md " +
-                      (item === eventName
-                        ? "bg-secondary-signature-100 text-primary-100"
-                        : "")
-                    }
+                    className={`flex flex-row p-2 accent-hover group rounded-md
+                      ${
+                        item.name === eventName
+                          ? "bg-secondary-signature-100 text-primary-100"
+                          : ""
+                      }
+                      ${
+                        highlightedIndex === index
+                          ? "bg-secondary-signature-100/30 text-primary-100"
+                          : ""
+                      }
+                      `}
                   >
                     <TbClick className="mr-2 opacity-40" />
                     <div className="text-primary-200 group-hover:text-secondary-signature-100">
-                      {item}
+                      {item.name}
                     </div>
                   </div>
                 ))}

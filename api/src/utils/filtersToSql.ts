@@ -17,6 +17,9 @@ export const filtersToSql = (
   for (const filter of filters) {
     const propertiesName = "properties";
     if (filter.dataType === DataType.number) {
+      if (!filter.operation) {
+        continue;
+      }
       if (
         filter.operation === NumberFilterOperation.between ||
         filter.operation === NumberFilterOperation.notBetween
@@ -108,7 +111,7 @@ export const filtersToSql = (
         );
         paramCount += 3;
       } else {
-        if (typeof filter.value !== "string") {
+        if (typeof filter.value !== "string" || !filter.operation) {
           continue;
         }
         paramMap[`p${paramCount + 1}`] = filter.propName;

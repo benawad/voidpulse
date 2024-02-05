@@ -21,13 +21,23 @@ ChartJS.register(
 );
 
 interface LineChartProps {
+  disableAnimations?: boolean;
   data: any;
 }
 
-export const LineChart: React.FC<LineChartProps> = ({ data }) => {
+export const LineChart: React.FC<LineChartProps> = ({
+  data,
+  disableAnimations,
+}) => {
   return (
     <div>
-      <Line data={data} options={generalChartOptions}></Line>
+      <Line
+        data={data}
+        options={{
+          ...generalChartOptions,
+          animations: disableAnimations ? false : undefined,
+        }}
+      ></Line>
     </div>
   );
 };

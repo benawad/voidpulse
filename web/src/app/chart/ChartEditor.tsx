@@ -150,7 +150,10 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             <DateRangePicker />
             {/* Chart  */}
             {data?.datas.length ? (
-              <LineChart data={transformToChartData(data.datas)} />
+              <LineChart
+                disableAnimations
+                data={transformToChartData(data.datas)}
+              />
             ) : null}
           </div>
           {/* Additional data at the bottom */}

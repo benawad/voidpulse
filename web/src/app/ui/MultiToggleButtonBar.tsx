@@ -17,7 +17,6 @@ export const MultiToggleButtonBar: React.FC<MultiToggleButtonBarProps> = ({
   className = "",
   buttonClassName = "",
 }) => {
-  console.log(selectedButtonIdx, "selectedButtonIdx");
   const defaultButtonStyle = `accent-hover py-2 items-center text-primary-200 ${buttonClassName}`;
   return (
     <div

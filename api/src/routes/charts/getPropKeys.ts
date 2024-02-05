@@ -2,7 +2,7 @@ import { z } from "zod";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
-import { DataType } from "../../app-router-type";
+import { DataType, PropOrigin } from "../../app-router-type";
 import { isStringDate } from "../../utils/isStringDate";
 
 export const getPropKeys = protectedProcedure
@@ -63,6 +63,7 @@ export const getPropKeys = protectedProcedure
       propDefs: Object.entries(propDefs).map(([key, value]) => ({
         key,
         type: value.type,
+        propOrigin: PropOrigin.event,
       })),
     };
   });

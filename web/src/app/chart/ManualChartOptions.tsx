@@ -99,7 +99,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
           onEventNameChange={(name) => {
             setMetrics(
               metrics.map((metric, i) =>
-                i === idx ? { ...metric, eventName: name } : metric
+                i === idx ? { ...metric, eventName: name, filters: [] } : metric
               )
             );
           }}
@@ -136,6 +136,9 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
                 type: MetricMeasurement.totalEvents,
               },
             ]);
+            setAddNewMetric(false);
+          }}
+          onDelete={() => {
             setAddNewMetric(false);
           }}
           idx={metrics.length}

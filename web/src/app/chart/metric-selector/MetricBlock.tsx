@@ -43,10 +43,8 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
     useClick(context),
     useDismiss(context),
   ]);
-  // const [addNewFilter, setAddNewFilter] = useState(false);
+  const [addNewFilter, setAddNewFilter] = useState(false);
   // Needs to temporarily know the filter value before it can finalize the filter object.
-  const [newFilterInfo, setNewFilterValueInfo] =
-    useState<Partial<MetricFilter> | null>(null);
 
   return (
     // Full metric block: label, drag handle, metric selector, and measurement.
@@ -99,13 +97,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                     className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
                     onClick={() => {
                       console.log("Adding filter");
-                      // setAddNewFilter(true);
-                      setNewFilterValueInfo({
-                        propName: "",
-                        dataType: DataType.string,
-                        propOrigin: PropOrigin.event,
-                        operation: 0,
-                      });
+                      setAddNewFilter(true);
                     }}
                   >
                     <IoFilter
@@ -155,7 +147,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
         <div>
           {metric?.filters.map((metricSpecificFilter, i) => {
             return (
-              <>
+              <React.Fragment key={metricSpecificFilter.id}>
                 <LineSeparator className="my-0" />
                 <FilterBlock
                   key={i}
@@ -177,26 +169,41 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                   filter={metricSpecificFilter}
                   eventName={metric?.eventName || ""}
                   onFilterDefined={(filter) => {
-                    console.log("Changing filter");
+                    setState((prev) => ({
+                      ...prev,
+                      metrics: prev.metrics.map((m, j) =>
+                        m.id === metric?.id
+                          ? {
+                              ...m,
+                              filters: m.filters.map((f, k) =>
+                                k === i ? filter : f
+                              ),
+                            }
+                          : m
+                      ),
+                    }));
                   }}
                 />
-              </>
+              </React.Fragment>
             );
           })}
           {/* Show a shell filter block if we are about to add a new filter in here: */}
           {/* Like with the Metric Block itself, once the filter is successfully added,
           hide the new filter shell and show it as part of the list above. */}
           {/* This should only be happening in an established metric block where the onAddFilter function exists.*/}
-          {newFilterInfo && onAddFilter ? (
+          {addNewFilter && onAddFilter ? (
             <>
               <LineSeparator />
               <FilterBlock
-                filter={newFilterInfo}
+                filter={{}}
                 onFilterDefined={(filter) => {
                   //Tell the parent to add a new filter to the metric
                   onAddFilter(filter);
                   //Hide the new filter shell
-                  setNewFilterValueInfo(null);
+                  setAddNewFilter(false);
+                }}
+                onDelete={() => {
+                  setAddNewFilter(false);
                 }}
                 eventName={metric?.eventName || ""}
               />
