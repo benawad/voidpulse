@@ -18,6 +18,7 @@ import { Dropdown } from "../../ui/Dropdown";
 import { Input } from "../../ui/Input";
 import { ValidatingInput } from "../../ui/ValidatingInput";
 import { BooleanInput } from "../../ui/BooleanInput";
+import { PropValueMultiSelect } from "./PropValueMultiSelect";
 
 interface FilterBlockProps {
   onDelete?: () => void;
@@ -285,6 +286,16 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
               }}
             />
           )}
+          {localFilter.dataType === DataType.string ? (
+            <PropValueMultiSelect
+              values={filter.value || []}
+              eventName={eventName}
+              propKey={localFilter.propName || ""}
+              onConfirm={(values) => {
+                setLocalOrParentFilter({ ...localFilter, value: values });
+              }}
+            />
+          ) : null}
           {localFilter.dataType === DataType.number ? (
             <>
               <ValidatingInput

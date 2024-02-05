@@ -2,6 +2,7 @@ import { z } from "zod";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
+import { DataType } from "../../app-router-type";
 
 export const getPropValues = protectedProcedure
   .input(
@@ -17,7 +18,7 @@ export const getPropValues = protectedProcedure
 
       const resp = await clickhouse.query({
         query: `
-			select distinct tupleElement(properties, {key:String}) as value
+			select distinct JSONExtractString(properties, {key:String}) as value
 			from events
 			where name = {eventName:String} and project_id = {projectId:UUID}
 			order by value asc
