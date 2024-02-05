@@ -9,7 +9,7 @@ import { transformToChartData } from "../utils/transformToChartData";
 import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
-import { DateRangePicker } from "./DateRangePicker";
+import { ChartDateRangePicker } from "./ChartDateRangePicker";
 import { ChartType, ReportType } from "@voidpulse/api";
 import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
@@ -147,7 +147,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 Save chart
               </Button>
             </div>
-            <DateRangePicker />
+            <ChartDateRangePicker />
             {/* Chart  */}
             {data?.datas.length ? (
               <LineChart
