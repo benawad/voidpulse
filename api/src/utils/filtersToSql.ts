@@ -2,6 +2,7 @@ import {
   DataType,
   DateFilterOperation,
   NumberFilterOperation,
+  PropOrigin,
   StringFilterOperation,
 } from "../app-router-type";
 import { __prod__ } from "../constants/prod";
@@ -15,7 +16,8 @@ export const filtersToSql = (
   const whereStrings: string[] = [];
   const paramMap: Record<string, any> = {};
   for (const filter of filters) {
-    const propertiesName = "properties";
+    const propertiesName =
+      filter.propOrigin === PropOrigin.event ? "properties" : "p.properties";
     if (filter.dataType === DataType.number) {
       if (!filter.operation) {
         continue;

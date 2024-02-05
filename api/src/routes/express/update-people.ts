@@ -5,6 +5,7 @@ import { SQL, sql } from "drizzle-orm";
 import { checkApiKeyMiddleware } from "./middleware/checkApiKeyMiddleware";
 import { kafkaProducer } from "../../kafka/kafka";
 import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
+import { propsToTypes } from "../../utils/propsToTypes";
 
 const bodySchema = z.object({
   distinct_id: z.string().min(1).max(255),
@@ -64,6 +65,15 @@ export const addUpdatePeopleRoute = (app: Express) => {
 
       // Update properties
       if (body.properties_to_add) {
+        // @todo cache
+        const propTypes = propsToTypes(body.properties_to_add);
+        db.execute(sql`
+        insert into people_prop_types (project_id, prop_types, updated_at)
+        values (${projectId}, ${propTypes}, now())
+        on conflict (project_id)
+        do update set prop_types = people_prop_types.prop_types || ${propTypes}
+        `);
+        //
         sqlChunks.push(sql`(people.properties || ${body.properties_to_add})`);
       }
 

@@ -18,6 +18,7 @@ import { FaCalendarCheck } from "react-icons/fa6";
 import { IoText } from "react-icons/io5";
 import { LiaHashtagSolid } from "react-icons/lia";
 import { TbCircleCheck } from "react-icons/tb";
+import { RiArrowDropRightFill } from "react-icons/ri";
 
 interface FilterSelectorProps {
   eventName: string;
@@ -119,12 +120,12 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
                 )
                 .map((item, index) => (
                   <div
-                    key={item.key}
+                    key={item.key + item.propOrigin}
                     {...getItemProps({
                       index,
                       item,
                     })}
-                    className={`flex flex-row p-2 rounded-md
+                    className={`flex flex-row p-2 rounded-md items-center
                     ${
                       item.key === currPropKey
                         ? "bg-secondary-signature-100 text-primary-100"
@@ -139,6 +140,15 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
                     `}
                   >
                     {dataTypeToIconMap[item.type]}
+                    {item.propOrigin === PropOrigin.user ? (
+                      <>
+                        <div className="text-sm opacity-30">User </div>
+                        <RiArrowDropRightFill
+                          className="opacity-40"
+                          size={24}
+                        />
+                      </>
+                    ) : null}
                     <div>{item.key}</div>
                   </div>
                 ))}

@@ -4,20 +4,19 @@ import {
   useFloating,
   useInteractions,
 } from "@floating-ui/react";
-import React, { useState } from "react";
-import { IoClose, IoFilter } from "react-icons/io5";
-import { MetricFilter } from "./Metric";
-import { PropKeySelector } from "./PropKeySelector";
 import {
   DataType,
   DateFilterOperation,
   NumberFilterOperation,
   StringFilterOperation,
 } from "@voidpulse/api";
-import { Dropdown } from "../../ui/Dropdown";
-import { Input } from "../../ui/Input";
-import { ValidatingInput } from "../../ui/ValidatingInput";
+import React, { useState } from "react";
+import { IoClose, IoFilter } from "react-icons/io5";
 import { BooleanInput } from "../../ui/BooleanInput";
+import { Dropdown } from "../../ui/Dropdown";
+import { ValidatingInput } from "../../ui/ValidatingInput";
+import { MetricFilter } from "./Metric";
+import { PropKeySelector } from "./PropKeySelector";
 import { PropValueMultiSelect } from "./PropValueMultiSelect";
 
 interface FilterBlockProps {
@@ -282,19 +281,55 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
               opts={options}
               value={localFilter.operation}
               onSelect={(op) => {
-                setLocalOrParentFilter({ ...localFilter, operation: op });
+                setLocalOrParentFilter({
+                  ...localFilter,
+                  operation: op,
+                  value:
+                    localFilter.dataType === DataType.number
+                      ? localFilter.value
+                      : undefined,
+                });
               }}
             />
           )}
-          {localFilter.dataType === DataType.string ? (
-            <PropValueMultiSelect
-              values={filter.value || []}
-              eventName={eventName}
-              propKey={localFilter.propName || ""}
-              onConfirm={(values) => {
-                setLocalOrParentFilter({ ...localFilter, value: values });
-              }}
-            />
+          {localFilter.dataType === DataType.string && localFilter.operation ? (
+            <>
+              {[StringFilterOperation.is, StringFilterOperation.isNot].includes(
+                localFilter.operation
+              ) ? (
+                <PropValueMultiSelect
+                  values={filter.value || []}
+                  eventName={eventName}
+                  propKey={localFilter.propName || ""}
+                  onConfirm={(values) => {
+                    setLocalOrParentFilter({ ...localFilter, value: values });
+                  }}
+                />
+              ) : null}
+              {[
+                StringFilterOperation.contains,
+                StringFilterOperation.notContains,
+              ].includes(localFilter.operation) ? (
+                <ValidatingInput
+                  key={`${localFilter.dataType}-${localFilter.operation}`}
+                  placeholder="Value..."
+                  value={
+                    typeof localFilter.value === "string"
+                      ? localFilter.value
+                      : ""
+                  }
+                  autoFocus
+                  onBlurSubmit={(text) => {
+                    if (text) {
+                      setLocalOrParentFilter({ ...localFilter, value: text });
+                      return true;
+                    }
+
+                    return false;
+                  }}
+                />
+              ) : null}
+            </>
           ) : null}
           {localFilter.dataType === DataType.number ? (
             <>

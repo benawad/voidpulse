@@ -4,6 +4,11 @@ import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { DataType, PropOrigin } from "../../app-router-type";
 import { isStringDate } from "../../utils/isStringDate";
+import { __prod__ } from "../../constants/prod";
+import { propsToTypes } from "../../utils/propsToTypes";
+import { db } from "../../db";
+import { eq } from "drizzle-orm";
+import { peoplePropTypes } from "../../schema/people-prop-types";
 
 export const getPropKeys = protectedProcedure
   .input(
@@ -14,6 +19,10 @@ export const getPropKeys = protectedProcedure
   )
   .query(async ({ input: { projectId, eventName }, ctx: { userId } }) => {
     await assertProjectMember({ projectId, userId });
+
+    const peoplePropTypePromise = db.query.peoplePropTypes.findFirst({
+      where: eq(peoplePropTypes.projectId, projectId),
+    });
 
     const resp = await clickhouse.query({
       query: `
@@ -31,39 +40,39 @@ export const getPropKeys = protectedProcedure
       ClickHouseQueryResponse<{ properties: string }>
     >();
 
-    const propDefs: Record<string, { type: DataType }> = {};
+    let propDefs: Record<string, { type: DataType }> = {};
 
     data.map((x) => {
       try {
-        Object.entries(JSON.parse(x.properties)).forEach(([key, value]) => {
-          if (!(key in propDefs)) {
-            if (typeof value === "number") {
-              propDefs[key] = { type: DataType.number };
-            } else if (typeof value === "string") {
-              if (isStringDate(value)) {
-                propDefs[key] = { type: DataType.date };
-              } else {
-                propDefs[key] = { type: DataType.string };
-              }
-            } else if (typeof value === "boolean") {
-              propDefs[key] = { type: DataType.boolean };
-            } else {
-              propDefs[key] = { type: DataType.other };
-            }
-          }
-        });
+        propDefs = {
+          ...propDefs,
+          ...propsToTypes(JSON.parse(x.properties)),
+        };
       } catch (err) {
-        console.log(data);
-        console.log(x);
-        console.log(err);
+        if (!__prod__) {
+          console.log(data);
+          console.log(x);
+          console.log(err);
+        }
       }
     });
 
+    const userPropTypes = await peoplePropTypePromise;
+
     return {
-      propDefs: Object.entries(propDefs).map(([key, value]) => ({
-        key,
-        type: value.type,
-        propOrigin: PropOrigin.event,
-      })),
+      propDefs: [
+        ...Object.entries(propDefs).map(([key, value]) => ({
+          key,
+          type: value.type,
+          propOrigin: PropOrigin.event,
+        })),
+        ...(userPropTypes?.propTypes
+          ? Object.entries(userPropTypes.propTypes).map(([key, value]) => ({
+              key,
+              type: value.type as DataType,
+              propOrigin: PropOrigin.user,
+            }))
+          : []),
+      ],
     };
   });

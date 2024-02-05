@@ -7,6 +7,8 @@ import { projectUsers } from "./schema/project-users";
 import { boards } from "./schema/boards";
 import { charts } from "./schema/charts";
 import { __prod__ } from "./constants/prod";
+import { people } from "./schema/people";
+import { peoplePropTypes } from "./schema/people-prop-types";
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -22,5 +24,7 @@ export const db = drizzle(pool, {
     projectUsers,
     boards,
     charts,
+    people,
+    peoplePropTypes,
   },
 });

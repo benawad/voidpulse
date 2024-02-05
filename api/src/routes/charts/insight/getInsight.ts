@@ -3,7 +3,11 @@ import { ClickHouseQueryResponse, clickhouse } from "../../../clickhouse";
 import { dateInputRegex } from "../../../constants/regex";
 import { protectedProcedure } from "../../../trpc";
 import { assertProjectMember } from "../../../utils/assertProjectMember";
-import { FilterAndOr, MetricMeasurement } from "../../../app-router-type";
+import {
+  FilterAndOr,
+  MetricMeasurement,
+  PropOrigin,
+} from "../../../app-router-type";
 import {
   InputMetric,
   MetricFilter,
@@ -56,7 +60,14 @@ const queryMetric = async ({
   breakdowns: MetricFilter[];
   metric: InputMetric;
 }) => {
-  const { paramMap, whereStrings } = filtersToSql(metric.filters);
+  const { paramMap, whereStrings, paramCount } = filtersToSql(
+    metric.filters.filter((x) => x.propOrigin === PropOrigin.event),
+    1
+  );
+  const { paramMap: paramMap2, whereStrings: userWhereStrings } = filtersToSql(
+    metric.filters.filter((x) => x.propOrigin === PropOrigin.user),
+    paramCount
+  );
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
   const query = `
   SELECT
@@ -73,11 +84,19 @@ const queryMetric = async ({
     AND time <= {to:DateTime}
     AND name = {eventName:String}
     ${whereStrings.length > 0 ? `AND ${whereStrings.join(whereCombiner)}` : ""}
+    ${
+      userWhereStrings.length > 0
+        ? `AND distinct_id in (
+          select distinct_id
+          from people as p
+          where ${userWhereStrings.join(whereCombiner)})`
+        : ""
+    }
   GROUP BY day
   ORDER BY day ASC
 `;
   if (!__prod__) {
-    console.log(query, paramMap);
+    console.log(query, paramMap, paramMap2);
   }
   const resp = await clickhouse.query({
     query,
@@ -87,6 +106,7 @@ const queryMetric = async ({
       to,
       eventName: metric.eventName,
       ...paramMap,
+      ...paramMap2,
     },
   });
   const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();
