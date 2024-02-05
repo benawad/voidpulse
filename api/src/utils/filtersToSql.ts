@@ -199,9 +199,9 @@ export const filtersToSql = (
       paramMap[`p${paramCount + 1}`] = filter.propName;
       paramMap[`p${paramCount + 2}`] = filter.value;
       whereStrings.push(
-        `JSONExtractBoolean(${propertiesName}, {p${
+        `JSONExtractBool(${propertiesName}, {p${
           paramCount + 1
-        }:String}, false) = {p${paramCount + 2}:Boolean}`
+        }:String}, false) = {p${paramCount + 2}:Bool}`
       );
       paramCount += 2;
     } else {

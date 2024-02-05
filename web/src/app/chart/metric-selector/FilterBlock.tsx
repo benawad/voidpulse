@@ -17,6 +17,7 @@ import {
 import { Dropdown } from "../../ui/Dropdown";
 import { Input } from "../../ui/Input";
 import { ValidatingInput } from "../../ui/ValidatingInput";
+import { BooleanInput } from "../../ui/BooleanInput";
 
 interface FilterBlockProps {
   onDelete?: () => void;
@@ -265,58 +266,73 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
       </div>
       {localFilter.propName ? (
         <div className="flex items-center">
-          <Dropdown
-            noCaret
-            opts={options}
-            value={localFilter.operation}
-            onSelect={(op) => {
-              setLocalOrParentFilter({ ...localFilter, operation: op });
-            }}
-          />
-          <ValidatingInput
-            key={`${localFilter.dataType}-${localFilter.operation}`}
-            placeholder="Value..."
-            type="number"
-            className={
-              localFilter.operation === NumberFilterOperation.between ||
-              localFilter.operation === NumberFilterOperation.notBetween
-                ? "text-center"
-                : ""
-            }
-            value={localFilter.value}
-            autoFocus
-            onBlurSubmit={(text) => {
-              const value = parseFloat(text);
-              if (Number.isNaN(value)) {
-                return false;
-              } else {
-                setLocalOrParentFilter({ ...localFilter, value });
-                return true;
-              }
-            }}
-          />
-          {localFilter.dataType === DataType.number &&
-          (localFilter.operation === NumberFilterOperation.between ||
-            localFilter.operation === NumberFilterOperation.notBetween) ? (
-            <div className="flex items-center">
-              <div className="px-3 text-xs text-primary-400">and</div>
+          {localFilter.dataType === DataType.boolean ? (
+            <div className="flex w-full justify-center">
+              <BooleanInput
+                value={localFilter.value}
+                onChange={(v) => {
+                  setLocalOrParentFilter({ ...localFilter, value: v });
+                }}
+              />
+            </div>
+          ) : (
+            <Dropdown
+              noCaret
+              opts={options}
+              value={localFilter.operation}
+              onSelect={(op) => {
+                setLocalOrParentFilter({ ...localFilter, operation: op });
+              }}
+            />
+          )}
+          {localFilter.dataType === DataType.number ? (
+            <>
               <ValidatingInput
+                key={`${localFilter.dataType}-${localFilter.operation}`}
                 placeholder="Value..."
                 type="number"
-                className="text-center"
-                value={localFilter.value2}
-                autoFocus={!!localFilter.value}
+                className={
+                  localFilter.operation === NumberFilterOperation.between ||
+                  localFilter.operation === NumberFilterOperation.notBetween
+                    ? "text-center"
+                    : ""
+                }
+                value={localFilter.value}
+                autoFocus
                 onBlurSubmit={(text) => {
-                  const value2 = parseFloat(text);
-                  if (Number.isNaN(value2)) {
+                  const value = parseFloat(text);
+                  if (Number.isNaN(value)) {
                     return false;
                   } else {
-                    setLocalOrParentFilter({ ...localFilter, value2 });
+                    setLocalOrParentFilter({ ...localFilter, value });
                     return true;
                   }
                 }}
               />
-            </div>
+              {localFilter.dataType === DataType.number &&
+              (localFilter.operation === NumberFilterOperation.between ||
+                localFilter.operation === NumberFilterOperation.notBetween) ? (
+                <div className="flex items-center">
+                  <div className="px-3 text-xs text-primary-400">and</div>
+                  <ValidatingInput
+                    placeholder="Value..."
+                    type="number"
+                    className="text-center"
+                    value={localFilter.value2}
+                    autoFocus={!!localFilter.value}
+                    onBlurSubmit={(text) => {
+                      const value2 = parseFloat(text);
+                      if (Number.isNaN(value2)) {
+                        return false;
+                      } else {
+                        setLocalOrParentFilter({ ...localFilter, value2 });
+                        return true;
+                      }
+                    }}
+                  />
+                </div>
+              ) : null}
+            </>
           ) : null}
         </div>
       ) : null}
