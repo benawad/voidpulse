@@ -33,7 +33,7 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
   const [selectedTimeUnitIdx, setSelectedTimeUnitIdx] = useState(0);
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
   const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(
-    null
+    "startDate"
   );
   const [localDateRange, setLocalDateRange] = useState({
     startDate: dateRangePicked.startDate as moment.Moment | null,
@@ -45,8 +45,8 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
     endDate: moment.Moment;
   }) => {
     return `${dateRange.startDate.format(
-      "MMM Do"
-    )} - ${dateRange.endDate.format("MMM Do")}`;
+      "MMM D, YYYY"
+    )} - ${dateRange.endDate.format("MMM D, YYYY")}`;
   };
 
   const buttonInfoList = timeUnits.map((unit, i) => {
@@ -54,6 +54,8 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
       return {
         name: dateRangePicked ? dateRangeAsString(dateRangePicked) : "Custom",
         action: () => {
+          setSelectedTimeUnit(unit);
+          setSelectedTimeUnitIdx(i);
           setShowCustomDatePicker(true);
         },
         iconLeft: <FaRegCalendarAlt />,
@@ -101,7 +103,7 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
             startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
             endDate={localDateRange.endDate} // momentPropTypes.momentObj or null,
             endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
-            displayFormat="MMM Do YYYY"
+            displayFormat="MMM D, YYYY"
             onDatesChange={({ startDate, endDate }) => {
               setLocalDateRange({ startDate, endDate });
             }}

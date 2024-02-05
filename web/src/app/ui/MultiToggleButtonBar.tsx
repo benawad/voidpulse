@@ -17,10 +17,10 @@ export const MultiToggleButtonBar: React.FC<MultiToggleButtonBarProps> = ({
   className = "",
   buttonClassName = "",
 }) => {
-  const defaultButtonStyle = `accent-hover py-2 items-center text-primary-200 ${buttonClassName}`;
+  const defaultButtonStyle = `accent-hover flex flex-row py-2 items-center text-primary-200 overflow-hidden ${buttonClassName}`;
   return (
     <div
-      className={`rounded-full flex flex-row shadow-lg border border-primary-700 ${className}`}
+      className={`rounded-full flex flex-row shadow-lg border border-primary-700 overflow-hidden ${className}`}
     >
       {buttonInfo.map((button, i) => {
         const isSelected = i === selectedButtonIdx;
@@ -29,7 +29,7 @@ export const MultiToggleButtonBar: React.FC<MultiToggleButtonBarProps> = ({
         const roundedStyle = isLeftmostButton
           ? "rounded-l-full"
           : isRightmostButton
-          ? "rounded-r-full"
+          ? ""
           : "";
         return (
           <button
@@ -37,10 +37,15 @@ export const MultiToggleButtonBar: React.FC<MultiToggleButtonBarProps> = ({
             onClick={button.action}
             className={
               defaultButtonStyle +
-              (isSelected ? " bg-primary-700 " : " bg-primary-900 ") +
+              (isSelected
+                ? " bg-primary-700 text-primary-100"
+                : " bg-primary-900 text-primary-500") +
               roundedStyle
             }
           >
+            {button.iconLeft ? (
+              <div className="mr-2 my-auto h-full">{button.iconLeft}</div>
+            ) : null}
             {button.name}
           </button>
         );
