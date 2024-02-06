@@ -9,7 +9,12 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
-import { generalChartOptions } from "./ChartStyle";
+import {
+  generalChartOptions,
+  lineChartStyle,
+  stripeTooltipPlugin,
+  verticalLinePlugin,
+} from "./ChartStyle";
 
 // Register ChartJS components using ChartJS.register
 ChartJS.register(
@@ -29,15 +34,30 @@ export const LineChart: React.FC<LineChartProps> = ({
   data,
   disableAnimations,
 }) => {
+  const noAnims = {
+    animation: false,
+    animations: {
+      colors: false,
+      x: false,
+    },
+    transitions: {
+      active: {
+        animation: {
+          duration: 0,
+        },
+      },
+    },
+  };
   return (
     <div>
       <Line
         data={data}
         options={{
           ...generalChartOptions,
-          animations: disableAnimations ? false : undefined,
+          ...(disableAnimations ? noAnims : {}),
         }}
-      ></Line>
+        plugins={[verticalLinePlugin, stripeTooltipPlugin]}
+      />
     </div>
   );
 };

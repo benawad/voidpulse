@@ -16,9 +16,11 @@ import { InsightData } from "../routes/charts/insight/getInsight";
 import { getDateRange } from "./getDateRange";
 
 type BreakdownData = {
+  eventLabel: string;
+  measurement: MetricMeasurement;
   breakdown?: any;
   total_count?: number;
-  data: InsightData[];
+  data: InsightData[] | [string, number][];
 };
 
 export const queryMetric = async ({
@@ -35,7 +37,7 @@ export const queryMetric = async ({
   timeRangeType: ChartTimeRangeType;
   breakdowns: MetricFilter[];
   metric: InputMetric;
-}) => {
+}): Promise<BreakdownData[]> => {
   const { paramMap, whereStrings, paramCount } = filtersToSql(
     metric.filters.filter((x) => x.propOrigin === PropOrigin.event),
     1
@@ -94,7 +96,7 @@ export const queryMetric = async ({
     if (b.dataType === DataType.number) {
       const query = `
       select count(distinct ${breakdownSelect}) > 10 as shouldBucket
-      from events
+      from events as e
       ${joinSection}
       where ${whereSection}`;
       if (!__prod__) {
@@ -115,7 +117,7 @@ export const queryMetric = async ({
         breakdownBucketMinMaxQuery = `, (SELECT
           min(${breakdownSelect}) AS min_breakdown,
           max(${breakdownSelect}) AS max_breakdown
-          from events
+          from events as e
           where ${whereSection}) as breakdown_min_max`;
         const bucket_idx = `widthBucket(${breakdownSelect}, min_breakdown, max_breakdown, ${numBuckets})`;
         const breakdownBucketSize = `(max_breakdown - min_breakdown) / ${numBuckets}`;
@@ -167,10 +169,26 @@ export const queryMetric = async ({
     query_params,
   });
   const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();
+  const eventLabel = `${metric.eventName} [${
+    {
+      [MetricMeasurement.totalEvents]: "Total events",
+      [MetricMeasurement.uniqueUsers]: "Unique users",
+    }[metric.type]
+  }]`;
 
   if (breakdownSelect) {
-    return data as unknown as BreakdownData;
+    return (data as unknown as BreakdownData[]).map((x) => ({
+      ...x,
+      measurement: metric.type,
+      eventLabel,
+    }));
   } else {
-    return [{ data }];
+    return [
+      {
+        eventLabel,
+        measurement: metric.type,
+        data,
+      },
+    ];
   }
 };

@@ -1,15 +1,24 @@
-import { lineChartStyle } from "../ui/charts/ChartStyle";
+import moment from "moment";
+import { colorOrder, lineChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
 export const transformToChartData = (
   datas: RouterOutput["getInsight"]["datas"]
 ) => {
   return {
-    labels: datas[0].data.map((d) => d.day),
-    datasets: datas.map((data) => ({
+    labels: datas[0].data.map((d) =>
+      moment("day" in d ? d.day : d[0]).format("MMM D")
+    ),
+    datasets: datas.map((data, i) => ({
       ...lineChartStyle,
-      label: "My First Dataset",
-      data: data.data.map((d) => d.count),
+      borderColor: colorOrder[i % colorOrder.length],
+      label: data.eventLabel,
+      measurement: data.measurement,
+      breakdown: data.breakdown || "",
+      fullDates: datas[0].data.map((d) =>
+        moment("day" in d ? d.day : d[0]).format("ddd MMM DD, YYYY")
+      ),
+      data: data.data.map((d) => ("count" in d ? d.count : d[1])),
     })),
   };
 };

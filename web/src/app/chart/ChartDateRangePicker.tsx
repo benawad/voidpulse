@@ -72,7 +72,12 @@ export const ChartDateRangePicker: React.FC<
         name: unit.label,
         action: () => {
           setLocalTimeUnit(unit.value);
-          setState((prev) => ({ ...prev, timeRangeType: unit.value }));
+          setState((prev) => ({
+            ...prev,
+            from: undefined,
+            to: undefined,
+            timeRangeType: unit.value,
+          }));
         },
       };
     }

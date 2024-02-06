@@ -1,4 +1,6 @@
+import { ChartOptions, Plugin, TooltipItem } from "chart.js";
 import config from "../../../../tailwind.config";
+import { MetricMeasurement } from "@voidpulse/api";
 const colors = config.theme.extend.colors;
 
 export const colorOrder = [
@@ -14,13 +16,14 @@ export const colorOrder = [
 ];
 
 export const lineChartStyle = {
-  fill: false,
+  // fill: true,
   tension: 0.1,
   borderColor: colors.secondary["signature-100"],
   pointRadius: 0,
-  pointHitRadius: 16,
+  // pointHitRadius: 16,
   pointHoverRadius: 8,
-  pointBorderColor: colors.secondary["signature-100"],
+  pointHoverBackgroundColor: colors.secondary["signature-100"],
+  pointBorderColor: "#fff",
 };
 
 export const donutChartStyle = {
@@ -38,44 +41,111 @@ export const barChartStyle = {
   hoverBorderRadius: 4,
 };
 
+export const stripeTooltipPlugin: Plugin<"line"> = {
+  id: "stripeTooltip",
+  afterTooltipDraw: function (chart, args) {
+    const tooltip = chart.tooltip;
+    if (!tooltip || tooltip.opacity === 0 || tooltip.dataPoints.length === 0)
+      return; // Do not draw if the tooltip is not visible or if there are no data points
+
+    const ctx = chart.ctx;
+    const tooltipWidth = tooltip.width;
+    const tooltipHeight = tooltip.height;
+    const tooltipX = tooltip.x;
+    const tooltipY = tooltip.y;
+
+    const stripeWidth = 4; // Width of the stripe
+
+    // Get the dataset index and borderColor for the first tooltip item
+    const datasetIndex = tooltip.dataPoints[0].datasetIndex;
+    const dataset = chart.data.datasets[datasetIndex];
+    const stripeColor = dataset.borderColor; // Use the dataset's line color for the stripe
+
+    // Calculate the position for the stripe (right side of the tooltip)
+    const stripeX = tooltipX + tooltipWidth - stripeWidth;
+
+    // Save the current context state
+    ctx.save();
+
+    // Draw the stripe
+    ctx.fillStyle = stripeColor as any; // Set the stripe color based on the dataset's line color
+    ctx.fillRect(stripeX, tooltipY, stripeWidth, tooltipHeight);
+
+    // Restore the previous context state
+    ctx.restore();
+  },
+};
+
+export const verticalLinePlugin: Plugin<"line"> = {
+  id: "verticalLine",
+  beforeDatasetsDraw: (chart) => {
+    const tooltip = chart.tooltip;
+    if (tooltip && tooltip.getActiveElements().length > 0) {
+      const ctx = chart.ctx;
+      const x = tooltip.getActiveElements()[0].element.x;
+      const topY = chart.scales.y.top;
+      const bottomY = chart.scales.y.bottom;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x, topY);
+      ctx.lineTo(x, bottomY);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = colors.primary[800];
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+};
+
 export const generalChartOptions = {
   layout: {
     autoPadding: true,
   },
   // responsive: true,
   // maintainAspectRatio: false, // This is important to stretch in height
+  hover: {
+    mode: "nearest",
+    intersect: false,
+    hoverAnimationDuration: 0,
+  },
   plugins: {
     legend: {
       display: false,
     },
-
     tooltip: {
+      mode: "nearest",
+      intersect: false,
       borderColor: colors.primary[700],
       borderWidth: 1,
       backgroundColor: colors.primary[800],
       padding: 16,
-      displayColors: true,
+      displayColors: false,
       boxPadding: 8,
       caretSize: 10,
+      animation: false,
 
       callbacks: {
-        //TO DO: Fill this properly, this is placeholder function
-        label: (context: {
-          dataset: { label: string };
-          parsed: { y: number | bigint | null };
-        }) => {
-          let label = context.dataset.label || "";
-
-          // if (label) {
-          //   label += ": ";
-          // }
-          // if (context.parsed.y !== null) {
-          //   label += new Intl.NumberFormat("en-US", {
-          //     style: "currency",
-          //     currency: "USD",
-          //   }).format(context.parsed.y);
-          // }
-          return label + ": " + context.parsed.y;
+        title: (tooltipItems: TooltipItem<"line">[]) => {
+          return tooltipItems.length ? `${tooltipItems[0].dataset.label}` : "";
+        },
+        afterTitle: (tooltipItems: TooltipItem<"line">[]) => {
+          return tooltipItems.length
+            ? `${(tooltipItems[0].dataset as any).breakdown}`
+            : "";
+        },
+        beforeLabel: (tooltipItem: TooltipItem<"line">) => {
+          return (tooltipItem.dataset as any).fullDates[tooltipItem.dataIndex];
+        },
+        label: (tooltipItem: TooltipItem<"line">) => {
+          return `${tooltipItem.parsed.y?.toLocaleString()} ${
+            (tooltipItem.dataset as any).measurement
+              ? {
+                  [MetricMeasurement.totalEvents]: "events",
+                  [MetricMeasurement.uniqueUsers]: "users",
+                }[(tooltipItem.dataset as any).measurement as MetricMeasurement]
+              : ""
+          }`;
         },
       },
     },
@@ -117,4 +187,4 @@ export const generalChartOptions = {
       },
     },
   },
-};
+} as const;
