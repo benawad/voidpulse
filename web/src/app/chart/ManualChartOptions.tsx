@@ -169,6 +169,9 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
             setState((prev) => ({ ...prev, breakdowns: [] }));
             setAddNewBreakdown(false);
           }}
+          onEmptyBreakdownAbandoned={() => {
+            setAddNewBreakdown(false);
+          }}
         />
       ) : null}
     </>

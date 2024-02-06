@@ -206,6 +206,9 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                   setAddNewFilter(false);
                 }}
                 eventName={metric?.eventName || ""}
+                onEmptyFilterAbandoned={() => {
+                  setAddNewFilter(false);
+                }}
               />
             </>
           ) : null}

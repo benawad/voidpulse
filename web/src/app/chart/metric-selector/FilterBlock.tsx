@@ -10,7 +10,7 @@ import {
   NumberFilterOperation,
   StringFilterOperation,
 } from "@voidpulse/api";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoClose, IoFilter } from "react-icons/io5";
 import { BooleanInput } from "../../ui/BooleanInput";
 import { Dropdown } from "../../ui/Dropdown";
@@ -26,6 +26,7 @@ interface FilterBlockProps {
   filter: Partial<MetricFilter>;
   eventName: string;
   onFilterDefined: (filter: MetricFilter) => void;
+  onEmptyFilterAbandoned?: () => void;
 }
 
 const isValidFilter = (
@@ -192,6 +193,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
   filter,
   eventName,
   onFilterDefined,
+  onEmptyFilterAbandoned,
 }) => {
   const [localFilter, setLocalFilter] = useState<Partial<MetricFilter>>(filter);
   const setLocalOrParentFilter = (filter: Partial<MetricFilter>) => {
@@ -216,9 +218,32 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
 
   const options = getOperationOptions(localFilter.dataType || DataType.boolean);
 
+  //Dismissing an empty filter block when you click outside of it
+  const filterBlockRef = React.useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const handleOutsideClick = (e: any) => {
+      if (
+        filterBlockRef.current &&
+        !filterBlockRef.current.contains(e.target)
+      ) {
+        if (Object.keys(filter).length !== 0) {
+          return;
+        }
+        onEmptyFilterAbandoned?.();
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   return (
     <>
-      <div className="flex flex-col items-center rounded-lg">
+      <div
+        className="flex flex-col items-center rounded-lg"
+        ref={filterBlockRef}
+      >
         <div
           className="flex flex-row group w-full justify-between items-center"
           ref={refs.setReference}

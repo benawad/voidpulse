@@ -4,7 +4,7 @@ import {
   useFloating,
   useInteractions,
 } from "@floating-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PropKeySelector } from "./PropKeySelector";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { Metric, MetricFilter } from "./Metric";
@@ -15,12 +15,14 @@ interface BreakdownBlockProps {
   breakdown?: MetricFilter;
   onBreakdown: (f: MetricFilter) => void;
   onDelete: () => void;
+  onEmptyBreakdownAbandoned?: () => void;
 }
 
 export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
   onBreakdown,
   onDelete,
   breakdown,
+  onEmptyBreakdownAbandoned,
 }) => {
   const [{ metrics }] = useChartStateContext();
   const [isOpen, setIsOpen] = useState(!breakdown);
@@ -34,8 +36,29 @@ export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
     useDismiss(context),
   ]);
 
+  //Dismissing an empty filter block when you click outside of it
+  const breakdownBlockRef = React.useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const handleOutsideClick = (e: any) => {
+      if (
+        breakdownBlockRef.current &&
+        !breakdownBlockRef.current.contains(e.target)
+      ) {
+        if (breakdown && Object.keys(breakdown).length !== 0) {
+          return;
+        }
+
+        onEmptyBreakdownAbandoned?.();
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   return (
-    <div>
+    <div ref={breakdownBlockRef}>
       <button
         {...getReferenceProps()}
         ref={refs.setReference}
