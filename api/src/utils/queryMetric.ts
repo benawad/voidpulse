@@ -53,20 +53,23 @@ export const queryMetric = async ({
     ...paramMap,
     ...paramMap2,
   };
+  const joinSection =
+    userWhereStrings.length ||
+    (breakdowns.length && breakdowns[0].propOrigin === PropOrigin.user)
+      ? `inner join people as p on e.distinct_id = p.distinct_id `
+      : "";
   const whereSection = `
   project_id = {projectId:UUID}
     AND time >= {from:DateTime}
     AND time <= {to:DateTime}
     AND name = {eventName:String}
-    ${whereStrings.length > 0 ? `AND ${whereStrings.join(whereCombiner)}` : ""}
+    ${whereStrings.length ? `AND ${whereStrings.join(whereCombiner)}` : ""}
     ${
-      userWhereStrings.length > 0
-        ? `AND distinct_id in (
-          select distinct_id
-          from people as p
-          where ${userWhereStrings.join(whereCombiner)})`
+      userWhereStrings.length
+        ? `AND ${userWhereStrings.join(whereCombiner)}`
         : ""
-    }`;
+    }
+    `;
   let breakdownSelect = "";
   let breakdownBucketMinMaxQuery = "";
   let shouldBucketData = false;
@@ -81,14 +84,15 @@ export const queryMetric = async ({
     }[b.dataType];
     if (jsonExtractor) {
       query_params[`p${paramCount2 + 1}`] = b.propName;
-      breakdownSelect = `${jsonExtractor}(properties, {p${
-        paramCount2 + 1
-      }:String})`;
+      breakdownSelect = `${jsonExtractor}(${
+        b.propOrigin === PropOrigin.user ? "p" : "e"
+      }.properties, {p${paramCount2 + 1}:String})`;
     }
     if (b.dataType === DataType.number) {
       const query = `
       select count(distinct ${breakdownSelect}) > 10 as shouldBucket
       from events
+      ${joinSection}
       where ${whereSection}`;
       if (!__prod__) {
         console.log(query);
@@ -120,7 +124,7 @@ export const queryMetric = async ({
       }
     }
   }
-  if (!shouldBucketData) {
+  if (breakdownSelect && !shouldBucketData) {
     breakdownSelect = `${breakdownSelect} as breakdown`;
   }
   let query = `
@@ -132,9 +136,10 @@ export const queryMetric = async ({
           : ``
       })) AS count
       ${breakdownSelect ? `, ${breakdownSelect}` : ""}
-  FROM events${
+  FROM events as e${
     breakdownBucketMinMaxQuery ? `${breakdownBucketMinMaxQuery}` : ""
   }
+  ${joinSection}
   WHERE ${whereSection}
   GROUP BY day${breakdownSelect ? ", breakdown" : ""}
   ORDER BY day ASC

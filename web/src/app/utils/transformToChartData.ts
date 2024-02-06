@@ -5,11 +5,11 @@ export const transformToChartData = (
   datas: RouterOutput["getInsight"]["datas"]
 ) => {
   return {
-    labels: datas[0].map((d) => d.day),
+    labels: datas[0].data.map((d) => d.day),
     datasets: datas.map((data) => ({
       ...lineChartStyle,
       label: "My First Dataset",
-      data: data.map((d) => d.count),
+      data: data.data.map((d) => d.count),
     })),
   };
 };
