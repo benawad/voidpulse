@@ -8,6 +8,8 @@ import React, { useState } from "react";
 import { PropKeySelector } from "./PropKeySelector";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { Metric, MetricFilter } from "./Metric";
+import { BsGrid3X3Gap } from "react-icons/bs";
+import { IoClose } from "react-icons/io5";
 
 interface BreakdownBlockProps {
   breakdown?: MetricFilter;
@@ -37,11 +39,29 @@ export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
       <button
         {...getReferenceProps()}
         ref={refs.setReference}
-        className="w-full text-primary-100 flex text-sm accent-hover p-2 font-semibold rounded-md"
+        className="w-full text-primary-100 flex text-sm p-1 font-semibold rounded-md standard card flex-row group justify-between"
       >
-        {breakdown ? breakdown.propName : "Select property"}
+        {/* Title and filter icon */}
+        <div className="flex flex-row w-full items-center">
+          <BsGrid3X3Gap className="fill-secondary-complement-100 mx-2" />
+          <div className="text-sm accent-hover p-2 w-full text-left rounded-lg font-normal">
+            {breakdown ? breakdown.propName : "Select property"}
+          </div>
+        </div>
+        {/* Delete button shows up if it's an existing breakdown */}
+        {breakdown ? (
+          <div
+            className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 hover:bg-secondary-red-100/20"
+            onClick={onDelete}
+          >
+            <IoClose
+              size={36}
+              className="fill-primary-500 hover:fill-secondary-red-100 p-2"
+            />
+          </div>
+        ) : null}
       </button>
-      {isOpen ? (
+      {isOpen && metrics[0]?.eventName ? (
         <div
           ref={refs.setFloating}
           {...getFloatingProps()}

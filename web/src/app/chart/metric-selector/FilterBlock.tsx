@@ -218,16 +218,16 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
 
   return (
     <>
-      <div className="flex flex-col accent-hover items-center rounded-lg">
+      <div className="flex flex-col items-center rounded-lg">
         <div
           className="flex flex-row group w-full justify-between items-center"
           ref={refs.setReference}
           {...getReferenceProps()}
         >
           {/* Title and filter icon */}
-          <div className="flex flex-row">
-            <IoFilter className="fill-secondary-complement-100 mx-2" />
-            <div className="text-sm ml-2">
+          <div className="flex flex-row w-full">
+            <IoFilter className="fill-secondary-complement-100 mx-2 mt-2" />
+            <div className="text-sm p-2 accent-hover rounded-lg w-full">
               {localFilter?.propName || "Select filter"}
             </div>
           </div>

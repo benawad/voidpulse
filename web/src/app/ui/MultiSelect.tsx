@@ -7,7 +7,11 @@ import {
 import Downshift from "downshift";
 import { useEffect, useMemo, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+import {
+  MdCheckBox,
+  MdCheckBoxOutlineBlank,
+  MdOutlineIndeterminateCheckBox,
+} from "react-icons/md";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { PulseLoader } from "./PulseLoader";
@@ -178,6 +182,7 @@ export function MultiSelect({
                   style={{ width: 420, height: 460 }}
                   className="bg-primary-900 border-primary-600 border shadow-xl flex flex-col p-4 rounded-md"
                 >
+                  {/* Search bar on top */}
                   <div
                     style={{ display: "inline-block" }}
                     className="w-full"
@@ -194,11 +199,13 @@ export function MultiSelect({
                     <PulseLoader />
                   ) : (
                     <>
+                      {/* Dropdown options area */}
                       <div
                         {...getMenuProps({
                           className: "overflow-auto flex-1 mt-2",
                         })}
                       >
+                        {/* Select all button at the top */}
                         {filteredOpts.length ? (
                           <div
                             {...getItemProps({
@@ -208,7 +215,7 @@ export function MultiSelect({
                                 lowercaseValue: "__all__",
                               },
                             })}
-                            className={`flex flex-row p-2 accent-hover group rounded-md
+                            className={`flex flex-row p-2 accent-hover items-center group rounded-md
                       ${
                         highlightedIndex === 0
                           ? "bg-secondary-signature-100/30 text-primary-100"
@@ -224,11 +231,14 @@ export function MultiSelect({
                               )) ? (
                               <MdCheckBox size={24} />
                             ) : (
-                              <MdCheckBoxOutlineBlank size={24} />
+                              <MdOutlineIndeterminateCheckBox size={24} />
                             )}
-                            <div>Select all {inputValue ? "matching" : ""}</div>
+                            <div className="ml-2 text-sm text-primary-200">
+                              Select all {inputValue ? "matching" : ""}
+                            </div>
                           </div>
                         ) : null}
+                        {/* Rest of the dropdown options */}
                         {filteredOpts.map((item, _index) => {
                           const index = _index + 1;
                           const isSelected = values.includes(item.value);
@@ -248,11 +258,16 @@ export function MultiSelect({
                       `}
                             >
                               {isSelected ? (
-                                <MdCheckBox size={24} />
+                                <MdCheckBox
+                                  size={24}
+                                  className="fill-secondary-signature-100"
+                                />
                               ) : (
                                 <MdCheckBoxOutlineBlank size={24} />
                               )}
-                              <div>{item.value}</div>
+                              <div className="ml-2 text-sm text-primary-200">
+                                {item.value}
+                              </div>
                             </div>
                           );
                         })}

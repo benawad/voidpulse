@@ -50,7 +50,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
     // Full metric block: label, drag handle, metric selector, and measurement.
     // Can be an empty prompting box if no metric is selected.
     // Also includes metric specific filters.
-    <div className="standard card py-1 px-1 my-2 group" key={idx}>
+    <div className="standard card p-1 my-2 group" key={idx}>
       {/* Top section for the event */}
       <div className="flex flex-col">
         {/* Left side of the button for the label and drag handle*/}
