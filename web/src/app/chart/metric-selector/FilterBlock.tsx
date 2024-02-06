@@ -18,6 +18,8 @@ import { ValidatingInput } from "../../ui/ValidatingInput";
 import { MetricFilter } from "./Metric";
 import { PropKeySelector } from "./PropKeySelector";
 import { PropValueMultiSelect } from "./PropValueMultiSelect";
+import { SingleDateValuePicker } from "./SingleDateValuePicker";
+import moment from "moment";
 
 interface FilterBlockProps {
   onDelete?: () => void;
@@ -222,6 +224,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
           ref={refs.setReference}
           {...getReferenceProps()}
         >
+          {/* Title and filter icon */}
           <div className="flex flex-row">
             <IoFilter className="fill-secondary-complement-100 mx-2" />
             <div className="text-sm ml-2">
@@ -265,9 +268,9 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
         ) : null}
       </div>
 
-      {/* Boolean filters */}
       {localFilter.propName ? (
         <div className="flex items-center">
+          {/* Selector for filter operation */}
           {localFilter.dataType === DataType.boolean ? (
             <div className="flex w-full justify-center">
               <BooleanInput
@@ -278,26 +281,36 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
               />
             </div>
           ) : (
-            <Dropdown
-              noCaret
-              opts={options}
-              value={localFilter.operation}
-              onSelect={(op) => {
-                setLocalOrParentFilter({
-                  ...localFilter,
-                  operation: op,
-                  value:
-                    localFilter.dataType === DataType.number
-                      ? localFilter.value
-                      : undefined,
-                });
-              }}
-            />
+            <div className="ml-8">
+              <Dropdown
+                noCaret
+                opts={options}
+                value={localFilter.operation}
+                onSelect={(op) => {
+                  setLocalOrParentFilter({
+                    ...localFilter,
+                    operation: op,
+                    value:
+                      localFilter.dataType === DataType.number
+                        ? localFilter.value
+                        : undefined,
+                  });
+                }}
+              />
+            </div>
           )}
-          {/* Date filter here */}
+          {/* Single date picker */}
           {localFilter.dataType === DataType.date &&
           localFilter.operation === DateFilterOperation.on ? (
-            <div>Choose a date</div>
+            <SingleDateValuePicker
+              value={localFilter.value}
+              currentDate={moment(localFilter.value)}
+              onDatePicked={(date) => {
+                let dateString = moment(date).format("YYYY-MM-DD HH:mm:ss");
+                console.log(dateString);
+                setLocalOrParentFilter({ ...localFilter, value: dateString });
+              }}
+            />
           ) : null}
 
           {/* For any string prop. Here, show multi-select for is and is-not */}

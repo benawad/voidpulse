@@ -1,5 +1,13 @@
 /* // NOTE: the order of these styles DO matter */
 
+/* Single date picker */
+.SingleDatePicker_picker {
+  @apply bg-transparent;
+}
+.SingleDatePickerInput {
+  @apply bg-transparent;
+}
+/* Date range picker */
 .DateRangePickerInput {
   @apply bg-transparent;
 }
