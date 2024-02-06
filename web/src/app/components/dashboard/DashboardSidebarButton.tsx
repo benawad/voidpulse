@@ -33,9 +33,9 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
         (isSelectedBoard ? selectedBoardButtonStyle : " border-transparent")
       }
     >
-      <div className="flex flex-row">
+      <div className="flex flex-row overflow-hidden">
         <div className="mr-2">{board.emoji}</div>
-        {board.title}
+        <div className="w-full text-ellipsis truncate">{board.title}</div>
       </div>
       <MoreOptionsButton boardId={board.id} boardTitle={board.title} />
       {boardId === board.id ? (
