@@ -18,7 +18,7 @@ import {
   metricSchema,
 } from "./eventFilterSchema";
 
-type InsightData = { day: string; count: number };
+type InsightData = { day: string; count: number; breakdown?: any };
 
 export const getInsight = protectedProcedure
   .input(
@@ -137,7 +137,19 @@ const queryMetric = async ({
   const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();
 
   if (breakdownSelect) {
-    const datas = [];
+    return Object.values(
+      data.reduce((acc, item) => {
+        // If the breakdown key doesn't exist in the accumulator, initialize it with an empty array
+        if (!acc[item.breakdown]) {
+          acc[item.breakdown] = [];
+        }
+
+        // Push the current item into the array for its breakdown value
+        acc[item.breakdown].push(item);
+
+        return acc;
+      }, {} as Record<number, InsightData[]>)
+    );
   } else {
     return [data];
   }
