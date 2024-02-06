@@ -239,11 +239,8 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
   }, []);
 
   return (
-    <>
-      <div
-        className="flex flex-col items-center rounded-lg"
-        ref={filterBlockRef}
-      >
+    <div ref={filterBlockRef}>
+      <div className="flex flex-col items-center rounded-lg">
         <div
           className="flex flex-row group w-full justify-between items-center"
           ref={refs.setReference}
@@ -431,6 +428,6 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
           ) : null}
         </div>
       ) : null}
-    </>
+    </div>
   );
 };
