@@ -20,8 +20,10 @@ interface ChartEditorProps {
 }
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
-  const [{ metrics, chartType, reportType, title, description }, setState] =
-    useChartStateContext();
+  const [
+    { metrics, chartType, breakdowns, reportType, title, description },
+    setState,
+  ] = useChartStateContext();
   // @TODO: Decide if this variable should be housed here or in the ChartStateContext
   const [dateRangePicked, setDateRangePicked] = useState({
     startDate: moment(),
@@ -64,7 +66,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const { data, error } = trpc.getInsight.useQuery(
     {
       metrics,
-      breakdowns: [],
+      breakdowns,
       globalFilters: [],
       from: "2024-01-19 00:00:00",
       to: "2024-01-25 00:00:00",

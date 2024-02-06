@@ -1,22 +1,22 @@
 import { z } from "zod";
-import { ClickHouseQueryResponse, clickhouse } from "../../../clickhouse";
-import { dateInputRegex } from "../../../constants/regex";
-import { protectedProcedure } from "../../../trpc";
-import { assertProjectMember } from "../../../utils/assertProjectMember";
 import {
+  DataType,
   FilterAndOr,
   MetricMeasurement,
   PropOrigin,
 } from "../../../app-router-type";
+import { ClickHouseQueryResponse, clickhouse } from "../../../clickhouse";
+import { __prod__ } from "../../../constants/prod";
+import { dateInputRegex } from "../../../constants/regex";
+import { protectedProcedure } from "../../../trpc";
+import { assertProjectMember } from "../../../utils/assertProjectMember";
+import { filtersToSql } from "../../../utils/filtersToSql";
 import {
   InputMetric,
   MetricFilter,
   eventFilterSchema,
   metricSchema,
 } from "./eventFilterSchema";
-import { filtersToSql } from "../../../utils/filtersToSql";
-import { __prod__ } from "../../../constants/prod";
-import { param } from "drizzle-orm";
 
 type InsightData = { day: string; count: number };
 
@@ -39,11 +39,13 @@ export const getInsight = protectedProcedure
       await assertProjectMember({ projectId, userId });
 
       return {
-        datas: await Promise.all(
-          metrics.map((x) =>
-            queryMetric({ projectId, from, to, metric: x, breakdowns })
+        datas: (
+          await Promise.all(
+            metrics.map((x) =>
+              queryMetric({ projectId, from, to, metric: x, breakdowns })
+            )
           )
-        ),
+        ).flat(),
       };
     }
   );
@@ -53,6 +55,7 @@ const queryMetric = async ({
   from,
   to,
   metric,
+  breakdowns,
 }: {
   projectId: string;
   from: string;
@@ -64,10 +67,31 @@ const queryMetric = async ({
     metric.filters.filter((x) => x.propOrigin === PropOrigin.event),
     1
   );
-  const { paramMap: paramMap2, whereStrings: userWhereStrings } = filtersToSql(
+  const {
+    paramMap: paramMap2,
+    whereStrings: userWhereStrings,
+    paramCount: paramCount2,
+  } = filtersToSql(
     metric.filters.filter((x) => x.propOrigin === PropOrigin.user),
     paramCount
   );
+  let breakdownSelect = "";
+  if (breakdowns.length) {
+    const b = breakdowns[0];
+    const jsonExtractor = {
+      [DataType.string]: `JSONExtractString`,
+      [DataType.number]: `JSONExtractFloat`,
+      [DataType.boolean]: `JSONExtractBool`,
+      [DataType.date]: `JSONExtractString`,
+      [DataType.other]: ``,
+    }[b.dataType];
+    if (jsonExtractor) {
+      paramMap2[`p${paramCount2 + 1}`] = b.propName;
+      breakdownSelect = `, ${jsonExtractor}(properties, {p${
+        paramCount2 + 1
+      }:String}) as breakdown`;
+    }
+  }
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
   const query = `
   SELECT
@@ -77,6 +101,7 @@ const queryMetric = async ({
           ? `DISTINCT distinct_id`
           : ``
       })) AS count
+      ${breakdownSelect}
   FROM events
   WHERE
     project_id = {projectId:UUID}
@@ -92,7 +117,7 @@ const queryMetric = async ({
           where ${userWhereStrings.join(whereCombiner)})`
         : ""
     }
-  GROUP BY day
+  GROUP BY day${breakdownSelect ? ", breakdown" : ""}
   ORDER BY day ASC
 `;
   if (!__prod__) {
@@ -111,5 +136,9 @@ const queryMetric = async ({
   });
   const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();
 
-  return data;
+  if (breakdownSelect) {
+    const datas = [];
+  } else {
+    return [data];
+  }
 };

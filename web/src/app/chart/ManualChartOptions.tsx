@@ -9,15 +9,18 @@ import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
 import { MetricBlock } from "./metric-selector/MetricBlock";
+import { BreakdownBlock } from "./metric-selector/BreakdownBlock";
 
 interface ManualChartOptionsProps {}
 
 export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
-  const [{ metrics, reportType }, setState] = useChartStateContext();
+  const [{ metrics, breakdowns, reportType }, setState] =
+    useChartStateContext();
   const setMetrics = (newMetrics: Metric[]) => {
     setState((prev) => ({ ...prev, metrics: newMetrics }));
   };
   const [addNewMetric, setAddNewMetric] = useState(false);
+  const [addNewBreakdown, setAddNewBreakdown] = useState(false);
 
   // Top section with square icons
   const reportTypeIconStyle = "w-8 h-8 rounded-md my-2 text-primary-400";
@@ -150,7 +153,24 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       <div className={inputOptionsStyle}>Filter {plusIcon}</div>
 
       {/* Choosing breakdown */}
-      <div className={inputOptionsStyle}>Breakdown {plusIcon}</div>
+      <button
+        onClick={() => setAddNewBreakdown(true)}
+        className={`${inputOptionsStyle} w-full`}
+      >
+        Breakdown {plusIcon}
+      </button>
+      {addNewBreakdown ? (
+        <BreakdownBlock
+          breakdown={breakdowns[0]}
+          onBreakdown={(propKey) => {
+            setState((prev) => ({ ...prev, breakdowns: [propKey] }));
+          }}
+          onDelete={() => {
+            setState((prev) => ({ ...prev, breakdowns: [] }));
+            setAddNewBreakdown(false);
+          }}
+        />
+      ) : null}
     </>
   );
 };

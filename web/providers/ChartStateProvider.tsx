@@ -11,7 +11,7 @@ type ChartStateType = {
   chartType: ChartType;
   metrics: Metric[];
   globalFilters: MetricFilter[];
-  breakdowns: string[];
+  breakdowns: MetricFilter[];
 };
 
 const ChartStateContext = React.createContext<
@@ -42,7 +42,7 @@ export const ChartStateProvider: React.FC<
       chartType: chart?.chartType || ChartType.line,
       metrics: chart?.metrics.map((x) => ({ ...x, id: genId() })) || [],
       globalFilters: [] as MetricFilter[],
-      breakdowns: [] as string[],
+      breakdowns: [] as MetricFilter[],
     };
   });
 
