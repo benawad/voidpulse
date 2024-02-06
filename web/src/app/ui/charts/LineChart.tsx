@@ -49,8 +49,12 @@ export const LineChart: React.FC<LineChartProps> = ({
     },
   };
   return (
-    <div>
+    <div className="w-full">
       <Line
+        style={{
+          height: 400,
+          display: "block",
+        }}
         data={data}
         options={{
           ...generalChartOptions,

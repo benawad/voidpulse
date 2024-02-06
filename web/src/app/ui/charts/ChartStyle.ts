@@ -102,6 +102,7 @@ export const generalChartOptions = {
   layout: {
     autoPadding: true,
   },
+  maintainAspectRatio: false,
   // responsive: true,
   // maintainAspectRatio: false, // This is important to stretch in height
   hover: {
