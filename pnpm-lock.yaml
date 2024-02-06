@@ -162,6 +162,9 @@ importers:
       react-resizable-panels:
         specifier: ^1.0.10
         version: 1.0.10(react-dom@18.2.0)(react@18.2.0)
+      react-window:
+        specifier: ^1.8.10
+        version: 1.8.10(react-dom@18.2.0)(react@18.2.0)
       zustand:
         specifier: ^4.5.0
         version: 4.5.0(@types/react@18.2.48)(react@18.2.0)
@@ -175,6 +178,9 @@ importers:
       '@types/react-dom':
         specifier: ^18
         version: 18.2.18
+      '@types/react-window':
+        specifier: ^1.8.8
+        version: 1.8.8
       autoprefixer:
         specifier: ^10.0.1
         version: 10.4.17(postcss@8.4.33)
@@ -1084,6 +1090,12 @@ packages:
     dependencies:
       '@types/react': 18.2.48
     dev: false
+
+  /@types/react-window@1.8.8:
+    resolution: {integrity: sha512-8Ls660bHR1AUA2kuRvVG9D/4XpRC6wjAaPT9dil7Ckc76eP9TKWZwwmgfq8Q1LANX3QNDnoU4Zp48A3w+zK69Q==}
+    dependencies:
+      '@types/react': 18.2.48
+    dev: true
 
   /@types/react@18.2.48:
     resolution: {integrity: sha512-qboRCl6Ie70DQQG9hhNREz81jqC1cs9EVNcjQ1AU+jH6NFfSAhVVbrrY/+nSF+Bsk4AOwm9Qa61InvMCyV+H3w==}
@@ -2790,6 +2802,10 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /memoize-one@5.2.1:
+    resolution: {integrity: sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==}
+    dev: false
+
   /memoizee@0.4.15:
     resolution: {integrity: sha512-UBWmJpLZd5STPm7PMUlOw/TSy972M+z8gcyQ5veOnSDRREz/0bmpyTfKt3/51DhEBqCZQn1udM/5flcSPYhkdQ==}
     dependencies:
@@ -3582,6 +3598,19 @@ packages:
       react: ^16.14.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0
     dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /react-window@1.8.10(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Y0Cx+dnU6NLa5/EvoHukUD0BklJ8qITCtVEPY1C/nL8wwoZ0b5aEw8Ff1dOVHw7fCzMt55XfJDd8S8W8LCaUCg==}
+    engines: {node: '>8.0.0'}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.23.9
+      memoize-one: 5.2.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false

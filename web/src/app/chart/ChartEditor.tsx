@@ -15,6 +15,7 @@ import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import moment from "moment";
+import { ChartDataTable } from "./ChartDataTable";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -168,7 +169,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             ) : null}
           </div>
           {/* Additional data at the bottom */}
-          <div className="bg-primary-600">Data at the bottom</div>
+          <ChartDataTable />
         </div>
       </div>
     </div>
