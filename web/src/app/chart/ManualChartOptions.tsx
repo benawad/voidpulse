@@ -136,7 +136,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
                 eventName: name,
                 id: genId(),
                 filters: [],
-                type: MetricMeasurement.totalEvents,
+                type: MetricMeasurement.uniqueUsers,
               },
             ]);
             setAddNewMetric(false);

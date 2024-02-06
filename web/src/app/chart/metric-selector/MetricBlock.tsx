@@ -138,7 +138,6 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 />
               </div>
             ) : null}
-
             <MeasurementSelector metric={metric} />
           </div>
         </div>

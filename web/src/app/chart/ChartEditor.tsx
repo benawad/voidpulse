@@ -16,20 +16,26 @@ import { Metric } from "./metric-selector/Metric";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import moment from "moment";
 import { ChartDataTable } from "./ChartDataTable";
+import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const [
-    { metrics, chartType, breakdowns, reportType, title, description },
+    {
+      metrics,
+      chartType,
+      breakdowns,
+      reportType,
+      title,
+      description,
+      from,
+      to,
+      timeRangeType,
+    },
     setState,
   ] = useChartStateContext();
-  // @TODO: Decide if this variable should be housed here or in the ChartStateContext
-  const [dateRangePicked, setDateRangePicked] = useState({
-    startDate: moment(),
-    endDate: moment().add(1, "days"),
-  });
   const router = useRouter();
   const utils = trpc.useUtils();
   const { projectId, boardId } = useProjectBoardContext();
@@ -69,8 +75,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       metrics,
       breakdowns,
       globalFilters: [],
-      from: "2024-01-19 00:00:00",
-      to: "2024-01-25 00:00:00",
+      timeRangeType,
+      from: from ? dateToClickhouseDateString(from) : undefined,
+      to: to ? dateToClickhouseDateString(to) : undefined,
       projectId: projectId,
     },
     { enabled: !!metrics.length }
@@ -145,6 +152,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                         chartType,
                         reportType,
                         projectId,
+                        timeRangeType,
+                        from: from?.toISOString(),
+                        to: to?.toISOString(),
                         metrics,
                         data: transformToChartData(data.datas),
                       });
@@ -156,10 +166,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 Save chart
               </Button>
             </div>
-            <ChartDateRangePicker
-              dateRangePicked={dateRangePicked}
-              setDateRangePicked={setDateRangePicked}
-            />
+            <ChartDateRangePicker />
             {/* Chart  */}
             {data?.datas.length ? (
               <LineChart

@@ -15,6 +15,13 @@
       "when": 1707169206183,
       "tag": "0001_wooden_snowbird",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1707252885683,
+      "tag": "0002_flawless_triathlon",
+      "breakpoints": true
     }
   ]
 }

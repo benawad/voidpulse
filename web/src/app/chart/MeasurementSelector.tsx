@@ -20,7 +20,7 @@ export const MeasurementSelector: React.FC<MeasurementSelectorProps> = ({
   return (
     <Dropdown
       opts={opts}
-      value={metric?.type || MetricMeasurement.totalEvents}
+      value={metric?.type || MetricMeasurement.uniqueUsers}
       onSelect={(v) => {
         if (metric) {
           setState((state) => {

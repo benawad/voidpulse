@@ -5,7 +5,12 @@ import { metricSchema } from "./insight/eventFilterSchema";
 import { db } from "../../db";
 import { charts } from "../../schema/charts";
 import { boardCharts } from "../../schema/board-charts";
-import { ChartType, ReportType } from "../../app-router-type";
+import {
+  ChartTimeRangeType,
+  ChartType,
+  ReportType,
+} from "../../app-router-type";
+import { dateInputRegex } from "../../constants/regex";
 
 export const chartDataSchema = z.object({
   labels: z.array(z.string()),
@@ -24,6 +29,9 @@ export const createChart = protectedProcedure
       description: z.string().optional(),
       chartType: z.nativeEnum(ChartType),
       reportType: z.nativeEnum(ReportType),
+      timeRangeType: z.nativeEnum(ChartTimeRangeType),
+      from: z.string().optional(),
+      to: z.string().optional(),
       projectId: z.string(),
       boardId: z.string(),
       metrics: z.array(metricSchema),
@@ -39,6 +47,9 @@ export const createChart = protectedProcedure
         boardId,
         data,
         description,
+        timeRangeType,
+        from,
+        to,
         metrics,
         chartType,
       },
@@ -57,6 +68,9 @@ export const createChart = protectedProcedure
           title,
           description,
           reportType,
+          from,
+          to,
+          timeRangeType,
         })
         .returning();
       await db.insert(boardCharts).values({ boardId, chartId: chart.id });

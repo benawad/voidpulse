@@ -1,4 +1,5 @@
 import {
+  ChartTimeRangeType,
   DataType,
   FilterAndOr,
   MetricMeasurement,
@@ -12,6 +13,7 @@ import {
   MetricFilter,
 } from "../routes/charts/insight/eventFilterSchema";
 import { InsightData } from "../routes/charts/insight/getInsight";
+import { getDateRange } from "./getDateRange";
 
 type BreakdownData = {
   breakdown?: any;
@@ -25,10 +27,12 @@ export const queryMetric = async ({
   to,
   metric,
   breakdowns,
+  timeRangeType,
 }: {
   projectId: string;
-  from: string;
-  to: string;
+  from?: string;
+  to?: string;
+  timeRangeType: ChartTimeRangeType;
   breakdowns: MetricFilter[];
   metric: InputMetric;
 }) => {
@@ -47,8 +51,7 @@ export const queryMetric = async ({
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
   const query_params: any = {
     projectId,
-    from,
-    to,
+    ...getDateRange(timeRangeType, from, to),
     eventName: metric.eventName,
     ...paramMap,
     ...paramMap2,
@@ -131,9 +134,9 @@ export const queryMetric = async ({
   SELECT
       toStartOfDay(time) AS day,
       toInt32(count(${
-        metric.type === MetricMeasurement.uniqueUsers
-          ? `DISTINCT distinct_id`
-          : ``
+        metric.type === MetricMeasurement.totalEvents
+          ? ``
+          : `DISTINCT distinct_id`
       })) AS count
       ${breakdownSelect ? `, ${breakdownSelect}` : ""}
   FROM events as e${

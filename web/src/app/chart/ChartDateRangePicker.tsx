@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { MultiToggleButtonBar } from "../ui/MultiToggleButtonBar";
 import {
@@ -12,32 +12,34 @@ import "react-dates/lib/css/_datepicker.css";
 import "./react_dates_overrides.css";
 import moment from "moment";
 import { set } from "react-hook-form";
+import { ChartTimeRangeType } from "@voidpulse/api";
+import { useChartStateContext } from "../../../providers/ChartStateProvider";
 
-interface ChartDateRangePickerProps {
-  dateRangePicked: {
-    startDate: moment.Moment;
-    endDate: moment.Moment;
-  };
-  setDateRangePicked: (dateRange: {
-    startDate: moment.Moment;
-    endDate: moment.Moment;
-  }) => void;
-}
+interface ChartDateRangePickerProps {}
 
-export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
-  dateRangePicked,
-  setDateRangePicked,
-}) => {
-  const timeUnits = ["Custom", "Today", "Yesterday", "1M", "3M", "6M", "12M"];
-  const [selectedTimeUnit, setSelectedTimeUnit] = useState(timeUnits[0]);
-  const [selectedTimeUnitIdx, setSelectedTimeUnitIdx] = useState(0);
+const timeUnits = [
+  { label: "Custom", value: ChartTimeRangeType.Custom },
+  { label: "Today", value: ChartTimeRangeType.Today },
+  { label: "Yesterday", value: ChartTimeRangeType.Yesterday },
+  { label: "7D", value: ChartTimeRangeType["7D"] },
+  { label: "30D", value: ChartTimeRangeType["30D"] },
+  { label: "3M", value: ChartTimeRangeType["3M"] },
+  { label: "6M", value: ChartTimeRangeType["6M"] },
+  { label: "12M", value: ChartTimeRangeType["12M"] },
+];
+
+export const ChartDateRangePicker: React.FC<
+  ChartDateRangePickerProps
+> = ({}) => {
+  const [{ from, to, timeRangeType }, setState] = useChartStateContext();
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
+  const [localTimeUnit, setLocalTimeUnit] = useState(timeRangeType);
   const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(
     "startDate"
   );
   const [localDateRange, setLocalDateRange] = useState({
-    startDate: dateRangePicked.startDate as moment.Moment | null,
-    endDate: dateRangePicked.endDate as moment.Moment | null,
+    startDate: from || null,
+    endDate: to || null,
   });
   const isToday = (day: moment.Moment) => moment().isSame(day, "day");
   const dateRangeAsString = (dateRange: {
@@ -50,22 +52,27 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
   };
 
   const buttonInfoList = timeUnits.map((unit, i) => {
-    if (unit === "Custom") {
+    if (unit.value === ChartTimeRangeType.Custom) {
       return {
-        name: dateRangePicked ? dateRangeAsString(dateRangePicked) : "Custom",
+        name:
+          from && to
+            ? dateRangeAsString({
+                startDate: from,
+                endDate: to,
+              })
+            : "Custom",
         action: () => {
-          setSelectedTimeUnit(unit);
-          setSelectedTimeUnitIdx(i);
+          setLocalTimeUnit(unit.value);
           setShowCustomDatePicker(true);
         },
         iconLeft: <FaRegCalendarAlt />,
       };
     } else {
       return {
-        name: unit,
+        name: unit.label,
         action: () => {
-          setSelectedTimeUnit(unit);
-          setSelectedTimeUnitIdx(i);
+          setLocalTimeUnit(unit.value);
+          setState((prev) => ({ ...prev, timeRangeType: unit.value }));
         },
       };
     }
@@ -91,7 +98,9 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
         className="text-xs m-2"
         buttonClassName="px-3 font-semibold"
         buttonInfo={buttonInfoList}
-        selectedButtonIdx={selectedTimeUnitIdx}
+        selectedButtonIdx={timeUnits.findIndex(
+          (x) => x.value === localTimeUnit
+        )}
       />
       {showCustomDatePicker ? (
         <div
@@ -109,7 +118,12 @@ export const ChartDateRangePicker: React.FC<ChartDateRangePickerProps> = ({
             }}
             onClose={({ startDate, endDate }) => {
               if (startDate && endDate) {
-                setDateRangePicked({ startDate, endDate });
+                setState((prev) => ({
+                  ...prev,
+                  from: startDate,
+                  to: endDate,
+                  timeRangeType: ChartTimeRangeType.Custom,
+                }));
                 setShowCustomDatePicker(false);
               }
             }}

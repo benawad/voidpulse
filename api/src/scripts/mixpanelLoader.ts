@@ -10,9 +10,9 @@ import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString"
 
 const apiSecret = process.env.MIXPANEL_API_SECRET as string;
 const params = new URLSearchParams({
-  from_date: "2024-01-22",
+  from_date: "2024-01-01",
   to_date: "2024-01-23",
-  // event: `["$ae_first_open"]`,
+  event: `["Mood"]`,
 });
 const headers = {
   Authorization: `Basic ${Buffer.from(`${apiSecret}:`).toString("base64")}`,
@@ -56,7 +56,7 @@ const exportData = async () => {
 
     // console.log("DONE");
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error:", error.message);
   }
 };
 
