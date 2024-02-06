@@ -29,6 +29,9 @@
 .DayPicker_transitionContainer {
   @apply bg-primary-800 rounded-xl border border-primary-700;
 }
+.DayPicker_weekHeader {
+  @apply text-primary-600;
+}
 
 /* Top arrows for left and right on the months */
 .DayPickerNavigation_button {

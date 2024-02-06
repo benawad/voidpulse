@@ -264,6 +264,8 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
           </div>
         ) : null}
       </div>
+
+      {/* Boolean filters */}
       {localFilter.propName ? (
         <div className="flex items-center">
           {localFilter.dataType === DataType.boolean ? (
@@ -292,6 +294,13 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
               }}
             />
           )}
+          {/* Date filter here */}
+          {localFilter.dataType === DataType.date &&
+          localFilter.operation === DateFilterOperation.on ? (
+            <div>Choose a date</div>
+          ) : null}
+
+          {/* For any string prop. Here, show multi-select for is and is-not */}
           {localFilter.dataType === DataType.string && localFilter.operation ? (
             <>
               {[StringFilterOperation.is, StringFilterOperation.isNot].includes(
@@ -331,6 +340,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
               ) : null}
             </>
           ) : null}
+          {/* Number props */}
           {localFilter.dataType === DataType.number ? (
             <>
               <ValidatingInput
@@ -355,6 +365,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
                   }
                 }}
               />
+              {/* Two inputs, for numerical between filters */}
               {localFilter.dataType === DataType.number &&
               (localFilter.operation === NumberFilterOperation.between ||
                 localFilter.operation === NumberFilterOperation.notBetween) ? (
