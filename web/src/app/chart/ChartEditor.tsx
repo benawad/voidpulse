@@ -176,7 +176,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             ) : null}
           </div>
           {/* Additional data at the bottom */}
-          <ChartDataTable />
+          {data ? <ChartDataTable datas={data?.datas} /> : null}
         </div>
       </div>
     </div>
