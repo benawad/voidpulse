@@ -19,8 +19,8 @@ type BreakdownData = {
   eventLabel: string;
   measurement: MetricMeasurement;
   breakdown?: any;
-  total_count?: number;
-  data: InsightData[] | [string, number][];
+  average_count: number;
+  data: [string, number][];
 };
 
 export const queryMetric = async ({
@@ -153,11 +153,11 @@ export const queryMetric = async ({
     query = `
     select
     breakdown,
-    sum(count) as total_count,
+    avg(count) as average_count,
     groupArray((day, count)) as data
     from (${query})
     group by breakdown
-    order by total_count desc
+    order by average_count desc
     limit 500
     `;
   }
@@ -187,7 +187,8 @@ export const queryMetric = async ({
       {
         eventLabel,
         measurement: metric.type,
-        data,
+        average_count: data.reduce((a, b) => a + b.count, 0) / data.length,
+        data: data.map((x) => [x.day, x.count]),
       },
     ];
   }

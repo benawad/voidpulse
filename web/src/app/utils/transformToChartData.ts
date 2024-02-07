@@ -6,9 +6,7 @@ export const transformToChartData = (
   datas: RouterOutput["getInsight"]["datas"]
 ) => {
   return {
-    labels: datas[0].data.map((d) =>
-      moment("day" in d ? d.day : d[0]).format("MMM D")
-    ),
+    labels: datas[0].data.map((d) => moment(d[0]).format("MMM D")),
     datasets: datas.map((data, i) => ({
       ...lineChartStyle,
       borderColor: colorOrder[i % colorOrder.length],
@@ -16,9 +14,9 @@ export const transformToChartData = (
       measurement: data.measurement,
       breakdown: data.breakdown || "",
       fullDates: datas[0].data.map((d) =>
-        moment("day" in d ? d.day : d[0]).format("ddd MMM DD, YYYY")
+        moment(d[0]).format("ddd MMM DD, YYYY")
       ),
-      data: data.data.map((d) => ("count" in d ? d.count : d[1])),
+      data: data.data.map((d) => d[1]),
     })),
   };
 };
