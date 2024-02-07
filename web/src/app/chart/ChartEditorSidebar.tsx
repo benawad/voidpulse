@@ -14,7 +14,7 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = () => {
     >
       <MultiToggleButtonBar
         className="font-semibold text-md"
-        buttonClassName="w-full"
+        buttonClassName="w-full justify-center"
         buttonInfo={[
           {
             name: "AI Chat ✨",
