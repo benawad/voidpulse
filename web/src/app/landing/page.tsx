@@ -3,6 +3,7 @@ import { trpc } from "../utils/trpc";
 import Aurora from "./Aurora";
 import { LandingHero } from "./LandingHero";
 import PlanetMotif1 from "./PlanetMotif1";
+import PlanetMotif2 from "./PlanetMotif2";
 import PulseMotif1 from "./PulseMotif1";
 import { StretchySvgWrapper } from "./StretchySvg";
 import WaveformBottom from "./WaveformBottom";
@@ -37,7 +38,7 @@ function Home() {
             <PlanetMotif1 style={{ width: 400, height: 400 }} />
           </div>
           <div className="flex flex-row items-center justify-center">
-            <PulseMotif1 style={{ width: 300, height: 300 }} />
+            <PlanetMotif2 style={{ width: 500, height: 500 }} />
             <div className="ml-2 text-2xl">
               Insights as easy as asking a question 🤔
             </div>

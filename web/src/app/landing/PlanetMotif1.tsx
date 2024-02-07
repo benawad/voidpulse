@@ -153,8 +153,8 @@ const SvgComponent = (props: SVGProps<SVGSVGElement>) => (
         gradientUnits="userSpaceOnUse"
         gradientTransform="translate(85 63.5) rotate(125.803) scale(37.6065)"
       >
-        <stop offset={0.622238} stopColor="#AFFAFF" stopOpacity={0} />
-        <stop offset={1} stopColor="#5BF5FF" />
+        <stop offset={0.622238} stopColor="#000AFF" stopOpacity={0} />
+        <stop offset={1} stopColor="#0038FF" />
       </radialGradient>
       <linearGradient
         id="paint4_linear_19_471"
