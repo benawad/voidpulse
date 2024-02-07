@@ -19,7 +19,7 @@ import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import moment from "moment";
-import { ChartDataTable } from "./ChartDataTable";
+import { ChartDataTable } from "./data-table/ChartDataTable";
 import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
 import { Dropdown } from "../ui/Dropdown";
 interface ChartEditorProps {
@@ -39,6 +39,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       from,
       to,
       timeRangeType,
+      visibleDataMap,
     },
     setState,
   ] = useChartStateContext();
@@ -102,10 +103,10 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
         </Link>
       </div>
       {/* View that houses editor and chart side by side */}
-      <div className="flex grow w-full h-full">
+      <div className="flex w-full h-full">
         <ChartEditorSidebar />
         {/* Main section of the chart view */}
-        <div className="w-full">
+        <div className="flex-1 overflow-x-auto">
           {/* Div that stacks the chart and data at the bottom */}
           <div className="p-12" style={{ minWidth: 800, minHeight: 500 }}>
             {/* Title and description */}
@@ -170,7 +171,11 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       timeRangeType,
                       from: from?.toISOString(),
                       to: to?.toISOString(),
-                      data: transformToChartData(data.datas),
+                      data: transformToChartData(
+                        data.datas,
+                        data.dateHeaders,
+                        visibleDataMap
+                      ),
                     };
                     if (chart) {
                       updateChart({
@@ -197,12 +202,22 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             {data?.datas.length ? (
               <LineChart
                 disableAnimations
-                data={transformToChartData(data.datas)}
+                data={transformToChartData(
+                  data.datas,
+                  data.dateHeaders,
+                  visibleDataMap
+                )}
               />
             ) : null}
           </div>
           {/* Additional data at the bottom */}
-          {data ? <ChartDataTable datas={data?.datas} /> : null}
+          {data?.datas.length ? (
+            <ChartDataTable
+              dateHeaders={data.dateHeaders}
+              breakdownPropName={breakdowns[0]?.propName}
+              datas={data.datas}
+            />
+          ) : null}
         </div>
       </div>
     </div>

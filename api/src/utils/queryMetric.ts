@@ -15,14 +15,16 @@ import {
 } from "../routes/charts/insight/eventFilterSchema";
 import { InsightData } from "../routes/charts/insight/getInsight";
 import { getDateRange } from "./getDateRange";
+import { v4 } from "uuid";
 
 type BreakdownData = {
+  id: string;
   eventLabel: string;
   measurement: MetricMeasurement;
   lineChartGroupByTimeType?: LineChartGroupByTimeType;
   breakdown?: any;
   average_count: number;
-  data: [string, number][];
+  data: Record<string, number>;
 };
 
 export const queryMetric = async ({
@@ -33,7 +35,13 @@ export const queryMetric = async ({
   breakdowns,
   timeRangeType,
   lineChartGroupByTimeType = LineChartGroupByTimeType.day,
+  dateMap,
 }: {
+  dateMap: Record<string, number>;
+  dateHeaders: Array<{
+    label: string;
+    lookupValue: string;
+  }>;
   projectId: string;
   from?: string;
   to?: string;
@@ -144,7 +152,9 @@ export const queryMetric = async ({
           [LineChartGroupByTimeType.week]: "toStartOfWeek",
           [LineChartGroupByTimeType.month]: "toStartOfMonth",
         }[lineChartGroupByTimeType]
-      }(time) AS day,
+      }(time${
+    lineChartGroupByTimeType === LineChartGroupByTimeType.week ? `, 1` : ""
+  }) AS day,
       toInt32(count(${
         metric.type === MetricMeasurement.totalEvents
           ? ``
@@ -163,7 +173,7 @@ export const queryMetric = async ({
     query = `
     select
     breakdown,
-    avg(count) as average_count,
+    round(avg(count), 1) as average_count,
     groupArray((day, count)) as data
     from (${query})
     group by breakdown
@@ -187,20 +197,46 @@ export const queryMetric = async ({
   }]`;
 
   if (breakdownSelect) {
-    return (data as unknown as BreakdownData[]).map((x) => ({
-      ...x,
-      measurement: metric.type,
-      groupByTimeType: lineChartGroupByTimeType,
-      eventLabel,
-    }));
+    return (
+      data as unknown as (BreakdownData & { data: [string, number][] })[]
+    ).map((x) => {
+      const dataMap: Record<string, number> = {};
+      x.data.forEach((d) => {
+        dataMap[d[0]] = d[1];
+      });
+      return {
+        ...x,
+        id: v4(),
+        measurement: metric.type,
+        groupByTimeType: lineChartGroupByTimeType,
+        eventLabel,
+        data: {
+          ...dateMap,
+          ...dataMap,
+        },
+      };
+    });
   } else {
+    const dataMap: Record<string, number> = {};
+    data.forEach((x) => {
+      dataMap[x.day] = x.count;
+    });
+
     return [
       {
+        id: v4(),
         eventLabel,
         measurement: metric.type,
         lineChartGroupByTimeType: lineChartGroupByTimeType,
-        average_count: data.reduce((a, b) => a + b.count, 0) / data.length,
-        data: data.map((x) => [x.day, x.count]),
+        average_count: !data.length
+          ? 0
+          : Math.round(
+              (10 * data.reduce((a, b) => a + b.count, 0)) / data.length
+            ) / 10,
+        data: {
+          ...dateMap,
+          ...dataMap,
+        },
       },
     ];
   }

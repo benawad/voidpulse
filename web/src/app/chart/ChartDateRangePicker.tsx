@@ -12,7 +12,7 @@ import "react-dates/lib/css/_datepicker.css";
 import "./react_dates_overrides.css";
 import moment from "moment";
 import { set } from "react-hook-form";
-import { ChartTimeRangeType } from "@voidpulse/api";
+import { ChartTimeRangeType, LineChartGroupByTimeType } from "@voidpulse/api";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
 
 interface ChartDateRangePickerProps {}
@@ -72,11 +72,22 @@ export const ChartDateRangePicker: React.FC<
         name: unit.label,
         action: () => {
           setLocalTimeUnit(unit.value);
+
           setState((prev) => ({
             ...prev,
             from: undefined,
             to: undefined,
             timeRangeType: unit.value,
+            lineChartGroupByTimeType: {
+              [ChartTimeRangeType.Today]: LineChartGroupByTimeType.day,
+              [ChartTimeRangeType.Yesterday]: LineChartGroupByTimeType.day,
+              [ChartTimeRangeType["7D"]]: LineChartGroupByTimeType.day,
+              [ChartTimeRangeType["30D"]]: LineChartGroupByTimeType.day,
+              [ChartTimeRangeType["3M"]]: LineChartGroupByTimeType.week,
+              [ChartTimeRangeType["6M"]]: LineChartGroupByTimeType.month,
+              [ChartTimeRangeType["12M"]]: LineChartGroupByTimeType.month,
+              [ChartTimeRangeType.Custom]: prev.lineChartGroupByTimeType,
+            }[unit.value],
           }));
         },
       };
@@ -123,11 +134,19 @@ export const ChartDateRangePicker: React.FC<
             }}
             onClose={({ startDate, endDate }) => {
               if (startDate && endDate) {
+                let lineChartGroupByTimeType = LineChartGroupByTimeType.day;
+                const daysDiff = endDate.diff(startDate, "days");
+                if (daysDiff > 93) {
+                  lineChartGroupByTimeType = LineChartGroupByTimeType.month;
+                } else if (daysDiff > 31) {
+                  lineChartGroupByTimeType = LineChartGroupByTimeType.week;
+                }
                 setState((prev) => ({
                   ...prev,
                   from: startDate,
                   to: endDate,
                   timeRangeType: ChartTimeRangeType.Custom,
+                  lineChartGroupByTimeType,
                 }));
                 setShowCustomDatePicker(false);
               }

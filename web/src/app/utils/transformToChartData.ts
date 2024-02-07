@@ -1,29 +1,34 @@
-import moment from "moment";
+import { DateHeader } from "@voidpulse/api";
 import { colorOrder, lineChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
-import { LineChartGroupByTimeType } from "@voidpulse/api";
 
 export const transformToChartData = (
-  datas: RouterOutput["getInsight"]["datas"]
+  datas: RouterOutput["getInsight"]["datas"],
+  dateHeader: DateHeader[],
+  visibleDataMap?: Record<string, boolean> | null
 ) => {
+  const fullDates = dateHeader.map((d) => d.fullLabel);
   return {
-    labels: datas[0].data.map((d) =>
-      datas[0].lineChartGroupByTimeType === LineChartGroupByTimeType.month
-        ? moment(d[0]).format("MMM")
-        : moment(d[0]).format("MMM D")
-    ),
-    datasets: datas.map((data, i) => ({
-      ...lineChartStyle,
-      borderColor: colorOrder[i % colorOrder.length],
-      label: data.eventLabel,
-      measurement: data.measurement,
-      breakdown: data.breakdown || "",
-      fullDates: datas[0].data.map((d) =>
-        datas[0].lineChartGroupByTimeType === LineChartGroupByTimeType.month
-          ? moment(d[0]).format("MMM YYYY")
-          : moment(d[0]).format("ddd MMM DD, YYYY")
-      ),
-      data: data.data.map((d) => d[1]),
-    })),
+    labels: dateHeader.map((d) => d.label),
+    datasets: datas
+      .filter((d, i) => {
+        if (!visibleDataMap) {
+          return i < 10;
+        }
+        return visibleDataMap[d.id];
+      })
+      .map((data, i) => {
+        const col = colorOrder[i % colorOrder.length];
+        return {
+          ...lineChartStyle,
+          borderColor: col,
+          pointHoverBackgroundColor: col,
+          label: data.eventLabel,
+          measurement: data.measurement,
+          breakdown: data.breakdown || "",
+          fullDates,
+          data: dateHeader.map((d) => data.data[d.lookupValue] || 0),
+        };
+      }),
   };
 };

@@ -17,7 +17,11 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
   const [{ metrics, breakdowns, reportType }, setState] =
     useChartStateContext();
   const setMetrics = (newMetrics: Metric[]) => {
-    setState((prev) => ({ ...prev, metrics: newMetrics }));
+    setState((prev) => ({
+      ...prev,
+      metrics: newMetrics,
+      visibleDataMap: null,
+    }));
   };
   const [addNewMetric, setAddNewMetric] = useState(false);
   const [addNewBreakdown, setAddNewBreakdown] = useState(false);
@@ -163,10 +167,18 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
         <BreakdownBlock
           breakdown={breakdowns[0]}
           onBreakdown={(propKey) => {
-            setState((prev) => ({ ...prev, breakdowns: [propKey] }));
+            setState((prev) => ({
+              ...prev,
+              breakdowns: [propKey],
+              visibleDataMap: null,
+            }));
           }}
           onDelete={() => {
-            setState((prev) => ({ ...prev, breakdowns: [] }));
+            setState((prev) => ({
+              ...prev,
+              breakdowns: [],
+              visibleDataMap: null,
+            }));
             setAddNewBreakdown(false);
           }}
           onEmptyBreakdownAbandoned={() => {

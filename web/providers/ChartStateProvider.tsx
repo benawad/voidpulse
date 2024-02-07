@@ -15,10 +15,11 @@ type ChartStateType = {
   description: string;
   reportType: ReportType;
   chartType: ChartType;
-  timeRangeType: ChartTimeRangeType;
-  lineChartGroupByTimeType?: LineChartGroupByTimeType | null;
   from?: Moment | null;
   to?: Moment | null;
+  timeRangeType: ChartTimeRangeType;
+  visibleDataMap?: Record<string, boolean> | null;
+  lineChartGroupByTimeType?: LineChartGroupByTimeType | null;
   metrics: Metric[];
   globalFilters: MetricFilter[];
   breakdowns: MetricFilter[];
@@ -33,6 +34,7 @@ const ChartStateContext = React.createContext<
     reportType: ReportType.insight,
     chartType: ChartType.line,
     timeRangeType: ChartTimeRangeType["30D"],
+    visibleDataMap: null,
     metrics: [],
     globalFilters: [],
     breakdowns: [],
@@ -52,6 +54,7 @@ export const ChartStateProvider: React.FC<
       reportType: chart?.reportType || ReportType.insight,
       chartType: chart?.chartType || ChartType.line,
       metrics: chart?.metrics.map((x) => ({ ...x, id: genId() })) || [],
+      visibleDataMap: null,
       lineChartGroupByTimeType: chart?.lineChartGroupByTimeType,
       timeRangeType: chart?.timeRangeType || ChartTimeRangeType["30D"],
       from: chart?.from ? moment(chart.from) : null,

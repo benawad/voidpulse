@@ -4,10 +4,12 @@ import {
   useDismiss,
   useFloating,
   useInteractions,
+  FloatingPortal,
 } from "@floating-ui/react";
 import React, { useState } from "react";
 
 interface FloatingTriggerProps {
+  portal?: boolean;
   startOpen?: boolean;
   className?: string;
   appearsOnHover?: boolean;
@@ -32,6 +34,7 @@ interface FloatingTriggerProps {
 export const FloatingTrigger: React.FC<
   React.PropsWithChildren<FloatingTriggerProps>
 > = ({
+  portal,
   startOpen = false,
   className,
   children,
@@ -61,6 +64,16 @@ export const FloatingTrigger: React.FC<
   //Fade in/out effect styles
   const fadeIn = "transition-opacity duration-200 opacity-100";
   const fadeOut = "transition-opacity duration-200 opacity-0";
+  const inside = isOpen ? (
+    <div
+      ref={refs.setFloating}
+      {...getFloatingProps()}
+      style={floatingStyles}
+      className={"z-10 flex" + isOpen ? fadeIn : fadeOut}
+    >
+      <div>{floatingContent}</div>
+    </div>
+  ) : null;
 
   return (
     <button
@@ -73,14 +86,11 @@ export const FloatingTrigger: React.FC<
       </div>
       {/* Floating content */}
       {isOpen ? (
-        <div
-          ref={refs.setFloating}
-          {...getFloatingProps()}
-          style={floatingStyles}
-          className={"z-10 flex" + isOpen ? fadeIn : fadeOut}
-        >
-          <div>{floatingContent}</div>
-        </div>
+        portal ? (
+          <FloatingPortal>{inside}</FloatingPortal>
+        ) : (
+          inside
+        )
       ) : null}
     </button>
   );
