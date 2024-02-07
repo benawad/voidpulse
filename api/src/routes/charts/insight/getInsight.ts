@@ -8,6 +8,7 @@ import {
   ChartTimeRangeType,
   LineChartGroupByTimeType,
 } from "../../../app-router-type";
+import { getDateHeaders } from "../../../utils/getDateHeaders";
 
 export type InsightData = { day: string; count: number };
 
@@ -35,17 +36,27 @@ export const getInsight = protectedProcedure
         metrics,
         breakdowns,
         timeRangeType,
-        lineChartGroupByTimeType,
+        lineChartGroupByTimeType = LineChartGroupByTimeType.day,
       },
       ctx: { userId },
     }) => {
       await assertProjectMember({ projectId, userId });
 
+      const { dateHeaders, dateMap } = getDateHeaders(
+        timeRangeType,
+        lineChartGroupByTimeType,
+        from,
+        to
+      );
+
       return {
+        dateHeaders,
         datas: (
           await Promise.all(
             metrics.map((x) =>
               queryMetric({
+                dateMap,
+                dateHeaders,
                 projectId,
                 from,
                 to,

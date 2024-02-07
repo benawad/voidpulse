@@ -89,6 +89,7 @@ export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
           ref={refs.setFloating}
           {...getFloatingProps()}
           style={floatingStyles}
+          className="z-20"
         >
           <PropKeySelector
             currPropKey={breakdown?.propName}

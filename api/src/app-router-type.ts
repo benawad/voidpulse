@@ -89,3 +89,9 @@ export enum LineChartGroupByTimeType {
   week,
   month,
 }
+
+export type DateHeader = {
+  label: string;
+  fullLabel: string;
+  lookupValue: string;
+};
