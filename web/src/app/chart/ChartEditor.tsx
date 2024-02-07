@@ -10,13 +10,18 @@ import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { ChartDateRangePicker } from "./ChartDateRangePicker";
-import { ChartType, ReportType } from "@voidpulse/api";
+import {
+  ChartType,
+  LineChartGroupByTimeType,
+  ReportType,
+} from "@voidpulse/api";
 import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import moment from "moment";
 import { ChartDataTable } from "./ChartDataTable";
 import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
+import { Dropdown } from "../ui/Dropdown";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -30,6 +35,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       reportType,
       title,
       description,
+      lineChartGroupByTimeType,
       from,
       to,
       timeRangeType,
@@ -76,6 +82,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       breakdowns,
       globalFilters: [],
       timeRangeType,
+      lineChartGroupByTimeType: lineChartGroupByTimeType || undefined,
       from: from ? dateToClickhouseDateString(from) : undefined,
       to: to ? dateToClickhouseDateString(to) : undefined,
       projectId: projectId,
@@ -127,36 +134,55 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   </div>
                 </div>
               </div>
+              <div className="mr-12">
+                <div className="my-auto">
+                  <Dropdown
+                    autoWidth
+                    value={
+                      lineChartGroupByTimeType || LineChartGroupByTimeType.day
+                    }
+                    opts={[
+                      { label: "Day", value: LineChartGroupByTimeType.day },
+                      { label: "Week", value: LineChartGroupByTimeType.week },
+                      { label: "Month", value: LineChartGroupByTimeType.month },
+                    ]}
+                    onSelect={(value) => {
+                      setState((prev) => ({
+                        ...prev,
+                        lineChartGroupByTimeType: value,
+                      }));
+                    }}
+                  />
+                </div>
+              </div>
               <Button
                 disabled={pendingCreateChart || pendingUpdateChart}
                 onClick={async () => {
                   if (metrics.length && data) {
+                    const fields = {
+                      title,
+                      description,
+                      chartType,
+                      reportType,
+                      metrics,
+                      lineChartGroupByTimeType:
+                        lineChartGroupByTimeType || undefined,
+                      timeRangeType,
+                      from: from?.toISOString(),
+                      to: to?.toISOString(),
+                      data: transformToChartData(data.datas),
+                    };
                     if (chart) {
                       updateChart({
                         id: chart.id,
                         projectId,
-                        updateData: {
-                          title,
-                          description,
-                          chartType,
-                          reportType,
-                          metrics,
-                          data: transformToChartData(data.datas),
-                        },
+                        updateData: fields,
                       });
                     } else {
                       createChart({
-                        title,
-                        boardId,
-                        description,
-                        chartType,
-                        reportType,
                         projectId,
-                        timeRangeType,
-                        from: from?.toISOString(),
-                        to: to?.toISOString(),
-                        metrics,
-                        data: transformToChartData(data.datas),
+                        boardId,
+                        ...fields,
                       });
                     }
                     router.push(`/`);

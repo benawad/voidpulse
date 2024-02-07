@@ -83,3 +83,9 @@ export enum ChartTimeRangeType {
   "6M",
   "12M",
 }
+
+export enum LineChartGroupByTimeType {
+  day = 1,
+  week,
+  month,
+}

@@ -2,6 +2,7 @@ import {
   ChartTimeRangeType,
   DataType,
   FilterAndOr,
+  LineChartGroupByTimeType,
   MetricMeasurement,
   PropOrigin,
 } from "../app-router-type";
@@ -18,6 +19,7 @@ import { getDateRange } from "./getDateRange";
 type BreakdownData = {
   eventLabel: string;
   measurement: MetricMeasurement;
+  lineChartGroupByTimeType?: LineChartGroupByTimeType;
   breakdown?: any;
   average_count: number;
   data: [string, number][];
@@ -30,6 +32,7 @@ export const queryMetric = async ({
   metric,
   breakdowns,
   timeRangeType,
+  lineChartGroupByTimeType = LineChartGroupByTimeType.day,
 }: {
   projectId: string;
   from?: string;
@@ -37,6 +40,7 @@ export const queryMetric = async ({
   timeRangeType: ChartTimeRangeType;
   breakdowns: MetricFilter[];
   metric: InputMetric;
+  lineChartGroupByTimeType?: LineChartGroupByTimeType;
 }): Promise<BreakdownData[]> => {
   const { paramMap, whereStrings, paramCount } = filtersToSql(
     metric.filters.filter((x) => x.propOrigin === PropOrigin.event),
@@ -134,7 +138,13 @@ export const queryMetric = async ({
   }
   let query = `
   SELECT
-      toStartOfDay(time) AS day,
+      ${
+        {
+          [LineChartGroupByTimeType.day]: "toStartOfDay",
+          [LineChartGroupByTimeType.week]: "toStartOfWeek",
+          [LineChartGroupByTimeType.month]: "toStartOfMonth",
+        }[lineChartGroupByTimeType]
+      }(time) AS day,
       toInt32(count(${
         metric.type === MetricMeasurement.totalEvents
           ? ``
@@ -180,6 +190,7 @@ export const queryMetric = async ({
     return (data as unknown as BreakdownData[]).map((x) => ({
       ...x,
       measurement: metric.type,
+      groupByTimeType: lineChartGroupByTimeType,
       eventLabel,
     }));
   } else {
@@ -187,6 +198,7 @@ export const queryMetric = async ({
       {
         eventLabel,
         measurement: metric.type,
+        lineChartGroupByTimeType: lineChartGroupByTimeType,
         average_count: data.reduce((a, b) => a + b.count, 0) / data.length,
         data: data.map((x) => [x.day, x.count]),
       },

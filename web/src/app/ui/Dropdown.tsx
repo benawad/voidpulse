@@ -9,6 +9,7 @@ interface DropdownProps<T> {
   value: T;
   onSelect: (value: T) => void;
   noCaret?: boolean;
+  autoWidth?: boolean;
 }
 
 export function Dropdown<T>({
@@ -16,13 +17,14 @@ export function Dropdown<T>({
   value,
   onSelect,
   noCaret,
+  autoWidth,
 }: DropdownProps<T>) {
   return (
     <FloatingTrigger
       appearsOnClick
       placement={"bottom-start"}
       floatingContent={
-        <FloatingMenu>
+        <FloatingMenu autoWidth={autoWidth}>
           {opts.map((opt) => (
             <div key={opt.label}>
               <button

@@ -1,4 +1,9 @@
-import { ChartTimeRangeType, ChartType, ReportType } from "@voidpulse/api";
+import {
+  ChartTimeRangeType,
+  ChartType,
+  LineChartGroupByTimeType,
+  ReportType,
+} from "@voidpulse/api";
 import moment, { Moment } from "moment";
 import React, { useContext, useState } from "react";
 import { Metric, MetricFilter } from "../src/app/chart/metric-selector/Metric";
@@ -11,6 +16,7 @@ type ChartStateType = {
   reportType: ReportType;
   chartType: ChartType;
   timeRangeType: ChartTimeRangeType;
+  lineChartGroupByTimeType?: LineChartGroupByTimeType | null;
   from?: Moment | null;
   to?: Moment | null;
   metrics: Metric[];
@@ -46,6 +52,7 @@ export const ChartStateProvider: React.FC<
       reportType: chart?.reportType || ReportType.insight,
       chartType: chart?.chartType || ChartType.line,
       metrics: chart?.metrics.map((x) => ({ ...x, id: genId() })) || [],
+      lineChartGroupByTimeType: chart?.lineChartGroupByTimeType,
       timeRangeType: chart?.timeRangeType || ChartTimeRangeType["30D"],
       from: chart?.from ? moment(chart.from) : null,
       to: chart?.to ? moment(chart.to) : null,

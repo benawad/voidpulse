@@ -140,6 +140,7 @@ export const ChartDateRangePicker: React.FC<
             small
             numberOfMonths={1}
             hideKeyboardShortcutsPanel
+            minimumNights={0}
             isOutsideRange={() => false}
             renderDayContents={(day) => (
               <div

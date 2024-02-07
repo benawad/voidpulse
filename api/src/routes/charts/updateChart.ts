@@ -5,9 +5,27 @@ import { db } from "../../db";
 import { charts } from "../../schema/charts";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
-import { chartDataSchema } from "./createChart";
+import { chartDataSchema } from "./chartDataSchema";
 import { metricSchema } from "./insight/eventFilterSchema";
-import { ChartType, ReportType } from "../../app-router-type";
+import {
+  ChartTimeRangeType,
+  ChartType,
+  LineChartGroupByTimeType,
+  ReportType,
+} from "../../app-router-type";
+
+export const updateChartDataSchemaFields = {
+  title: z.string().optional(),
+  chartType: z.nativeEnum(ChartType).optional(),
+  reportType: z.nativeEnum(ReportType).optional(),
+  description: z.string().optional(),
+  metrics: z.array(metricSchema).optional(),
+  lineChartGroupByTimeType: z.nativeEnum(LineChartGroupByTimeType).optional(),
+  data: chartDataSchema.optional(),
+  timeRangeType: z.nativeEnum(ChartTimeRangeType).optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
+};
 
 export const updateChart = protectedProcedure
   .input(
@@ -15,12 +33,7 @@ export const updateChart = protectedProcedure
       id: z.string(),
       projectId: z.string(),
       updateData: z.object({
-        title: z.string().optional(),
-        chartType: z.nativeEnum(ChartType).optional(),
-        reportType: z.nativeEnum(ReportType).optional(),
-        description: z.string().optional(),
-        metrics: z.array(metricSchema).optional(),
-        data: chartDataSchema.optional(),
+        ...updateChartDataSchemaFields,
       }),
     })
   )

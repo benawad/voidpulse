@@ -1,0 +1,1 @@
+ALTER TABLE "charts" ADD COLUMN "line_chart_group_by_time_type" integer;

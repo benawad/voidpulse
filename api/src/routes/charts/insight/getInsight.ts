@@ -4,7 +4,10 @@ import { protectedProcedure } from "../../../trpc";
 import { assertProjectMember } from "../../../utils/assertProjectMember";
 import { eventFilterSchema, metricSchema } from "./eventFilterSchema";
 import { queryMetric } from "../../../utils/queryMetric";
-import { ChartTimeRangeType } from "../../../app-router-type";
+import {
+  ChartTimeRangeType,
+  LineChartGroupByTimeType,
+} from "../../../app-router-type";
 
 export type InsightData = { day: string; count: number };
 
@@ -14,6 +17,9 @@ export const getInsight = protectedProcedure
       projectId: z.string(),
       from: z.string().regex(dateInputRegex).optional(),
       to: z.string().regex(dateInputRegex).optional(),
+      lineChartGroupByTimeType: z
+        .nativeEnum(LineChartGroupByTimeType)
+        .optional(),
       timeRangeType: z.nativeEnum(ChartTimeRangeType),
       globalFilters: z.array(eventFilterSchema),
       breakdowns: z.array(eventFilterSchema).max(1),
@@ -22,7 +28,15 @@ export const getInsight = protectedProcedure
   )
   .query(
     async ({
-      input: { projectId, from, to, metrics, breakdowns, timeRangeType },
+      input: {
+        projectId,
+        from,
+        to,
+        metrics,
+        breakdowns,
+        timeRangeType,
+        lineChartGroupByTimeType,
+      },
       ctx: { userId },
     }) => {
       await assertProjectMember({ projectId, userId });
@@ -38,6 +52,7 @@ export const getInsight = protectedProcedure
                 metric: x,
                 breakdowns,
                 timeRangeType,
+                lineChartGroupByTimeType,
               })
             )
           )

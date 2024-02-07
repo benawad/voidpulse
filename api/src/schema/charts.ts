@@ -4,8 +4,13 @@ import { boards } from "./boards";
 import { users } from "./users";
 import { boardCharts } from "./board-charts";
 import { z } from "zod";
-import { chartDataSchema } from "../routes/charts/createChart";
-import { ChartTimeRangeType, ChartType, ReportType } from "../app-router-type";
+import { chartDataSchema } from "src/routes/charts/chartDataSchema";
+import {
+  ChartTimeRangeType,
+  ChartType,
+  LineChartGroupByTimeType,
+  ReportType,
+} from "../app-router-type";
 import { InputMetric } from "../routes/charts/insight/eventFilterSchema";
 
 export const charts = pgTable("charts", {
@@ -16,6 +21,9 @@ export const charts = pgTable("charts", {
   description: text("description"),
   chartType: integer("chart_type").notNull().$type<ChartType>(),
   reportType: integer("report_type").$type<ReportType>().notNull(),
+  lineChartGroupByTimeType: integer(
+    "line_chart_group_by_time_type"
+  ).$type<LineChartGroupByTimeType>(),
   timeRangeType: integer("time_range_type")
     .notNull()
     .$type<ChartTimeRangeType>(),
