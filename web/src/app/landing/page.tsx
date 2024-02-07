@@ -1,18 +1,17 @@
 "use client";
-import { useState } from "react";
 import { trpc } from "../utils/trpc";
-import Waveform from "./Waveform";
-import { StretchySvgWrapper } from "./StretchySvg";
 import { LandingHero } from "./LandingHero";
 import PulseMotif1 from "./PulseMotif1";
+import "./landing.css";
 
 function Home() {
   return (
-    <main className="overflow-y-scroll">
+    <main className="landing-body overflow-y-scroll">
       <LandingHero />
-      <div className="w-full h-full">
-        Talk to your data!
+      <div className="w-full h-full flex flex-row items-center">
         <PulseMotif1 />
+
+        <div className="ml-2 text-2xl">Graphs that talk back.</div>
       </div>
     </main>
   );

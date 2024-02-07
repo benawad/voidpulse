@@ -20,10 +20,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({}) => {
         />
       </StretchySvgWrapper>
 
-      <div className="font-mono lg:w-1/2 sm:w-full justify-center -mt-12 ml-24 z-10">
+      <div className="lg:w-1/2 sm:w-full justify-center -mt-12 ml-24 z-10">
         <div className="text-left flex flex-col">
-          <div className="text-6xl font-normal">voidpulse.ai</div>
-          <div className="mt-4 text-2xl">copilot for product.</div>
+          <div className="text-6xl">voidpulse.ai</div>
+          <div className="mt-4 text-2xl">copilot for product</div>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import * as React from "react";
-const SvgComponent = (props: any) => (
+import { SVGProps } from "react";
+const SvgComponent = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={830}
@@ -858,6 +859,28 @@ const SvgComponent = (props: any) => (
       opacity={0.72}
       transform="rotate(177 812.302 417.866)"
     />
+    <path
+      stroke="url(#v)"
+      strokeLinecap="round"
+      d="M195.325 387.226c-1.255 3.263-3.846 6.563-7.634 10.055-4.698 4.331-8.449 5.276-13.268 6.112-10.996 1.908-22.68.447-30.537-4.896-14.643-9.958-13.051-34.74.686-50.791 6.732-7.866 17.906-15.515 27.791-14.495 10.995 1.134 20.848 7.077 24.714 16.127 4.567 10.694 3.071 25.353-1.752 37.888Z"
+    />
+    <path
+      stroke="url(#w)"
+      strokeLinecap="round"
+      d="M192.303 378.176c-.276 2.675-1.535 5.646-3.646 9.001-2.618 4.16-5.213 5.616-8.623 7.206-7.781 3.627-16.75 4.892-23.659 2.504-12.875-4.45-16.675-23.171-9.702-37.851 3.417-7.194 10.176-15.12 17.721-16.351 8.392-1.368 16.903 1.064 21.592 7.006 5.542 7.023 7.378 18.208 6.317 28.485Z"
+    />
+    <path
+      stroke="url(#x)"
+      strokeLinecap="round"
+      d="M181.543 380.09c-.799 1.588-2.276 3.127-4.368 4.702-2.596 1.954-4.541 2.243-7.021 2.423-5.658.411-11.495-.917-15.201-4.017-6.906-5.776-4.85-18.232 2.908-25.659 3.802-3.64 9.841-6.946 14.79-5.932 5.505 1.128 10.19 4.632 11.689 9.405 1.772 5.64.275 12.98-2.797 19.078Z"
+    />
+    <circle
+      cx={167.869}
+      cy={369.754}
+      r={9.71}
+      fill="url(#y)"
+      transform="rotate(98.696 167.869 369.754)"
+    />
     <defs>
       <linearGradient
         id="a"
@@ -1061,6 +1084,39 @@ const SvgComponent = (props: any) => (
         <stop stopColor="#2F2F8F" stopOpacity={0.6} />
         <stop offset={1} stopColor="#131368" />
       </linearGradient>
+      <linearGradient
+        id="v"
+        x1={172.312}
+        x2={130.873}
+        y1={383.933}
+        y2={353.382}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#263188" stopOpacity={0.6} />
+        <stop offset={1} stopColor="#110042" stopOpacity={0.84} />
+      </linearGradient>
+      <linearGradient
+        id="w"
+        x1={174.554}
+        x2={137.642}
+        y1={380.358}
+        y2={366.005}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#263188" stopOpacity={0.6} />
+        <stop offset={1} stopColor="#110042" stopOpacity={0.84} />
+      </linearGradient>
+      <linearGradient
+        id="x"
+        x1={170.068}
+        x2={150.645}
+        y1={377.264}
+        y2={359.719}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#263188" stopOpacity={0.6} />
+        <stop offset={1} stopColor="#110042" stopOpacity={0.84} />
+      </linearGradient>
       <radialGradient
         id="p"
         cx={0}
@@ -1093,6 +1149,17 @@ const SvgComponent = (props: any) => (
       >
         <stop stopColor="#2D79D3" />
         <stop offset={1} stopColor="#182B72" />
+      </radialGradient>
+      <radialGradient
+        id="y"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientTransform="rotate(108.104 -46.273 245.247) scale(14.7553)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#606FFF" />
+        <stop offset={1} stopColor="#010F92" />
       </radialGradient>
     </defs>
   </svg>
