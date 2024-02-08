@@ -2,23 +2,24 @@ import React, { useMemo } from "react";
 import { MultiSelect } from "../../ui/MultiSelect";
 import { trpc } from "../../utils/trpc";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
+import { MetricEvent } from "./MetricSelector";
 
 interface PropValueMultiSelectProps {
-  eventName: string;
+  event?: MetricEvent;
   propKey: string;
   values: string[];
   onConfirm: (values: string[]) => void;
 }
 
 export const PropValueMultiSelect: React.FC<PropValueMultiSelectProps> = ({
-  eventName,
+  event,
   propKey,
   values,
   onConfirm,
 }) => {
   const { projectId } = useProjectBoardContext();
   const { data, isLoading } = trpc.getPropValues.useQuery({
-    eventName,
+    event,
     propKey,
     projectId,
   });

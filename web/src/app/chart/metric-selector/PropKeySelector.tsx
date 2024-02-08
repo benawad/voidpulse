@@ -19,23 +19,24 @@ import { IoText } from "react-icons/io5";
 import { LiaHashtagSolid } from "react-icons/lia";
 import { TbCircleCheck } from "react-icons/tb";
 import { RiArrowDropRightFill } from "react-icons/ri";
+import { MetricEvent } from "./MetricSelector";
 
 interface FilterSelectorProps {
-  eventName: string;
+  event?: MetricEvent;
   currPropKey?: string;
   onPropKey: (filter: Partial<MetricFilter>) => void;
 }
 
 export const PropKeySelector: React.FC<FilterSelectorProps> = ({
   onPropKey,
-  eventName,
+  event,
   currPropKey,
 }) => {
   const { projectId } = useProjectBoardContext();
   // Fetch filter props for the specific event we're filtering out
   const { data, isLoading } = trpc.getPropKeys.useQuery({
     projectId,
-    eventName,
+    event,
   });
   const dataWithAutocompleteKey = useMemo(() => {
     if (data) {

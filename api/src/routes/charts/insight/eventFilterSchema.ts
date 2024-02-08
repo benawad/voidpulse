@@ -16,9 +16,14 @@ export const eventFilterSchema = z.object({
   value2: z.any().optional(),
 });
 
+export const eventSchema = z.object({
+  name: z.string(),
+  value: z.string(),
+});
+
 export const metricSchema = z.object({
   id: z.string(),
-  eventName: z.string(),
+  event: eventSchema,
   type: z.nativeEnum(MetricMeasurement),
   andOr: z.nativeEnum(FilterAndOr).optional(),
   filters: z.array(eventFilterSchema),

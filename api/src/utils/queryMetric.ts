@@ -1,4 +1,5 @@
 import {
+  ANY_EVENT_VALUE,
   ChartTimeRangeType,
   DataType,
   FilterAndOr,
@@ -36,12 +37,14 @@ export const queryMetric = async ({
   timeRangeType,
   lineChartGroupByTimeType = LineChartGroupByTimeType.day,
   dateMap,
+  globalFilters,
 }: {
   dateMap: Record<string, number>;
   dateHeaders: Array<{
     label: string;
     lookupValue: string;
   }>;
+  globalFilters: MetricFilter[];
   projectId: string;
   from?: string;
   to?: string;
@@ -59,14 +62,17 @@ export const queryMetric = async ({
     whereStrings: userWhereStrings,
     paramCount: paramCount2,
   } = filtersToSql(
-    metric.filters.filter((x) => x.propOrigin === PropOrigin.user),
+    [
+      ...metric.filters.filter((x) => x.propOrigin === PropOrigin.user),
+      ...globalFilters,
+    ],
     paramCount
   );
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
   const query_params: any = {
     projectId,
     ...getDateRange(timeRangeType, from, to),
-    eventName: metric.eventName,
+    eventName: metric.event.value,
     ...paramMap,
     ...paramMap2,
   };
@@ -79,7 +85,11 @@ export const queryMetric = async ({
   project_id = {projectId:UUID}
     AND time >= {from:DateTime}
     AND time <= {to:DateTime}
-    AND name = {eventName:String}
+    ${
+      metric.event.value !== ANY_EVENT_VALUE
+        ? `AND name = {eventName:String}`
+        : ``
+    }
     ${whereStrings.length ? `AND ${whereStrings.join(whereCombiner)}` : ""}
     ${
       userWhereStrings.length
@@ -189,7 +199,7 @@ export const queryMetric = async ({
     query_params,
   });
   const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();
-  const eventLabel = `${metric.eventName} [${
+  const eventLabel = `${metric.event.name} [${
     {
       [MetricMeasurement.totalEvents]: "Total events",
       [MetricMeasurement.uniqueUsers]: "Unique users",
