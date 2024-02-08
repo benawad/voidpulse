@@ -11,6 +11,8 @@
   "dependencies": {
     "@floating-ui/react": "^0.26.8",
     "@tanstack/react-query": "^5.17.19",
+    "@tanstack/react-table": "^8.11.8",
+    "@tanstack/react-virtual": "^3.0.4",
     "@trpc/client": "11.0.0-next-beta.242",
     "@trpc/next": "11.0.0-next-beta.242",
     "@trpc/react-query": "11.0.0-next-beta.242",
@@ -31,7 +33,6 @@
     "react-icons": "^5.0.1",
     "react-modal": "^3.16.1",
     "react-resizable-panels": "^1.0.10",
-    "react-window": "^1.8.10",
     "zustand": "^4.5.0"
   },
   "devDependencies": {

@@ -1,11 +1,18 @@
-import React, { useState, useCallback, useRef, FC, MouseEvent } from "react";
-import { VariableSizeGrid as Grid } from "react-window";
-import { RouterOutput } from "../../utils/trpc";
-import { Resizers } from "./Resizers";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useWindowVirtualizer } from "@tanstack/react-virtual";
+import React, { FC } from "react";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { colorOrder } from "../../ui/charts/ChartStyle";
+import { RouterOutput } from "../../utils/trpc";
+import { Resizers } from "./Resizers";
 
 interface Column {
+  fn: (row: any) => any;
   title: string;
   initialWidth: number;
 }
@@ -16,9 +23,9 @@ interface DataItem {
 
 interface ResizableGridProps {
   breakdownPropName?: string;
-  numRows: number;
   columns: Column[];
   datas: RouterOutput["getInsight"]["datas"];
+  scrollMargin: number;
 }
 
 export const ROW_HEIGHT = 35;
@@ -26,107 +33,204 @@ export const ROW_HEIGHT = 35;
 const ResizableGrid: FC<ResizableGridProps> = ({
   columns,
   datas,
-  numRows,
   breakdownPropName,
+  scrollMargin,
 }) => {
+  const table = useReactTable({
+    data: datas,
+    defaultColumn: {
+      minSize: 60,
+    },
+    columns: columns.map((x) => {
+      return {
+        accessorFn: x.fn,
+        header: x.title,
+        size: x.initialWidth,
+      };
+    }),
+    getCoreRowModel: getCoreRowModel(),
+    columnResizeMode: "onChange",
+  });
+  const { rows } = table.getRowModel();
+  const { columnSizeVars, columnWidths } = React.useMemo(() => {
+    const headers = table.getFlatHeaders();
+    const colSizes: { [key: string]: number } = {};
+    const columnWidths: number[] = [];
+    for (let i = 0; i < headers.length; i++) {
+      const header = headers[i]!;
+      colSizes[`--header-${header.id}-size`] = header.getSize();
+      const w = header.column.getSize();
+      colSizes[`--col-${header.column.id}-size`] = w;
+      columnWidths.push(w);
+    }
+    return { columnSizeVars: colSizes, columnWidths };
+  }, [table.getState().columnSizingInfo]);
+
+  const rowVirtualizer = useWindowVirtualizer({
+    count: rows.length,
+    estimateSize: () => ROW_HEIGHT, //estimate row height for accurate scrollbar dragging
+    overscan: 5,
+    scrollMargin,
+  });
   const [{ visibleDataMap }, setState] = useChartStateContext();
-  const [columnWidths, setColumnWidths] = useState<number[]>(
-    columns.map((col) => col.initialWidth)
-  );
-  const gridRef = useRef<Grid>(null);
 
   return (
     <div>
-      <Grid
-        columnCount={columns.length}
-        columnWidth={(index) => columnWidths[index]}
-        height={numRows * ROW_HEIGHT}
-        rowCount={numRows}
-        rowHeight={() => ROW_HEIGHT}
-        width={columnWidths.reduce((sum, width) => sum + width, 0)}
-        ref={gridRef}
+      <table
         style={{
-          overflow: undefined,
+          ...columnSizeVars,
+          display: "grid",
         }}
+        className="bg-primary-900"
       >
-        {({ columnIndex, rowIndex, style }) => {
-          let text = columns[columnIndex].title;
-          let checkbox = null;
-          if (rowIndex) {
-            if (columnIndex === 0) {
-              text = datas[rowIndex - 1].eventLabel;
-            } else if (columnIndex === 1) {
-              if (breakdownPropName) {
-                const active = !visibleDataMap
-                  ? rowIndex - 1 < 10
-                  : !!visibleDataMap[datas[rowIndex - 1].id];
-                checkbox = (
-                  <button
-                    onClick={() => {
-                      const { id } = datas[rowIndex - 1];
-                      if (!visibleDataMap) {
-                        setState((prev) => {
-                          const newVisibleDataMap: Record<string, boolean> = {};
-                          for (let i = 0; i < Math.min(10, datas.length); i++) {
-                            newVisibleDataMap[datas[i].id] = true;
-                          }
-                          newVisibleDataMap[id] = !active;
-                          return {
-                            ...prev,
-                            visibleDataMap: newVisibleDataMap,
-                          };
-                        });
-                      } else {
-                        setState((prev) => ({
-                          ...prev,
-                          visibleDataMap: {
-                            ...prev.visibleDataMap,
-                            [id]: !active,
-                          },
-                        }));
-                      }
+        <thead
+          style={{
+            display: "grid",
+            top: 0,
+            zIndex: 1,
+          }}
+        >
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id} style={{ display: "flex", width: "100%" }}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <th
+                    key={header.id}
+                    style={{
+                      display: "flex",
+                      width: `calc(var(--header-${header?.id}-size) * 1px)`,
                     }}
-                    className="mr-2"
+                    className="relative"
                   >
-                    {active ? (
-                      <MdCheckBox
-                        size={20}
-                        className="fill-secondary-signature-100"
-                      />
-                    ) : (
-                      <MdCheckBoxOutlineBlank
-                        size={20}
-                        className="fill-primary-700"
-                      />
-                    )}
-                  </button>
+                    <div
+                      className={`select-none w-full text-primary-500 border-primary-700 bg-primary-900 px-2 py-2 `}
+                    >
+                      <div className="text-start truncate">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </div>
+                    </div>
+                  </th>
                 );
-                text = datas[rowIndex - 1].breakdown;
-              } else {
-                text = datas[rowIndex - 1].average_count.toLocaleString();
-              }
-            } else {
-              text = datas[rowIndex - 1].average_count.toLocaleString();
-            }
-          }
-
-          return (
-            <div style={style}>
-              <div
-                className={`border-t flex text-primary-500 border-primary-700/50 bg-primary-900 px-2 py-2 truncate`}
+              })}
+            </tr>
+          ))}
+        </thead>
+        <tbody
+          style={{
+            display: "grid",
+            height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
+            position: "relative", //needed for absolute positioning of rows
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const row = rows[virtualRow.index];
+            return (
+              <tr
+                key={row.id}
+                style={{
+                  display: "flex",
+                  position: "absolute",
+                  transform: `translateY(${
+                    virtualRow.start - rowVirtualizer.options.scrollMargin
+                  }px)`, //this should always be a `style` as it changes on scroll
+                  width: "100%",
+                  zIndex: 1,
+                }}
               >
-                {checkbox}
-                {text}
-              </div>
-            </div>
-          );
-        }}
-      </Grid>
-      <Resizers
-        columnWidths={columnWidths}
-        gridRef={gridRef}
-        setColumnWidths={setColumnWidths}
-      />
+                {row.getVisibleCells().map((cell, columnIndex) => {
+                  const rowIndex = cell.row.index;
+                  let text = columns[columnIndex].title;
+                  let checkbox = null;
+                  if (columnIndex === 0) {
+                    text = datas[rowIndex].eventLabel;
+                  } else if (columnIndex === 1) {
+                    if (breakdownPropName) {
+                      const active = !visibleDataMap
+                        ? rowIndex < 10
+                        : !!visibleDataMap[datas[rowIndex].id];
+                      checkbox = (
+                        <button
+                          onClick={() => {
+                            const { id } = datas[rowIndex];
+                            if (!visibleDataMap) {
+                              setState((prev) => {
+                                const newVisibleDataMap: Record<
+                                  string,
+                                  boolean
+                                > = {};
+                                for (
+                                  let i = 0;
+                                  i < Math.min(10, datas.length);
+                                  i++
+                                ) {
+                                  newVisibleDataMap[datas[i].id] = true;
+                                }
+                                newVisibleDataMap[id] = !active;
+                                return {
+                                  ...prev,
+                                  visibleDataMap: newVisibleDataMap,
+                                };
+                              });
+                            } else {
+                              setState((prev) => ({
+                                ...prev,
+                                visibleDataMap: {
+                                  ...prev.visibleDataMap,
+                                  [id]: !active,
+                                },
+                              }));
+                            }
+                          }}
+                          className="mr-2"
+                        >
+                          {active ? (
+                            <MdCheckBox
+                              size={20}
+                              fill={colorOrder[rowIndex % colorOrder.length]}
+                            />
+                          ) : (
+                            <MdCheckBoxOutlineBlank
+                              size={20}
+                              fill={colorOrder[rowIndex % colorOrder.length]}
+                            />
+                          )}
+                        </button>
+                      );
+                      text = datas[rowIndex].breakdown;
+                    } else {
+                      text = datas[rowIndex].average_count.toLocaleString();
+                    }
+                  } else {
+                    text = datas[rowIndex].average_count.toLocaleString();
+                  }
+
+                  return (
+                    <td
+                      key={cell.id}
+                      style={{
+                        height: ROW_HEIGHT,
+                        display: "flex",
+                        width: `calc(var(--col-${cell.column.id}-size) * 1px)`,
+                      }}
+                    >
+                      <div
+                        className={`flex text-primary-500 border-primary-700 bg-primary-900 px-1 h-full items-center w-full`}
+                      >
+                        {checkbox}
+                        <span className="truncate">{text}</span>
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <Resizers columnWidths={columnWidths} table={table} />
     </div>
   );
 };
