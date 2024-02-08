@@ -171,6 +171,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       timeRangeType,
                       from: from?.toISOString(),
                       to: to?.toISOString(),
+                      visibleDataMap,
                       data: transformToChartData(
                         data.datas,
                         data.dateHeaders,

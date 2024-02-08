@@ -16,6 +16,7 @@ import {
 
 export const updateChartDataSchemaFields = {
   title: z.string().optional(),
+  visibleDataMap: z.record(z.boolean()).nullable().optional(),
   chartType: z.nativeEnum(ChartType).optional(),
   reportType: z.nativeEnum(ReportType).optional(),
   description: z.string().optional(),
