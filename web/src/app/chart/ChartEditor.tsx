@@ -1,27 +1,20 @@
+import { LineChartGroupByTimeType } from "@voidpulse/api";
 import Link from "next/link";
-import { useRouter, useParams } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
 import { Button } from "../ui/Button";
+import { Dropdown } from "../ui/Dropdown";
 import { EditableTextField } from "../ui/EditableTextField";
 import { LineChart } from "../ui/charts/LineChart";
+import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
 import { transformToChartData } from "../utils/transformToChartData";
 import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
-import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { ChartDateRangePicker } from "./ChartDateRangePicker";
-import {
-  ChartType,
-  LineChartGroupByTimeType,
-  ReportType,
-} from "@voidpulse/api";
-import { genId } from "../utils/genId";
-import { Metric } from "./metric-selector/Metric";
-import { useChartStateContext } from "../../../providers/ChartStateProvider";
-import moment from "moment";
+import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { ChartDataTable } from "./data-table/ChartDataTable";
-import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
-import { Dropdown } from "../ui/Dropdown";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -40,6 +33,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       to,
       timeRangeType,
       visibleDataMap,
+      globalFilters,
     },
     setState,
   ] = useChartStateContext();
@@ -81,7 +75,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     {
       metrics,
       breakdowns,
-      globalFilters: [],
+      globalFilters,
       timeRangeType,
       lineChartGroupByTimeType: lineChartGroupByTimeType || undefined,
       from: from ? dateToClickhouseDateString(from) : undefined,

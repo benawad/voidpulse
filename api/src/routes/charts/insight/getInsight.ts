@@ -37,6 +37,7 @@ export const getInsight = protectedProcedure
         breakdowns,
         timeRangeType,
         lineChartGroupByTimeType = LineChartGroupByTimeType.day,
+        globalFilters,
       },
       ctx: { userId },
     }) => {
@@ -61,6 +62,7 @@ export const getInsight = protectedProcedure
                 from,
                 to,
                 metric: x,
+                globalFilters,
                 breakdowns,
                 timeRangeType,
                 lineChartGroupByTimeType,

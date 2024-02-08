@@ -10,11 +10,14 @@ import { genId } from "../utils/genId";
 import { Metric } from "./metric-selector/Metric";
 import { MetricBlock } from "./metric-selector/MetricBlock";
 import { BreakdownBlock } from "./metric-selector/BreakdownBlock";
+import { LineSeparator } from "../ui/LineSeparator";
+import { FilterBlock } from "./metric-selector/FilterBlock";
+import { set } from "react-hook-form";
 
 interface ManualChartOptionsProps {}
 
 export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
-  const [{ metrics, breakdowns, reportType }, setState] =
+  const [{ metrics, breakdowns, globalFilters, reportType }, setState] =
     useChartStateContext();
   const setMetrics = (newMetrics: Metric[]) => {
     setState((prev) => ({
@@ -25,6 +28,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
   };
   const [addNewMetric, setAddNewMetric] = useState(false);
   const [addNewBreakdown, setAddNewBreakdown] = useState(false);
+  const [addNewGlobalFilter, setAddNewGlobalFilter] = useState(false);
 
   // Top section with square icons
   const reportTypeIconStyle = "w-8 h-8 rounded-md my-2 text-primary-400";
@@ -154,7 +158,63 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
 
       {/* Choosing date range */}
       {/* Choosing filters */}
-      <div className={inputOptionsStyle}>Filter {plusIcon}</div>
+      <button
+        onClick={() => setAddNewGlobalFilter(true)}
+        className={`${inputOptionsStyle} w-full`}
+      >
+        Filter {plusIcon}
+      </button>
+      <div>
+        {globalFilters.map((globalFilter, i) => {
+          return (
+            <React.Fragment key={globalFilter.id}>
+              <FilterBlock
+                key={i}
+                onDelete={() => {
+                  setState((prev) => ({
+                    ...prev,
+                    globalFilters: prev.globalFilters.filter(
+                      (f, j) => f.id !== globalFilter.id
+                    ),
+                  }));
+                }}
+                filter={globalFilter}
+                onFilterDefined={(filter) => {
+                  setState((prev) => ({
+                    ...prev,
+                    globalFilters: prev.globalFilters.map((x, j) =>
+                      x.id === globalFilter.id ? filter : x
+                    ),
+                  }));
+                }}
+              />
+            </React.Fragment>
+          );
+        })}
+        {addNewGlobalFilter ? (
+          <>
+            <LineSeparator />
+            <FilterBlock
+              filter={{}}
+              onFilterDefined={(filter) => {
+                //Tell the parent to add a new filter to the metric
+                setState((prev) => ({
+                  ...prev,
+                  globalFilters: [...prev.globalFilters, filter],
+                }));
+                //Hide the new filter shell
+                setAddNewGlobalFilter(false);
+              }}
+              onDelete={() => {
+                setAddNewGlobalFilter(false);
+              }}
+              onEmptyFilterAbandoned={() => {
+                setAddNewGlobalFilter(false);
+              }}
+            />
+          </>
+        ) : null}
+      </div>
 
       {/* Choosing breakdown */}
       <button

@@ -21,7 +21,7 @@ import { TbCircleCheck } from "react-icons/tb";
 import { RiArrowDropRightFill } from "react-icons/ri";
 
 interface FilterSelectorProps {
-  eventName: string;
+  eventName?: string;
   currPropKey?: string;
   onPropKey: (filter: Partial<MetricFilter>) => void;
 }

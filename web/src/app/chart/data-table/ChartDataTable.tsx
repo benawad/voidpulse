@@ -42,7 +42,6 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
       };
     }),
     getCoreRowModel: getCoreRowModel(),
-    debugTable: true,
   });
   const { rows } = table.getRowModel();
   const tableContainerRef = React.useRef<HTMLDivElement>(null);

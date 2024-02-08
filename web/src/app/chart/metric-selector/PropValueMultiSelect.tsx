@@ -4,7 +4,7 @@ import { trpc } from "../../utils/trpc";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 
 interface PropValueMultiSelectProps {
-  eventName: string;
+  eventName?: string;
   propKey: string;
   values: string[];
   onConfirm: (values: string[]) => void;

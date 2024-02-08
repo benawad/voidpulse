@@ -24,7 +24,7 @@ import moment from "moment";
 interface FilterBlockProps {
   onDelete?: () => void;
   filter: Partial<MetricFilter>;
-  eventName: string;
+  eventName?: string;
   onFilterDefined: (filter: MetricFilter) => void;
   onEmptyFilterAbandoned?: () => void;
 }
@@ -273,6 +273,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
             ref={refs.setFloating}
             {...getFloatingProps()}
             style={floatingStyles}
+            className="z-20"
           >
             <PropKeySelector
               currPropKey={localFilter.propName}

@@ -177,6 +177,7 @@ export function MultiSelect({
                 style={floatingStyles}
                 ref={refs.setFloating}
                 {...getFloatingProps()}
+                className="z-10"
               >
                 <div
                   style={{ width: 420, height: 460 }}

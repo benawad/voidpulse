@@ -36,12 +36,14 @@ export const queryMetric = async ({
   timeRangeType,
   lineChartGroupByTimeType = LineChartGroupByTimeType.day,
   dateMap,
+  globalFilters,
 }: {
   dateMap: Record<string, number>;
   dateHeaders: Array<{
     label: string;
     lookupValue: string;
   }>;
+  globalFilters: MetricFilter[];
   projectId: string;
   from?: string;
   to?: string;
@@ -59,7 +61,10 @@ export const queryMetric = async ({
     whereStrings: userWhereStrings,
     paramCount: paramCount2,
   } = filtersToSql(
-    metric.filters.filter((x) => x.propOrigin === PropOrigin.user),
+    [
+      ...metric.filters.filter((x) => x.propOrigin === PropOrigin.user),
+      ...globalFilters,
+    ],
     paramCount
   );
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
