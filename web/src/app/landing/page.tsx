@@ -2,6 +2,7 @@
 import { trpc } from "../utils/trpc";
 import Aurora from "./Aurora";
 import { LandingHero } from "./LandingHero";
+import LineChartMotif from "./LineChartMotif";
 import PlanetMotif1 from "./PlanetMotif1";
 import PlanetMotif2 from "./PlanetMotif2";
 import PulseMotif1 from "./PulseMotif1";
@@ -10,6 +11,7 @@ import WaveformBottom from "./WaveformBottom";
 import "./landing.css";
 
 function Home() {
+  const sectionStyle = "flex flex-row items-center justify-center";
   return (
     <main className="landing-body overscroll-none">
       <LandingHero />
@@ -26,25 +28,27 @@ function Home() {
           <WaveformBottom style={{ width: "100vw", height: "auto" }} />
         </StretchySvgWrapper>
         {/* Information and content */}
+        <div className={sectionStyle}>
+          <LineChartMotif style={{ width: 400, height: 400 }} />
+          <div className="ml-2 text-2xl w-72">
+            Analytics, without the headache 👩🏻‍💻
+          </div>
+        </div>
+
         <div className="p-12">
-          <div className="flex flex-row items-center justify-center">
-            <PulseMotif1 style={{ width: 300, height: 300 }} />
-            <div className="ml-2 text-2xl">Graphs that talk back 😎</div>
+          <div className={`${sectionStyle}`}>
+            <div className="ml-2 text-2xl">Metrics that talk back 🫢</div>
+            <PulseMotif1 style={{ width: 300, height: 300, marginLeft: 36 }} />
           </div>
-          <div className="flex flex-row items-center justify-center">
-            <div className="ml-2 text-2xl">
-              Analytics, without the headache 👩🏻‍💻
-            </div>
-            <PlanetMotif1 style={{ width: 400, height: 400 }} />
-          </div>
-          <div className="flex flex-row items-center justify-center">
+
+          <div className={`${sectionStyle} mt-36`}>
             <PlanetMotif2 style={{ width: 500, height: 500 }} />
-            <div className="ml-2 text-2xl">
+            <div className="ml-2 text-2xl w-72">
               Insights as easy as asking a question 🤔
             </div>
           </div>
-          <div className="flex flex-row items-center justify-center">
-            <div className="ml-2 text-2xl">Made by founders who use it.</div>
+          <div className={`${sectionStyle} mt-24`}>
+            <div className="ml-2 text-2xl w-60">Made by people who use it.</div>
             <PlanetMotif1 style={{ width: 400, height: 400 }} />
           </div>
         </div>

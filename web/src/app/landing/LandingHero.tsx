@@ -23,7 +23,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({}) => {
 
       <div className="lg:w-1/2 sm:w-full justify-center -mt-12 ml-24 z-10">
         <div className="text-left flex flex-col">
-          <div className="text-6xl font-semibold">voidpulse</div>
+          <div className="text-6xl">voidpulse</div>
           <div className="mt-2 text-2xl">copilot for product</div>
         </div>
       </div>
