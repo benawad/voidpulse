@@ -21,6 +21,10 @@ export const charts = pgTable("charts", {
   description: text("description"),
   chartType: integer("chart_type").notNull().$type<ChartType>(),
   reportType: integer("report_type").$type<ReportType>().notNull(),
+  visibleDataMap: jsonb("visible_data_map").$type<Record<
+    string,
+    boolean
+  > | null>(),
   lineChartGroupByTimeType: integer(
     "line_chart_group_by_time_type"
   ).$type<LineChartGroupByTimeType>(),

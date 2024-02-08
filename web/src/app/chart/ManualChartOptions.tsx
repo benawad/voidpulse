@@ -163,7 +163,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       >
         Breakdown {plusIcon}
       </button>
-      {addNewBreakdown ? (
+      {addNewBreakdown || breakdowns.length ? (
         <BreakdownBlock
           breakdown={breakdowns[0]}
           onBreakdown={(propKey) => {
