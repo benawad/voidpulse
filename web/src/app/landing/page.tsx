@@ -20,7 +20,7 @@ function Home() {
         className="w-full h-full relative pt-36 bg-primary-900"
         style={{
           background:
-            "radial-gradient(73.05% 62.39% at 61.96% 61.46%, #0029D5 0%, #08091E 84.5%)",
+            "radial-gradient(139.88% 53.94% at 50% 46.06%, #021B84 0%, #08091E 84.5%)",
         }}
       >
         {/* Bottom waveform graphic */}
