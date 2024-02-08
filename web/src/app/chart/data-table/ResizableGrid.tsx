@@ -10,6 +10,7 @@ import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { colorOrder } from "../../ui/charts/ChartStyle";
 import { RouterOutput } from "../../utils/trpc";
 import { Resizers } from "./Resizers";
+import { genId } from "../../utils/genId";
 
 interface Column {
   fn: (row: any) => any;
@@ -41,8 +42,9 @@ const ResizableGrid: FC<ResizableGridProps> = ({
     defaultColumn: {
       minSize: 60,
     },
-    columns: columns.map((x) => {
+    columns: columns.map((x, i) => {
       return {
+        id: ["a", "b", "c"][i],
         accessorFn: x.fn,
         header: x.title,
         size: x.initialWidth,
