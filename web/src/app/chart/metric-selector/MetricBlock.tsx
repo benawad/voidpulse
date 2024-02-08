@@ -6,7 +6,7 @@ import {
   useFloating,
   useInteractions,
 } from "@floating-ui/react";
-import { MetricSelector } from "./MetricSelector";
+import { MetricEvent, MetricSelector } from "./MetricSelector";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { IoClose, IoFilter } from "react-icons/io5";
 import { FilterBlock } from "./FilterBlock";
@@ -20,7 +20,7 @@ import { FloatingTooltip } from "../../ui/FloatingTooltip";
 interface MetricBlockProps {
   idx: number;
   metric?: Metric | null;
-  onEventNameChange: (eventName: string) => void;
+  onEventChange: (e: MetricEvent) => void;
   onDelete?: () => void;
   onAddFilter?: (f: MetricFilter) => void;
 }
@@ -28,7 +28,7 @@ interface MetricBlockProps {
 export const MetricBlock: React.FC<MetricBlockProps> = ({
   idx,
   metric,
-  onEventNameChange,
+  onEventChange,
   onDelete,
   onAddFilter,
 }) => {
@@ -80,7 +80,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 ref={refs.setReference}
                 className="w-full text-primary-100 flex text-sm accent-hover p-2 font-semibold rounded-md"
               >
-                {metric?.eventName || "Select event"}
+                {metric?.event.name || "Select event"}
               </button>
               {/* Only show filter option if an event has been chosen */}
               {onAddFilter ? (
@@ -130,10 +130,10 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 style={floatingStyles}
               >
                 <MetricSelector
-                  eventName={metric?.eventName || ""}
-                  onEventNameChange={(name) => {
+                  event={metric?.event}
+                  onEventChange={(e) => {
                     setIsOpen(false);
-                    onEventNameChange(name);
+                    onEventChange(e);
                   }}
                 />
               </div>
@@ -166,7 +166,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                     }));
                   }}
                   filter={metricSpecificFilter}
-                  eventName={metric?.eventName || ""}
+                  event={metric?.event}
                   onFilterDefined={(filter) => {
                     setState((prev) => ({
                       ...prev,
@@ -204,7 +204,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 onDelete={() => {
                   setAddNewFilter(false);
                 }}
-                eventName={metric?.eventName || ""}
+                event={metric?.event}
                 onEmptyFilterAbandoned={() => {
                   setAddNewFilter(false);
                 }}

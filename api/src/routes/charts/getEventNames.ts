@@ -28,5 +28,13 @@ export const getEventNames = protectedProcedure
       ClickHouseQueryResponse<{ name: string }>
     >();
 
-    return { items: data.map((x) => ({ name: x.name })) };
+    return {
+      items: [
+        {
+          name: "All Events",
+          value: "$*",
+        },
+        ...data.map((x) => ({ name: x.name, value: x.name })),
+      ],
+    };
   });

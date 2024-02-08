@@ -95,3 +95,5 @@ export type DateHeader = {
   fullLabel: string;
   lookupValue: string;
 };
+
+export const ANY_EVENT_VALUE = "$*";

@@ -6,13 +6,12 @@ import { LiaChartAreaSolid } from "react-icons/lia";
 import { SlGraph } from "react-icons/sl";
 import { TiFlowSwitch } from "react-icons/ti";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
+import { LineSeparator } from "../ui/LineSeparator";
 import { genId } from "../utils/genId";
+import { BreakdownBlock } from "./metric-selector/BreakdownBlock";
+import { FilterBlock } from "./metric-selector/FilterBlock";
 import { Metric } from "./metric-selector/Metric";
 import { MetricBlock } from "./metric-selector/MetricBlock";
-import { BreakdownBlock } from "./metric-selector/BreakdownBlock";
-import { LineSeparator } from "../ui/LineSeparator";
-import { FilterBlock } from "./metric-selector/FilterBlock";
-import { set } from "react-hook-form";
 
 interface ManualChartOptionsProps {}
 
@@ -107,10 +106,10 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       {metrics.map((m, idx) => (
         <MetricBlock
           key={m.id}
-          onEventNameChange={(name) => {
+          onEventChange={(event) => {
             setMetrics(
               metrics.map((metric, i) =>
-                i === idx ? { ...metric, eventName: name, filters: [] } : metric
+                i === idx ? { ...metric, event, filters: [] } : metric
               )
             );
           }}
@@ -137,11 +136,11 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       {/* Once the metric is successfully added, hide the new block and show it as part of the list above. */}
       {addNewMetric ? (
         <MetricBlock
-          onEventNameChange={(name) => {
+          onEventChange={(event) => {
             setMetrics([
               ...metrics,
               {
-                eventName: name,
+                event,
                 id: genId(),
                 filters: [],
                 type: MetricMeasurement.uniqueUsers,

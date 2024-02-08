@@ -20,11 +20,12 @@ import { PropKeySelector } from "./PropKeySelector";
 import { PropValueMultiSelect } from "./PropValueMultiSelect";
 import { SingleDateValuePicker } from "./SingleDateValuePicker";
 import moment from "moment";
+import { MetricEvent } from "./MetricSelector";
 
 interface FilterBlockProps {
   onDelete?: () => void;
   filter: Partial<MetricFilter>;
-  eventName?: string;
+  event?: MetricEvent;
   onFilterDefined: (filter: MetricFilter) => void;
   onEmptyFilterAbandoned?: () => void;
 }
@@ -191,7 +192,7 @@ export const getOperationOptions = (
 export const FilterBlock: React.FC<FilterBlockProps> = ({
   onDelete,
   filter,
-  eventName,
+  event,
   onFilterDefined,
   onEmptyFilterAbandoned,
 }) => {
@@ -277,7 +278,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
           >
             <PropKeySelector
               currPropKey={localFilter.propName}
-              eventName={eventName}
+              event={event}
               onPropKey={(info) => {
                 if (isValidFilter(info)) {
                   onFilterDefined(info);
@@ -344,7 +345,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
               ) ? (
                 <PropValueMultiSelect
                   values={filter.value || []}
-                  eventName={eventName}
+                  event={event}
                   propKey={localFilter.propName || ""}
                   onConfirm={(values) => {
                     setLocalOrParentFilter({ ...localFilter, value: values });

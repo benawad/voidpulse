@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { DataType, PropOrigin } from "../../app-router-type";
+import { ANY_EVENT_VALUE, DataType, PropOrigin } from "../../app-router-type";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
 import { __prod__ } from "../../constants/prod";
 import { db } from "../../db";
@@ -8,15 +8,16 @@ import { peoplePropTypes } from "../../schema/people-prop-types";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { propsToTypes } from "../../utils/propsToTypes";
+import { eventSchema } from "./insight/eventFilterSchema";
 
 export const getPropKeys = protectedProcedure
   .input(
     z.object({
       projectId: z.string(),
-      eventName: z.string().optional(),
+      event: eventSchema.optional(),
     })
   )
-  .query(async ({ input: { projectId, eventName }, ctx: { userId } }) => {
+  .query(async ({ input: { projectId, event }, ctx: { userId } }) => {
     await assertProjectMember({ projectId, userId });
 
     const peoplePropTypePromise = db.query.peoplePropTypes.findFirst({
@@ -25,16 +26,18 @@ export const getPropKeys = protectedProcedure
 
     let propDefs: Record<string, { type: DataType }> = {};
 
-    if (eventName) {
+    if (event) {
       const resp = await clickhouse.query({
         query: `
 			select properties
 			from events
-			where name = {eventName:String} and project_id = {projectId:UUID}
+			where
+      ${event.value !== ANY_EVENT_VALUE ? `name = {eventName:String}` : ""}
+      and project_id = {projectId:UUID}
 			limit 3;
 		`,
         query_params: {
-          eventName,
+          eventName: event.value,
           projectId,
         },
       });

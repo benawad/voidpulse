@@ -6,24 +6,35 @@ import { Input } from "../../ui/Input";
 import { TbClick } from "react-icons/tb";
 import { PulseLoader } from "../../ui/PulseLoader";
 
+export type MetricEvent = {
+  name: string;
+  value: string;
+};
+
 interface MetricSelectorProps {
-  eventName: string;
-  onEventNameChange: (eventName: string) => void;
+  event?: MetricEvent;
+  onEventChange: (e: MetricEvent) => void;
 }
 
 export const MetricSelector: React.FC<MetricSelectorProps> = ({
-  eventName,
-  onEventNameChange,
+  event,
+  onEventChange,
 }) => {
   const { projectId } = useProjectBoardContext();
   const { data } = trpc.getEventNames.useQuery({ projectId });
   const dataWithAutocompleteKey = useMemo(() => {
     if (data) {
+      const items: {
+        name: string;
+        value: string;
+        lowercaseName: string;
+      }[] = data.items.map((x) => ({
+        name: x.name,
+        value: x.value,
+        lowercaseName: x.name.toLowerCase(),
+      }));
       return {
-        items: data.items.map((x) => ({
-          name: x.name,
-          lowercaseName: x.name.toLowerCase(),
-        })),
+        items,
       };
     }
     return null;
@@ -31,9 +42,11 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
 
   return (
     <Downshift<NonNullable<typeof dataWithAutocompleteKey>["items"][0]>
-      onChange={(selection) =>
-        onEventNameChange(selection ? selection.name : "")
-      }
+      onChange={(selection) => {
+        if (selection) {
+          onEventChange(selection);
+        }
+      }}
       itemToString={(item) => (item ? item.name : "")}
       initialIsOpen
       defaultHighlightedIndex={0}
@@ -83,7 +96,7 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
                     })}
                     className={`flex flex-row p-2 accent-hover group rounded-md
                       ${
-                        item.name === eventName
+                        item.value === event?.value
                           ? "bg-secondary-signature-100 text-primary-100"
                           : ""
                       }
