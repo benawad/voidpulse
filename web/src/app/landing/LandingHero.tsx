@@ -1,6 +1,7 @@
 import React from "react";
 import { StretchySvgWrapper } from "./StretchySvg";
 import Waveform from "./Waveform";
+import VoidpulseIcon from "./VoidpulseIcon";
 
 interface LandingHeroProps {}
 
@@ -23,8 +24,11 @@ export const LandingHero: React.FC<LandingHeroProps> = ({}) => {
 
       <div className="lg:w-1/2 sm:w-full justify-center -mt-12 ml-24 z-10">
         <div className="text-left flex flex-col">
-          <div className="text-6xl">voidpulse</div>
-          <div className="mt-2 text-2xl">copilot for product</div>
+          <div className="flex flex-row items-center">
+            <VoidpulseIcon style={{ height: 50, width: 50, marginTop: 12 }} />
+            <div className="text-6xl">voidpulse</div>
+          </div>
+          <div className="mt-2 text-2xl pl-14">copilot for product</div>
         </div>
       </div>
     </div>
