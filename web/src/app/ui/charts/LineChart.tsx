@@ -55,6 +55,9 @@ export const LineChart: React.FC<LineChartProps> = ({
             legend: {
               display: false,
             },
+            datalabels: {
+              display: false,
+            },
             tooltip: {
               mode: "nearest",
               intersect: false,

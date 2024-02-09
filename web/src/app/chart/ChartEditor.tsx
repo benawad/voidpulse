@@ -22,6 +22,14 @@ import { ChartDataTable } from "./data-table/ChartDataTable";
 import { DonutChart } from "../ui/charts/DonutChart";
 import { Doughnut } from "react-chartjs-2";
 import { donutChartStyle } from "../ui/charts/ChartStyle";
+import {
+  PiChartBar,
+  PiChartDonut,
+  PiChartLine,
+  PiSuitcaseSimple,
+} from "react-icons/pi";
+import { WiDaySunny } from "react-icons/wi";
+import { MdOutlineCalendarMonth } from "react-icons/md";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -140,17 +148,31 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   </div>
                 </div>
               </div>
-              <div className="mr-12">
-                <div className="my-auto">
+              {/* Area for chart type and group by time */}
+              <div className="mr-12 flex flex-row space-x-2">
+                {/* Group by time selector */}
+                <div className="my-auto standard card shadow-lg">
                   <Dropdown
                     autoWidth
                     value={
                       lineChartGroupByTimeType || LineChartGroupByTimeType.day
                     }
                     opts={[
-                      { label: "Day", value: LineChartGroupByTimeType.day },
-                      { label: "Week", value: LineChartGroupByTimeType.week },
-                      { label: "Month", value: LineChartGroupByTimeType.month },
+                      {
+                        label: "By day",
+                        value: LineChartGroupByTimeType.day,
+                        Icon: <WiDaySunny />,
+                      },
+                      {
+                        label: "By week",
+                        value: LineChartGroupByTimeType.week,
+                        Icon: <PiSuitcaseSimple />,
+                      },
+                      {
+                        label: "By month",
+                        value: LineChartGroupByTimeType.month,
+                        Icon: <MdOutlineCalendarMonth />,
+                      },
                     ]}
                     onSelect={(value) => {
                       setState((prev) => ({
@@ -160,7 +182,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     }}
                   />
                 </div>
-                <div className="my-auto">
+                {/* Chart type selector */}
+                <div className="my-auto standard card shadow-lg">
                   <Dropdown
                     autoWidth
                     value={chartType || ChartType.line}
@@ -168,14 +191,17 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       {
                         label: "Line",
                         value: ChartType.line,
+                        Icon: <PiChartLine />,
                       },
                       {
                         label: "Bar",
                         value: ChartType.bar,
+                        Icon: <PiChartBar />,
                       },
                       {
                         label: "Donut",
                         value: ChartType.donut,
+                        Icon: <PiChartDonut />,
                       },
                     ]}
                     onSelect={(value) => {
