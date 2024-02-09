@@ -32,6 +32,7 @@ import { WiDaySunny } from "react-icons/wi";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { BarChart } from "../ui/charts/BarChart";
 import { HintCallout } from "../ui/HintCallout";
+import { transformToBarChartData } from "../utils/transformToBarChartData";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }

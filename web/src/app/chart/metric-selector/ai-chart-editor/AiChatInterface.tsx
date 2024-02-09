@@ -5,7 +5,7 @@ interface AiChatInterfaceProps {}
 
 export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({}) => {
   const greetingPrompts = [
-    "What would you like to learn about your users?",
+    "What would you like to learn today?",
     "What report would you like to see?",
     "How can I help you visualize your data?",
   ];

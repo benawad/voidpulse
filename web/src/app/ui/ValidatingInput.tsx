@@ -33,6 +33,7 @@ export const ValidatingInput: React.FC<ValidatingInputProps> = ({
         onBlur={onDone}
         value={text || ""}
         onChange={(e) => setText(e.target.value)}
+        className="h-6 text-xs"
       />
     </form>
   );
