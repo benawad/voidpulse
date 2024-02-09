@@ -30,6 +30,8 @@ import {
 } from "react-icons/pi";
 import { WiDaySunny } from "react-icons/wi";
 import { MdOutlineCalendarMonth } from "react-icons/md";
+import { BarChart } from "../ui/charts/BarChart";
+import { HintCallout } from "../ui/HintCallout";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -256,7 +258,10 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               </Button>
             </div>
             <ChartDateRangePicker />
-            {/* Chart  */}
+
+            {/* CHART DISPLAYS HERE */}
+
+            {/* Insight line graph */}
             {data?.datas.length &&
             reportType === ReportType.insight &&
             data.chartType === ChartType.line ? (
@@ -270,6 +275,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 )}
               />
             ) : null}
+
+            {/* Insight donut */}
             {data?.datas.length &&
             reportType === ReportType.insight &&
             data.chartType === ChartType.donut ? (
@@ -282,6 +289,33 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     datasets: [
                       {
                         ...donutChartStyle,
+                        label: data.datas[0].eventLabel,
+                        data: data.datas.map((x) => x.value),
+                      },
+                    ],
+                  }}
+                />
+              </div>
+            ) : null}
+
+            {/* Insight bar graph */}
+            {data?.datas.length &&
+            reportType === ReportType.insight &&
+            data.chartType === ChartType.bar ? (
+              <div>
+                {breakdowns.length === 0 && metrics.length < 2 ? (
+                  <HintCallout>
+                    Bar charts are best used to show breakdowns, or compare
+                    multiple datasets.
+                  </HintCallout>
+                ) : null}
+                <BarChart
+                  data={{
+                    labels: data.datas.map(
+                      (x) => "" + (x.breakdown ?? x.eventLabel)
+                    ),
+                    datasets: [
+                      {
                         label: data.datas[0].eventLabel,
                         data: data.datas.map((x) => x.value),
                       },
