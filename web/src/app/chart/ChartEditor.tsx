@@ -1,4 +1,8 @@
-import { LineChartGroupByTimeType } from "@voidpulse/api";
+import {
+  ChartType,
+  LineChartGroupByTimeType,
+  ReportType,
+} from "@voidpulse/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -9,12 +13,15 @@ import { Dropdown } from "../ui/Dropdown";
 import { EditableTextField } from "../ui/EditableTextField";
 import { LineChart } from "../ui/charts/LineChart";
 import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
-import { transformToChartData } from "../utils/transformToChartData";
+import { transformToLineChartData } from "../utils/transformToLineChartData";
 import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartDateRangePicker } from "./ChartDateRangePicker";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { ChartDataTable } from "./data-table/ChartDataTable";
+import { DonutChart } from "../ui/charts/DonutChart";
+import { Doughnut } from "react-chartjs-2";
+import { donutChartStyle } from "../ui/charts/ChartStyle";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -77,6 +84,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       breakdowns,
       globalFilters,
       timeRangeType,
+      chartType,
       lineChartGroupByTimeType: lineChartGroupByTimeType || undefined,
       from: from ? dateToClickhouseDateString(from) : undefined,
       to: to ? dateToClickhouseDateString(to) : undefined,
@@ -149,6 +157,32 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     }}
                   />
                 </div>
+                <div className="my-auto">
+                  <Dropdown
+                    autoWidth
+                    value={chartType || ChartType.line}
+                    opts={[
+                      {
+                        label: "Line",
+                        value: ChartType.line,
+                      },
+                      {
+                        label: "Bar",
+                        value: ChartType.bar,
+                      },
+                      {
+                        label: "Donut",
+                        value: ChartType.donut,
+                      },
+                    ]}
+                    onSelect={(value) => {
+                      setState((prev) => ({
+                        ...prev,
+                        chartType: value,
+                      }));
+                    }}
+                  />
+                </div>
               </div>
               <Button
                 disabled={pendingCreateChart || pendingUpdateChart}
@@ -166,7 +200,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       from: from?.toISOString(),
                       to: to?.toISOString(),
                       visibleDataMap,
-                      data: transformToChartData(
+                      data: transformToLineChartData(
                         data.datas,
                         data.dateHeaders,
                         visibleDataMap
@@ -194,19 +228,37 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             </div>
             <ChartDateRangePicker />
             {/* Chart  */}
-            {data?.datas.length ? (
+            {data?.datas.length && data.chartType === ChartType.line ? (
               <LineChart
                 disableAnimations
-                data={transformToChartData(
+                data={transformToLineChartData(
                   data.datas,
                   data.dateHeaders,
                   visibleDataMap
                 )}
               />
             ) : null}
+            {data?.datas.length && data.chartType === ChartType.donut ? (
+              <div>
+                <DonutChart
+                  data={{
+                    labels: data.datas.map(
+                      (x) => "" + (x.breakdown ?? x.eventLabel)
+                    ),
+                    datasets: [
+                      {
+                        ...donutChartStyle,
+                        label: data.datas[0].eventLabel,
+                        data: data.datas.map((x) => x.value),
+                      },
+                    ],
+                  }}
+                />
+              </div>
+            ) : null}
           </div>
           {/* Additional data at the bottom */}
-          {data?.datas.length ? (
+          {data?.datas.length && data.chartType === ChartType.line ? (
             <ChartDataTable
               dateHeaders={data.dateHeaders}
               breakdownPropName={breakdowns[0]?.propName}

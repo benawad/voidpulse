@@ -3,12 +3,14 @@ import { dateInputRegex } from "../../../constants/regex";
 import { protectedProcedure } from "../../../trpc";
 import { assertProjectMember } from "../../../utils/assertProjectMember";
 import { eventFilterSchema, metricSchema } from "./eventFilterSchema";
-import { queryMetric } from "../../../utils/queryMetric";
+import { queryLineChartMetric } from "../../../utils/query-metric/queryLineChartMetric";
 import {
   ChartTimeRangeType,
+  ChartType,
   LineChartGroupByTimeType,
 } from "../../../app-router-type";
 import { getDateHeaders } from "../../../utils/getDateHeaders";
+import { queryBarChartMetric } from "../../../utils/query-metric/queryBarChartMetric";
 
 export type InsightData = { day: string; count: number };
 
@@ -21,6 +23,7 @@ export const getInsight = protectedProcedure
       lineChartGroupByTimeType: z
         .nativeEnum(LineChartGroupByTimeType)
         .optional(),
+      chartType: z.nativeEnum(ChartType),
       timeRangeType: z.nativeEnum(ChartTimeRangeType),
       globalFilters: z.array(eventFilterSchema),
       breakdowns: z.array(eventFilterSchema).max(1),
@@ -35,6 +38,7 @@ export const getInsight = protectedProcedure
         to,
         metrics,
         breakdowns,
+        chartType,
         timeRangeType,
         lineChartGroupByTimeType = LineChartGroupByTimeType.day,
         globalFilters,
@@ -50,12 +54,34 @@ export const getInsight = protectedProcedure
         to
       );
 
+      if (chartType !== ChartType.line) {
+        return {
+          chartType,
+          datas: (
+            await Promise.all(
+              metrics.map((x) =>
+                queryBarChartMetric({
+                  projectId,
+                  from,
+                  to,
+                  metric: x,
+                  globalFilters,
+                  breakdowns,
+                  timeRangeType,
+                })
+              )
+            )
+          ).flat(),
+        };
+      }
+
       return {
+        chartType,
         dateHeaders,
         datas: (
           await Promise.all(
             metrics.map((x) =>
-              queryMetric({
+              queryLineChartMetric({
                 dateMap,
                 dateHeaders,
                 projectId,

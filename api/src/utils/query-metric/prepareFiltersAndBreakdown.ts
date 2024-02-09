@@ -1,58 +1,36 @@
 import {
-  ANY_EVENT_VALUE,
-  ChartTimeRangeType,
-  DataType,
-  FilterAndOr,
-  LineChartGroupByTimeType,
-  MetricMeasurement,
   PropOrigin,
-} from "../app-router-type";
-import { ClickHouseQueryResponse, clickhouse } from "../clickhouse";
-import { __prod__ } from "../constants/prod";
-import { filtersToSql } from "./filtersToSql";
+  FilterAndOr,
+  ANY_EVENT_VALUE,
+  DataType,
+  ChartTimeRangeType,
+} from "../../app-router-type";
+import { clickhouse, ClickHouseQueryResponse } from "../../clickhouse";
+import { __prod__ } from "../../constants/prod";
 import {
   InputMetric,
   MetricFilter,
-} from "../routes/charts/insight/eventFilterSchema";
-import { InsightData } from "../routes/charts/insight/getInsight";
-import { getDateRange } from "./getDateRange";
-import { v4 } from "uuid";
+} from "../../routes/charts/insight/eventFilterSchema";
+import { filtersToSql } from "../filtersToSql";
+import { getDateRange } from "../getDateRange";
 
-type BreakdownData = {
-  id: string;
-  eventLabel: string;
-  measurement: MetricMeasurement;
-  lineChartGroupByTimeType?: LineChartGroupByTimeType;
-  breakdown?: any;
-  average_count: number;
-  data: Record<string, number>;
-};
-
-export const queryMetric = async ({
+export const prepareFiltersAndBreakdown = async ({
+  metric,
+  globalFilters,
+  breakdowns,
   projectId,
+  timeRangeType,
   from,
   to,
-  metric,
-  breakdowns,
-  timeRangeType,
-  lineChartGroupByTimeType = LineChartGroupByTimeType.day,
-  dateMap,
-  globalFilters,
 }: {
-  dateMap: Record<string, number>;
-  dateHeaders: Array<{
-    label: string;
-    lookupValue: string;
-  }>;
-  globalFilters: MetricFilter[];
   projectId: string;
   from?: string;
   to?: string;
   timeRangeType: ChartTimeRangeType;
-  breakdowns: MetricFilter[];
   metric: InputMetric;
-  lineChartGroupByTimeType?: LineChartGroupByTimeType;
-}): Promise<BreakdownData[]> => {
+  globalFilters: MetricFilter[];
+  breakdowns: MetricFilter[];
+}) => {
   const { paramMap, whereStrings, paramCount } = filtersToSql(
     metric.filters.filter((x) => x.propOrigin === PropOrigin.event),
     1
@@ -154,100 +132,12 @@ export const queryMetric = async ({
   if (breakdownSelect && !shouldBucketData) {
     breakdownSelect = `${breakdownSelect} as breakdown`;
   }
-  let query = `
-  SELECT
-      ${
-        {
-          [LineChartGroupByTimeType.day]: "toStartOfDay",
-          [LineChartGroupByTimeType.week]: "toStartOfWeek",
-          [LineChartGroupByTimeType.month]: "toStartOfMonth",
-        }[lineChartGroupByTimeType]
-      }(time${
-    lineChartGroupByTimeType === LineChartGroupByTimeType.week ? `, 1` : ""
-  }) AS day,
-      toInt32(count(${
-        metric.type === MetricMeasurement.totalEvents
-          ? ``
-          : `DISTINCT distinct_id`
-      })) AS count
-      ${breakdownSelect ? `, ${breakdownSelect}` : ""}
-  FROM events as e${
-    breakdownBucketMinMaxQuery ? `${breakdownBucketMinMaxQuery}` : ""
-  }
-  ${joinSection}
-  WHERE ${whereSection}
-  GROUP BY day${breakdownSelect ? ", breakdown" : ""}
-  ORDER BY day ASC
-`;
-  if (breakdownSelect) {
-    query = `
-    select
-    breakdown,
-    round(avg(count), 1) as average_count,
-    groupArray((day, count)) as data
-    from (${query})
-    group by breakdown
-    order by average_count desc
-    limit 500
-    `;
-  }
-  if (!__prod__) {
-    console.log(query, paramMap, paramMap2);
-  }
-  const resp = await clickhouse.query({
-    query,
+
+  return {
     query_params,
-  });
-  const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();
-  const eventLabel = `${metric.event.name} [${
-    {
-      [MetricMeasurement.totalEvents]: "Total events",
-      [MetricMeasurement.uniqueUsers]: "Unique users",
-    }[metric.type]
-  }]`;
-
-  if (breakdownSelect) {
-    return (
-      data as unknown as (BreakdownData & { data: [string, number][] })[]
-    ).map((x) => {
-      const dataMap: Record<string, number> = {};
-      x.data.forEach((d) => {
-        dataMap[d[0]] = d[1];
-      });
-      return {
-        ...x,
-        id: v4(),
-        measurement: metric.type,
-        groupByTimeType: lineChartGroupByTimeType,
-        eventLabel,
-        data: {
-          ...dateMap,
-          ...dataMap,
-        },
-      };
-    });
-  } else {
-    const dataMap: Record<string, number> = {};
-    data.forEach((x) => {
-      dataMap[x.day] = x.count;
-    });
-
-    return [
-      {
-        id: v4(),
-        eventLabel,
-        measurement: metric.type,
-        lineChartGroupByTimeType: lineChartGroupByTimeType,
-        average_count: !data.length
-          ? 0
-          : Math.round(
-              (10 * data.reduce((a, b) => a + b.count, 0)) / data.length
-            ) / 10,
-        data: {
-          ...dateMap,
-          ...dataMap,
-        },
-      },
-    ];
-  }
+    joinSection,
+    whereSection,
+    breakdownSelect,
+    breakdownBucketMinMaxQuery,
+  };
 };

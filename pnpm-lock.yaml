@@ -102,6 +102,9 @@ importers:
       '@floating-ui/react':
         specifier: ^0.26.8
         version: 0.26.8(react-dom@18.2.0)(react@18.2.0)
+      '@formatjs/intl-numberformat':
+        specifier: ^8.10.0
+        version: 8.10.0
       '@tanstack/react-query':
         specifier: ^5.17.19
         version: 5.17.19(react@18.2.0)
@@ -135,6 +138,9 @@ importers:
       chart.js:
         specifier: ^4.4.1
         version: 4.4.1
+      chartjs-plugin-datalabels:
+        specifier: ^2.2.0
+        version: 2.2.0(chart.js@4.4.1)
       downshift:
         specifier: ^8.3.1
         version: 8.3.1(react@18.2.0)
@@ -696,6 +702,27 @@ packages:
 
   /@floating-ui/utils@0.2.1:
     resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
+    dev: false
+
+  /@formatjs/ecma402-abstract@1.18.2:
+    resolution: {integrity: sha512-+QoPW4csYALsQIl8GbN14igZzDbuwzcpWrku9nyMXlaqAlwRBgl5V+p0vWMGFqHOw37czNXaP/lEk4wbLgcmtA==}
+    dependencies:
+      '@formatjs/intl-localematcher': 0.5.4
+      tslib: 2.6.2
+    dev: false
+
+  /@formatjs/intl-localematcher@0.5.4:
+    resolution: {integrity: sha512-zTwEpWOzZ2CiKcB93BLngUX59hQkuZjT2+SAQEscSm52peDW/getsawMcWF1rGRpMCX6D7nSJA3CzJ8gn13N/g==}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
+  /@formatjs/intl-numberformat@8.10.0:
+    resolution: {integrity: sha512-i4Isl+E/ljea9wGwqFSlzOINhSM4GgbXnooI5XB0VGxc5dPEn9QkgadH4XM2wN2halvAxUyIXNq/08QpQDnODQ==}
+    dependencies:
+      '@formatjs/ecma402-abstract': 1.18.2
+      '@formatjs/intl-localematcher': 0.5.4
+      tslib: 2.6.2
     dev: false
 
   /@isaacs/cliui@8.0.2:
@@ -1488,6 +1515,14 @@ packages:
     engines: {pnpm: '>=7'}
     dependencies:
       '@kurkle/color': 0.3.2
+    dev: false
+
+  /chartjs-plugin-datalabels@2.2.0(chart.js@4.4.1):
+    resolution: {integrity: sha512-14ZU30lH7n89oq+A4bWaJPnAG8a7ZTk7dKf48YAzMvJjQtjrgg5Dpk9f+LbjCF6bpx3RAGTeL13IXpKQYyRvlw==}
+    peerDependencies:
+      chart.js: '>=3.0.0'
+    dependencies:
+      chart.js: 4.4.1
     dev: false
 
   /chokidar@3.5.3:

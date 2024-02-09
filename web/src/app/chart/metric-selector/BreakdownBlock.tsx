@@ -84,7 +84,7 @@ export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
           </div>
         ) : null}
       </button>
-      {isOpen && metrics[0]?.eventName ? (
+      {isOpen && metrics[0]?.event ? (
         <div
           ref={refs.setFloating}
           {...getFloatingProps()}
@@ -93,7 +93,7 @@ export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
         >
           <PropKeySelector
             currPropKey={breakdown?.propName}
-            eventName={metrics[0].eventName}
+            event={metrics[0].event}
             onPropKey={(info) => {
               onBreakdown(info as MetricFilter);
               setIsOpen(false);

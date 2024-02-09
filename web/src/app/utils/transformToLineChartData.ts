@@ -1,9 +1,12 @@
-import { DateHeader } from "@voidpulse/api";
+import { ChartType, DateHeader } from "@voidpulse/api";
 import { colorOrder, lineChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
-export const transformToChartData = (
-  datas: RouterOutput["getInsight"]["datas"],
+export const transformToLineChartData = (
+  datas: Extract<
+    RouterOutput["getInsight"]["datas"],
+    { average_count: number }[]
+  >,
   dateHeader: DateHeader[],
   visibleDataMap?: Record<string, boolean> | null
 ) => {
