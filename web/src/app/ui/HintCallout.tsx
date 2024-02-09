@@ -8,7 +8,7 @@ export const HintCallout: React.FC<
   React.PropsWithChildren<HintCalloutProps>
 > = ({ children }) => {
   return (
-    <div className="bg-gradient-to-r from-cyan-500 to-indigo-500 pt-2 rounded-2xl shadow-lg font-mono inline-block m-2 overflow-hidden border-2 border-indigo-400">
+    <div className="bg-gradient-to-r to-cyan-500 from-indigo-500 pt-2 rounded-2xl shadow-lg font-mono inline-block m-2 overflow-hidden border-2 border-indigo-400">
       <div className="flex items-center pr-4 text-sm">
         <LineChartMotif
           style={{ width: 100, height: "auto" }}

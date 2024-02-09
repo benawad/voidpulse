@@ -1,4 +1,5 @@
 import React from "react";
+import PulseMotif1 from "../../../landing/PulseMotif1";
 
 interface AiChatInterfaceProps {}
 
@@ -9,7 +10,11 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({}) => {
     "How can I help you visualize your data?",
   ];
   return (
-    <div>
+    <div className="justify-center">
+      <PulseMotif1
+        className="mx-auto mt-12"
+        style={{ width: 250, height: "auto" }}
+      />
       <div className="bg-secondary-signature-100 p-3 rounded-lg m-3 shadow-lg">
         {greetingPrompts[Math.floor(Math.random() * greetingPrompts.length)]}
       </div>
