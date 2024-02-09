@@ -9,11 +9,11 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = () => {
   const [editorMode, setEditorMode] = useState("manual");
   return (
     <div
-      className="border-r p-4 bg-primary-900 border-primary-800"
+      className="border-r bg-primary-900 border-primary-800"
       style={{ width: 400 }}
     >
       <MultiToggleButtonBar
-        className="font-semibold text-md"
+        className="mono-body text-sm rounded-none p-0 border-0"
         buttonClassName="w-full justify-center"
         buttonInfo={[
           {

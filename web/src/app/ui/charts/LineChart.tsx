@@ -98,9 +98,8 @@ export const LineChart: React.FC<LineChartProps> = ({
                   }
 
                   return `${tooltipItem.parsed.y?.toLocaleString()} ${
-                    (tooltipItem.dataIndex as any).tooltips[
-                      tooltipItem.dataIndex
-                    ]?.appendToLabel || ""
+                    (tooltipItem.dataset as any).tooltips[tooltipItem.dataIndex]
+                      ?.appendToLabel || ""
                   }`;
                 },
               },

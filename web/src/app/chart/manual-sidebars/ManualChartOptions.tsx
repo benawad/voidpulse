@@ -13,18 +13,20 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
   const [{ reportType }, setState] = useChartStateContext();
 
   // Top section with square icons
-  const reportTypeIconStyle = "w-8 h-8 rounded-md my-2 text-primary-400";
-  const reportTypeButtonStyle = `accent-hover py-1 rounded-md w-full m-1 flex items-center flex flex-col text-xs border border-primary-800`;
+  const reportTypeIconStyle = "w-6 h-6 rounded-md";
+  const reportTypeButtonStyle = `accent-hover group py-1 w-full flex items-center flex flex-row text-xs`;
   const reportTypes = [
     {
       name: "Insights",
       icon: <SlGraph className={reportTypeIconStyle} />,
       type: ReportType.insight,
+      colorClass: "text-indigo-500",
     },
     {
       name: "Funnels",
       icon: <BsBarChart className={"-scale-x-100 " + reportTypeIconStyle} />,
       type: ReportType.funnel,
+      colorClass: "text-cyan-500",
     },
     {
       name: "Retention",
@@ -32,6 +34,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
         <LiaChartAreaSolid className={"-scale-x-100 " + reportTypeIconStyle} />
       ),
       type: ReportType.retention,
+      colorClass: "text-pink-500",
     },
     // {
     //   name: "Flow",
@@ -43,7 +46,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
   return (
     <>
       {/* Choosing report type */}
-      <div className="flex flex-row w-full justify-between my-2">
+      <div className="flex flex-row w-full justify-between mt-2 mono-body">
         {reportTypes.map((rt) => {
           return (
             <button
@@ -51,7 +54,9 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
               className={
                 reportTypeButtonStyle +
                 " " +
-                (rt.type === reportType ? "bg-primary-700" : "")
+                (rt.type === reportType
+                  ? `text-primary-100`
+                  : "text-primary-500 bg-primary-800")
               }
               onClick={() => {
                 setState((prev) => {
@@ -66,13 +71,25 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
                 });
               }}
             >
-              {rt.icon}
+              {/* Div around icon */}
+              <div
+                className={`rounded-full group-hover:text-secondary-signature-100 w-8 h-8 flex items-center justify-center ml-3 mr-1 ${
+                  rt.type === reportType
+                    ? "text-primary-100"
+                    : "text-primary-500"
+                }`}
+              >
+                {rt.icon}
+              </div>
+              {rt.name}
             </button>
           );
         })}
       </div>
-      {reportType === ReportType.insight ? <InsightSidebar /> : null}
-      {reportType === ReportType.retention ? <RetentionSidebar /> : null}
+      <div className="px-4">
+        {reportType === ReportType.insight ? <InsightSidebar /> : null}
+        {reportType === ReportType.retention ? <RetentionSidebar /> : null}
+      </div>
     </>
   );
 };

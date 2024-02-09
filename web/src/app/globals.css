@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@400;700&display=swap");
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -51,6 +52,9 @@ body {
 }
 .page {
   @apply bg-primary-900 min-h-screen overscroll-none;
+}
+.mono-body {
+  font-family: "DM Mono", monospace;
 }
 .card {
   @apply rounded-xl overflow-hidden border border-primary-700;
