@@ -24,6 +24,7 @@ export const getDateHeaders = (
   to?: string
 ) => {
   const dateHeaders: DateHeader[] = [];
+  const retentionHeaders: DateHeader[] = [];
   let startDate = from ? new Date(from) : new Date();
   let endDate = to ? new Date(to) : new Date();
 
@@ -60,6 +61,7 @@ export const getDateHeaders = (
   }
 
   const dateMap: Record<string, number> = {};
+  let idx = 0;
   while (
     isBefore(startDate, endDate) ||
     startDate.getTime() === endDate.getTime()
@@ -85,6 +87,12 @@ export const getDateHeaders = (
           : format(startDate, "EEE MMM dd, yyyy"),
       lookupValue,
     });
+    const retLabel = !idx ? "<1 Day" : `Day ${idx}`;
+    retentionHeaders.push({
+      label: retLabel,
+      fullLabel: retLabel,
+      lookupValue: "" + idx++,
+    });
     dateMap[lookupValue] = 0;
     if (lineChartGroupByTimeType === LineChartGroupByTimeType.month) {
       startDate = addMonths(startDate, 1);
@@ -95,5 +103,5 @@ export const getDateHeaders = (
     }
   }
 
-  return { dateHeaders, dateMap };
+  return { dateHeaders, dateMap, retentionHeaders };
 };

@@ -2,6 +2,7 @@ import {
   ChartType,
   LineChartGroupByTimeType,
   ReportType,
+  RetentionNumFormat,
 } from "@voidpulse/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -33,6 +34,7 @@ import { MdOutlineCalendarMonth } from "react-icons/md";
 import { BarChart } from "../ui/charts/BarChart";
 import { HintCallout } from "../ui/HintCallout";
 import { transformToBarChartData } from "../utils/transformToBarChartData";
+import { transformRetentionToLineChartData } from "../utils/transformRetentionToLineChartData";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -42,6 +44,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     {
       metrics,
       chartType,
+      retentionNumFormat,
       breakdowns,
       reportType,
       title,
@@ -159,68 +162,99 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               </div>
               {/* Area for chart type and group by time */}
               <div className="mr-12 flex flex-row space-x-2">
-                {/* Group by time selector */}
-                <div className="my-auto standard card shadow-lg">
-                  <Dropdown
-                    autoWidth
-                    value={
-                      lineChartGroupByTimeType || LineChartGroupByTimeType.day
-                    }
-                    opts={[
-                      {
-                        label: "By day",
-                        value: LineChartGroupByTimeType.day,
-                        Icon: <WiDaySunny />,
-                      },
-                      {
-                        label: "By week",
-                        value: LineChartGroupByTimeType.week,
-                        Icon: <PiSuitcaseSimple />,
-                      },
-                      {
-                        label: "By month",
-                        value: LineChartGroupByTimeType.month,
-                        Icon: <MdOutlineCalendarMonth />,
-                      },
-                    ]}
-                    onSelect={(value) => {
-                      setState((prev) => ({
-                        ...prev,
-                        lineChartGroupByTimeType: value,
-                      }));
-                    }}
-                  />
-                </div>
-                {/* Chart type selector */}
-                <div className="my-auto standard card shadow-lg">
-                  <Dropdown
-                    autoWidth
-                    value={chartType || ChartType.line}
-                    opts={[
-                      {
-                        label: "Line",
-                        value: ChartType.line,
-                        Icon: <PiChartLine />,
-                      },
-                      {
-                        label: "Bar",
-                        value: ChartType.bar,
-                        Icon: <PiChartBar />,
-                      },
-                      {
-                        label: "Donut",
-                        value: ChartType.donut,
-                        Icon: <PiChartDonut />,
-                      },
-                    ]}
-                    onSelect={(value) => {
-                      setState((prev) => ({
-                        ...prev,
-                        chartType: value,
-                      }));
-                    }}
-                  />
-                </div>
+                {reportType === ReportType.retention ? (
+                  <div className="my-auto standard card shadow-lg">
+                    <Dropdown
+                      autoWidth
+                      value={retentionNumFormat || RetentionNumFormat.percent}
+                      opts={[
+                        {
+                          label: "Percent",
+                          value: RetentionNumFormat.percent,
+                          Icon: <WiDaySunny />,
+                        },
+                        {
+                          label: "Raw count",
+                          value: RetentionNumFormat.rawCount,
+                          Icon: <PiSuitcaseSimple />,
+                        },
+                      ]}
+                      onSelect={(value) => {
+                        setState((prev) => ({
+                          ...prev,
+                          retentionNumFormat: value,
+                        }));
+                      }}
+                    />
+                  </div>
+                ) : null}
+                {reportType === ReportType.insight ? (
+                  <>
+                    {/* Group by time selector */}
+                    <div className="my-auto standard card shadow-lg">
+                      <Dropdown
+                        autoWidth
+                        value={
+                          lineChartGroupByTimeType ||
+                          LineChartGroupByTimeType.day
+                        }
+                        opts={[
+                          {
+                            label: "By day",
+                            value: LineChartGroupByTimeType.day,
+                            Icon: <WiDaySunny />,
+                          },
+                          {
+                            label: "By week",
+                            value: LineChartGroupByTimeType.week,
+                            Icon: <PiSuitcaseSimple />,
+                          },
+                          {
+                            label: "By month",
+                            value: LineChartGroupByTimeType.month,
+                            Icon: <MdOutlineCalendarMonth />,
+                          },
+                        ]}
+                        onSelect={(value) => {
+                          setState((prev) => ({
+                            ...prev,
+                            lineChartGroupByTimeType: value,
+                          }));
+                        }}
+                      />
+                    </div>
+                    {/* Chart type selector */}
+                    <div className="my-auto standard card shadow-lg">
+                      <Dropdown
+                        autoWidth
+                        value={chartType || ChartType.line}
+                        opts={[
+                          {
+                            label: "Line",
+                            value: ChartType.line,
+                            Icon: <PiChartLine />,
+                          },
+                          {
+                            label: "Bar",
+                            value: ChartType.bar,
+                            Icon: <PiChartBar />,
+                          },
+                          {
+                            label: "Donut",
+                            value: ChartType.donut,
+                            Icon: <PiChartDonut />,
+                          },
+                        ]}
+                        onSelect={(value) => {
+                          setState((prev) => ({
+                            ...prev,
+                            chartType: value,
+                          }));
+                        }}
+                      />
+                    </div>
+                  </>
+                ) : null}
               </div>
               <Button
                 disabled={pendingCreateChart || pendingUpdateChart}
@@ -267,10 +301,23 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             <ChartDateRangePicker />
 
             {/* CHART DISPLAYS HERE */}
+            {data?.reportType === ReportType.retention && data.datas.length ? (
+              <LineChart
+                disableAnimations
+                yPercent={retentionNumFormat !== RetentionNumFormat.rawCount}
+                data={transformRetentionToLineChartData(
+                  data.datas,
+                  data.retentionHeaders,
+                  visibleDataMap,
+                  highlightedRow,
+                  retentionNumFormat
+                )}
+              />
+            ) : null}
 
             {/* Insight line graph */}
             {data?.datas.length &&
-            reportType === ReportType.insight &&
+            data?.reportType === ReportType.insight &&
             data.chartType === ChartType.line ? (
               <LineChart
                 disableAnimations
@@ -285,7 +332,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
 
             {/* Insight donut */}
             {data?.datas.length &&
-            reportType === ReportType.insight &&
+            data?.reportType === ReportType.insight &&
             data.chartType === ChartType.donut ? (
               <div>
                 <DonutChart
@@ -327,7 +374,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             ) : null}
           </div>
           {/* Additional data at the bottom */}
-          {data?.datas.length && data.chartType === ChartType.line ? (
+          {data?.datas.length &&
+          data?.reportType === ReportType.insight &&
+          data.chartType === ChartType.line ? (
             <ChartDataTable
               dateHeaders={data.dateHeaders}
               breakdownPropName={breakdowns[0]?.propName}

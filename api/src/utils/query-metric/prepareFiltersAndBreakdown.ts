@@ -104,8 +104,8 @@ export const prepareFiltersAndBreakdown = async ({
           where ${whereSection}) as breakdown_min_max`;
         const bucket_idx = `widthBucket(${breakdownSelect}, min_breakdown, max_breakdown, ${numBuckets})`;
         const breakdownBucketSize = `(max_breakdown - min_breakdown) / ${numBuckets}`;
-        const bucket_start = `min_breakdown + ${breakdownBucketSize} * (${bucket_idx} - 1)`;
-        const bucket_end = `${bucket_start} + ${breakdownBucketSize}`;
+        const bucket_start = `round(min_breakdown + ${breakdownBucketSize} * (${bucket_idx} - 1), 2)`;
+        const bucket_end = `round(${bucket_start} + ${breakdownBucketSize}, 2)`;
         breakdownSelect = `
         (toString(${bucket_start}) || '-' || toString(${bucket_end})) as breakdown
         `;

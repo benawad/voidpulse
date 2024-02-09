@@ -61,21 +61,21 @@ export const queryRetention = async ({
   breakdowns: MetricFilter[];
   metrics: InputMetric[];
 }) => {
-  // const {
-  //   breakdownBucketMinMaxQuery,
-  //   breakdownSelect,
-  //   joinSection,
-  //   query_params,
-  //   whereSection,
-  // } = await prepareFiltersAndBreakdown({
-  //   metric,
-  //   globalFilters,
-  //   breakdowns,
-  //   projectId,
-  //   timeRangeType,
-  //   from,
-  //   to,
-  // });
+  const {
+    breakdownBucketMinMaxQuery,
+    breakdownSelect,
+    joinSection,
+    query_params,
+    whereSection,
+  } = await prepareFiltersAndBreakdown({
+    metric: metrics[0],
+    globalFilters,
+    breakdowns,
+    projectId,
+    timeRangeType,
+    from,
+    to,
+  });
 
   let query = `
   WITH cohort_users AS (
@@ -205,9 +205,10 @@ export const queryRetention = async ({
     const dayNumber = parseInt(day);
     const { totalRetained, cohortCount, cohortSizeSum } =
       averageRetention[dayNumber];
-    const avgRetained = Math.round((100 * totalRetained) / cohortCount) / 100;
+    const avgRetained = Math.round(totalRetained / cohortCount);
     const avgCohortSize = cohortSizeSum / cohortCount;
-    const avgRetainedPercent = avgRetained / avgCohortSize;
+    const avgRetainedPercent =
+      Math.round((avgRetained / avgCohortSize) * 100 * 100) / 100;
     averageRetentionByDay[dayNumber] = {
       avgRetained,
       avgRetainedPercent,

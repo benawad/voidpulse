@@ -26,11 +26,13 @@ ChartJS.register(
 interface LineChartProps {
   disableAnimations?: boolean;
   data: any;
+  yPercent?: boolean;
 }
 
 export const LineChart: React.FC<LineChartProps> = ({
   data,
   disableAnimations,
+  yPercent,
 }) => {
   return (
     <div className="w-full">
@@ -72,31 +74,33 @@ export const LineChart: React.FC<LineChartProps> = ({
 
               callbacks: {
                 title: (tooltipItems: TooltipItem<"line">[]) => {
-                  return tooltipItems.length
-                    ? `${tooltipItems[0].dataset.label}`
-                    : "";
+                  return (tooltipItems[0].dataset as any)?.tooltips[
+                    tooltipItems[0].dataIndex
+                  ]?.title;
                 },
                 afterTitle: (tooltipItems: TooltipItem<"line">[]) => {
-                  return tooltipItems.length
-                    ? `${(tooltipItems[0].dataset as any).breakdown}`
-                    : "";
+                  return (tooltipItems[0].dataset as any)?.tooltips[
+                    tooltipItems[0].dataIndex
+                  ]?.afterTitle;
                 },
                 beforeLabel: (tooltipItem: TooltipItem<"line">) => {
-                  return (tooltipItem.dataset as any).fullDates[
+                  return (tooltipItem.dataset as any).tooltips[
                     tooltipItem.dataIndex
-                  ];
+                  ]?.beforeLabel;
                 },
                 label: (tooltipItem: TooltipItem<"line">) => {
+                  const maybeLabel = (tooltipItem.dataset as any).tooltips[
+                    tooltipItem.dataIndex
+                  ]?.label;
+
+                  if (maybeLabel) {
+                    return maybeLabel;
+                  }
+
                   return `${tooltipItem.parsed.y?.toLocaleString()} ${
-                    (tooltipItem.dataset as any).measurement
-                      ? {
-                          [MetricMeasurement.totalEvents]: "events",
-                          [MetricMeasurement.uniqueUsers]: "users",
-                        }[
-                          (tooltipItem.dataset as any)
-                            .measurement as MetricMeasurement
-                        ]
-                      : ""
+                    (tooltipItem.dataIndex as any).tooltips[
+                      tooltipItem.dataIndex
+                    ]?.appendToLabel || ""
                   }`;
                 },
               },
@@ -133,6 +137,11 @@ export const LineChart: React.FC<LineChartProps> = ({
                 color: [colors.primary[500]],
                 padding: 16,
                 maxTicksLimit: 5,
+                callback: yPercent
+                  ? function (value) {
+                      return `${value}%`; // Append a percentage sign to each label
+                    }
+                  : undefined,
               },
               border: {
                 color: "transparent",

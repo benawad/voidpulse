@@ -1,4 +1,4 @@
-import { ChartType, DateHeader } from "@voidpulse/api";
+import { ChartType, DateHeader, MetricMeasurement } from "@voidpulse/api";
 import { colorOrder, lineChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
@@ -11,7 +11,6 @@ export const transformToLineChartData = (
   visibleDataMap?: Record<string, boolean> | null,
   highlightedId?: string | null
 ) => {
-  const fullDates = dateHeader.map((d) => d.fullLabel);
   return {
     labels: dateHeader.map((d) => d.label),
     datasets: datas
@@ -29,9 +28,19 @@ export const transformToLineChartData = (
           borderColor: col,
           pointHoverBackgroundColor: col,
           label: data.eventLabel,
-          measurement: data.measurement,
-          breakdown: data.breakdown || "",
-          fullDates,
+          tooltips: dateHeader.map((d) => {
+            return {
+              title: data.eventLabel,
+              afterTitle: data.breakdown || "",
+              beforeLabel: d.fullLabel,
+              appendToLabel: data.measurement
+                ? {
+                    [MetricMeasurement.totalEvents]: "events",
+                    [MetricMeasurement.uniqueUsers]: "users",
+                  }[data.measurement]
+                : "",
+            };
+          }),
           data: dateHeader.map((d) => data.data[d.lookupValue] || 0),
         };
       }),

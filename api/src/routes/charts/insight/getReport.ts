@@ -51,7 +51,7 @@ export const getReport = protectedProcedure
     }) => {
       await assertProjectMember({ projectId, userId });
 
-      const { dateHeaders, dateMap } = getDateHeaders(
+      const { dateHeaders, dateMap, retentionHeaders } = getDateHeaders(
         timeRangeType,
         lineChartGroupByTimeType,
         from,
@@ -61,7 +61,8 @@ export const getReport = protectedProcedure
       if (ReportType.retention === reportType) {
         return {
           reportType,
-          dateHeaders,
+          chartType,
+          retentionHeaders,
           datas:
             metrics.length !== 2
               ? []

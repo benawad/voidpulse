@@ -97,3 +97,8 @@ export type DateHeader = {
 };
 
 export const ANY_EVENT_VALUE = "$*";
+
+export enum RetentionNumFormat {
+  percent = 1,
+  rawCount,
+}
