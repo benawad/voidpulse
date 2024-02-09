@@ -6,6 +6,6 @@ export const metricToEventLabel = (metric: InputMetric) => {
     {
       [MetricMeasurement.totalEvents]: "Total events",
       [MetricMeasurement.uniqueUsers]: "Unique users",
-    }[metric.type]
+    }[metric.type || MetricMeasurement.uniqueUsers]
   }]`;
 };

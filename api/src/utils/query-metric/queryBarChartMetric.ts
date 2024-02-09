@@ -80,7 +80,7 @@ export const queryBarChartMetric = async ({
   return data.map((d) => ({
     id: v4(),
     eventLabel,
-    measurement: metric.type,
+    measurement: metric.type || MetricMeasurement.uniqueUsers,
     value: d.count,
     breakdown: d.breakdown,
   }));

@@ -5,6 +5,8 @@ import { trpc } from "../../utils/trpc";
 import { Input } from "../../ui/Input";
 import { TbClick } from "react-icons/tb";
 import { PulseLoader } from "../../ui/PulseLoader";
+import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { ReportType } from "@voidpulse/api";
 
 export type MetricEvent = {
   name: string;
@@ -22,6 +24,7 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
 }) => {
   const { projectId } = useProjectBoardContext();
   const { data } = trpc.getEventNames.useQuery({ projectId });
+  const [{ reportType }] = useChartStateContext();
   const dataWithAutocompleteKey = useMemo(() => {
     if (data) {
       const items: {
@@ -33,12 +36,25 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
         value: x.value,
         lowercaseName: x.name.toLowerCase(),
       }));
+      if (reportType === ReportType.insight) {
+        items.push({
+          name: "All Events",
+          value: "$*",
+          lowercaseName: "all events",
+        });
+      } else if (reportType === ReportType.retention) {
+        items.push({
+          name: "Any event",
+          value: "$*",
+          lowercaseName: "any event",
+        });
+      }
       return {
         items,
       };
     }
     return null;
-  }, [data]);
+  }, [data, reportType]);
 
   return (
     <Downshift<NonNullable<typeof dataWithAutocompleteKey>["items"][0]>

@@ -29,12 +29,6 @@ export const getEventNames = protectedProcedure
     >();
 
     return {
-      items: [
-        {
-          name: "All Events",
-          value: "$*",
-        },
-        ...data.map((x) => ({ name: x.name, value: x.name })),
-      ],
+      items: data.map((x) => ({ name: x.name, value: x.name })),
     };
   });

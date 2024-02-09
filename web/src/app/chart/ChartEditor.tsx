@@ -231,7 +231,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             </div>
             <ChartDateRangePicker />
             {/* Chart  */}
-            {data?.datas.length && data.chartType === ChartType.line ? (
+            {data?.datas.length &&
+            reportType === ReportType.insight &&
+            data.chartType === ChartType.line ? (
               <LineChart
                 disableAnimations
                 data={transformToLineChartData(
@@ -242,7 +244,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 )}
               />
             ) : null}
-            {data?.datas.length && data.chartType === ChartType.donut ? (
+            {data?.datas.length &&
+            reportType === ReportType.insight &&
+            data.chartType === ChartType.donut ? (
               <div>
                 <DonutChart
                   data={{

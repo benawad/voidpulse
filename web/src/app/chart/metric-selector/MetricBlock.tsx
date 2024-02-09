@@ -1,21 +1,20 @@
-import { DataType, MetricMeasurement, PropOrigin } from "@voidpulse/api";
-import React, { useState } from "react";
 import {
   useClick,
   useDismiss,
   useFloating,
   useInteractions,
 } from "@floating-ui/react";
-import { MetricEvent, MetricSelector } from "./MetricSelector";
-import { RxDragHandleDots2 } from "react-icons/rx";
+import React, { useState } from "react";
 import { IoClose, IoFilter } from "react-icons/io5";
-import { FilterBlock } from "./FilterBlock";
-import { Metric, MetricFilter } from "./Metric";
-import { LineSeparator } from "../../ui/LineSeparator";
-import { FloatingTrigger } from "../../ui/FloatingTrigger";
-import { MeasurementSelector } from "../MeasurementSelector";
+import { RxDragHandleDots2 } from "react-icons/rx";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { FloatingTooltip } from "../../ui/FloatingTooltip";
+import { FloatingTrigger } from "../../ui/FloatingTrigger";
+import { LineSeparator } from "../../ui/LineSeparator";
+import { MeasurementSelector } from "../MeasurementSelector";
+import { FilterBlock } from "./FilterBlock";
+import { Metric, MetricFilter } from "./Metric";
+import { MetricEvent, MetricSelector } from "./MetricSelector";
 
 interface MetricBlockProps {
   idx: number;
@@ -23,17 +22,27 @@ interface MetricBlockProps {
   onEventChange: (e: MetricEvent) => void;
   onDelete?: () => void;
   onAddFilter?: (f: MetricFilter) => void;
+  parentIsOpen?: boolean;
+  setParentIsOpen?: (b: boolean) => void;
+  defaultOpen?: boolean;
+  showMeasurement?: boolean;
 }
 
 export const MetricBlock: React.FC<MetricBlockProps> = ({
+  showMeasurement = true,
   idx,
   metric,
   onEventChange,
   onDelete,
   onAddFilter,
+  parentIsOpen,
+  setParentIsOpen,
+  defaultOpen,
 }) => {
   const [, setState] = useChartStateContext();
-  const [isOpen, setIsOpen] = useState(!metric);
+  const [_isOpen, _setIsOpen] = useState(defaultOpen);
+  const isOpen = setParentIsOpen ? parentIsOpen : _isOpen;
+  const setIsOpen = setParentIsOpen ? setParentIsOpen : _setIsOpen;
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
@@ -56,7 +65,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
         {/* Left side of the button for the label and drag handle*/}
         <div className="flex flex-row">
           {/* Square label for the dataset letter ID */}
-          <div className={"cursor-grab accent-hover rounded-md"}>
+          <div className={"rounded-md"}>
             <div
               className="text-primary-900 flex text-sm font-bold m-2 bg-secondary-signature-100 rounded-md items-center"
               style={{
@@ -69,7 +78,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             >
               {String.fromCharCode(idx + "A".charCodeAt(0))}
             </div>
-            <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" />
+            {/* <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" /> */}
           </div>
           {/* Main middle section for selecting events and units */}
           <div className={"flex flex-col w-full"}>
@@ -83,7 +92,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 {metric?.event.name || "Select event"}
               </button>
               {/* Only show filter option if an event has been chosen */}
-              {onAddFilter ? (
+              {onAddFilter && metric ? (
                 <FloatingTrigger
                   appearsOnHover
                   placement="top"
@@ -138,7 +147,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 />
               </div>
             ) : null}
-            <MeasurementSelector metric={metric} />
+            {showMeasurement ? <MeasurementSelector metric={metric} /> : null}
           </div>
         </div>
 

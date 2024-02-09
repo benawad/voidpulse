@@ -129,7 +129,7 @@ export const queryLineChartMetric = async ({
       return {
         ...x,
         id: v4(),
-        measurement: metric.type,
+        measurement: metric.type || MetricMeasurement.uniqueUsers,
         groupByTimeType: lineChartGroupByTimeType,
         eventLabel,
         data: {
@@ -148,7 +148,7 @@ export const queryLineChartMetric = async ({
       {
         id: v4(),
         eventLabel,
-        measurement: metric.type,
+        measurement: metric.type || MetricMeasurement.uniqueUsers,
         lineChartGroupByTimeType: lineChartGroupByTimeType,
         average_count: !data.length
           ? 0

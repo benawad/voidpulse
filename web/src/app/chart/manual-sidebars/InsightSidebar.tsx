@@ -1,21 +1,18 @@
-import { MetricMeasurement, ReportType } from "@voidpulse/api";
+import { MetricMeasurement } from "@voidpulse/api";
 import React, { useState } from "react";
-import { BsBarChart } from "react-icons/bs";
-import { FaPlus } from "react-icons/fa6";
-import { LiaChartAreaSolid } from "react-icons/lia";
-import { SlGraph } from "react-icons/sl";
-import { TiFlowSwitch } from "react-icons/ti";
-import { useChartStateContext } from "../../../providers/ChartStateProvider";
-import { LineSeparator } from "../ui/LineSeparator";
-import { genId } from "../utils/genId";
-import { BreakdownBlock } from "./metric-selector/BreakdownBlock";
-import { FilterBlock } from "./metric-selector/FilterBlock";
-import { Metric } from "./metric-selector/Metric";
-import { MetricBlock } from "./metric-selector/MetricBlock";
+import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { LineSeparator } from "../../ui/LineSeparator";
+import { genId } from "../../utils/genId";
+import { BreakdownBlock } from "../metric-selector/BreakdownBlock";
+import { FilterBlock } from "../metric-selector/FilterBlock";
+import { Metric } from "../metric-selector/Metric";
+import { MetricBlock } from "../metric-selector/MetricBlock";
+import { HeaderButton } from "./HeaderButton";
+import { PlusIcon } from "./PlusIcon";
 
-interface ManualChartOptionsProps {}
+interface InsightSidebarProps {}
 
-export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
+export const InsightSidebar: React.FC<InsightSidebarProps> = ({}) => {
   const [{ metrics, breakdowns, globalFilters, reportType }, setState] =
     useChartStateContext();
   const setMetrics = (newMetrics: Metric[]) => {
@@ -25,83 +22,22 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       visibleDataMap: null,
     }));
   };
-  const [addNewMetric, setAddNewMetric] = useState(false);
+  const [addNewMetric, setAddNewMetric] = useState(!metrics.length);
+  const [isMetricDropdownOpen, setIsMetricDropdownOpen] = useState(false);
   const [addNewBreakdown, setAddNewBreakdown] = useState(false);
   const [addNewGlobalFilter, setAddNewGlobalFilter] = useState(false);
 
-  // Top section with square icons
-  const reportTypeIconStyle = "w-8 h-8 rounded-md my-2 text-primary-400";
-  const reportTypeButtonStyle = `accent-hover py-1 rounded-md w-full m-1 flex items-center flex flex-col text-xs border border-primary-800`;
-  const reportTypes = [
-    {
-      name: "Insights",
-      icon: <SlGraph className={reportTypeIconStyle} />,
-      type: ReportType.insight,
-    },
-    {
-      name: "Funnels",
-      icon: <BsBarChart className={"-scale-x-100 " + reportTypeIconStyle} />,
-      type: ReportType.funnel,
-    },
-    {
-      name: "Retention",
-      icon: (
-        <LiaChartAreaSolid className={"-scale-x-100 " + reportTypeIconStyle} />
-      ),
-      type: ReportType.retention,
-    },
-    {
-      name: "Flow",
-      icon: <TiFlowSwitch className={reportTypeIconStyle} />,
-      type: ReportType.flow,
-    },
-  ];
-
-  // For the lower sections where you toggle data, filters, breakdowns
-  const inputOptionsStyle =
-    "accent-hover p-2 my-2 rounded-md flex items-center group justify-between text-primary-100 text-lg font-semibold";
-  const plusIcon = (
-    <div className="w-6 h-6 rounded-md mr-3">
-      <FaPlus
-        className="m-auto group-hover:fill-secondary-signature-100 h-full w-full"
-        style={{ padding: 5 }}
-        size={12}
-      />
-    </div>
-  );
-
   return (
     <>
-      {/* Choosing report type */}
-      <div className="flex flex-row w-full justify-between my-2">
-        {reportTypes.map((rt) => {
-          return (
-            <button
-              key={rt.name}
-              className={
-                reportTypeButtonStyle +
-                " " +
-                (rt.type === reportType ? "bg-primary-700" : "")
-              }
-              onClick={() => {
-                setState((prev) => ({ ...prev, reportType: rt.type }));
-              }}
-            >
-              {rt.icon}
-            </button>
-          );
-        })}
-      </div>
-
       {/* Choosing metrics */}
-      <div
-        className={inputOptionsStyle}
+      <HeaderButton
         onClick={() => {
           setAddNewMetric(true);
+          setIsMetricDropdownOpen(true);
         }}
       >
-        Data {plusIcon}
-      </div>
+        Data <PlusIcon />
+      </HeaderButton>
       {/* Display all chosen metrics  */}
       {metrics.map((m, idx) => (
         <MetricBlock
@@ -151,18 +87,17 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
           onDelete={() => {
             setAddNewMetric(false);
           }}
+          parentIsOpen={isMetricDropdownOpen}
+          setParentIsOpen={setIsMetricDropdownOpen}
           idx={metrics.length}
         />
       ) : null}
 
       {/* Choosing date range */}
       {/* Choosing filters */}
-      <button
-        onClick={() => setAddNewGlobalFilter(true)}
-        className={`${inputOptionsStyle} w-full`}
-      >
-        Filter {plusIcon}
-      </button>
+      <HeaderButton onClick={() => setAddNewGlobalFilter(true)}>
+        Filter <PlusIcon />
+      </HeaderButton>
       <div>
         {globalFilters.map((globalFilter, i) => {
           return (
@@ -215,12 +150,9 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       </div>
 
       {/* Choosing breakdown */}
-      <button
-        onClick={() => setAddNewBreakdown(true)}
-        className={`${inputOptionsStyle} w-full`}
-      >
-        Breakdown {plusIcon}
-      </button>
+      <HeaderButton onClick={() => setAddNewBreakdown(true)}>
+        Breakdown <PlusIcon />
+      </HeaderButton>
       {addNewBreakdown || breakdowns.length ? (
         <BreakdownBlock
           breakdown={breakdowns[0]}

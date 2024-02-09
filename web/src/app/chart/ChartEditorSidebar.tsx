@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MultiToggleButtonBar } from "../ui/MultiToggleButtonBar";
-import { ManualChartOptions } from "./ManualChartOptions";
+import { ManualChartOptions } from "./manual-sidebars/ManualChartOptions";
 import { AiChatInterface } from "./metric-selector/ai-chart-editor/AiChatInterface";
 
 interface ChartEditorSidebarProps {}
