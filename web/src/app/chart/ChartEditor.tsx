@@ -311,17 +311,11 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   </HintCallout>
                 ) : null}
                 <BarChart
-                  data={{
-                    labels: data.datas.map(
-                      (x) => "" + (x.breakdown ?? x.eventLabel)
-                    ),
-                    datasets: [
-                      {
-                        label: data.datas[0].eventLabel,
-                        data: data.datas.map((x) => x.value),
-                      },
-                    ],
-                  }}
+                  data={transformToBarChartData(
+                    data.datas,
+                    visibleDataMap,
+                    highlightedRow
+                  )}
                 />
               </div>
             ) : null}
