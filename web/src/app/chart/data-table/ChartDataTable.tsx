@@ -12,7 +12,7 @@ import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
 interface ChartDataTableProps {
   breakdownPropName?: string;
   datas: Extract<
-    RouterOutput["getInsight"]["datas"],
+    RouterOutput["getReport"]["datas"],
     { average_count: number }[]
   >;
   dateHeaders: DateHeader[];

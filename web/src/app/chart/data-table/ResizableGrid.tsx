@@ -26,7 +26,7 @@ interface ResizableGridProps {
   breakdownPropName?: string;
   columns: Column[];
   datas: Extract<
-    RouterOutput["getInsight"]["datas"],
+    RouterOutput["getReport"]["datas"],
     { average_count: number }[]
   >;
   scrollMargin: number;

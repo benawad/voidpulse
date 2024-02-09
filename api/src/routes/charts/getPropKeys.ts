@@ -26,13 +26,13 @@ export const getPropKeys = protectedProcedure
 
     let propDefs: Record<string, { type: DataType }> = {};
 
-    if (event) {
+    if (event && event.value !== ANY_EVENT_VALUE) {
       const resp = await clickhouse.query({
         query: `
 			select properties
 			from events
 			where
-      ${event.value !== ANY_EVENT_VALUE ? `name = {eventName:String}` : ""}
+      name = {eventName:String}
       and project_id = {projectId:UUID}
 			limit 3;
 		`,

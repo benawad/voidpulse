@@ -14,7 +14,7 @@ import {
   InputMetric,
   MetricFilter,
 } from "../../routes/charts/insight/eventFilterSchema";
-import { InsightData } from "../../routes/charts/insight/getInsight";
+import { InsightData } from "../../routes/charts/insight/getReport";
 import { getDateRange } from "../getDateRange";
 import { v4 } from "uuid";
 import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";

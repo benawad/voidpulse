@@ -9,7 +9,7 @@ import {
 import { metricToEventLabel } from "./metricToEventLabel";
 import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";
 
-type BreakdownData = {
+type BarData = {
   id: string;
   eventLabel: string;
   measurement: MetricMeasurement;
@@ -33,7 +33,7 @@ export const queryBarChartMetric = async ({
   timeRangeType: ChartTimeRangeType;
   breakdowns: MetricFilter[];
   metric: InputMetric;
-}): Promise<BreakdownData[]> => {
+}): Promise<BarData[]> => {
   const {
     breakdownBucketMinMaxQuery,
     breakdownSelect,

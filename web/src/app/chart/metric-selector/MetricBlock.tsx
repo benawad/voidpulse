@@ -137,6 +137,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 ref={refs.setFloating}
                 {...getFloatingProps()}
                 style={floatingStyles}
+                className="z-20"
               >
                 <MetricSelector
                   event={metric?.event}

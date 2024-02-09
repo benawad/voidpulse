@@ -8,13 +8,15 @@ import {
   ChartTimeRangeType,
   ChartType,
   LineChartGroupByTimeType,
+  ReportType,
 } from "../../../app-router-type";
 import { getDateHeaders } from "../../../utils/getDateHeaders";
 import { queryBarChartMetric } from "../../../utils/query-metric/queryBarChartMetric";
+import { queryRetention } from "../../../utils/query-metric/queryRetention";
 
 export type InsightData = { day: string; count: number };
 
-export const getInsight = protectedProcedure
+export const getReport = protectedProcedure
   .input(
     z.object({
       projectId: z.string(),
@@ -23,6 +25,7 @@ export const getInsight = protectedProcedure
       lineChartGroupByTimeType: z
         .nativeEnum(LineChartGroupByTimeType)
         .optional(),
+      reportType: z.nativeEnum(ReportType),
       chartType: z.nativeEnum(ChartType),
       timeRangeType: z.nativeEnum(ChartTimeRangeType),
       globalFilters: z.array(eventFilterSchema),
@@ -39,6 +42,7 @@ export const getInsight = protectedProcedure
         metrics,
         breakdowns,
         chartType,
+        reportType,
         timeRangeType,
         lineChartGroupByTimeType = LineChartGroupByTimeType.day,
         globalFilters,
@@ -54,8 +58,28 @@ export const getInsight = protectedProcedure
         to
       );
 
+      if (ReportType.retention === reportType) {
+        return {
+          reportType,
+          dateHeaders,
+          datas:
+            metrics.length !== 2
+              ? []
+              : await queryRetention({
+                  projectId,
+                  from,
+                  to,
+                  metrics,
+                  globalFilters,
+                  breakdowns,
+                  timeRangeType,
+                }),
+        };
+      }
+
       if (chartType !== ChartType.line) {
         return {
+          reportType,
           chartType,
           datas: (
             await Promise.all(
@@ -76,6 +100,7 @@ export const getInsight = protectedProcedure
       }
 
       return {
+        reportType,
         chartType,
         dateHeaders,
         datas: (

@@ -4,7 +4,7 @@ import { RouterOutput } from "./trpc";
 
 export const transformToLineChartData = (
   datas: Extract<
-    RouterOutput["getInsight"]["datas"],
+    RouterOutput["getReport"]["datas"],
     { average_count: number }[]
   >,
   dateHeader: DateHeader[],

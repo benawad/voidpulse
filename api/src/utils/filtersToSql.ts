@@ -12,12 +12,16 @@ export const filtersToSql = (
   filters: InputMetric["filters"][0][],
   paramStartingCount = 1
 ) => {
+  let needsPeopleJoin = false;
   let paramCount = paramStartingCount;
   const whereStrings: string[] = [];
   const paramMap: Record<string, any> = {};
   for (const filter of filters) {
     const propertiesName =
       filter.propOrigin === PropOrigin.event ? "properties" : "p.properties";
+    if (filter.propOrigin === PropOrigin.user) {
+      needsPeopleJoin = true;
+    }
     if (filter.dataType === DataType.number) {
       if (!filter.operation) {
         continue;
@@ -216,6 +220,7 @@ export const filtersToSql = (
   }
 
   return {
+    needsPeopleJoin,
     whereStrings,
     paramMap,
     paramCount,

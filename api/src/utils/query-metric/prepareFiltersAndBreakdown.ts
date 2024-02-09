@@ -31,20 +31,9 @@ export const prepareFiltersAndBreakdown = async ({
   globalFilters: MetricFilter[];
   breakdowns: MetricFilter[];
 }) => {
-  const { paramMap, whereStrings, paramCount } = filtersToSql(
-    metric.filters.filter((x) => x.propOrigin === PropOrigin.event),
+  const { paramMap, whereStrings, paramCount, needsPeopleJoin } = filtersToSql(
+    [...metric.filters, ...globalFilters],
     1
-  );
-  const {
-    paramMap: paramMap2,
-    whereStrings: userWhereStrings,
-    paramCount: paramCount2,
-  } = filtersToSql(
-    [
-      ...metric.filters.filter((x) => x.propOrigin === PropOrigin.user),
-      ...globalFilters,
-    ],
-    paramCount
   );
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
   const query_params: any = {
@@ -52,10 +41,9 @@ export const prepareFiltersAndBreakdown = async ({
     ...getDateRange(timeRangeType, from, to),
     eventName: metric.event.value,
     ...paramMap,
-    ...paramMap2,
   };
   const joinSection =
-    userWhereStrings.length ||
+    needsPeopleJoin ||
     (breakdowns.length && breakdowns[0].propOrigin === PropOrigin.user)
       ? `inner join people as p on e.distinct_id = p.distinct_id `
       : "";
@@ -69,11 +57,6 @@ export const prepareFiltersAndBreakdown = async ({
         : ``
     }
     ${whereStrings.length ? `AND ${whereStrings.join(whereCombiner)}` : ""}
-    ${
-      userWhereStrings.length
-        ? `AND ${userWhereStrings.join(whereCombiner)}`
-        : ""
-    }
     `;
   let breakdownSelect = "";
   let breakdownBucketMinMaxQuery = "";
@@ -88,10 +71,10 @@ export const prepareFiltersAndBreakdown = async ({
       [DataType.other]: ``,
     }[b.dataType];
     if (jsonExtractor) {
-      query_params[`p${paramCount2 + 1}`] = b.propName;
+      query_params[`p${paramCount + 1}`] = b.propName;
       breakdownSelect = `${jsonExtractor}(${
         b.propOrigin === PropOrigin.user ? "p" : "e"
-      }.properties, {p${paramCount2 + 1}:String})`;
+      }.properties, {p${paramCount + 1}:String})`;
     }
     if (b.dataType === DataType.number) {
       const query = `

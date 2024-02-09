@@ -3,16 +3,16 @@ import fs from "fs";
 import axios from "axios";
 import { clickhouse } from "../clickhouse";
 import readline from "readline";
-import { v4 } from "uuid";
+import { v4, v5 } from "uuid";
 import { db } from "../db";
 import { projects } from "../schema/projects";
 import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
 
 const apiSecret = process.env.MIXPANEL_API_SECRET as string;
 const params = new URLSearchParams({
-  from_date: "2024-01-01",
-  to_date: "2024-01-23",
-  event: `["Mood"]`,
+  from_date: "2023-12-02",
+  to_date: "2023-12-02",
+  event: `["PlantUnlocked"]`,
 });
 const headers = {
   Authorization: `Basic ${Buffer.from(`${apiSecret}:`).toString("base64")}`,
@@ -71,7 +71,7 @@ const processLines = async (data: string[], project_id: string) => {
       ...x,
       properties: JSON.stringify(x.properties),
       project_id,
-      insert_id: v4(),
+      insert_id: v5(x.properties["$insert_id"], project_id),
       ingested_at: dateToClickhouseDateString(new Date()),
       name: x.event,
       distinct_id: x.properties.distinct_id,

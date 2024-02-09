@@ -89,19 +89,25 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       },
     });
 
-  const { data, error } = trpc.getInsight.useQuery(
+  const { data, error } = trpc.getReport.useQuery(
     {
       metrics,
       breakdowns,
       globalFilters,
       timeRangeType,
+      reportType,
       chartType,
       lineChartGroupByTimeType: lineChartGroupByTimeType || undefined,
       from: from ? dateToClickhouseDateString(from) : undefined,
       to: to ? dateToClickhouseDateString(to) : undefined,
       projectId: projectId,
     },
-    { enabled: !!metrics.length }
+    {
+      enabled:
+        reportType === ReportType.retention
+          ? metrics.length === 2
+          : !!metrics.length,
+    }
   );
   const { board } = useFetchProjectBoards();
   const [highlightedRow, setHighlightedRow] = React.useState<string | null>(

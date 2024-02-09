@@ -9,7 +9,7 @@ import {
   createBoard,
   deleteBoard,
 } from "./routes/boards/board-crud";
-import { getInsight } from "./routes/charts/insight/getInsight";
+import { getReport } from "./routes/charts/insight/getReport";
 import { login } from "./routes/auth/login";
 import { __prod__ } from "./constants/prod";
 import { register } from "./routes/auth/register";
@@ -32,7 +32,7 @@ export const appRouter = t.router({
   updateBoard,
   createBoard,
   deleteBoard,
-  getInsight,
+  getReport,
   getPropValues,
   getPropKeys,
   createChart,
