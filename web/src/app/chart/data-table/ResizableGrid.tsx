@@ -141,7 +141,7 @@ const ResizableGrid: FC<ResizableGridProps> = ({
                 key={row.id}
                 className="border-t border-primary-800"
                 onMouseOver={() => {
-                  setHighlightedRow(row.id);
+                  setHighlightedRow(row.original.id);
                 }}
                 style={{
                   display: "flex",
@@ -232,7 +232,7 @@ const ResizableGrid: FC<ResizableGridProps> = ({
                     >
                       <div
                         className={`flex text-sm ${
-                          rowIndex.toString() === highlightedRow
+                          datas[rowIndex].id === highlightedRow
                             ? "bg-primary-800 text-primary-100"
                             : "bg-primary-900 text-primary-200"
                         } px-4 h-full items-center w-full font-mono`}

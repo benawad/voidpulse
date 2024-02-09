@@ -8,7 +8,8 @@ export const transformToLineChartData = (
     { average_count: number }[]
   >,
   dateHeader: DateHeader[],
-  visibleDataMap?: Record<string, boolean> | null
+  visibleDataMap?: Record<string, boolean> | null,
+  highlightedId?: string | null
 ) => {
   const fullDates = dateHeader.map((d) => d.fullLabel);
   return {
@@ -24,6 +25,7 @@ export const transformToLineChartData = (
         const col = colorOrder[i % colorOrder.length];
         return {
           ...lineChartStyle,
+          borderWidth: data.id === highlightedId ? 4 : 2,
           borderColor: col,
           pointHoverBackgroundColor: col,
           label: data.eventLabel,

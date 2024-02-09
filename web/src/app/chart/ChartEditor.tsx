@@ -93,6 +93,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     { enabled: !!metrics.length }
   );
   const { board } = useFetchProjectBoards();
+  const [highlightedRow, setHighlightedRow] = React.useState<string | null>(
+    null
+  );
 
   return (
     <div>
@@ -234,7 +237,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 data={transformToLineChartData(
                   data.datas,
                   data.dateHeaders,
-                  visibleDataMap
+                  visibleDataMap,
+                  highlightedRow
                 )}
               />
             ) : null}
@@ -263,6 +267,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               dateHeaders={data.dateHeaders}
               breakdownPropName={breakdowns[0]?.propName}
               datas={data.datas}
+              highlightedRow={highlightedRow}
+              setHighlightedRow={setHighlightedRow}
             />
           ) : null}
         </div>

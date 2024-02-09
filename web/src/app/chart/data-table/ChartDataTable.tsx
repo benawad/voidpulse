@@ -11,8 +11,13 @@ import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
 
 interface ChartDataTableProps {
   breakdownPropName?: string;
-  datas: RouterOutput["getInsight"]["datas"];
+  datas: Extract<
+    RouterOutput["getInsight"]["datas"],
+    { average_count: number }[]
+  >;
   dateHeaders: DateHeader[];
+  highlightedRow?: string | null;
+  setHighlightedRow: (rowId: string | null) => void;
 }
 
 const COLUMN_WIDTH = 100;
@@ -21,12 +26,12 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
   datas,
   breakdownPropName,
   dateHeaders,
+  highlightedRow,
+  setHighlightedRow,
 }) => {
   const divRef = React.useRef<HTMLDivElement | null>(null);
   const scrollMarginRef = React.useRef(0);
-  const [highlightedRow, setHighlightedRow] = React.useState<string | null>(
-    null
-  );
+
   useEffect(() => {
     if (divRef.current) {
       scrollMarginRef.current = divRef.current.getBoundingClientRect().top;
@@ -138,7 +143,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                       }}
                     >
                       <div
-                        className={`select-none w-full justify-end flex text-primary-600 border-primary-700/50 font-normal text-sm bg-primary-900 px-2 py-2`}
+                        className={`select-none w-full justify-end flex text-primary-600 border-primary-700/50 font-normal font-mono text-sm bg-primary-900 px-2 py-2`}
                       >
                         {flexRender(
                           header.column.columnDef.header,
@@ -183,6 +188,9 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                     }px)`, //this should always be a `style` as it changes on scroll
                     width: "100%",
                   }}
+                  onMouseOver={() => {
+                    setHighlightedRow(row.original.id);
+                  }}
                 >
                   {virtualPaddingLeft ? (
                     //fake empty column to the left for virtualization scroll padding
@@ -195,12 +203,8 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                     return (
                       <td
                         key={cell.id}
-                        onMouseOver={() => {
-                          console.log("highlightedRow", row.id);
-                          setHighlightedRow(row.id);
-                        }}
                         className={`${
-                          row.id === highlightedRow
+                          row.original.id === highlightedRow
                             ? "bg-primary-800 text-primary-100"
                             : "bg-primary-900 text-primary-200"
                         } px-2 py-2 h-full flex justify-end items-center font-mono`}
