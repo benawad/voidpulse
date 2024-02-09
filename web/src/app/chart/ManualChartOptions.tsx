@@ -166,7 +166,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       <div>
         {globalFilters.map((globalFilter, i) => {
           return (
-            <React.Fragment key={globalFilter.id}>
+            <div key={globalFilter.id} className="standard card p-2">
               <FilterBlock
                 key={i}
                 onDelete={() => {
@@ -187,12 +187,11 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
                   }));
                 }}
               />
-            </React.Fragment>
+            </div>
           );
         })}
         {addNewGlobalFilter ? (
-          <>
-            <LineSeparator />
+          <div className="standard card p-2">
             <FilterBlock
               filter={{}}
               onFilterDefined={(filter) => {
@@ -211,7 +210,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
                 setAddNewGlobalFilter(false);
               }}
             />
-          </>
+          </div>
         ) : null}
       </div>
 

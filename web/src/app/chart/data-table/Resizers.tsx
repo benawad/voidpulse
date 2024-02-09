@@ -31,13 +31,7 @@ export const Resizers: React.FC<ResizerProps> = ({ columnWidths, table }) => {
     return (
       <div
         key={index}
-        className={`${
-          header.column.getIsResizing()
-            ? "bg-secondary-signature-100"
-            : index === columnWidths.length - 1
-            ? "bg-primary-600"
-            : "hover:bg-primary-600"
-        }`}
+        className="px-2 group"
         style={{
           position: "absolute",
           top: 0,
@@ -48,14 +42,26 @@ export const Resizers: React.FC<ResizerProps> = ({ columnWidths, table }) => {
             columnWidths[index] -
             1.5, // Adjust left position
           height: "100%",
-          width: "3px",
+
+          width: "17px",
           cursor: "col-resize",
           zIndex: 1,
         }}
         onDoubleClick={() => header.column.resetSize()}
         onTouchStart={header.getResizeHandler()}
         onMouseDown={header.getResizeHandler()}
-      />
+      >
+        {/* Color of the bar inside the touch target shell */}
+        <div
+          className={`h-full w-full ${
+            header.column.getIsResizing()
+              ? "bg-secondary-signature-100"
+              : index === columnWidths.length - 1
+              ? "bg-primary-700 group-hover:bg-secondary-signature-100"
+              : "bg-primary-700 group-hover:bg-secondary-signature-100"
+          }`}
+        ></div>
+      </div>
     );
   });
 };

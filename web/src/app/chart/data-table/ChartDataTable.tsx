@@ -24,6 +24,9 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
 }) => {
   const divRef = React.useRef<HTMLDivElement | null>(null);
   const scrollMarginRef = React.useRef(0);
+  const [highlightedRow, setHighlightedRow] = React.useState<string | null>(
+    null
+  );
   useEffect(() => {
     if (divRef.current) {
       scrollMarginRef.current = divRef.current.getBoundingClientRect().top;
@@ -103,6 +106,8 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
             columns={leftHeaders}
             breakdownPropName={breakdownPropName}
             datas={datas}
+            highlightedRow={highlightedRow}
+            setHighlightedRow={setHighlightedRow}
           />
         </div>
         <table style={{ display: "grid" }}>
@@ -133,7 +138,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                       }}
                     >
                       <div
-                        className={`select-none w-full justify-end flex text-primary-500 border-primary-700/50 bg-primary-900 px-2 py-2`}
+                        className={`select-none w-full justify-end flex text-primary-600 border-primary-700/50 font-normal text-sm bg-primary-900 px-2 py-2`}
                       >
                         {flexRender(
                           header.column.columnDef.header,
@@ -169,6 +174,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
               return (
                 <tr
                   key={row.id}
+                  className="border-t border-primary-800 text-sm text-primary-200"
                   style={{
                     display: "flex",
                     position: "absolute",
@@ -189,7 +195,15 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                     return (
                       <td
                         key={cell.id}
-                        className={`bg-primary-900 px-2 py-2 h-full flex justify-end items-center`}
+                        onMouseOver={() => {
+                          console.log("highlightedRow", row.id);
+                          setHighlightedRow(row.id);
+                        }}
+                        className={`${
+                          row.id === highlightedRow
+                            ? "bg-primary-800 text-primary-100"
+                            : "bg-primary-900 text-primary-200"
+                        } px-2 py-2 h-full flex justify-end items-center font-mono`}
                         style={{
                           height: ROW_HEIGHT,
                           display: "flex",

@@ -143,9 +143,9 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
                     {dataTypeToIconMap[item.type]}
                     {item.propOrigin === PropOrigin.user ? (
                       <>
-                        <div className="text-sm opacity-30">User </div>
+                        <div className="text-sm opacity-70">User </div>
                         <RiArrowDropRightFill
-                          className="opacity-40"
+                          className="opacity-70"
                           size={24}
                         />
                       </>

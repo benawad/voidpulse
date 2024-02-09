@@ -25,8 +25,13 @@ interface DataItem {
 interface ResizableGridProps {
   breakdownPropName?: string;
   columns: Column[];
-  datas: RouterOutput["getInsight"]["datas"];
+  datas: Extract<
+    RouterOutput["getInsight"]["datas"],
+    { average_count: number }[]
+  >;
   scrollMargin: number;
+  highlightedRow?: string | null;
+  setHighlightedRow: (rowId: string | null) => void;
 }
 
 export const ROW_HEIGHT = 35;
@@ -36,6 +41,8 @@ const ResizableGrid: FC<ResizableGridProps> = ({
   datas,
   breakdownPropName,
   scrollMargin,
+  highlightedRow,
+  setHighlightedRow,
 }) => {
   const table = useReactTable({
     data: datas,
@@ -77,7 +84,7 @@ const ResizableGrid: FC<ResizableGridProps> = ({
   const [{ visibleDataMap }, setState] = useChartStateContext();
 
   return (
-    <div>
+    <div className="">
       <table
         style={{
           ...columnSizeVars,
@@ -105,7 +112,7 @@ const ResizableGrid: FC<ResizableGridProps> = ({
                     className="relative"
                   >
                     <div
-                      className={`select-none w-full text-primary-500 border-primary-700 bg-primary-900 px-2 py-2 `}
+                      className={`select-none w-full text-primary-600 text-sm font-mono font-normal bg-primary-900 px-4 py-2 `}
                     >
                       <div className="text-start truncate">
                         {flexRender(
@@ -132,6 +139,10 @@ const ResizableGrid: FC<ResizableGridProps> = ({
             return (
               <tr
                 key={row.id}
+                className="border-t border-primary-800"
+                onMouseOver={() => {
+                  setHighlightedRow(row.id);
+                }}
                 style={{
                   display: "flex",
                   position: "absolute",
@@ -201,7 +212,7 @@ const ResizableGrid: FC<ResizableGridProps> = ({
                           )}
                         </button>
                       );
-                      text = datas[rowIndex].breakdown;
+                      text = datas[rowIndex].breakdown || "None";
                     } else {
                       text = datas[rowIndex].average_count.toLocaleString();
                     }
@@ -216,10 +227,15 @@ const ResizableGrid: FC<ResizableGridProps> = ({
                         height: ROW_HEIGHT,
                         display: "flex",
                         width: `calc(var(--col-${cell.column.id}-size) * 1px)`,
+                        padding: 0,
                       }}
                     >
                       <div
-                        className={`flex text-primary-500 border-primary-700 bg-primary-900 px-1 h-full items-center w-full`}
+                        className={`flex text-sm ${
+                          rowIndex.toString() === highlightedRow
+                            ? "bg-primary-800 text-primary-100"
+                            : "bg-primary-900 text-primary-200"
+                        } px-4 h-full items-center w-full font-mono`}
                       >
                         {checkbox}
                         <span className="truncate">{text}</span>
