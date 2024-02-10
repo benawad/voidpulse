@@ -16,6 +16,10 @@ interface ChartDataTableProps {
   setHighlightedRow: (rowId: string | null) => void;
   stickyColumns: ColumnDef<any>[];
   mainColumns: ColumnDef<any>[];
+  setExpandedDataRows?: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
+  expandedDataRows?: Record<string, boolean>;
 }
 
 const COLUMN_WIDTH = 100;
@@ -26,6 +30,8 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
   setHighlightedRow,
   mainColumns,
   datas,
+  setExpandedDataRows,
+  expandedDataRows,
 }) => {
   const divRef = React.useRef<HTMLDivElement | null>(null);
   const scrollMarginRef = React.useRef(0);
@@ -79,6 +85,8 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
             datas={datas}
             highlightedRow={highlightedRow}
             setHighlightedRow={setHighlightedRow}
+            setExpandedDataRows={setExpandedDataRows}
+            expandedDataRows={expandedDataRows}
           />
         </div>
         <table style={{ display: "grid" }}>
