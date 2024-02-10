@@ -6,7 +6,7 @@ import {
 } from "@voidpulse/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
 import { Button } from "../ui/Button";
@@ -43,6 +43,22 @@ type RetRow = Extract<
   RouterOutput["getReport"]["datas"][0],
   { averageRetentionByDay: any }
 >;
+type RetSubRow = {
+  isSubrow: boolean;
+  retentionByDay: Record<
+    number,
+    {
+      cohort_date: string;
+      days_after_cohort: number;
+      retained_users: number;
+      cohort_size: number;
+      retained_users_percent: number;
+      breakdown?: any;
+    }
+  >;
+  cohortSize: number;
+  dt: string;
+};
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const [
@@ -66,6 +82,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const router = useRouter();
   const utils = trpc.useUtils();
   const { projectId, boardId } = useProjectBoardContext();
+  const [expandedDataRows, setExpandedDataRows] = useState<
+    Record<string, boolean>
+  >({});
   const { mutateAsync: createChart, isPending: pendingCreateChart } =
     trpc.createChart.useMutation({
       onSuccess: (data) => {
@@ -117,6 +136,34 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           : !!metrics.length,
     }
   );
+  const retData = useMemo(() => {
+    if (data?.reportType !== ReportType.retention) {
+      return [];
+    }
+
+    if (Object.keys(expandedDataRows).length === 0) {
+      return data.datas;
+    }
+
+    const retData = [] as Array<RetRow | RetSubRow>;
+    for (const d of data.datas) {
+      retData.push(d);
+      if (!expandedDataRows[d.id]) {
+        continue;
+      }
+      for (const [dt, { cohortSize, retentionByDay }] of Object.entries(
+        d.data
+      )) {
+        retData.push({
+          dt,
+          isSubrow: true,
+          cohortSize,
+          retentionByDay,
+        });
+      }
+    }
+    return retData;
+  }, [data, expandedDataRows]);
   const { board } = useFetchProjectBoards();
   const [highlightedRow, setHighlightedRow] = React.useState<string | null>(
     null
@@ -381,42 +428,54 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           {/* Additional data at the bottom */}
           {data?.datas.length && data?.reportType === ReportType.retention ? (
             <ChartDataTable
-              datas={data.datas}
+              key={retentionNumFormat}
+              datas={retData}
               highlightedRow={highlightedRow}
               setHighlightedRow={setHighlightedRow}
+              expandedDataRows={expandedDataRows}
+              setExpandedDataRows={setExpandedDataRows}
               stickyColumns={[
                 {
                   id: "a",
-                  header: "Date",
+                  header: breakdowns[0]?.propName || "Date",
                   size: 200,
-                  accessorFn: (row: any) => row.eventLabel,
+                  accessorFn: (row: any) =>
+                    row.isSubrow
+                      ? row.dt
+                      : breakdowns[0]?.propName
+                      ? row.breakdown
+                      : row.eventLabel,
+                  meta: {
+                    expandable: true,
+                    checkbox: true,
+                  },
                 },
-                ...(breakdowns[0]?.propName
-                  ? [
-                      {
-                        id: "b",
-                        header: breakdowns[0]?.propName,
-                        size: 200,
-                        accessorFn: (row: RetRow) => row.breakdown,
-                        meta: {
-                          checkbox: true,
-                        },
-                      },
-                    ]
-                  : []),
                 {
                   id: "c",
                   header: "Total profiles",
                   size: 200,
-                  accessorFn: (row: RetRow) => row.cohortSize.toLocaleString(),
+                  accessorFn: (row: RetRow | RetSubRow) =>
+                    row.cohortSize.toLocaleString(),
                 },
               ]}
               mainColumns={
                 data.retentionHeaders.map((retHeader, i) => {
                   return {
-                    accessorFn: (row: RetRow) => {
+                    accessorFn: (row: RetRow | RetSubRow) => {
+                      if ("isSubrow" in row) {
+                        if (
+                          retentionNumFormat === RetentionNumFormat.rawCount
+                        ) {
+                          return row.retentionByDay[i]?.retained_users || 0;
+                        } else {
+                          return (
+                            (row.retentionByDay[i]?.retained_users_percent ||
+                              0) + "%"
+                          );
+                        }
+                      }
                       if (retentionNumFormat === RetentionNumFormat.rawCount) {
-                        return row.averageRetentionByDay[i]?.avgRetained;
+                        return row.averageRetentionByDay[i]?.avgRetained || 0;
                       } else {
                         return (
                           (row.averageRetentionByDay[i]?.avgRetainedPercent ||

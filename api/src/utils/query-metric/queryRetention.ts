@@ -51,7 +51,13 @@ interface RetentionBreakdownGroup {
     number,
     { avgRetained: number; avgRetainedPercent: number }
   >;
-  data: Record<string, Record<number, RetentionEntry>>;
+  data: Record<
+    string,
+    {
+      cohortSize: number;
+      retentionByDay: Record<number, RetentionEntry>;
+    }
+  >;
 }
 
 export const queryRetention = async ({
@@ -162,7 +168,7 @@ export const queryRetention = async ({
     toInt32(days_after_cohort) AS days_after_cohort,
     toInt32(retained_users) AS retained_users,
     toInt32(cohort_size) AS cohort_size,
-    toFloat64(retained_users) / cohort_size * 100 AS retained_users_percent
+    round(toFloat64(retained_users) / cohort_size * 100, 2) AS retained_users_percent
   FROM retention_counts
   ORDER BY cohort_date${
     breakdownSelect ? `, breakdown` : ``
@@ -206,10 +212,15 @@ export const queryRetention = async ({
     }
 
     if (!breakdownGroups[breakdown].data[cohort_date]) {
-      breakdownGroups[breakdown].data[cohort_date] = {};
+      breakdownGroups[breakdown].data[cohort_date] = {
+        cohortSize: cohort_size,
+        retentionByDay: {},
+      };
     }
 
-    breakdownGroups[breakdown].data[cohort_date][days_after_cohort] = item;
+    breakdownGroups[breakdown].data[cohort_date].retentionByDay[
+      days_after_cohort
+    ] = item;
   });
 
   // Then, compute average retention for each day within each breakdown
@@ -221,20 +232,22 @@ export const queryRetention = async ({
     > = {};
 
     Object.keys(breakdownGroup.data).forEach((cohortDate) => {
-      Object.values(breakdownGroup.data[cohortDate]).forEach((entry) => {
-        const { days_after_cohort, retained_users, cohort_size } = entry;
-        if (!averageRetention[days_after_cohort]) {
-          averageRetention[days_after_cohort] = {
-            totalRetained: 0,
-            cohortCount: 0,
-            cohortSizeSum: 0,
-          };
-        }
+      Object.values(breakdownGroup.data[cohortDate].retentionByDay).forEach(
+        (entry) => {
+          const { days_after_cohort, retained_users, cohort_size } = entry;
+          if (!averageRetention[days_after_cohort]) {
+            averageRetention[days_after_cohort] = {
+              totalRetained: 0,
+              cohortCount: 0,
+              cohortSizeSum: 0,
+            };
+          }
 
-        averageRetention[days_after_cohort].totalRetained += retained_users;
-        averageRetention[days_after_cohort].cohortCount += 1;
-        averageRetention[days_after_cohort].cohortSizeSum += cohort_size;
-      });
+          averageRetention[days_after_cohort].totalRetained += retained_users;
+          averageRetention[days_after_cohort].cohortCount += 1;
+          averageRetention[days_after_cohort].cohortSizeSum += cohort_size;
+        }
+      );
     });
 
     // Compute the average retention for each day

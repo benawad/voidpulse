@@ -6,7 +6,11 @@ import {
 } from "@tanstack/react-table";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import React, { FC } from "react";
-import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+import {
+  MdCheckBox,
+  MdCheckBoxOutlineBlank,
+  MdChevronRight,
+} from "react-icons/md";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { colorOrder } from "../../ui/charts/ChartStyle";
 import { Resizers } from "./Resizers";
@@ -21,6 +25,10 @@ interface ResizableGridProps {
   scrollMargin: number;
   highlightedRow?: string | null;
   setHighlightedRow: (rowId: string | null) => void;
+  setExpandedDataRows?: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
+  expandedDataRows?: Record<string, boolean>;
 }
 
 export const ROW_HEIGHT = 35;
@@ -31,6 +39,8 @@ const ResizableGrid: FC<ResizableGridProps> = ({
   scrollMargin,
   highlightedRow,
   setHighlightedRow,
+  setExpandedDataRows,
+  expandedDataRows,
 }) => {
   const table = useReactTable({
     data: datas,
@@ -63,7 +73,6 @@ const ResizableGrid: FC<ResizableGridProps> = ({
     scrollMargin,
   });
   const [{ visibleDataMap }, setState] = useChartStateContext();
-
   return (
     <div className="">
       <table
@@ -137,7 +146,38 @@ const ResizableGrid: FC<ResizableGridProps> = ({
                 {row.getVisibleCells().map((cell, columnIndex) => {
                   const rowIndex = cell.row.index;
                   let checkbox = null;
-                  if ((cell.column.columnDef.meta as any)?.checkbox) {
+                  let chevron = null;
+                  if (
+                    (cell.column.columnDef.meta as any)?.expandable &&
+                    !row.original.isSubrow
+                  ) {
+                    chevron = (
+                      <button
+                        onClick={() => {
+                          if (setExpandedDataRows) {
+                            setExpandedDataRows((prev) => ({
+                              ...prev,
+                              [row.original.id]: !prev[row.original.id],
+                            }));
+                          }
+                        }}
+                      >
+                        <MdChevronRight
+                          color="#fff"
+                          size={20}
+                          style={{
+                            transform: expandedDataRows?.[row.original.id]
+                              ? "rotate(90deg)"
+                              : "rotate(0deg)",
+                          }}
+                        />
+                      </button>
+                    );
+                  }
+                  if (
+                    (cell.column.columnDef.meta as any)?.checkbox &&
+                    !row.original.isSubrow
+                  ) {
                     const active = !visibleDataMap
                       ? rowIndex < 10
                       : !!visibleDataMap[row.original.id];
@@ -206,6 +246,7 @@ const ResizableGrid: FC<ResizableGridProps> = ({
                         } px-4 h-full items-center w-full font-mono`}
                       >
                         {checkbox}
+                        {chevron}
                         <span className="truncate">
                           {flexRender(
                             cell.column.columnDef.cell,
