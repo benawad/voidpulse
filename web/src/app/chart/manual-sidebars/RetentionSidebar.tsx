@@ -9,6 +9,8 @@ import { MetricBlock } from "../metric-selector/MetricBlock";
 import { HeaderButton } from "./HeaderButton";
 import { PlusIcon } from "./PlusIcon";
 import { SidebarHeader } from "./SidebarHeader";
+import { FloatingTrigger } from "../../ui/FloatingTrigger";
+import { FloatingTooltip } from "../../ui/FloatingTooltip";
 
 interface InsightSidebarProps {}
 
@@ -40,9 +42,9 @@ export const RetentionSidebar: React.FC<InsightSidebarProps> = ({}) => {
   return (
     <>
       {/* Choosing metrics */}
-      <HeaderButton>
+      <HeaderButton disableHover>
         {/* Uniquely has no plus button, so needs extra styling to match size */}
-        <div className="py-1">Retention </div>
+        <div className="py-1">Initial & returning criteria</div>
       </HeaderButton>
       {/* Display all chosen metrics  */}
       {localMetrics.map((m, idx) => (

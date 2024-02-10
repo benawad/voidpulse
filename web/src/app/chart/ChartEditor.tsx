@@ -35,6 +35,7 @@ import { BarChart } from "../ui/charts/BarChart";
 import { HintCallout } from "../ui/HintCallout";
 import { transformToBarChartData } from "../utils/transformToBarChartData";
 import { transformRetentionToLineChartData } from "../utils/transformRetentionToLineChartData";
+import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -306,6 +307,12 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             <ChartDateRangePicker />
 
             {/* CHART DISPLAYS HERE */}
+            {data === null || !data?.datas.length ? (
+              <NoDataToDisplayVisual />
+            ) : null}
+            {!data?.datas.length ? (
+              <div>We couldn't find any data for this search</div>
+            ) : null}
             {data?.reportType === ReportType.retention && data.datas.length ? (
               <LineChart
                 disableAnimations

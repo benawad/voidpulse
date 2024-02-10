@@ -5,11 +5,13 @@ export const HeaderButton: Kids<
   React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
-  >
-> = ({ children, className = "", ...props }) => {
+  > & { disableHover?: boolean }
+> = ({ children, className = "", disableHover = false, ...props }) => {
   return (
     <button
-      className={`accent-hover w-full p-2 my-2 rounded-md flex items-center group justify-between text-primary-300 text-xs mono-body ${className}`}
+      className={`${
+        disableHover ? "cursor-default" : "accent-hover"
+      } w-full p-2 my-2 rounded-md flex items-center group justify-between text-primary-300 text-xs mono-body ${className}`}
       {...props}
     >
       {children}
