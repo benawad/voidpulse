@@ -1,4 +1,5 @@
 import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -8,27 +9,15 @@ import React, { FC } from "react";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { colorOrder } from "../../ui/charts/ChartStyle";
-import { RouterOutput } from "../../utils/trpc";
 import { Resizers } from "./Resizers";
-import { genId } from "../../utils/genId";
-
-interface Column {
-  fn: (row: any) => any;
-  title: string;
-  initialWidth: number;
-}
 
 interface DataItem {
   [key: string]: any; // Adjust the type according to your data structure
 }
 
 interface ResizableGridProps {
-  breakdownPropName?: string;
-  columns: Column[];
-  datas: Extract<
-    RouterOutput["getReport"]["datas"],
-    { average_count: number }[]
-  >;
+  columns: ColumnDef<any>[];
+  datas: any;
   scrollMargin: number;
   highlightedRow?: string | null;
   setHighlightedRow: (rowId: string | null) => void;
@@ -39,7 +28,6 @@ export const ROW_HEIGHT = 35;
 const ResizableGrid: FC<ResizableGridProps> = ({
   columns,
   datas,
-  breakdownPropName,
   scrollMargin,
   highlightedRow,
   setHighlightedRow,
@@ -49,14 +37,7 @@ const ResizableGrid: FC<ResizableGridProps> = ({
     defaultColumn: {
       minSize: 60,
     },
-    columns: columns.map((x, i) => {
-      return {
-        id: ["a", "b", "c"][i],
-        accessorFn: x.fn,
-        header: x.title,
-        size: x.initialWidth,
-      };
-    }),
+    columns,
     getCoreRowModel: getCoreRowModel(),
     columnResizeMode: "onChange",
   });
@@ -155,69 +136,56 @@ const ResizableGrid: FC<ResizableGridProps> = ({
               >
                 {row.getVisibleCells().map((cell, columnIndex) => {
                   const rowIndex = cell.row.index;
-                  let text = columns[columnIndex].title;
                   let checkbox = null;
-                  if (columnIndex === 0) {
-                    text = datas[rowIndex].eventLabel;
-                  } else if (columnIndex === 1) {
-                    if (breakdownPropName) {
-                      const active = !visibleDataMap
-                        ? rowIndex < 10
-                        : !!visibleDataMap[datas[rowIndex].id];
-                      checkbox = (
-                        <button
-                          onClick={() => {
-                            const { id } = datas[rowIndex];
-                            if (!visibleDataMap) {
-                              setState((prev) => {
-                                const newVisibleDataMap: Record<
-                                  string,
-                                  boolean
-                                > = {};
-                                for (
-                                  let i = 0;
-                                  i < Math.min(10, datas.length);
-                                  i++
-                                ) {
-                                  newVisibleDataMap[datas[i].id] = true;
-                                }
-                                newVisibleDataMap[id] = !active;
-                                return {
-                                  ...prev,
-                                  visibleDataMap: newVisibleDataMap,
-                                };
-                              });
-                            } else {
-                              setState((prev) => ({
+                  if ((cell.column.columnDef.meta as any)?.checkbox) {
+                    const active = !visibleDataMap
+                      ? rowIndex < 10
+                      : !!visibleDataMap[row.original.id];
+                    checkbox = (
+                      <button
+                        onClick={() => {
+                          if (!visibleDataMap) {
+                            setState((prev) => {
+                              const newVisibleDataMap: Record<string, boolean> =
+                                {};
+                              for (
+                                let i = 0;
+                                i < Math.min(10, datas.length);
+                                i++
+                              ) {
+                                newVisibleDataMap[datas[i].id] = true;
+                              }
+                              newVisibleDataMap[row.original.id] = !active;
+                              return {
                                 ...prev,
-                                visibleDataMap: {
-                                  ...prev.visibleDataMap,
-                                  [id]: !active,
-                                },
-                              }));
-                            }
-                          }}
-                          className="mr-2"
-                        >
-                          {active ? (
-                            <MdCheckBox
-                              size={20}
-                              fill={colorOrder[rowIndex % colorOrder.length]}
-                            />
-                          ) : (
-                            <MdCheckBoxOutlineBlank
-                              size={20}
-                              fill={colorOrder[rowIndex % colorOrder.length]}
-                            />
-                          )}
-                        </button>
-                      );
-                      text = datas[rowIndex].breakdown || "None";
-                    } else {
-                      text = datas[rowIndex].average_count.toLocaleString();
-                    }
-                  } else {
-                    text = datas[rowIndex].average_count.toLocaleString();
+                                visibleDataMap: newVisibleDataMap,
+                              };
+                            });
+                          } else {
+                            setState((prev) => ({
+                              ...prev,
+                              visibleDataMap: {
+                                ...prev.visibleDataMap,
+                                [row.original.id]: !active,
+                              },
+                            }));
+                          }
+                        }}
+                        className="mr-2"
+                      >
+                        {active ? (
+                          <MdCheckBox
+                            size={20}
+                            fill={colorOrder[rowIndex % colorOrder.length]}
+                          />
+                        ) : (
+                          <MdCheckBoxOutlineBlank
+                            size={20}
+                            fill={colorOrder[rowIndex % colorOrder.length]}
+                          />
+                        )}
+                      </button>
+                    );
                   }
 
                   return (
@@ -238,7 +206,12 @@ const ResizableGrid: FC<ResizableGridProps> = ({
                         } px-4 h-full items-center w-full font-mono`}
                       >
                         {checkbox}
-                        <span className="truncate">{text}</span>
+                        <span className="truncate">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </span>
                       </div>
                     </td>
                   );

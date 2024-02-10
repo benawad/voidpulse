@@ -42,10 +42,11 @@ interface RetentionEntry {
   retained_users_percent: number;
 }
 
-interface BreakdownGroup {
+interface RetentionBreakdownGroup {
   id: string;
   eventLabel: string;
   breakdown?: string;
+  cohortSize: number;
   averageRetentionByDay: Record<
     number,
     { avgRetained: number; avgRetainedPercent: number }
@@ -181,19 +182,24 @@ export const queryRetention = async ({
     },
   });
   const { data } = await resp.json<ClickHouseQueryResponse<RetentionEntry>>();
-  console.log(data);
 
-  const breakdownGroups: Record<string, BreakdownGroup> = {};
+  const breakdownGroups: Record<string, RetentionBreakdownGroup> = {};
 
   // First, group data by breakdown
   data.forEach((item) => {
-    const { breakdown = "", cohort_date, days_after_cohort } = item;
+    const {
+      breakdown = "",
+      cohort_date,
+      days_after_cohort,
+      cohort_size,
+    } = item;
 
     if (!breakdownGroups[breakdown]) {
       breakdownGroups[breakdown] = {
         id: v4(),
-        eventLabel: "idk",
+        eventLabel: "Average retention",
         breakdown,
+        cohortSize: cohort_size,
         averageRetentionByDay: {},
         data: {},
       };
@@ -244,8 +250,6 @@ export const queryRetention = async ({
       };
     });
   });
-
-  console.log(Object.values(breakdownGroups));
 
   return Object.values(breakdownGroups);
 };

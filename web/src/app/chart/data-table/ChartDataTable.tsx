@@ -1,4 +1,5 @@
 import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -10,24 +11,21 @@ import ResizableGrid, { ROW_HEIGHT } from "./ResizableGrid";
 import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
 
 interface ChartDataTableProps {
-  breakdownPropName?: string;
-  datas: Extract<
-    RouterOutput["getReport"]["datas"],
-    { average_count: number }[]
-  >;
-  dateHeaders: DateHeader[];
+  datas: any;
   highlightedRow?: string | null;
   setHighlightedRow: (rowId: string | null) => void;
+  stickyColumns: ColumnDef<any>[];
+  mainColumns: ColumnDef<any>[];
 }
 
 const COLUMN_WIDTH = 100;
 
 export const ChartDataTable: React.FC<ChartDataTableProps> = ({
-  datas,
-  breakdownPropName,
-  dateHeaders,
+  stickyColumns,
   highlightedRow,
   setHighlightedRow,
+  mainColumns,
+  datas,
 }) => {
   const divRef = React.useRef<HTMLDivElement | null>(null);
   const scrollMarginRef = React.useRef(0);
@@ -40,15 +38,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
 
   const table = useReactTable({
     data: datas,
-    columns: dateHeaders.map((dateHeader) => {
-      return {
-        accessorFn: (row: any) => {
-          return row.data[dateHeader.lookupValue];
-        },
-        header: dateHeader.label,
-        size: COLUMN_WIDTH,
-      };
-    }),
+    columns: mainColumns,
     getCoreRowModel: getCoreRowModel(),
   });
   const { rows } = table.getRowModel();
@@ -67,29 +57,6 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
     overscan: 5,
     scrollMargin: scrollMarginRef.current,
   });
-  const leftHeaders = [
-    { title: "Event", initialWidth: 200, fn: (row: any) => row.eventLabel },
-  ];
-  if (breakdownPropName) {
-    leftHeaders.push(
-      {
-        title: breakdownPropName,
-        initialWidth: 200,
-        fn: (row: any) => row.breakdown,
-      },
-      {
-        title: "Average",
-        fn: (row: any) => row.average_count,
-        initialWidth: 100,
-      }
-    );
-  } else {
-    leftHeaders.push({
-      title: "Average",
-      fn: (row: any) => row.average_count,
-      initialWidth: 100,
-    });
-  }
 
   const virtualColumns = columnVirtualizer.getVirtualItems();
   let virtualPaddingLeft: number | undefined;
@@ -108,8 +75,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
         <div className="sticky left-0 z-10">
           <ResizableGrid
             scrollMargin={scrollMarginRef.current}
-            columns={leftHeaders}
-            breakdownPropName={breakdownPropName}
+            columns={stickyColumns}
             datas={datas}
             highlightedRow={highlightedRow}
             setHighlightedRow={setHighlightedRow}

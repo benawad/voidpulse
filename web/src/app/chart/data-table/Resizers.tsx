@@ -40,7 +40,7 @@ export const Resizers: React.FC<ResizerProps> = ({ columnWidths, table }) => {
               .slice(0, index)
               .reduce((acc, width) => acc + width, 0) +
             columnWidths[index] -
-            1.5, // Adjust left position
+            8, // Adjust left position
           height: "100%",
 
           width: "17px",

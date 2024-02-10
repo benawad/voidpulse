@@ -10,7 +10,7 @@ import {
   NumberFilterOperation,
   StringFilterOperation,
 } from "@voidpulse/api";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoClose, IoFilter } from "react-icons/io5";
 import { BooleanInput } from "../../ui/BooleanInput";
 import { Dropdown } from "../../ui/Dropdown";
@@ -54,6 +54,15 @@ const isValidFilter = (
       NumberFilterOperation.isNumeric,
       NumberFilterOperation.isNotNumeric,
     ].includes(filter.operation)
+  ) {
+    return true;
+  }
+
+  if (
+    filter.dataType === DataType.string &&
+    [StringFilterOperation.isSet, StringFilterOperation.isNotSet].includes(
+      filter.operation
+    )
   ) {
     return true;
   }
@@ -221,13 +230,15 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
 
   //Dismissing an empty filter block when you click outside of it
   const filterBlockRef = React.useRef<HTMLInputElement>(null);
+  const filterRef = useRef(filter);
+  filterRef.current = filter;
   useEffect(() => {
     const handleOutsideClick = (e: any) => {
       if (
         filterBlockRef.current &&
         !filterBlockRef.current.contains(e.target)
       ) {
-        if (Object.keys(filter).length !== 0) {
+        if (Object.keys(filterRef.current).length !== 0) {
           return;
         }
         onEmptyFilterAbandoned?.();

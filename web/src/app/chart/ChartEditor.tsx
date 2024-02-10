@@ -39,6 +39,11 @@ interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
 
+type RetRow = Extract<
+  RouterOutput["getReport"]["datas"][0],
+  { averageRetentionByDay: any }
+>;
+
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const [
     {
@@ -374,15 +379,104 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             ) : null}
           </div>
           {/* Additional data at the bottom */}
+          {data?.datas.length && data?.reportType === ReportType.retention ? (
+            <ChartDataTable
+              datas={data.datas}
+              highlightedRow={highlightedRow}
+              setHighlightedRow={setHighlightedRow}
+              stickyColumns={[
+                {
+                  id: "a",
+                  header: "Date",
+                  size: 200,
+                  accessorFn: (row: any) => row.eventLabel,
+                },
+                ...(breakdowns[0]?.propName
+                  ? [
+                      {
+                        id: "b",
+                        header: breakdowns[0]?.propName,
+                        size: 200,
+                        accessorFn: (row: RetRow) => row.breakdown,
+                        meta: {
+                          checkbox: true,
+                        },
+                      },
+                    ]
+                  : []),
+                {
+                  id: "c",
+                  header: "Total profiles",
+                  size: 200,
+                  accessorFn: (row: RetRow) => row.cohortSize.toLocaleString(),
+                },
+              ]}
+              mainColumns={
+                data.retentionHeaders.map((retHeader, i) => {
+                  return {
+                    accessorFn: (row: RetRow) => {
+                      if (retentionNumFormat === RetentionNumFormat.rawCount) {
+                        return row.averageRetentionByDay[i]?.avgRetained;
+                      } else {
+                        return (
+                          (row.averageRetentionByDay[i]?.avgRetainedPercent ||
+                            0) + "%"
+                        );
+                      }
+                    },
+                    header: retHeader.label,
+                    size: 100,
+                  };
+                }) || []
+              }
+            />
+          ) : null}
+          {/* Additional data at the bottom */}
           {data?.datas.length &&
           data?.reportType === ReportType.insight &&
           data.chartType === ChartType.line ? (
             <ChartDataTable
-              dateHeaders={data.dateHeaders}
-              breakdownPropName={breakdowns[0]?.propName}
               datas={data.datas}
               highlightedRow={highlightedRow}
               setHighlightedRow={setHighlightedRow}
+              stickyColumns={[
+                {
+                  id: "a",
+                  header: "Event",
+                  size: 200,
+                  accessorFn: (row: any) => row.eventLabel,
+                },
+                ...(breakdowns[0]?.propName
+                  ? [
+                      {
+                        id: "b",
+                        header: breakdowns[0]?.propName,
+                        size: 200,
+                        accessorFn: (row: any) => row.breakdown,
+                        meta: {
+                          checkbox: true,
+                        },
+                      },
+                    ]
+                  : []),
+                {
+                  id: "c",
+                  header: "Average",
+                  size: 100,
+                  accessorFn: (row: any) => row.average_count,
+                },
+              ]}
+              mainColumns={
+                data.dateHeaders.map((dateHeader) => {
+                  return {
+                    accessorFn: (row: any) => {
+                      return row.data[dateHeader.lookupValue];
+                    },
+                    header: dateHeader.label,
+                    size: 100,
+                  };
+                }) || []
+              }
             />
           ) : null}
         </div>

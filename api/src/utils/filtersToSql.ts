@@ -160,17 +160,24 @@ export const filtersToSql = (
               : "NOT LIKE"
           } '%' || {${paramHandler.add(filter.value)}:String} || '%'`
         );
-      } else {
+      } else if (
+        filter.operation === StringFilterOperation.is ||
+        filter.operation === StringFilterOperation.isNot
+      ) {
         if (!Array.isArray(filter.value)) {
           continue;
         }
         if (!filter.value.every((x) => typeof x === "string")) {
           continue;
         }
+        const operator = {
+          [StringFilterOperation.is]: "IN",
+          [StringFilterOperation.isNot]: "NOT IN",
+        }[filter.operation];
         whereStrings.push(
           `JSONExtractString(${propertiesName}, {${paramHandler.add(
             filter.propName
-          )}:String}) IN (${filter.value
+          )}:String}) ${operator} (${filter.value
             .map((x) => `{${paramHandler.add(x)}:String}`)
             .join(", ")})`
         );
