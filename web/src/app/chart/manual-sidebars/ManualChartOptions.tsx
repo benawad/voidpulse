@@ -6,6 +6,7 @@ import { SlGraph } from "react-icons/sl";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { InsightSidebar } from "./InsightSidebar";
 import { RetentionSidebar } from "./RetentionSidebar";
+import { FunnelSidebar } from "./FunnelSidebar";
 
 interface ManualChartOptionsProps {}
 
@@ -88,6 +89,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       </div>
       <div className="px-4">
         {reportType === ReportType.insight ? <InsightSidebar /> : null}
+        {reportType === ReportType.funnel ? <FunnelSidebar /> : null}
         {reportType === ReportType.retention ? <RetentionSidebar /> : null}
       </div>
     </>

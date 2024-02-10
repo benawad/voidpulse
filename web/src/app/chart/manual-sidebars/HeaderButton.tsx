@@ -9,7 +9,7 @@ export const HeaderButton: Kids<
 > = ({ children, className = "", ...props }) => {
   return (
     <button
-      className={`accent-hover w-full p-2 my-2 rounded-md flex items-center group justify-between text-primary-100 text-lg font-semibold ${className}`}
+      className={`accent-hover w-full p-2 my-2 rounded-md flex items-center group justify-between text-primary-300 text-xs mono-body ${className}`}
       {...props}
     >
       {children}

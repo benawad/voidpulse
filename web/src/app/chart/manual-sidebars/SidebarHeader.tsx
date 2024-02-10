@@ -6,7 +6,7 @@ export const SidebarHeader: Kids<
 > = ({ children, className = "", ...props }) => {
   return (
     <div
-      className={`w-full p-2 my-2 rounded-md flex items-center group justify-between text-primary-100 text-lg font-semibold ${className}`}
+      className={`w-full p-2 my-2 rounded-md flex items-center group justify-between text-primary-300 text-xs mono-body ${className}`}
       {...props}
     >
       {children}

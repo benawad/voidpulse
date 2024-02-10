@@ -59,7 +59,12 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
     // Full metric block: label, drag handle, metric selector, and measurement.
     // Can be an empty prompting box if no metric is selected.
     // Also includes metric specific filters.
-    <div className="standard card p-1 my-2 group" key={idx}>
+    <div
+      className={`standard card p-1 my-2 group ${
+        metric?.event.name ? "" : " ring-1 ring-secondary-signature-100"
+      }`}
+      key={idx}
+    >
       {/* Top section for the event */}
       <div className="flex flex-col">
         {/* Left side of the button for the label and drag handle*/}
@@ -81,13 +86,15 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             {/* <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" /> */}
           </div>
           {/* Main middle section for selecting events and units */}
-          <div className={"flex flex-col w-full"}>
+          <div className={`flex flex-col w-full`}>
             {/* Metric selector */}
-            <div className="flex justify-between items-center group">
+            <div className={`flex justify-between items-center group`}>
               <button
                 {...getReferenceProps()}
                 ref={refs.setReference}
-                className="w-full text-primary-100 flex text-sm accent-hover p-2 font-semibold rounded-md"
+                className={`w-full text-primary-100 flex text-sm accent-hover p-2 font-semibold rounded-md ${
+                  metric?.event.name ? "" : "text-secondary-signature-100"
+                }`}
               >
                 {metric?.event.name || "Select event"}
               </button>

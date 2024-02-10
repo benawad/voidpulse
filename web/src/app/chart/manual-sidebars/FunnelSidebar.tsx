@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
+import { SidebarHeader } from "./SidebarHeader";
+import { MetricBlock } from "../metric-selector/MetricBlock";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
-import { LineSeparator } from "../../ui/LineSeparator";
 import { genId } from "../../utils/genId";
+import { Metric } from "../metric-selector/Metric";
+import { HeaderButton } from "./HeaderButton";
+import { LineSeparator } from "../../ui/LineSeparator";
 import { BreakdownBlock } from "../metric-selector/BreakdownBlock";
 import { FilterBlock } from "../metric-selector/FilterBlock";
-import { Metric } from "../metric-selector/Metric";
-import { MetricBlock } from "../metric-selector/MetricBlock";
-import { HeaderButton } from "./HeaderButton";
 import { PlusIcon } from "./PlusIcon";
-import { SidebarHeader } from "./SidebarHeader";
+import { MetricMeasurement } from "@voidpulse/api";
 
-interface InsightSidebarProps {}
+interface FunnelSidebarProps {}
 
-export const RetentionSidebar: React.FC<InsightSidebarProps> = ({}) => {
+export const FunnelSidebar: React.FC<FunnelSidebarProps> = ({}) => {
   const [{ metrics, breakdowns, globalFilters, reportType }, setState] =
     useChartStateContext();
-
+  const [addNewMetric, setAddNewMetric] = useState(!metrics.length);
+  const [isMetricDropdownOpen, setIsMetricDropdownOpen] = useState(false);
   const [addNewBreakdown, setAddNewBreakdown] = useState(false);
   const [addNewGlobalFilter, setAddNewGlobalFilter] = useState(false);
   const [localMetrics, setLocalMetrics] = useState<(Metric | null)[]>(() =>
     [...Array(2)].map((_, i) => metrics[i])
   );
   useEffect(() => {
-    if (metrics.length === 2) {
+    if (metrics.length >= 2) {
       setLocalMetrics(metrics);
     }
   }, [metrics]);
@@ -36,13 +38,16 @@ export const RetentionSidebar: React.FC<InsightSidebarProps> = ({}) => {
     }
     setLocalMetrics(newMetrics);
   };
-
   return (
-    <>
+    <div>
       {/* Choosing metrics */}
-      <HeaderButton>
-        {/* Uniquely has no plus button, so needs extra styling to match size */}
-        <div className="py-1">Retention </div>
+      <HeaderButton
+        onClick={() => {
+          setAddNewMetric(true);
+          setIsMetricDropdownOpen(true);
+        }}
+      >
+        Funnel steps <PlusIcon />
       </HeaderButton>
       {/* Display all chosen metrics  */}
       {localMetrics.map((m, idx) => (
@@ -59,15 +64,15 @@ export const RetentionSidebar: React.FC<InsightSidebarProps> = ({}) => {
               )
             );
           }}
-          onDelete={
-            m
-              ? () => {
-                  setLocalMetrics(
-                    localMetrics.map((x, i) => (i !== idx ? x : null))
-                  );
-                }
-              : undefined
-          }
+          onDelete={() => {
+            //If there are more than two metrics, let them delete:
+            if (localMetrics.length > 2) {
+              setMetrics(localMetrics.filter((_, i) => i !== idx));
+            } else {
+              //Don't let the user delete if there are only two metrics
+              setMetrics(localMetrics.map((x, i) => (i !== idx ? x : null)));
+            }
+          }}
           onAddFilter={(newFilter) => {
             setMetrics(
               localMetrics.map((metric, i) =>
@@ -84,8 +89,32 @@ export const RetentionSidebar: React.FC<InsightSidebarProps> = ({}) => {
           metric={m}
         />
       ))}
+      {/* If a new metric is in the process of being added, display a new metric block UI as an input*/}
+      {/* Once the metric is successfully added, hide the new block and show it as part of the list above. */}
+      {addNewMetric ? (
+        <MetricBlock
+          showMeasurement={false}
+          onEventChange={(event) => {
+            setMetrics([
+              ...localMetrics,
+              {
+                event,
+                id: genId(),
+                filters: [],
+                type: MetricMeasurement.uniqueUsers,
+              },
+            ]);
+            setAddNewMetric(false);
+          }}
+          onDelete={() => {
+            setAddNewMetric(false);
+          }}
+          parentIsOpen={isMetricDropdownOpen}
+          setParentIsOpen={setIsMetricDropdownOpen}
+          idx={localMetrics.length}
+        />
+      ) : null}
 
-      {/* Choosing date range */}
       {/* Choosing filters */}
       <HeaderButton onClick={() => setAddNewGlobalFilter(true)}>
         Filter <PlusIcon />
@@ -168,6 +197,6 @@ export const RetentionSidebar: React.FC<InsightSidebarProps> = ({}) => {
           }}
         />
       ) : null}
-    </>
+    </div>
   );
 };
