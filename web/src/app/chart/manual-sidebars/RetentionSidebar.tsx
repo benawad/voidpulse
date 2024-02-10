@@ -1,5 +1,5 @@
 import { MetricMeasurement } from "@voidpulse/api";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
 import { LineSeparator } from "../../ui/LineSeparator";
 import { genId } from "../../utils/genId";
@@ -22,6 +22,11 @@ export const RetentionSidebar: React.FC<InsightSidebarProps> = ({}) => {
   const [localMetrics, setLocalMetrics] = useState<(Metric | null)[]>(() =>
     [...Array(2)].map((_, i) => metrics[i])
   );
+  useEffect(() => {
+    if (metrics.length === 2) {
+      setLocalMetrics(metrics);
+    }
+  }, [metrics]);
   const setMetrics = (newMetrics: (Metric | null)[]) => {
     if (newMetrics.every((x) => x?.event)) {
       setState((prev) => ({

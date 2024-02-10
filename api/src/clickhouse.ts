@@ -26,7 +26,7 @@ const applyMigration = async (fileName: string) => {
   const migration = await import(path.join(migFolder, fileName));
   await migration.up(clickhouse);
   await clickhouse.insert({
-    table: "clickhouse_migrations",
+    table: "migrations",
     values: [{ name: fileName }],
     format: "JSONEachRow",
   });
@@ -35,15 +35,16 @@ const applyMigration = async (fileName: string) => {
 export const runClickhouseMigrations = async () => {
   await clickhouse.command({
     query: `
-      CREATE TABLE IF NOT EXISTS clickhouse_migrations (
+      CREATE TABLE IF NOT EXISTS migrations (
         name String
-      ) ENGINE = Memory
+      ) ENGINE = MergeTree()
+      ORDER BY name;
     `,
   });
 
   const resp = await clickhouse.query({
     query: `
-    SELECT name FROM clickhouse_migrations
+    SELECT name FROM migrations
   `,
   });
   const appliedMigrations = await resp.json<

@@ -13,6 +13,8 @@ import {
 } from "../../routes/charts/insight/eventFilterSchema";
 import { filtersToSql } from "../filtersToSql";
 import { getDateRange } from "../getDateRange";
+import { QueryParamHandler } from "./QueryParamHandler";
+import { breakdownSelectProperty } from "./breakdownSelectProperty";
 
 export const prepareFiltersAndBreakdown = async ({
   metric,
@@ -31,16 +33,17 @@ export const prepareFiltersAndBreakdown = async ({
   globalFilters: MetricFilter[];
   breakdowns: MetricFilter[];
 }) => {
-  const { paramMap, whereStrings, paramCount, needsPeopleJoin } = filtersToSql(
+  const paramHandler = new QueryParamHandler();
+  const { whereStrings, needsPeopleJoin } = filtersToSql(
     [...metric.filters, ...globalFilters],
-    1
+    paramHandler
   );
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
   const query_params: any = {
     projectId,
     ...getDateRange(timeRangeType, from, to),
     eventName: metric.event.value,
-    ...paramMap,
+    ...paramHandler.getParams(),
   };
   const joinSection =
     needsPeopleJoin ||
@@ -63,19 +66,7 @@ export const prepareFiltersAndBreakdown = async ({
   let shouldBucketData = false;
   if (breakdowns.length) {
     const b = breakdowns[0];
-    const jsonExtractor = {
-      [DataType.string]: `JSONExtractString`,
-      [DataType.number]: `JSONExtractFloat`,
-      [DataType.boolean]: `JSONExtractBool`,
-      [DataType.date]: `JSONExtractString`,
-      [DataType.other]: ``,
-    }[b.dataType];
-    if (jsonExtractor) {
-      query_params[`p${paramCount + 1}`] = b.propName;
-      breakdownSelect = `${jsonExtractor}(${
-        b.propOrigin === PropOrigin.user ? "p" : "e"
-      }.properties, {p${paramCount + 1}:String})`;
-    }
+    breakdownSelect = breakdownSelectProperty(b, paramHandler);
     if (b.dataType === DataType.number) {
       const query = `
       select count(distinct ${breakdownSelect}) > 10 as shouldBucket

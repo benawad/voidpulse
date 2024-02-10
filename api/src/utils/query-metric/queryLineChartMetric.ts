@@ -7,6 +7,7 @@ import {
   MetricMeasurement,
   PropOrigin,
 } from "../../app-router-type";
+import { QueryParamHandler } from "./QueryParamHandler";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
 import { __prod__ } from "../../constants/prod";
 import { filtersToSql } from "../filtersToSql";

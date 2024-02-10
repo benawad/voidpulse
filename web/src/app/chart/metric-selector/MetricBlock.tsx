@@ -168,7 +168,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                           ? {
                               ...m,
                               filters: m.filters?.filter(
-                                (f) => f !== metricSpecificFilter
+                                (f) => f.id !== metricSpecificFilter.id
                               ),
                             }
                           : m

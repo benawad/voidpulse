@@ -255,8 +255,8 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
             </div>
           </div>
           {/* Delete button shows up if it's an existing filter */}
-          {localFilter ? (
-            <div
+          {localFilter && onDelete ? (
+            <button
               className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 hover:bg-secondary-red-100/20"
               onClick={onDelete}
             >
@@ -264,7 +264,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
                 size={36}
                 className="fill-primary-500 hover:fill-secondary-red-100 p-2"
               />
-            </div>
+            </button>
           ) : null}
         </div>
 

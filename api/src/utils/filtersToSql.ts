@@ -7,15 +7,14 @@ import {
 } from "../app-router-type";
 import { __prod__ } from "../constants/prod";
 import { InputMetric } from "../routes/charts/insight/eventFilterSchema";
+import { QueryParamHandler } from "./query-metric/QueryParamHandler";
 
 export const filtersToSql = (
   filters: InputMetric["filters"][0][],
-  paramStartingCount = 1
+  paramHandler: QueryParamHandler
 ) => {
   let needsPeopleJoin = false;
-  let paramCount = paramStartingCount;
   const whereStrings: string[] = [];
-  const paramMap: Record<string, any> = {};
   for (const filter of filters) {
     const propertiesName =
       filter.propOrigin === PropOrigin.event ? "properties" : "p.properties";
@@ -36,42 +35,34 @@ export const filtersToSql = (
         ) {
           continue;
         }
-        paramMap[`p${paramCount + 1}`] = filter.propName;
-        paramMap[`p${paramCount + 2}`] = filter.value;
-        paramMap[`p${paramCount + 3}`] = filter.value2;
         const operator =
           filter.operation === NumberFilterOperation.between
             ? "BETWEEN"
             : "NOT BETWEEN";
         whereStrings.push(
-          `JSONExtractFloat(${propertiesName}, {p${
-            paramCount + 1
-          }:String}) ${operator} {p${paramCount + 2}:Float64} and {p${
-            paramCount + 3
-          }:Float64}`
+          `JSONExtractFloat(${propertiesName}, {${paramHandler.add(
+            filter.propName
+          )}:String}) ${operator} {${paramHandler.add(
+            filter.value2
+          )}:Float64} and {${paramHandler.add(filter.value2)}:Float64}`
         );
-        paramCount += 3;
       } else if (
         filter.operation === NumberFilterOperation.isNumeric ||
         filter.operation === NumberFilterOperation.isNotNumeric
       ) {
-        paramMap[`p${paramCount + 1}`] = filter.propName;
         const operator = {
           [NumberFilterOperation.isNumeric]: "IS NOT NULL",
           [NumberFilterOperation.isNotNumeric]: "IS NULL",
         }[filter.operation];
         whereStrings.push(
-          `JSONExtractFloat(${propertiesName}, {p${
-            paramCount + 1
-          }:String}) ${operator}`
+          `JSONExtractFloat(${propertiesName}, {${paramHandler.add(
+            filter.propName
+          )}:String}) ${operator}`
         );
-        paramCount += 1;
       } else {
         if (typeof filter.value !== "number") {
           continue;
         }
-        paramMap[`p${paramCount + 1}`] = filter.propName;
-        paramMap[`p${paramCount + 2}`] = filter.value;
         const operator = {
           [NumberFilterOperation.equals]: "=",
           [NumberFilterOperation.notEqual]: "!=",
@@ -84,11 +75,10 @@ export const filtersToSql = (
           continue;
         }
         whereStrings.push(
-          `JSONExtractFloat(${propertiesName}, {p${
-            paramCount + 1
-          }:String}) ${operator} {p${paramCount + 2}:Float64}`
+          `JSONExtractFloat(${propertiesName}, {${paramHandler.add(
+            filter.propName
+          )}:String}) ${operator} {${paramHandler.add(filter.value)}:Float64}`
         );
-        paramCount += 2;
       }
     } else if (filter.dataType === DataType.date) {
       if (
@@ -101,27 +91,21 @@ export const filtersToSql = (
         ) {
           continue;
         }
-        paramMap[`p${paramCount + 1}`] = filter.propName;
-        paramMap[`p${paramCount + 2}`] = filter.value;
-        paramMap[`p${paramCount + 3}`] = filter.value2;
         const operator =
           filter.operation === DateFilterOperation.between
             ? "BETWEEN"
             : "NOT BETWEEN";
         whereStrings.push(
-          `parseDateTimeBestEffortOrNull(JSONExtractString(${propertiesName}, {p${
-            paramCount + 1
-          }:String})) ${operator} {p${paramCount + 2}:DateTime} and {p${
-            paramCount + 3
-          }:DateTime}`
+          `parseDateTimeBestEffortOrNull(JSONExtractString(${propertiesName}, {${paramHandler.add(
+            filter.propName
+          )}:String})) ${operator} {${paramHandler.add(
+            filter.value
+          )}:DateTime} and {${paramHandler.add(filter.value2)}:DateTime}`
         );
-        paramCount += 3;
       } else {
         if (typeof filter.value !== "string" || !filter.operation) {
           continue;
         }
-        paramMap[`p${paramCount + 1}`] = filter.propName;
-        paramMap[`p${paramCount + 2}`] = filter.value;
         const operator = {
           [DateFilterOperation.on]: "=",
           [DateFilterOperation.notOn]: "!=",
@@ -131,10 +115,10 @@ export const filtersToSql = (
         if (!operator) {
           continue;
         }
-        let left = `parseDateTimeBestEffortOrNull(JSONExtractString(${propertiesName}, {p${
-          paramCount + 1
-        }:String}))`;
-        let right = `{p${paramCount + 2}:DateTime}`;
+        let left = `parseDateTimeBestEffortOrNull(JSONExtractString(${propertiesName}, {${paramHandler.add(
+          filter.propName
+        )}:String}))`;
+        let right = `{${paramHandler.add(filter.value)}:DateTime}`;
 
         if (
           filter.operation === DateFilterOperation.on ||
@@ -151,17 +135,15 @@ export const filtersToSql = (
         filter.operation === StringFilterOperation.isSet ||
         filter.operation === StringFilterOperation.isNotSet
       ) {
-        paramMap[`p${paramCount + 1}`] = filter.propName;
         const operator = {
           [StringFilterOperation.isSet]: "IS NOT NULL",
           [StringFilterOperation.isNotSet]: "IS NULL",
         }[filter.operation];
         whereStrings.push(
-          `JSONExtractString(${propertiesName}, {p${
-            paramCount + 1
-          }:String}) ${operator}`
+          `JSONExtractString(${propertiesName}, {${paramHandler.add(
+            filter.propName
+          )}:String}) ${operator}`
         );
-        paramCount += 1;
       } else if (
         filter.operation === StringFilterOperation.contains ||
         filter.operation === StringFilterOperation.notContains
@@ -169,16 +151,15 @@ export const filtersToSql = (
         if (typeof filter.value !== "string") {
           continue;
         }
-        paramMap[`p${paramCount + 1}`] = filter.propName;
-        paramMap[`p${paramCount + 2}`] = filter.value;
         whereStrings.push(
-          `JSONExtractString(${propertiesName}, {p${paramCount + 1}:String}) ${
+          `JSONExtractString(${propertiesName}, {${paramHandler.add(
+            filter.propName
+          )}:String}) ${
             filter.operation === StringFilterOperation.contains
               ? "LIKE"
               : "NOT LIKE"
-          } '%' || {p${paramCount + 2}:String} || '%'`
+          } '%' || {${paramHandler.add(filter.value)}:String} || '%'`
         );
-        paramCount += 2;
       } else {
         if (!Array.isArray(filter.value)) {
           continue;
@@ -186,31 +167,23 @@ export const filtersToSql = (
         if (!filter.value.every((x) => typeof x === "string")) {
           continue;
         }
-        paramMap[`p${paramCount + 1}`] = filter.propName;
         whereStrings.push(
-          `JSONExtractString(${propertiesName}, {p${
-            paramCount + 1
-          }:String}) IN (${filter.value
-            .map((_, i) => `{p${paramCount + 2 + i}:String}`)
+          `JSONExtractString(${propertiesName}, {${paramHandler.add(
+            filter.propName
+          )}:String}) IN (${filter.value
+            .map((x) => `{${paramHandler.add(x)}:String}`)
             .join(", ")})`
         );
-        filter.value.forEach((x, i) => {
-          paramMap[`p${paramCount + 2 + i}`] = x;
-        });
-        paramCount += 1 + filter.value.length;
       }
     } else if (filter.dataType === DataType.boolean) {
       if (typeof filter.value !== "boolean") {
         continue;
       }
-      paramMap[`p${paramCount + 1}`] = filter.propName;
-      paramMap[`p${paramCount + 2}`] = filter.value;
       whereStrings.push(
-        `JSONExtractBool(${propertiesName}, {p${
-          paramCount + 1
-        }:String}, false) = {p${paramCount + 2}:Bool}`
+        `JSONExtractBool(${propertiesName}, {${paramHandler.add(
+          filter.propName
+        )}:String}, false) = {${paramHandler.add(filter.value)}:Bool}`
       );
-      paramCount += 2;
     } else {
       if (!__prod__) {
         console.error(`Not implemented filter data type: ${filter.dataType}`);
@@ -222,7 +195,5 @@ export const filtersToSql = (
   return {
     needsPeopleJoin,
     whereStrings,
-    paramMap,
-    paramCount,
   };
 };

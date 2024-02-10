@@ -3,7 +3,10 @@ import { colorOrder, lineChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
 export const transformRetentionToLineChartData = (
-  datas: Extract<RouterOutput["getReport"]["datas"], { grouped: any }[]>,
+  datas: Extract<
+    RouterOutput["getReport"]["datas"],
+    { averageRetentionByDay: any }[]
+  >,
   retHeaders: DateHeader[],
   visibleDataMap?: Record<string, boolean> | null,
   highlightedId?: string | null,
@@ -29,7 +32,7 @@ export const transformRetentionToLineChartData = (
           tooltips: retHeaders.map((d, i) => {
             return {
               title: d.fullLabel,
-              // afterTitle: data.breakdown || "",
+              afterTitle: data.breakdown || "",
               beforeLabel: `${
                 data.averageRetentionByDay[i]?.avgRetainedPercent || 0
               }% retention`,
