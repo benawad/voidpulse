@@ -15,7 +15,7 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({}) => {
         className="mx-auto mt-12"
         style={{ width: 250, height: "auto" }}
       />
-      <div className="bg-secondary-signature-100 p-3 rounded-lg m-3 shadow-lg text-sm mono-body">
+      <div className="bg-accent-100 p-3 rounded-lg m-3 shadow-lg text-sm mono-body">
         {greetingPrompts[Math.floor(Math.random() * greetingPrompts.length)]}
       </div>
     </div>

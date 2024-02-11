@@ -55,10 +55,10 @@ export const Resizers: React.FC<ResizerProps> = ({ columnWidths, table }) => {
         <div
           className={`h-full w-full ${
             header.column.getIsResizing()
-              ? "bg-secondary-signature-100"
+              ? "bg-accent-100"
               : index === columnWidths.length - 1
-              ? "bg-primary-700 group-hover:bg-secondary-signature-100"
-              : "bg-primary-700 group-hover:bg-secondary-signature-100"
+              ? "bg-primary-700 group-hover:bg-accent-100"
+              : "bg-primary-700 group-hover:bg-accent-100"
           }`}
         ></div>
       </div>

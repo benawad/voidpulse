@@ -260,7 +260,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
         >
           {/* Title and filter icon */}
           <div className="flex flex-row w-full">
-            <IoFilter className="fill-secondary-complement-100 mx-2 mt-2" />
+            <IoFilter className="fill-secondary-flair-100 mx-2 mt-2" />
             <div className="text-sm p-2 accent-hover rounded-lg w-full">
               {localFilter?.propName || "Select filter"}
             </div>

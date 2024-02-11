@@ -129,12 +129,12 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
                     className={`flex flex-row p-2 rounded-md items-center
                     ${
                       item.key === currPropKey
-                        ? "bg-secondary-signature-100 text-primary-100"
+                        ? "bg-accent-100 text-primary-100"
                         : ""
                     }
                     ${
                       highlightedIndex === index
-                        ? "bg-secondary-signature-100/30 text-secondary-signature-100"
+                        ? "bg-accent-100/30 text-accent-100"
                         : ""
                     }
                     ${highlightedIndex !== index ? "text-primary-100" : ""}

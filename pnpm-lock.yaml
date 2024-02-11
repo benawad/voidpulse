@@ -182,7 +182,7 @@ importers:
         version: 4.5.0(@types/react@18.2.48)(react@18.2.0)
     devDependencies:
       '@types/node':
-        specifier: ^20
+        specifier: ^20.11.10
         version: 20.11.10
       '@types/react':
         specifier: ^18
@@ -196,12 +196,12 @@ importers:
       autoprefixer:
         specifier: ^10.0.1
         version: 10.4.17(postcss@8.4.33)
-      postcss:
-        specifier: ^8
-        version: 8.4.33
       tailwindcss:
         specifier: ^3.3.0
-        version: 3.4.1
+        version: 3.4.1(ts-node@10.9.2)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.11.10)(typescript@5.3.3)
       typescript:
         specifier: ^5
         version: 5.3.3
@@ -3373,7 +3373,7 @@ packages:
       postcss: 8.4.33
     dev: true
 
-  /postcss-load-config@4.0.2(postcss@8.4.33):
+  /postcss-load-config@4.0.2(postcss@8.4.33)(ts-node@10.9.2):
     resolution: {integrity: sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==}
     engines: {node: '>= 14'}
     peerDependencies:
@@ -3387,6 +3387,7 @@ packages:
     dependencies:
       lilconfig: 3.0.0
       postcss: 8.4.33
+      ts-node: 10.9.2(@types/node@20.11.10)(typescript@5.3.3)
       yaml: 2.3.4
     dev: true
 
@@ -4103,7 +4104,7 @@ packages:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
     dev: false
 
-  /tailwindcss@3.4.1:
+  /tailwindcss@3.4.1(ts-node@10.9.2):
     resolution: {integrity: sha512-qAYmXRfk3ENzuPBakNK0SRrUDipP8NQnEY6772uDhflcQz5EhRdD7JNZxyrFHVQNCwULPBn6FNPp9brpO7ctcA==}
     engines: {node: '>=14.0.0'}
     hasBin: true
@@ -4125,7 +4126,7 @@ packages:
       postcss: 8.4.33
       postcss-import: 15.1.0(postcss@8.4.33)
       postcss-js: 4.0.1(postcss@8.4.33)
-      postcss-load-config: 4.0.2(postcss@8.4.33)
+      postcss-load-config: 4.0.2(postcss@8.4.33)(ts-node@10.9.2)
       postcss-nested: 6.0.1(postcss@8.4.33)
       postcss-selector-parser: 6.0.15
       resolve: 1.22.8

@@ -13,13 +13,13 @@ export const PersonaCard: React.FC<PersonaCardProps> = ({ persona }) => {
     >
       {/* Placeholder circle for images */}
       <div
-        className="rounded-full mx-auto bg-white/10 group-hover:ring-secondary-signature-100 group-hover:ring-2"
+        className="rounded-full mx-auto bg-white/10 group-hover:ring-accent-100 group-hover:ring-2"
         style={{
           height: 100,
           width: 100,
         }}
       ></div>
-      <div className="font-bold text-lg my-2 mx-auto text-center group-hover:text-secondary-signature-100">
+      <div className="font-bold text-lg my-2 mx-auto text-center group-hover:text-accent-100">
         {persona?.name}
       </div>
       <LineSeparator />

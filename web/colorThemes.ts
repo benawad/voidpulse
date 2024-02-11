@@ -1,4 +1,4 @@
-export const colorThemes = {
+export const hexColorThemes = {
   mysticalFire: {
     primary: {
       100: "#F1F1F7",
@@ -15,7 +15,7 @@ export const colorThemes = {
     secondary: {
       "signature-100": "#355CE9",
       "signature-200": "#2C3D95",
-      "complement-100": "#40E4D8",
+      "flair-100": "#40E4D8",
       "red-100": "#DC5068",
       "orange-100": "#EF8C34",
       "yellow-100": "#F2BF3C",
@@ -42,7 +42,7 @@ export const colorThemes = {
     secondary: {
       "signature-100": "#3C3C5B",
       "signature-200": "#2C3D95",
-      "complement-100": "#964680",
+      "flair-100": "#964680",
       "red-100": "#DC5068",
       "orange-100": "#EF8C34",
       "yellow-100": "#F2BF3C",
@@ -69,7 +69,7 @@ export const colorThemes = {
     secondary: {
       "signature-100": "#8F103E",
       "signature-200": "#2C3D95",
-      "complement-100": "#40E4D8",
+      "flair-100": "#40E4D8",
       "red-100": "#DC5068",
       "orange-100": "#EF8C34",
       "yellow-100": "#F2BF3C",
@@ -96,7 +96,7 @@ export const colorThemes = {
     secondary: {
       "signature-100": "#00BBAD",
       "signature-200": "#2C3D95",
-      "complement-100": "#40E4D8",
+      "flair-100": "#40E4D8",
       "red-100": "#DC5068",
       "orange-100": "#EF8C34",
       "yellow-100": "#F2BF3C",

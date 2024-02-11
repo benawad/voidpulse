@@ -1,28 +1,62 @@
-import { ChartOptions, Plugin, TooltipItem } from "chart.js";
+import { Plugin } from "chart.js";
 import config from "../../../../tailwind.config";
-const colors = config.theme.extend.colors;
-import { ChartType, MetricMeasurement } from "@voidpulse/api";
+const cssVars = config.theme.extend.colors;
+
+function extractCssVarName(cssValue: string): string {
+  const regex = /var\((--[a-zA-Z0-9-]+)\)/;
+  const match = cssValue.match(regex);
+  return match ? match[1] : "";
+}
+
+// Function to get the hex value from a CSS variable
+function getColor(cssVariable: string): string {
+  // Get the computed style of the document's root element (:root)
+  console.log(cssVariable);
+  const style = getComputedStyle(document.documentElement);
+  // Get the value of the CSS variable
+  let cleanCSSVariable = extractCssVarName(cssVariable);
+  let value = style.getPropertyValue(cleanCSSVariable).trim();
+  // Check if the value is in raw channel values format
+  const channelMatches = value.match(/\d+/g);
+  if (channelMatches && channelMatches.length === 3) {
+    // Convert channel values to Hex
+    const [r, g, b] = channelMatches.map((num) => parseInt(num, 10));
+    const toHex = (num: number) => num.toString(16).padStart(2, "0");
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  } else {
+    // If the value is already in hex format or another unrecognized format, return it as is
+    return value;
+  }
+}
+
+// Example usage
+try {
+  const hexValue = getColor(cssVars.accent[100]);
+  console.log(hexValue, "HERE"); // Outputs the hex value of --primary-100
+} catch (error) {
+  console.error(error);
+}
 
 export const colorOrder = [
-  colors.secondary["signature-100"],
-  colors.secondary["complement-100"],
-  colors.secondary["blue-100"],
-  colors.secondary["indigo-100"],
-  colors.secondary["green-100"],
-  colors.secondary["orange-100"],
-  colors.secondary["purple-100"],
-  colors.secondary["red-100"],
-  colors.secondary["yellow-100"],
+  getColor(cssVars.accent[100]),
+  getColor(cssVars.flair[100]),
+  getColor(cssVars.chart[1]),
+  getColor(cssVars.chart[2]),
+  getColor(cssVars.chart[3]),
+  getColor(cssVars.chart[4]),
+  getColor(cssVars.chart[5]),
+  getColor(cssVars.chart[6]),
+  getColor(cssVars.chart[7]),
 ];
 
 export const lineChartStyle = {
   // fill: true,
   tension: 0.1,
-  borderColor: colors.secondary["signature-100"],
+  borderColor: getColor(cssVars.accent[100]),
   pointRadius: 0,
   // pointHitRadius: 16,
   pointHoverRadius: 8,
-  pointHoverBackgroundColor: colors.secondary["signature-100"],
+  pointHoverBackgroundColor: getColor(cssVars.accent[100]),
   pointBorderColor: "#fff",
 };
 
@@ -37,7 +71,7 @@ export const barChartStyle = {
   borderColor: ["transparent"],
   borderWidth: 2,
   borderRadius: 4,
-  hoverBorderColor: [colors.primary[300]],
+  hoverBorderColor: [cssVars.primary[300]],
   hoverBorderRadius: 4,
 };
 
@@ -91,7 +125,7 @@ export const verticalLinePlugin: Plugin<"line"> = {
       ctx.moveTo(x, topY);
       ctx.lineTo(x, bottomY);
       ctx.lineWidth = 1;
-      ctx.strokeStyle = colors.primary[800];
+      ctx.strokeStyle = cssVars.primary[800];
       ctx.stroke();
       ctx.restore();
     }

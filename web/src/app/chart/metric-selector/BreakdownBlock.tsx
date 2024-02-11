@@ -66,7 +66,7 @@ export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
       >
         {/* Title and filter icon */}
         <div className="flex flex-row w-full items-center">
-          <BsGrid3X3Gap className="fill-secondary-complement-100 mx-2" />
+          <BsGrid3X3Gap className="fill-secondary-flair-100 mx-2" />
           <div className="text-sm accent-hover p-2 w-full text-left rounded-lg font-normal">
             {breakdown ? breakdown.propName : "Select property"}
           </div>

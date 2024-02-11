@@ -18,7 +18,7 @@
   @apply bg-primary-800 text-primary-100 text-xs font-semibold rounded-md border-0;
 }
 .DateInput_input__focused {
-  @apply ring-secondary-signature-100 ring-1 bg-secondary-signature-100/50;
+  @apply ring-accent-100 ring-1 bg-accent-100/50;
 }
 /* Actually a dash - sits between start and end dates */
 .DateRangePickerInput_arrow {
@@ -43,7 +43,7 @@
 
 /* Top arrows for left and right on the months */
 .DayPickerNavigation_button {
-  @apply bg-primary-800 border-0 hover:border-0 hover:bg-secondary-signature-100 rounded-lg;
+  @apply bg-primary-800 border-0 hover:border-0 hover:bg-accent-100 rounded-lg;
 }
 .DayPickerNavigation_svg__horizontal {
   @apply fill-primary-100;
@@ -66,7 +66,7 @@
   @apply bg-primary-800 border-0;
 }
 .CalendarDay:hover {
-  @apply bg-transparent outline outline-secondary-signature-100 text-secondary-signature-100 border-0 font-bold rounded-lg;
+  @apply bg-transparent outline outline-accent-100 text-accent-100 border-0 font-bold rounded-lg;
 }
 
 .CalendarDay__default {
@@ -75,12 +75,12 @@
 
 /* // Will edit everything selected including everything between a range of dates */
 .CalendarDay__selected_span {
-  @apply bg-secondary-signature-100/50 border-0 text-primary-100;
+  @apply bg-accent-100/50 border-0 text-primary-100;
 }
 
 /* // Will edit selected date or the endpoints of a range of dates */
 .CalendarDay__selected {
-  @apply bg-secondary-signature-100/70 border-0;
+  @apply bg-accent-100/70 border-0;
 }
 .CalendarDay__selected_start {
   @apply rounded-l-xl rounded-r-none;
@@ -91,14 +91,14 @@
 
 /* // Will edit when hovered over. _span style also has this property */
 .CalendarDay__selected:hover {
-  @apply bg-secondary-signature-100 border-0;
+  @apply bg-accent-100 border-0;
 }
 
 /* // Will edit when the second date (end date) in a range of dates
 // is not yet selected. Edits the dates between your mouse and said date */
 .CalendarDay__hovered_span:hover {
-  @apply bg-secondary-signature-100/50 border-0;
+  @apply bg-accent-100/50 border-0;
 }
 .CalendarDay__hovered_span {
-  @apply bg-secondary-signature-100/50 border-0 text-primary-100;
+  @apply bg-accent-100/50 border-0 text-primary-100;
 }

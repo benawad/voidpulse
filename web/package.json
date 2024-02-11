@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "themes": "ts-node --project tsconfig.scripts.json scripts/convertHexThemes.ts"
   },
   "dependencies": {
     "@floating-ui/react": "^0.26.8",
@@ -38,13 +39,13 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.11.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/react-window": "^1.8.8",
     "autoprefixer": "^10.0.1",
-    "postcss": "^8",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

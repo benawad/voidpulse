@@ -113,12 +113,12 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
                     className={`flex flex-row p-2 accent-hover group rounded-md
                       ${
                         item.value === event?.value
-                          ? "bg-secondary-signature-100 text-primary-100"
+                          ? "bg-accent-100 text-primary-100"
                           : ""
                       }
                       ${
                         highlightedIndex === index
-                          ? "bg-secondary-signature-100/30 text-primary-100"
+                          ? "bg-accent-100/30 text-primary-100"
                           : ""
                       }
                       `}

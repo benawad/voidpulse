@@ -17,7 +17,7 @@ export const BooleanInput: React.FC<BooleanInputProps> = ({
         }}
         className={`rounded-l-md bg-primary-900 px-4 py-2  ${
           !!value
-            ? "bg-secondary-signature-100 text-primary-100"
+            ? "bg-accent-100 text-primary-100"
             : "hover:bg-primary-800 text-primary-400"
         }`}
       >
@@ -29,7 +29,7 @@ export const BooleanInput: React.FC<BooleanInputProps> = ({
         }}
         className={`rounded-r-md bg-primary-900 px-4 py-2  ${
           !value
-            ? "bg-secondary-signature-100 text-primary-100"
+            ? "bg-accent-100 text-primary-100"
             : "hover:bg-primary-800 text-primary-400"
         }`}
       >

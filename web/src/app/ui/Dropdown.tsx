@@ -34,9 +34,7 @@ export function Dropdown<T>({
                 }}
                 className={
                   "w-full flex flex-row items-center p-2 text-left accent-hover group rounded-md " +
-                  (opt.value === value
-                    ? "bg-secondary-signature-100 text-primary-100"
-                    : "")
+                  (opt.value === value ? "bg-accent-100 text-primary-100" : "")
                 }
               >
                 {opt.Icon ? <div className="mr-2">{opt.Icon}</div> : null}

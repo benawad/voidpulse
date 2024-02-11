@@ -52,7 +52,7 @@ export const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({
           floatingContent={<FloatingTooltip>More options</FloatingTooltip>}
         >
           <BsThreeDots
-            className="m-auto group-hover:opacity-100 opacity-0 fill-white hover:fill-secondary-signature-100 h-full w-full"
+            className="m-auto group-hover:opacity-100 opacity-0 fill-white hover:fill-accent-100 h-full w-full"
             size={20}
           />
         </FloatingTrigger>

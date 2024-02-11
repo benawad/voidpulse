@@ -61,7 +61,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
     // Also includes metric specific filters.
     <div
       className={`standard card p-1 my-2 group ${
-        metric?.event.name ? "" : " ring-1 ring-secondary-signature-100"
+        metric?.event.name ? "" : " ring-1 ring-accent-100"
       }`}
       key={idx}
     >
@@ -72,7 +72,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
           {/* Square label for the dataset letter ID */}
           <div className={"rounded-md"}>
             <div
-              className="text-primary-900 flex text-sm font-bold m-2 bg-secondary-signature-100 rounded-md items-center"
+              className="text-primary-900 flex text-sm font-bold m-2 bg-accent-100 rounded-md items-center"
               style={{
                 height: 18,
                 width: 18,
@@ -93,7 +93,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 {...getReferenceProps()}
                 ref={refs.setReference}
                 className={`w-full text-primary-100 flex text-sm accent-hover p-2 font-semibold rounded-md ${
-                  metric?.event.name ? "" : "text-secondary-signature-100"
+                  metric?.event.name ? "" : "text-accent-100"
                 }`}
               >
                 {metric?.event.name || "Select event"}
@@ -118,7 +118,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                   >
                     <IoFilter
                       size={36}
-                      className="fill-primary-500 hover:fill-secondary-signature-100 p-2"
+                      className="fill-primary-500 hover:fill-accent-100 p-2"
                     />
                   </div>
                 </FloatingTrigger>

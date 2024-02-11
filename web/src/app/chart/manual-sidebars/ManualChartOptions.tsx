@@ -74,7 +74,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
             >
               {/* Div around icon */}
               <div
-                className={`rounded-full group-hover:text-secondary-signature-100 w-8 h-8 flex items-center justify-center ml-3 mr-1 ${
+                className={`rounded-full group-hover:text-accent-100 w-8 h-8 flex items-center justify-center ml-3 mr-1 ${
                   rt.type === reportType
                     ? "text-primary-100"
                     : "text-primary-500"

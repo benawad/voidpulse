@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@400;700&display=swap");
+@import "./themes.css";
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -69,17 +70,17 @@ body {
   @apply hover:bg-primary-100/5 cursor-pointer;
 }
 .text.hoverable {
-  @apply hover:text-secondary-signature-100;
+  @apply hover:text-accent-100;
 }
 .subtext {
   @apply text-xs text-primary-500;
 }
 .focus-glow {
-  @apply focus:outline-none focus:ring-1 focus:ring-secondary-signature-100 focus:ring-opacity-90;
+  @apply focus:outline-none focus:ring-1 focus:ring-accent-100 focus:ring-opacity-90;
 }
 .accent-hover {
-  @apply hover:bg-secondary-signature-100/20 hover:text-secondary-signature-100 cursor-pointer;
+  @apply hover:bg-accent-100/20 hover:text-accent-100 cursor-pointer;
 }
 .icon-box {
-  @apply accent-hover group-hover:bg-secondary-signature-100 bg-primary-600 w-6 h-6 rounded-md mr-3;
+  @apply accent-hover group-hover:bg-accent-100 bg-primary-600 w-6 h-6 rounded-md mr-3;
 }

@@ -219,7 +219,7 @@ export function MultiSelect({
                             className={`flex flex-row p-2 accent-hover items-center group rounded-md
                       ${
                         highlightedIndex === 0
-                          ? "bg-secondary-signature-100/30 text-primary-100"
+                          ? "bg-accent-100/30 text-primary-100"
                           : ""
                       }
                       `}
@@ -253,7 +253,7 @@ export function MultiSelect({
                               className={`flex flex-row p-2 accent-hover group rounded-md
                       ${
                         highlightedIndex === index
-                          ? "bg-secondary-signature-100/30 text-primary-100"
+                          ? "bg-accent-100/30 text-primary-100"
                           : ""
                       }
                       `}
@@ -261,7 +261,7 @@ export function MultiSelect({
                               {isSelected ? (
                                 <MdCheckBox
                                   size={24}
-                                  className="fill-secondary-signature-100"
+                                  className="fill-accent-100"
                                 />
                               ) : (
                                 <MdCheckBoxOutlineBlank size={24} />
@@ -287,7 +287,7 @@ export function MultiSelect({
                             className={`flex flex-row p-2 accent-hover group rounded-md
                       ${
                         highlightedIndex === filteredOpts.length + 1
-                          ? "bg-secondary-signature-100/30 text-primary-100"
+                          ? "bg-accent-100/30 text-primary-100"
                           : ""
                       }
                       `}
