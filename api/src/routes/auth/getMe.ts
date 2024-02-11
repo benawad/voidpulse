@@ -12,9 +12,7 @@ export const getMe = publicProcedure.query(async ({ ctx }) => {
     const { userId, user: maybeUser } = await checkTokens(id, rid);
     if (maybeUser) {
       return {
-        user: {
-          id: maybeUser.id,
-        },
+        user: selectUserFields(maybeUser),
       };
     }
 
