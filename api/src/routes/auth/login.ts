@@ -7,6 +7,7 @@ import argon2d from "argon2";
 import { __prod__ } from "../../constants/prod";
 import { sendAuthCookies } from "../../utils/createAuthTokens";
 import { TRPCError } from "@trpc/server";
+import { selectUserFields } from "../../utils/selectUserFields";
 
 export const login = publicProcedure
   .input(
@@ -23,8 +24,8 @@ export const login = publicProcedure
     if (!user) {
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "User not found"
-      })
+        message: "User not found",
+      });
     }
 
     try {
@@ -32,21 +33,19 @@ export const login = publicProcedure
       if (!valid) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Invalid password"
-        })
+          message: "Invalid password",
+        });
       }
     } catch (err) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: err.message
-      })
+        message: err.message,
+      });
     }
 
     sendAuthCookies(ctx.res, user);
 
     return {
-      user: {
-        id: user.id,
-      },
+      user: selectUserFields(user),
     };
   });

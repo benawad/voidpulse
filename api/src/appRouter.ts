@@ -21,6 +21,7 @@ import { getPropKeys } from "./routes/charts/getPropKeys";
 import { createChart } from "./routes/charts/createChart";
 import { getCharts } from "./routes/charts/getCharts";
 import { updateChart } from "./routes/charts/updateChart";
+import { updateMe } from "./routes/auth/updateMe";
 
 export const appRouter = t.router({
   getProjects,
@@ -38,6 +39,7 @@ export const appRouter = t.router({
   createChart,
   getCharts,
   updateChart,
+  updateMe,
 });
 
 export const app = express();

@@ -3,6 +3,7 @@ import { db } from "../../db";
 import { users } from "../../schema/users";
 import { publicProcedure } from "../../trpc";
 import { checkTokens } from "../../utils/createAuthTokens";
+import { selectUserFields } from "../../utils/selectUserFields";
 
 export const getMe = publicProcedure.query(async ({ ctx }) => {
   const { id, rid } = ctx.req.cookies;
@@ -22,11 +23,7 @@ export const getMe = publicProcedure.query(async ({ ctx }) => {
     });
 
     return {
-      user: user
-        ? {
-            id: user.id,
-          }
-        : null,
+      user: user ? selectUserFields(user) : null,
     };
   } catch {
     return {

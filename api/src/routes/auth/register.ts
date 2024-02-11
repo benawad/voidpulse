@@ -11,6 +11,7 @@ import { boards } from "../../schema/boards";
 import * as emoji from "node-emoji";
 import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { selectUserFields } from "../../utils/selectUserFields";
 
 export const register = publicProcedure
   .input(
@@ -76,9 +77,7 @@ export const register = publicProcedure
     sendAuthCookies(ctx.res, newUser);
 
     return {
-      user: {
-        id: newUser.id,
-      },
+      user: selectUserFields(newUser),
       project,
       board,
     };

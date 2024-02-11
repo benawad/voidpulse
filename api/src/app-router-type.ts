@@ -102,3 +102,7 @@ export enum RetentionNumFormat {
   percent = 1,
   rawCount,
 }
+
+export enum ThemeId {
+  default = 1,
+}

@@ -10,6 +10,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   refreshTokenVersion: integer("token_version").notNull().default(0),
   passwordHash: text("password_hash").notNull(),
+  themeId: integer("theme_id"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
