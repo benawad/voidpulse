@@ -1,12 +1,20 @@
-import React, { useEffect, useRef } from "react";
-import { Bar } from "react-chartjs-2";
 import Chart, { ChartData } from "chart.js/auto";
+import React, { useEffect, useRef, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import config from "../../../../tailwind.config";
 import { colorOrder } from "./ChartStyle";
+const colors = config.theme.extend.colors;
 
 export const FunnelChart: React.FC<{
   data: ChartData<"bar", number[], string>;
 }> = ({ data }) => {
-  const chartRef = useRef<any>(null);
+  const chartRef = useRef<Chart<"bar", number[], string>>(null);
+  const [labelPositions, setLabelPositions] = useState<
+    {
+      x: number;
+      y: number;
+    }[][]
+  >([]);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -27,51 +35,102 @@ export const FunnelChart: React.FC<{
     }
   }, [data]);
 
-  // const data = {
-  //   labels: ["Stage 1", "Stage 2", "Stage 3"],
-  //   datasets: [
-  //     {
-  //       label: "Completed",
-  //       data: [300, 200, 100], // number of people who completed each stage
-  //       backgroundColor: colorOrder[0],
-  //       stack: "stack1",
-  //     },
-  //     {
-  //       label: "Completed2",
-  //       data: [250, 150, 50],
-  //       backgroundColor: colorOrder[1],
-  //       stack: "stack2",
-  //     },
-  //     {
-  //       label: "Dropped Off",
-  //       data: [0, 100, 100], // number of people who dropped off after each stage
-  //       backgroundColor: "",
-  //       stack: "stack1",
-  //     },
-  //     {
-  //       label: "Dropped Off2",
-  //       data: [0, 100, 100],
-  //       backgroundColor: "",
-  //       stack: "stack2",
-  //     },
-  //   ],
-  // };
-
   return (
-    <Bar
-      ref={chartRef}
-      data={data}
-      options={{
-        scales: {
-          x: {
-            stacked: true,
+    <div>
+      <Bar
+        ref={chartRef}
+        data={data}
+        plugins={[
+          {
+            id: "calculateLabelPositions",
+            afterDraw: (chart) => {
+              const newLabelPositions = chart.data.datasets.map(
+                (dataset, datasetIndex) => {
+                  const meta = chart.getDatasetMeta(datasetIndex);
+                  return meta.data.map((element) => {
+                    const canvasPosition = chart.canvas.getBoundingClientRect();
+                    return {
+                      x: element.x + canvasPosition.left + window.scrollX,
+                      y: element.y + canvasPosition.top + window.scrollY - 10, // Adjust as needed
+                    };
+                  });
+                }
+              );
+              setLabelPositions(newLabelPositions);
+            },
           },
-          y: {
-            stacked: true,
+        ]}
+        options={{
+          animation: false,
+          scales: {
+            x: {
+              stacked: true,
+              grid: {
+                drawOnChartArea: false,
+                lineWidth: 1,
+                color: [colors.primary[800]],
+              },
+              ticks: {
+                color: [colors.primary[500]],
+                autoSkip: true,
+                maxRotation: 0,
+                maxTicksLimit: 5,
+                padding: 4,
+              },
+            },
+            //Y axis
+            y: {
+              stacked: true,
+              grid: {
+                color: [colors.primary[800]],
+              },
+              ticks: {
+                color: [colors.primary[500]],
+                padding: 16,
+                maxTicksLimit: 5,
+                callback: function (value) {
+                  return `${value}%`;
+                },
+              },
+              border: {
+                color: "transparent",
+              },
+            },
           },
-        },
-        backgroundColor: "transparent",
-      }}
-    />
+          backgroundColor: "transparent",
+        }}
+      />
+      {labelPositions.map((positions, datasetIndex) => {
+        return positions.map((pos, index) => {
+          const info = (data.datasets[datasetIndex] as any).inlineLabels?.[
+            index
+          ];
+
+          if (!info) {
+            return null;
+          }
+
+          return (
+            <div
+              key={datasetIndex}
+              style={{
+                position: "absolute",
+                left: `${pos.x}px`,
+                top: `${pos.y - 10}px`,
+                transform: "translateX(-50%)", // Center horizontally
+                padding: "4px 8px",
+                backgroundColor: "black",
+                color: "white",
+                borderRadius: "4px",
+                fontSize: "12px",
+              }}
+            >
+              <div>{info.percent}%</div>
+              <div>{info.value.toLocaleString()}</div>
+            </div>
+          );
+        });
+      })}
+    </div>
   );
 };

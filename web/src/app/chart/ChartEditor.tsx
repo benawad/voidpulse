@@ -419,6 +419,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 <FunnelChart
                   data={transformToFunnelChartData(
                     data.datas,
+                    data.labels,
                     visibleDataMap,
                     highlightedRow
                   )}

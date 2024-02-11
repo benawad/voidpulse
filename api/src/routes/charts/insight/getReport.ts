@@ -63,6 +63,7 @@ export const getReport = protectedProcedure
         return {
           reportType,
           chartType,
+          labels: metrics.map((x, i) => `${i + 1} ${x.event.name}`),
           datas:
             metrics.length < 2
               ? []

@@ -3,16 +3,23 @@ import { RouterOutput } from "./trpc";
 
 export const transformToFunnelChartData = (
   datas: Extract<RouterOutput["getReport"]["datas"], { steps: any[] }[]>,
+  labels: string[],
   visibleDataMap?: Record<string, boolean> | null,
   highlightedId?: string | null
 ) => {
   return {
-    labels: datas[0].steps.map((_, i) => `Step ${i + 1}`),
+    labels,
     datasets: [
       ...datas.map((data, i) => {
         return {
           label: data.breakdown || `Step ${i + 1}`,
           data: data.steps.map((x) => x.percent),
+          inlineLabels: data.steps.map((x, k) => {
+            return {
+              percent: x.percent,
+              value: x.value,
+            };
+          }),
           backgroundColor: colorOrder[i % colorOrder.length],
           stack: `stack${i}`,
         };
