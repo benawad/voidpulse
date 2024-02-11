@@ -1,11 +1,16 @@
-import { barChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
-export const transformToBarChartData = (
-  datas: Extract<RouterOutput["getReport"]["datas"], { value: number }[]>,
-  visibleDataMap?: Record<string, boolean> | null,
-  highlightedId?: string | null
-) => {
+export const transformToBarChartData = ({
+  datas,
+  visibleDataMap,
+  highlightedId,
+  barChartStyle,
+}: {
+  datas: Extract<RouterOutput["getReport"]["datas"], { value: number }[]>;
+  visibleDataMap?: Record<string, boolean> | null;
+  highlightedId?: string | null;
+  barChartStyle: any;
+}) => {
   const filteredData = datas.filter((data, i) => {
     return i < 10;
   });

@@ -105,4 +105,8 @@ export enum RetentionNumFormat {
 
 export enum ThemeId {
   default = 1,
+  mysticalFire,
+  infiniteVoid,
+  deepLava,
+  electricOcean,
 }

@@ -1,12 +1,18 @@
-import { barChartStyle, colorOrder } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
-export const transformToFunnelChartData = (
-  datas: Extract<RouterOutput["getReport"]["datas"], { steps: any[] }[]>,
-  labels: string[],
-  visibleDataMap?: Record<string, boolean> | null,
-  highlightedId?: string | null
-) => {
+export const transformToFunnelChartData = ({
+  datas,
+  labels,
+  colorOrder,
+  visibleDataMap,
+  highlightedId,
+}: {
+  datas: Extract<RouterOutput["getReport"]["datas"], { steps: any[] }[]>;
+  labels: string[];
+  colorOrder: string[];
+  visibleDataMap?: Record<string, boolean> | null;
+  highlightedId?: string | null;
+}) => {
   return {
     labels,
     datasets: [

@@ -9,10 +9,8 @@ import {
 } from "chart.js";
 import React from "react";
 import { Line } from "react-chartjs-2";
-import config from "../../../../tailwind.config";
-import { stripeTooltipPlugin, verticalLinePlugin } from "./ChartStyle";
-import { MetricMeasurement } from "@voidpulse/api";
-const colors = config.theme.extend.colors;
+import { useCurrTheme } from "../../themes/useCurrTheme";
+import { stripeTooltipPlugin } from "./ChartStyle";
 
 // Register ChartJS components using ChartJS.register
 ChartJS.register(
@@ -34,6 +32,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   disableAnimations,
   yPercent,
 }) => {
+  const { theme } = useCurrTheme();
   return (
     <div className="w-full">
       <Line
@@ -63,9 +62,9 @@ export const LineChart: React.FC<LineChartProps> = ({
             tooltip: {
               mode: "nearest",
               intersect: false,
-              borderColor: colors.primary[700],
+              borderColor: theme.primary[700],
               borderWidth: 1,
-              backgroundColor: colors.primary[800],
+              backgroundColor: theme.primary[800],
               padding: 16,
               displayColors: false,
               boxPadding: 8,
@@ -114,11 +113,11 @@ export const LineChart: React.FC<LineChartProps> = ({
                 //The little legs at the bottom of the chart
                 drawOnChartArea: false,
                 lineWidth: 1,
-                color: [colors.primary[800]],
+                color: [theme.primary[800]],
               },
               //The labels and increments
               ticks: {
-                color: [colors.primary[500]],
+                color: [theme.primary[500]],
                 // drawTicks: true,
                 autoSkip: true,
                 maxRotation: 0,
@@ -130,10 +129,10 @@ export const LineChart: React.FC<LineChartProps> = ({
             y: {
               stackWeight: 1,
               grid: {
-                color: [colors.primary[800]],
+                color: [theme.primary[800]],
               },
               ticks: {
-                color: [colors.primary[500]],
+                color: [theme.primary[500]],
                 padding: 16,
                 maxTicksLimit: 5,
                 callback: yPercent
@@ -164,7 +163,30 @@ export const LineChart: React.FC<LineChartProps> = ({
               }
             : {}),
         }}
-        plugins={[verticalLinePlugin, stripeTooltipPlugin]}
+        plugins={[
+          {
+            id: "verticalLine",
+            beforeDatasetsDraw: (chart) => {
+              const tooltip = chart.tooltip;
+              if (tooltip && tooltip.getActiveElements().length > 0) {
+                const ctx = chart.ctx;
+                const x = tooltip.getActiveElements()[0].element.x;
+                const topY = chart.scales.y.top;
+                const bottomY = chart.scales.y.bottom;
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(x, topY);
+                ctx.lineTo(x, bottomY);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = theme.primary[800];
+                ctx.stroke();
+                ctx.restore();
+              }
+            },
+          },
+          stripeTooltipPlugin,
+        ]}
       />
     </div>
   );

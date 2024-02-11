@@ -3,7 +3,6 @@ import { ChartType } from "@voidpulse/api";
 import "chart.js/auto";
 import Link from "next/link";
 import React from "react";
-import config from "../../../../tailwind.config";
 import { BarChart } from "../../ui/charts/BarChart";
 import { DonutChart } from "../../ui/charts/DonutChart";
 import { LineChart } from "../../ui/charts/LineChart";
@@ -15,8 +14,6 @@ import { RouterOutput } from "../../utils/trpc";
 interface ChartThumbnailProps {
   chart: RouterOutput["getCharts"]["charts"][0];
 }
-
-const colors = config.theme.extend.colors;
 
 export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   let chartToDisplay;

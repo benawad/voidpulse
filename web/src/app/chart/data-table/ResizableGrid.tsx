@@ -12,8 +12,8 @@ import {
   MdChevronRight,
 } from "react-icons/md";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
-import { colorOrder } from "../../ui/charts/ChartStyle";
 import { Resizers } from "./Resizers";
+import { useColorOrder } from "../../themes/useColorOrder";
 
 interface DataItem {
   [key: string]: any; // Adjust the type according to your data structure
@@ -42,6 +42,7 @@ const ResizableGrid: FC<ResizableGridProps> = ({
   setExpandedDataRows,
   expandedDataRows,
 }) => {
+  const colorOrder = useColorOrder();
   const table = useReactTable({
     data: datas,
     defaultColumn: {

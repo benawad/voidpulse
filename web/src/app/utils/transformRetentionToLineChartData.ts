@@ -1,17 +1,26 @@
 import { ChartType, DateHeader, RetentionNumFormat } from "@voidpulse/api";
-import { colorOrder, lineChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
-export const transformRetentionToLineChartData = (
+export const transformRetentionToLineChartData = ({
+  datas,
+  colorOrder,
+  retHeaders,
+  visibleDataMap,
+  highlightedId,
+  retentionNumFormat,
+  lineChartStyle,
+}: {
   datas: Extract<
     RouterOutput["getReport"]["datas"],
     { averageRetentionByDay: any }[]
-  >,
-  retHeaders: DateHeader[],
-  visibleDataMap?: Record<string, boolean> | null,
-  highlightedId?: string | null,
-  retentionNumFormat?: RetentionNumFormat | null
-) => {
+  >;
+  lineChartStyle: any;
+  colorOrder: string[];
+  retHeaders: DateHeader[];
+  visibleDataMap?: Record<string, boolean> | null;
+  highlightedId?: string | null;
+  retentionNumFormat?: RetentionNumFormat | null;
+}) => {
   return {
     labels: retHeaders.map((d) => d.label),
     datasets: datas

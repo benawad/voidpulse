@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { PiCaretLeftFill } from "react-icons/pi";
-import config from "../../../../tailwind.config";
 import { FaPlus, FaUserGroup } from "react-icons/fa6";
 import { LineSeparator } from "../../ui/LineSeparator";
 import { RouterOutput } from "../../utils/trpc";

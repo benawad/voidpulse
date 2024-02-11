@@ -7,22 +7,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
-import { useChartStateContext } from "../../../providers/ChartStateProvider";
-import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
-import { Button } from "../ui/Button";
-import { Dropdown } from "../ui/Dropdown";
-import { EditableTextField } from "../ui/EditableTextField";
-import { LineChart } from "../ui/charts/LineChart";
-import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
-import { transformToLineChartData } from "../utils/transformToLineChartData";
-import { RouterOutput, trpc } from "../utils/trpc";
-import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
-import { ChartDateRangePicker } from "./ChartDateRangePicker";
-import { ChartEditorSidebar } from "./ChartEditorSidebar";
-import { ChartDataTable } from "./data-table/ChartDataTable";
-import { DonutChart } from "../ui/charts/DonutChart";
-import { Doughnut } from "react-chartjs-2";
-import { donutChartStyle } from "../ui/charts/ChartStyle";
+import { MdOutlineCalendarMonth } from "react-icons/md";
 import {
   PiChartBar,
   PiChartDonut,
@@ -30,14 +15,30 @@ import {
   PiSuitcaseSimple,
 } from "react-icons/pi";
 import { WiDaySunny } from "react-icons/wi";
-import { MdOutlineCalendarMonth } from "react-icons/md";
-import { BarChart } from "../ui/charts/BarChart";
+import { useChartStateContext } from "../../../providers/ChartStateProvider";
+import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
+import { useColorOrder } from "../themes/useColorOrder";
+import { useLineChartStyle } from "../themes/useLineChartStyle";
+import { Button } from "../ui/Button";
+import { Dropdown } from "../ui/Dropdown";
+import { EditableTextField } from "../ui/EditableTextField";
 import { HintCallout } from "../ui/HintCallout";
-import { transformToBarChartData } from "../utils/transformToBarChartData";
-import { transformRetentionToLineChartData } from "../utils/transformRetentionToLineChartData";
-import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
+import { BarChart } from "../ui/charts/BarChart";
+import { DonutChart } from "../ui/charts/DonutChart";
 import { FunnelChart } from "../ui/charts/FunnelChart";
+import { LineChart } from "../ui/charts/LineChart";
+import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
+import { transformRetentionToLineChartData } from "../utils/transformRetentionToLineChartData";
+import { transformToBarChartData } from "../utils/transformToBarChartData";
 import { transformToFunnelChartData } from "../utils/transformToFunnelChartData";
+import { transformToLineChartData } from "../utils/transformToLineChartData";
+import { RouterOutput, trpc } from "../utils/trpc";
+import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
+import { ChartDateRangePicker } from "./ChartDateRangePicker";
+import { ChartEditorSidebar } from "./ChartEditorSidebar";
+import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
+import { ChartDataTable } from "./data-table/ChartDataTable";
+import { useCurrTheme } from "../themes/useCurrTheme";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -64,6 +65,9 @@ type RetSubRow = {
 };
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
+  const lineChartStyle = useLineChartStyle();
+  const colorOrder = useColorOrder();
+  const { theme } = useCurrTheme();
   const [
     {
       metrics,
@@ -168,7 +172,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     return retData;
   }, [data, expandedDataRows]);
   const { board } = useFetchProjectBoards();
-  const [highlightedRow, setHighlightedRow] = React.useState<string | null>(
+  const [highlightedRowId, setHighlightedRow] = React.useState<string | null>(
     null
   );
 
@@ -327,11 +331,12 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       from: from?.toISOString(),
                       to: to?.toISOString(),
                       visibleDataMap,
-                      data: transformToLineChartData(
-                        data.datas,
-                        data.dateHeaders,
-                        visibleDataMap
-                      ),
+                      data: transformToLineChartData({
+                        datas: data.datas,
+                        dateHeader: data.dateHeaders,
+                        colorOrder,
+                        visibleDataMap,
+                      }),
                     };
                     if (chart) {
                       updateChart({
@@ -366,13 +371,15 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               <LineChart
                 disableAnimations
                 yPercent={retentionNumFormat !== RetentionNumFormat.rawCount}
-                data={transformRetentionToLineChartData(
-                  data.datas,
-                  data.retentionHeaders,
+                data={transformRetentionToLineChartData({
+                  datas: data.datas,
+                  colorOrder,
+                  retHeaders: data.retentionHeaders,
                   visibleDataMap,
-                  highlightedRow,
-                  retentionNumFormat
-                )}
+                  highlightedId: highlightedRowId,
+                  retentionNumFormat,
+                  lineChartStyle,
+                })}
               />
             ) : null}
 
@@ -382,12 +389,14 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             data.chartType === ChartType.line ? (
               <LineChart
                 disableAnimations
-                data={transformToLineChartData(
-                  data.datas,
-                  data.dateHeaders,
+                data={transformToLineChartData({
+                  datas: data.datas,
+                  dateHeader: data.dateHeaders,
+                  colorOrder,
                   visibleDataMap,
-                  highlightedRow
-                )}
+                  highlightedId: highlightedRowId,
+                  lineChartStyle,
+                })}
               />
             ) : null}
 
@@ -403,7 +412,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     ),
                     datasets: [
                       {
-                        ...donutChartStyle,
+                        backgroundColor: [...colorOrder],
+                        borderColor: ["transparent"],
+                        hoverOffset: 4,
                         label: data.datas[0].eventLabel,
                         data: data.datas.map((x) => x.value),
                       },
@@ -414,22 +425,23 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             ) : null}
 
             {/* Funnel bar graph */}
-            {data?.datas.length && reportType === ReportType.funnel ? (
+            {data?.datas.length && data.reportType === ReportType.funnel ? (
               <div>
                 <FunnelChart
-                  data={transformToFunnelChartData(
-                    data.datas,
-                    data.labels,
+                  data={transformToFunnelChartData({
+                    datas: data.datas,
+                    labels: data.labels,
+                    colorOrder,
                     visibleDataMap,
-                    highlightedRow
-                  )}
+                    highlightedId: highlightedRowId,
+                  })}
                 />
               </div>
             ) : null}
 
             {/* Insight bar graph */}
             {data?.datas.length &&
-            reportType === ReportType.insight &&
+            data.reportType === ReportType.insight &&
             data.chartType === ChartType.bar ? (
               <div>
                 {breakdowns.length === 0 && metrics.length < 2 ? (
@@ -439,11 +451,19 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   </HintCallout>
                 ) : null}
                 <BarChart
-                  data={transformToBarChartData(
-                    data.datas,
+                  data={transformToBarChartData({
+                    datas: data.datas,
                     visibleDataMap,
-                    highlightedRow
-                  )}
+                    highlightedId: highlightedRowId,
+                    barChartStyle: {
+                      backgroundColor: [...colorOrder],
+                      borderColor: ["transparent"],
+                      borderWidth: 2,
+                      borderRadius: 4,
+                      hoverBorderColor: [theme.primary[300]],
+                      hoverBorderRadius: 4,
+                    },
+                  })}
                 />
               </div>
             ) : null}
@@ -453,7 +473,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             <ChartDataTable
               key={retentionNumFormat}
               datas={retData}
-              highlightedRow={highlightedRow}
+              highlightedRow={highlightedRowId}
               setHighlightedRow={setHighlightedRow}
               expandedDataRows={expandedDataRows}
               setExpandedDataRows={setExpandedDataRows}
@@ -466,8 +486,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     row.isSubrow
                       ? row.dt
                       : breakdowns[0]?.propName
-                      ? row.breakdown
-                      : row.eventLabel,
+                        ? row.breakdown
+                        : row.eventLabel,
                   meta: {
                     expandable: true,
                     checkbox: true,
@@ -519,7 +539,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           data.chartType === ChartType.line ? (
             <ChartDataTable
               datas={data.datas}
-              highlightedRow={highlightedRow}
+              highlightedRow={highlightedRowId}
               setHighlightedRow={setHighlightedRow}
               stickyColumns={[
                 {

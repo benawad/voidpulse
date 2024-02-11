@@ -1,13 +1,14 @@
 import Chart, { ChartData } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import config from "../../../../tailwind.config";
-import { colorOrder } from "./ChartStyle";
-const colors = config.theme.extend.colors;
+import { useCurrTheme } from "../../themes/useCurrTheme";
+import { useColorOrder } from "../../themes/useColorOrder";
 
 export const FunnelChart: React.FC<{
   data: ChartData<"bar", number[], string>;
 }> = ({ data }) => {
+  const { theme } = useCurrTheme();
+  const colorOrder = useColorOrder();
   const chartRef = useRef<Chart<"bar", number[], string>>(null);
   const [labelPositions, setLabelPositions] = useState<
     {
@@ -68,10 +69,10 @@ export const FunnelChart: React.FC<{
               grid: {
                 drawOnChartArea: false,
                 lineWidth: 1,
-                color: [colors.primary[800]],
+                color: [theme.primary[800]],
               },
               ticks: {
-                color: [colors.primary[500]],
+                color: [theme.primary[500]],
                 autoSkip: true,
                 maxRotation: 0,
                 maxTicksLimit: 5,
@@ -82,10 +83,10 @@ export const FunnelChart: React.FC<{
             y: {
               stacked: true,
               grid: {
-                color: [colors.primary[800]],
+                color: [theme.primary[800]],
               },
               ticks: {
-                color: [colors.primary[500]],
+                color: [theme.primary[500]],
                 padding: 16,
                 maxTicksLimit: 5,
                 callback: function (value) {

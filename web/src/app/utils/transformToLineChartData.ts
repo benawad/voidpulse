@@ -1,16 +1,24 @@
 import { ChartType, DateHeader, MetricMeasurement } from "@voidpulse/api";
-import { colorOrder, lineChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
-export const transformToLineChartData = (
+export const transformToLineChartData = ({
+  datas,
+  dateHeader,
+  colorOrder,
+  visibleDataMap,
+  highlightedId,
+  lineChartStyle,
+}: {
   datas: Extract<
     RouterOutput["getReport"]["datas"],
     { average_count: number }[]
-  >,
-  dateHeader: DateHeader[],
-  visibleDataMap?: Record<string, boolean> | null,
-  highlightedId?: string | null
-) => {
+  >;
+  dateHeader: DateHeader[];
+  lineChartStyle: any;
+  colorOrder: string[];
+  visibleDataMap?: Record<string, boolean> | null;
+  highlightedId?: string | null;
+}) => {
   return {
     labels: dateHeader.map((d) => d.label),
     datasets: datas
