@@ -36,6 +36,8 @@ import { HintCallout } from "../ui/HintCallout";
 import { transformToBarChartData } from "../utils/transformToBarChartData";
 import { transformRetentionToLineChartData } from "../utils/transformRetentionToLineChartData";
 import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
+import { FunnelChart } from "../ui/charts/FunnelChart";
+import { transformToFunnelChartData } from "../utils/transformToFunnelChartData";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -407,6 +409,19 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       },
                     ],
                   }}
+                />
+              </div>
+            ) : null}
+
+            {/* Funnel bar graph */}
+            {data?.datas.length && reportType === ReportType.funnel ? (
+              <div>
+                <FunnelChart
+                  data={transformToFunnelChartData(
+                    data.datas,
+                    visibleDataMap,
+                    highlightedRow
+                  )}
                 />
               </div>
             ) : null}

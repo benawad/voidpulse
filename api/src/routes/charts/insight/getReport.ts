@@ -13,6 +13,7 @@ import {
 import { getDateHeaders } from "../../../utils/getDateHeaders";
 import { queryBarChartMetric } from "../../../utils/query-metric/queryBarChartMetric";
 import { queryRetention } from "../../../utils/query-metric/queryRetention";
+import { queryFunnel } from "../../../utils/query-metric/queryFunnel";
 
 export type InsightData = { day: string; count: number };
 
@@ -57,6 +58,25 @@ export const getReport = protectedProcedure
         from,
         to
       );
+
+      if (ReportType.funnel === reportType) {
+        return {
+          reportType,
+          chartType,
+          datas:
+            metrics.length < 2
+              ? []
+              : await queryFunnel({
+                  projectId,
+                  from,
+                  to,
+                  metrics,
+                  globalFilters,
+                  breakdowns,
+                  timeRangeType,
+                }),
+        };
+      }
 
       if (ReportType.retention === reportType) {
         return {

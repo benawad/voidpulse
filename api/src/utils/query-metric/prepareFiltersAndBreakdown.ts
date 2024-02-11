@@ -39,12 +39,6 @@ export const prepareFiltersAndBreakdown = async ({
     paramHandler
   );
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
-  const query_params: any = {
-    projectId,
-    ...getDateRange(timeRangeType, from, to),
-    eventName: metric.event.value,
-    ...paramHandler.getParams(),
-  };
   const joinSection =
     needsPeopleJoin ||
     (breakdowns.length && breakdowns[0].propOrigin === PropOrigin.user)
@@ -59,7 +53,7 @@ export const prepareFiltersAndBreakdown = async ({
         ? `AND name = {eventName:String}`
         : ``
     }
-    ${whereStrings.length ? `AND ${whereStrings.join(whereCombiner)}` : ""}
+    ${whereStrings.length ? `AND (${whereStrings.join(whereCombiner)})` : ""}
     `;
   let breakdownSelect = "";
   let breakdownBucketMinMaxQuery = "";
@@ -78,7 +72,12 @@ export const prepareFiltersAndBreakdown = async ({
       }
       const resp0 = await clickhouse.query({
         query,
-        query_params,
+        query_params: {
+          projectId,
+          ...getDateRange(timeRangeType, from, to),
+          eventName: metric.event.value,
+          ...paramHandler.getParams(),
+        },
       });
       const {
         data: [r0],
@@ -108,7 +107,12 @@ export const prepareFiltersAndBreakdown = async ({
   }
 
   return {
-    query_params,
+    query_params: {
+      projectId,
+      ...getDateRange(timeRangeType, from, to),
+      eventName: metric.event.value,
+      ...paramHandler.getParams(),
+    },
     joinSection,
     whereSection,
     breakdownSelect,

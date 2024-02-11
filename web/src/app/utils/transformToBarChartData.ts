@@ -1,9 +1,8 @@
-import { ChartType, DateHeader } from "@voidpulse/api";
-import { barChartStyle, colorOrder } from "../ui/charts/ChartStyle";
+import { barChartStyle } from "../ui/charts/ChartStyle";
 import { RouterOutput } from "./trpc";
 
 export const transformToBarChartData = (
-  datas: Extract<RouterOutput["getInsight"]["datas"], { value: number }[]>,
+  datas: Extract<RouterOutput["getReport"]["datas"], { value: number }[]>,
   visibleDataMap?: Record<string, boolean> | null,
   highlightedId?: string | null
 ) => {

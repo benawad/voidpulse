@@ -95,7 +95,7 @@ export const queryRetention = async ({
   }
   WHERE time >= toDate({from:DateTime}) AND time <= toDate({to:DateTime})
   AND name = {startEventName:String} AND e.project_id = {projectId:String}
-  ${whereStrings.length ? `AND ${whereStrings.join(whereCombiner)}` : ""}`;
+  ${whereStrings.length ? `AND (${whereStrings.join(whereCombiner)})` : ""}`;
   const breakdownSelect = breakdowns.length
     ? breakdownSelectProperty(breakdowns[0], paramHandler)
     : "";
@@ -147,7 +147,7 @@ export const queryRetention = async ({
     JOIN cohort_users c ON e.distinct_id = c.distinct_id
     WHERE toDate(e.time) >= c.cohort_date AND toDate(e.time) <= toDate({to:DateTime})  -- Use actual DateTime value
     AND name = {endEventName:String} AND e.project_id = {projectId:String}
-    ${whereStrings2.length ? `AND ${whereStrings2.join(whereCombiner2)}` : ""}
+    ${whereStrings2.length ? `AND (${whereStrings2.join(whereCombiner2)})` : ""}
   ),
   retention_counts AS (
     SELECT
