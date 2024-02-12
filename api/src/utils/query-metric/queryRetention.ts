@@ -1,5 +1,6 @@
 import {
   ANY_EVENT_VALUE,
+  BreakdownType,
   ChartTimeRangeType,
   DataType,
   DateHeader,
@@ -34,7 +35,7 @@ import { breakdownSelectProperty } from "./breakdownSelectProperty";
 // };
 
 interface RetentionEntry {
-  breakdown?: string;
+  breakdown?: BreakdownType;
   cohort_date: string;
   days_after_cohort: number;
   retained_users: number;
@@ -45,7 +46,7 @@ interface RetentionEntry {
 interface RetentionBreakdownGroup {
   id: string;
   eventLabel: string;
-  breakdown?: string;
+  breakdown?: BreakdownType;
   cohortSize: number;
   averageRetentionByDay: Record<
     number,

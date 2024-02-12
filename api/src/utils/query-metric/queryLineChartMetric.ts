@@ -1,5 +1,6 @@
 import {
   ANY_EVENT_VALUE,
+  BreakdownType,
   ChartTimeRangeType,
   DataType,
   FilterAndOr,
@@ -26,7 +27,7 @@ type BreakdownData = {
   eventLabel: string;
   measurement: MetricMeasurement;
   lineChartGroupByTimeType?: LineChartGroupByTimeType;
-  breakdown?: any;
+  breakdown?: BreakdownType;
   average_count: number;
   data: Record<string, number>;
 };

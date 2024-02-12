@@ -11,6 +11,10 @@ const dateHeaderSchema = z.object({
   fullLabel: z.string(),
   lookupValue: z.string(),
 });
+const breakdownSchema = z
+  .union([z.string(), z.number(), z.boolean()])
+  .nullable()
+  .optional();
 
 export const chartDataSchema = z.union([
   // funnel
@@ -20,7 +24,7 @@ export const chartDataSchema = z.union([
     labels: z.array(z.string()),
     datas: z.array(
       z.object({
-        breakdown: z.string().optional(),
+        breakdown: breakdownSchema.optional(),
         steps: z.array(
           z.object({
             value: z.number(),
@@ -39,7 +43,7 @@ export const chartDataSchema = z.union([
       z.object({
         id: z.string(),
         eventLabel: z.string(),
-        breakdown: z.string().optional(),
+        breakdown: breakdownSchema.optional(),
         cohortSize: z.number(),
         averageRetentionByDay: z.record(
           z.object({
@@ -52,7 +56,7 @@ export const chartDataSchema = z.union([
             cohortSize: z.number(),
             retentionByDay: z.record(
               z.object({
-                breakdown: z.string().optional(),
+                breakdown: breakdownSchema.optional(),
                 cohort_date: z.string(),
                 days_after_cohort: z.number(),
                 retained_users: z.number(),
@@ -73,7 +77,7 @@ export const chartDataSchema = z.union([
     datas: z.array(
       z.object({
         id: z.string(),
-        breakdown: z.string().optional(),
+        breakdown: breakdownSchema.optional(),
         eventLabel: z.string(),
         measurement: z.nativeEnum(MetricMeasurement),
         lineChartGroupByTimeType: z
@@ -94,7 +98,7 @@ export const chartDataSchema = z.union([
         eventLabel: z.string(),
         measurement: z.nativeEnum(MetricMeasurement),
         value: z.number(),
-        breakdown: z.string().optional(),
+        breakdown: breakdownSchema.optional(),
       })
     ),
   }),

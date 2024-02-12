@@ -110,3 +110,5 @@ export enum ThemeId {
   deepLava,
   electricOcean,
 }
+
+export type BreakdownType = string | number;

@@ -1,5 +1,9 @@
 import { v4 } from "uuid";
-import { ChartTimeRangeType, MetricMeasurement } from "../../app-router-type";
+import {
+  BreakdownType,
+  ChartTimeRangeType,
+  MetricMeasurement,
+} from "../../app-router-type";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
 import { __prod__ } from "../../constants/prod";
 import {
@@ -13,7 +17,7 @@ type BarData = {
   id: string;
   eventLabel: string;
   measurement: MetricMeasurement;
-  breakdown?: string;
+  breakdown?: BreakdownType;
   value: number;
 };
 
@@ -71,7 +75,7 @@ export const queryBarChartMetric = async ({
   });
   const { data } =
     await resp.json<
-      ClickHouseQueryResponse<{ count: number; breakdown?: any }>
+      ClickHouseQueryResponse<{ count: number; breakdown?: BreakdownType }>
     >();
   const eventLabel = metricToEventLabel(metric);
 

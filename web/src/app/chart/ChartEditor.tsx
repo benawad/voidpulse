@@ -1,4 +1,5 @@
 import {
+  BreakdownType,
   ChartType,
   LineChartGroupByTimeType,
   ReportType,
@@ -57,7 +58,7 @@ type RetSubRow = {
       retained_users: number;
       cohort_size: number;
       retained_users_percent: number;
-      breakdown?: any;
+      breakdown?: BreakdownType;
     }
   >;
   cohortSize: number;

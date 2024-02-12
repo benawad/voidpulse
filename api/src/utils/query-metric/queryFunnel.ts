@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import {
+  BreakdownType,
   ChartTimeRangeType,
   FilterAndOr,
   MetricMeasurement,
@@ -158,7 +159,7 @@ GROUP BY breakdown`
   const { data } = await resp.json<
     ClickHouseQueryResponse<{
       [key: `step${number}_reached`]: number;
-      breakdown?: string;
+      breakdown?: BreakdownType;
     }>
   >();
 
