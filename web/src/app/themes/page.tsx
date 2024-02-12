@@ -56,7 +56,9 @@ function Page() {
               <div
                 className="mt-0 h-4 w-full"
                 style={{
-                  backgroundColor: accentColors ? accentColors["100"] : "",
+                  backgroundImage: accentColors
+                    ? `linear-gradient(to right, ${accentColors["100"]}, ${accentColors["200"]})`
+                    : "",
                 }}
               />
               {/* Theme name */}
@@ -68,6 +70,18 @@ function Page() {
               </div>
               {/* Little circles for all chart colors */}
               <div className="flex flex-row">
+                <div
+                  className="h-4 w-4 m-1 rounded-full"
+                  style={{
+                    backgroundColor: accentColors ? accentColors[100] : "",
+                  }}
+                />
+                <div
+                  className="h-4 w-4 m-1 rounded-full"
+                  style={{
+                    backgroundColor: flairColors ? flairColors[100] : "",
+                  }}
+                />
                 {chartColors
                   ? Object.keys(chartColors).map((key) => {
                       return (

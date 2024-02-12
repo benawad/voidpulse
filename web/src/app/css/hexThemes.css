@@ -35,29 +35,29 @@
   .mysticalFire {
     /* Default theme */
     /* Base colors */
-    --primary-100: #f1f1f7;
-    --primary-200: #d1d0db;
-    --primary-300: #b7b5c5;
-    --primary-400: #9c9aae;
-    --primary-500: #7d7b92;
-    --primary-600: #626076;
-    --primary-700: #403e54;
-    --primary-800: #343344;
-    --primary-900: #23222e;
-    --primary-1000: #0d0d13;
+    --primary-100: #eef1f8;
+    --primary-200: #ccd0dc;
+    --primary-300: #aab0c7;
+    --primary-400: #878fb1;
+    --primary-500: #646e9b;
+    --primary-600: #404e76;
+    --primary-700: #1d2f52;
+    --primary-800: #001a3f;
+    --primary-900: #00092c;
+    --primary-1000: #000016;
     /* Key accent colors */
-    --accent-100: #355ce9;
-    --accent-200: #2c3d95;
+    --accent-100: #184aff;
+    --accent-200: #0029bd;
     --flair-100: #40e4d8;
     --negative-100: #dc5068;
     /* Additional chart colors */
-    --chart-1: #dc5068;
-    --chart-2: #ef8c34;
+    --chart-1: #fb9bf9;
+    --chart-2: #ef347c;
     --chart-3: #f2bf3c;
-    --chart-4: #17b4a1;
-    --chart-5: #00b2ff;
-    --chart-6: #2b46a9;
-    --chart-7: #8c67f6;
+    --chart-4: #9cd5ce;
+    --chart-5: #c027b0;
+    --chart-6: #6183ff;
+    --chart-7: #4714d3;
   }
 
   .infiniteVoid {
@@ -76,16 +76,16 @@
     /* Key accent colors */
     --accent-100: #4d33e1;
     --accent-200: #1c0f65;
-    --flair-100: #ff00ee;
-    --negative-100: #dc5068;
+    --flair-100: #ff3bd8;
+    --negative-100: #ce1433;
     /* Additional chart colors */
-    --chart-1: #dc5068;
-    --chart-2: #ef8c34;
-    --chart-3: #f2bf3c;
-    --chart-4: #17b4a1;
-    --chart-5: #00b2ff;
-    --chart-6: #2b46a9;
-    --chart-7: #8c67f6;
+    --chart-1: #c10f5f;
+    --chart-2: #0077ff;
+    --chart-3: #8a2be2;
+    --chart-4: #00219a;
+    --chart-5: #9966cc;
+    --chart-6: #008080;
+    --chart-7: #8a9af7;
   }
 
   .deepLava {
@@ -102,16 +102,16 @@
     /* Key accent colors */
     --accent-100: #e02b6b;
     --accent-200: #b90c48;
-    --flair-100: #40e4d8;
+    --flair-100: #ffaa00;
     --negative-100: #dc5068;
     /* Additional chart colors */
-    --chart-1: #dc5068;
-    --chart-2: #ef8c34;
-    --chart-3: #f2bf3c;
-    --chart-4: #17b4a1;
-    --chart-5: #00b2ff;
-    --chart-6: #2b46a9;
-    --chart-7: #8c67f6;
+    --chart-1: #ff5733; /* Persimmon */
+    --chart-2: #48acc0; /* Caribbean blue  */
+    --chart-3: #870485; /* Deep plum */
+    --chart-4: #2d3b99; /* Cobalt */
+    --chart-5: #9b5de5; /* Lavender Purple */
+    --chart-6: #ffdd6c; /* Sunshine */
+    --chart-7: #820b2f; /* Crimson */
   }
 
   .electricOcean {
@@ -127,17 +127,17 @@
     --primary-900: #070165;
     --primary-1000: #000028;
     /* Key accent colors */
-    --accent-100: #3cbdd3;
+    --accent-100: #13c8e8;
     --accent-200: #0094ae;
-    --flair-100: #40e4d8;
+    --flair-100: #0044ff;
     --negative-100: #dc5068;
     /* Additional chart colors */
-    --chart-1: #dc5068;
-    --chart-2: #ef8c34;
-    --chart-3: #f2bf3c;
-    --chart-4: #17b4a1;
-    --chart-5: #00b2ff;
-    --chart-6: #2b46a9;
-    --chart-7: #8c67f6;
+    --chart-1: #d0ef34;
+    --chart-2: #ffa81c;
+    --chart-3: #fc387d;
+    --chart-4: #fc38e2;
+    --chart-5: #a600ff;
+    --chart-6: #005476;
+    --chart-7: #3dff9e;
   }
 }

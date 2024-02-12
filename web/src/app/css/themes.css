@@ -35,29 +35,29 @@
   .mysticalFire {
     /* Default theme */
     /* Base colors */
-    --primary-100: 241 241 247;
-    --primary-200: 209 208 219;
-    --primary-300: 183 181 197;
-    --primary-400: 156 154 174;
-    --primary-500: 125 123 146;
-    --primary-600: 98 96 118;
-    --primary-700: 64 62 84;
-    --primary-800: 52 51 68;
-    --primary-900: 35 34 46;
-    --primary-1000: 13 13 19;
+    --primary-100: 238 241 248;
+    --primary-200: 204 208 220;
+    --primary-300: 170 176 199;
+    --primary-400: 135 143 177;
+    --primary-500: 100 110 155;
+    --primary-600: 64 78 118;
+    --primary-700: 29 47 82;
+    --primary-800: 0 26 63;
+    --primary-900: 0 9 44;
+    --primary-1000: 0 0 22;
     /* Key accent colors */
-    --accent-100: 53 92 233;
-    --accent-200: 44 61 149;
+    --accent-100: 24 74 255;
+    --accent-200: 0 41 189;
     --flair-100: 64 228 216;
     --negative-100: 220 80 104;
     /* Additional chart colors */
-    --chart-1: 220 80 104;
-    --chart-2: 239 140 52;
+    --chart-1: 251 155 249;
+    --chart-2: 239 52 124;
     --chart-3: 242 191 60;
-    --chart-4: 23 180 161;
-    --chart-5: 0 178 255;
-    --chart-6: 43 70 169;
-    --chart-7: 140 103 246;
+    --chart-4: 156 213 206;
+    --chart-5: 192 39 176;
+    --chart-6: 97 131 255;
+    --chart-7: 71 20 211;
   }
 
   .infiniteVoid {
@@ -76,16 +76,16 @@
     /* Key accent colors */
     --accent-100: 77 51 225;
     --accent-200: 28 15 101;
-    --flair-100: 255 0 238;
-    --negative-100: 220 80 104;
+    --flair-100: 255 59 216;
+    --negative-100: 206 20 51;
     /* Additional chart colors */
-    --chart-1: 220 80 104;
-    --chart-2: 239 140 52;
-    --chart-3: 242 191 60;
-    --chart-4: 23 180 161;
-    --chart-5: 0 178 255;
-    --chart-6: 43 70 169;
-    --chart-7: 140 103 246;
+    --chart-1: 193 15 95;
+    --chart-2: 0 119 255;
+    --chart-3: 138 43 226;
+    --chart-4: 0 33 154;
+    --chart-5: 153 102 204;
+    --chart-6: 0 128 128;
+    --chart-7: 138 154 247;
   }
 
   .deepLava {
@@ -102,16 +102,16 @@
     /* Key accent colors */
     --accent-100: 224 43 107;
     --accent-200: 185 12 72;
-    --flair-100: 64 228 216;
+    --flair-100: 255 170 0;
     --negative-100: 220 80 104;
     /* Additional chart colors */
-    --chart-1: 220 80 104;
-    --chart-2: 239 140 52;
-    --chart-3: 242 191 60;
-    --chart-4: 23 180 161;
-    --chart-5: 0 178 255;
-    --chart-6: 43 70 169;
-    --chart-7: 140 103 246;
+    --chart-1: 255 87 51; /* Persimmon */
+    --chart-2: 72 172 192; /* Caribbean blue  */
+    --chart-3: 135 4 133; /* Deep plum */
+    --chart-4: 45 59 153; /* Cobalt */
+    --chart-5: 155 93 229; /* Lavender Purple */
+    --chart-6: 255 221 108; /* Sunshine */
+    --chart-7: 130 11 47; /* Crimson */
   }
 
   .electricOcean {
@@ -127,17 +127,17 @@
     --primary-900: 7 1 101;
     --primary-1000: 0 0 40;
     /* Key accent colors */
-    --accent-100: 60 189 211;
+    --accent-100: 19 200 232;
     --accent-200: 0 148 174;
-    --flair-100: 64 228 216;
+    --flair-100: 0 68 255;
     --negative-100: 220 80 104;
     /* Additional chart colors */
-    --chart-1: 220 80 104;
-    --chart-2: 239 140 52;
-    --chart-3: 242 191 60;
-    --chart-4: 23 180 161;
-    --chart-5: 0 178 255;
-    --chart-6: 43 70 169;
-    --chart-7: 140 103 246;
+    --chart-1: 208 239 52;
+    --chart-2: 255 168 28;
+    --chart-3: 252 56 125;
+    --chart-4: 252 56 226;
+    --chart-5: 166 0 255;
+    --chart-6: 0 84 118;
+    --chart-7: 61 255 158;
   }
 }
