@@ -13,7 +13,7 @@ type BarData = {
   id: string;
   eventLabel: string;
   measurement: MetricMeasurement;
-  breakdown?: any;
+  breakdown?: string;
   value: number;
 };
 

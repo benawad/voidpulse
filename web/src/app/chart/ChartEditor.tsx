@@ -347,21 +347,17 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       from: from?.toISOString(),
                       to: to?.toISOString(),
                       visibleDataMap,
-                      data: transformToLineChartData({
-                        datas: data.datas,
-                        dateHeader: data.dateHeaders,
-                        colorOrder,
-                        visibleDataMap,
-                      }),
+                      retentionNumFormat,
+                      data: data as any,
                     };
                     if (chart) {
-                      updateChart({
+                      await updateChart({
                         id: chart.id,
                         projectId,
                         updateData: fields,
                       });
                     } else {
-                      createChart({
+                      await createChart({
                         projectId,
                         boardId,
                         ...fields,

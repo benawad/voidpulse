@@ -198,7 +198,7 @@ export function MultiSelect({
                     />
                   </div>
                   {isLoading ? (
-                    <PulseLoader />
+                    <PulseLoader pulseType="list" />
                   ) : (
                     <>
                       {/* Dropdown options area */}

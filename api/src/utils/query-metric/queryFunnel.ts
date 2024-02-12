@@ -18,14 +18,6 @@ import { QueryParamHandler } from "./QueryParamHandler";
 import { breakdownSelectProperty } from "./breakdownSelectProperty";
 import { filtersToSql } from "../filtersToSql";
 
-type BarData = {
-  id: string;
-  eventLabel: string;
-  measurement: MetricMeasurement;
-  breakdown?: any;
-  value: number;
-};
-
 /*
 sequenceMatch('(?1)')(time, name = 'Event A') AS sequenceA,
 sequenceMatch('(?1).*(?2)')(time, name = 'Event A', name = 'Event B') AS sequenceAB,
@@ -166,7 +158,7 @@ GROUP BY breakdown`
   const { data } = await resp.json<
     ClickHouseQueryResponse<{
       [key: `step${number}_reached`]: number;
-      breakdown?: any;
+      breakdown?: string;
     }>
   >();
 

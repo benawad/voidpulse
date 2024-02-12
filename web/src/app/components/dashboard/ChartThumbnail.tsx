@@ -1,18 +1,21 @@
 "use client";
-import { ChartType } from "@voidpulse/api";
+import { ChartType, RetentionNumFormat } from "@voidpulse/api";
 import "chart.js/auto";
 import Link from "next/link";
 import React from "react";
-import { BarChart } from "../../ui/charts/BarChart";
-import { DonutChart } from "../../ui/charts/DonutChart";
 import { LineChart } from "../../ui/charts/LineChart";
-
+import { useColorOrder } from "../../themes/useColorOrder";
+import { useLineChartStyle } from "../../themes/useLineChartStyle";
+import { transformToLineChartData } from "../../utils/transformToLineChartData";
 import { RouterOutput } from "../../utils/trpc";
+
 interface ChartThumbnailProps {
   chart: RouterOutput["getCharts"]["charts"][0];
 }
 
 export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
+  const colorOrder = useColorOrder();
+  const lineChartStyle = useLineChartStyle();
   let chartToDisplay;
   let minChartDisplayWidth = 300;
   switch (chart.chartType) {
@@ -21,7 +24,19 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
       minChartDisplayWidth = 300;
       break;
     case ChartType.line:
-      chartToDisplay = <LineChart data={chart.data} />;
+      chartToDisplay = (
+        <LineChart
+          yPercent={chart.retentionNumFormat !== RetentionNumFormat.rawCount}
+          data={transformToLineChartData({
+            datas: chart.data.datas,
+            dateHeader: chart.data.dateHeaders,
+            colorOrder,
+            visibleDataMap: chart.visibleDataMap,
+            lineChartStyle,
+          })}
+          disableAnimations
+        />
+      );
       minChartDisplayWidth = 400;
       break;
     case ChartType.bar:

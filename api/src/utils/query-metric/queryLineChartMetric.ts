@@ -72,6 +72,7 @@ export const queryLineChartMetric = async ({
     to,
   });
 
+  console.log(query_params);
   let query = `
   SELECT
       ${
@@ -128,7 +129,7 @@ export const queryLineChartMetric = async ({
         ...x,
         id: v4(),
         measurement: metric.type || MetricMeasurement.uniqueUsers,
-        groupByTimeType: lineChartGroupByTimeType,
+        lineChartGroupByTimeType,
         eventLabel,
         data: {
           ...dateMap,
@@ -147,7 +148,7 @@ export const queryLineChartMetric = async ({
         id: v4(),
         eventLabel,
         measurement: metric.type || MetricMeasurement.uniqueUsers,
-        lineChartGroupByTimeType: lineChartGroupByTimeType,
+        lineChartGroupByTimeType,
         average_count: !data.length
           ? 0
           : Math.round(

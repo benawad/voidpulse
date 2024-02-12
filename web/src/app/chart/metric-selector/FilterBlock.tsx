@@ -8,6 +8,7 @@ import {
   DataType,
   DateFilterOperation,
   NumberFilterOperation,
+  PropOrigin,
   StringFilterOperation,
 } from "@voidpulse/api";
 import React, { useEffect, useRef, useState } from "react";
@@ -341,9 +342,10 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
               value={localFilter.value}
               currentDate={moment(localFilter.value)}
               onDatePicked={(date) => {
-                let dateString = moment(date).format("YYYY-MM-DD HH:mm:ss");
-                console.log(dateString);
-                setLocalOrParentFilter({ ...localFilter, value: dateString });
+                setLocalOrParentFilter({
+                  ...localFilter,
+                  value: moment(date).format("YYYY-MM-DD HH:mm:ss"),
+                });
               }}
             />
           ) : null}
@@ -358,6 +360,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
                   values={filter.value || []}
                   event={event}
                   propKey={localFilter.prop.value || ""}
+                  propOrigin={localFilter.propOrigin || PropOrigin.event}
                   onConfirm={(values) => {
                     setLocalOrParentFilter({ ...localFilter, value: values });
                   }}
