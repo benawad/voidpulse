@@ -44,10 +44,6 @@ export enum DateFilterOperation {
   notOn,
   before,
   since,
-  // beforeTheLast,
-  // last,
-  // notInTheLast,
-  // inTheNext,
 }
 
 export enum FilterAndOr {
@@ -90,6 +86,11 @@ export enum LineChartGroupByTimeType {
   month,
 }
 
+export enum RetentionNumFormat {
+  percent = 1,
+  rawCount,
+}
+
 export type DateHeader = {
   label: string;
   fullLabel: string;
@@ -97,11 +98,6 @@ export type DateHeader = {
 };
 
 export const ANY_EVENT_VALUE = "$*";
-
-export enum RetentionNumFormat {
-  percent = 1,
-  rawCount,
-}
 
 export enum ThemeId {
   default = 1,

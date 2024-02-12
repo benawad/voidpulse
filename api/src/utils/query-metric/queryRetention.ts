@@ -23,6 +23,7 @@ import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";
 import { metricToEventLabel } from "./metricToEventLabel";
 import { QueryParamHandler } from "./QueryParamHandler";
 import { breakdownSelectProperty } from "./breakdownSelectProperty";
+import { clampNum } from "../clampNum";
 
 // type RetentionData = {
 //   id: string;
@@ -95,7 +96,7 @@ export const queryRetention = async ({
       : ""
   }
   WHERE time >= toDate({from:DateTime}) AND time <= toDate({to:DateTime})
-  AND name = {startEventName:String} AND e.project_id = {projectId:String}
+  ${metrics[0].event.value !== ANY_EVENT_VALUE ? `AND name = {startEventName:String}` : ``} AND e.project_id = {projectId:String}
   ${whereStrings.length ? `AND (${whereStrings.join(whereCombiner)})` : ""}`;
   const breakdownSelect = breakdowns.length
     ? breakdownSelectProperty(breakdowns[0], paramHandler)
@@ -147,7 +148,8 @@ export const queryRetention = async ({
     ${needsPeopleJoin2 ? peopleJoin : ""}
     JOIN cohort_users c ON e.distinct_id = c.distinct_id
     WHERE toDate(e.time) >= c.cohort_date AND toDate(e.time) <= toDate({to:DateTime})  -- Use actual DateTime value
-    AND name = {endEventName:String} AND e.project_id = {projectId:String}
+    ${metrics[1].event.value !== ANY_EVENT_VALUE ? `AND name = {endEventName:String}` : ``}
+    AND e.project_id = {projectId:String}
     ${whereStrings2.length ? `AND (${whereStrings2.join(whereCombiner2)})` : ""}
   ),
   retention_counts AS (
@@ -169,7 +171,7 @@ export const queryRetention = async ({
     toInt32(days_after_cohort) AS days_after_cohort,
     toInt32(retained_users) AS retained_users,
     toInt32(cohort_size) AS cohort_size,
-    round(toFloat64(retained_users) / cohort_size * 100, 2) AS retained_users_percent
+    least(round(toFloat64(retained_users) / cohort_size * 100, 2), 100) AS retained_users_percent
   FROM retention_counts
   ORDER BY cohort_date${
     breakdownSelect ? `, breakdown` : ``
@@ -256,8 +258,11 @@ export const queryRetention = async ({
       const avgCohortSize = cohortSizeSum / cohortCount;
       breakdownGroup.averageRetentionByDay[parseInt(day)] = {
         avgRetained,
-        avgRetainedPercent:
+        avgRetainedPercent: clampNum(
           Math.round((avgRetained / avgCohortSize) * 100 * 100) / 100,
+          0,
+          100
+        ),
       };
     });
   });

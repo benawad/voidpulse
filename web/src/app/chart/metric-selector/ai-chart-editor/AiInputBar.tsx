@@ -10,11 +10,11 @@ export type LocalAiMsg = {
 };
 
 interface AiInputBarProps {
+  prevMsgs: LocalAiMsg[];
   onMsg: (msg: LocalAiMsg) => void;
 }
 
 type Inputs = {
-  prevMsgs: LocalAiMsg[];
   userInputText: string;
 };
 
@@ -30,10 +30,11 @@ export const AiInputBar: React.FC<AiInputBarProps> = ({ onMsg, prevMsgs }) => {
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
+    reset();
     onMsg({
       text: data.userInputText,
       role: MsgRole.user,

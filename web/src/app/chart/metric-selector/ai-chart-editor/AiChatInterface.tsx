@@ -33,7 +33,7 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({}) => {
           {msg.text}
         </div>
       ))}
-      <AiInputBar onMsg={(msg) => setMsgs([...msgs, msg])} />
+      <AiInputBar prevMsgs={msgs} onMsg={(msg) => setMsgs([...msgs, msg])} />
     </div>
   );
 };

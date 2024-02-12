@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import { z } from "zod";
 import { kafkaProducer } from "../../kafka/kafka";
 import { v4 } from "uuid";
+import geoip from "geoip-lite";
 import { dateInputRegex } from "../../constants/regex";
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
@@ -15,9 +16,11 @@ const eventSchema = z.object({
   created_at: z.string().regex(dateInputRegex),
   distinct_id: z.string().min(1).max(255),
   properties: z.record(z.any()),
+  ip: z.string().optional(),
 });
 
 const bodySchema = z.object({
+  skipIpLookup: z.boolean().optional(),
   events: z.array(eventSchema),
 });
 
@@ -27,6 +30,7 @@ type Body = z.infer<typeof bodySchema>;
 const maxPropsSize = 1048576;
 
 export const addIngestRoute = (app: Express) => {
+  app.set("trust proxy", true);
   app.post(
     "/ingest",
     express.json({
@@ -52,7 +56,26 @@ export const addIngestRoute = (app: Express) => {
       const messages: Array<{ value: string }> = [];
       const warnings: Array<string> = [];
       const ingest_at = dateToClickhouseDateString(new Date());
-      for (const { properties, ...event } of body.events) {
+      let geoInfo: {
+        city: string;
+        country: string;
+        region: string;
+        timezone: string;
+      } | null = null;
+      if (!body.skipIpLookup && req.ip) {
+        geoInfo = geoip.lookup(req.ip);
+      }
+
+      for (const { properties, ip, ...event } of body.events) {
+        if (!body.skipIpLookup && ip) {
+          geoInfo = geoip.lookup(ip);
+        }
+        if (geoInfo) {
+          properties.$city = geoInfo.city;
+          properties.$country = geoInfo.country;
+          properties.$region = geoInfo.region;
+          properties.$timezone = geoInfo.timezone;
+        }
         const str_props = JSON.stringify(properties);
         if (str_props.length > maxPropsSize) {
           warnings.push(
