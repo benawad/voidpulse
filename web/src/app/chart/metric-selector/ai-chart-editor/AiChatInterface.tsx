@@ -24,8 +24,10 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({}) => {
       {msgs.map((msg, i) => (
         <div
           key={i}
-          className={`bg-accent-100 p-3 rounded-lg m-3 shadow-lg text-sm mono-body ${
-            msg.role === MsgRole.user ? "text-right" : ""
+          className={`p-3 rounded-lg m-3 shadow-lg text-sm mono-body ${
+            msg.role === MsgRole.user
+              ? "text-right bg-accent-100"
+              : "bg-primary-700"
           }`}
         >
           {msg.text}
