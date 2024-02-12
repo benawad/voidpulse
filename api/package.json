@@ -8,7 +8,8 @@
     "dev": "nodemon --files src/index.ts",
     "env": "gen-env-types .env -o src/types/env.d.ts -e .",
     "mig": "drizzle-kit generate:pg && ts-node src/migrate.ts",
-    "load": "ts-node --files src/scripts/mixpanelLoader.ts"
+    "seed": "ts-node --files src/scripts/seedGithubData.ts",
+    "mp:load": "ts-node --files src/scripts/mixpanelLoader.ts"
   },
   "keywords": [],
   "author": "",
