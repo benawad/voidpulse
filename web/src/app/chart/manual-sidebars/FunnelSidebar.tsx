@@ -21,7 +21,7 @@ export const FunnelSidebar: React.FC<FunnelSidebarProps> = ({}) => {
   const [addNewBreakdown, setAddNewBreakdown] = useState(false);
   const [addNewGlobalFilter, setAddNewGlobalFilter] = useState(false);
   const [localMetrics, setLocalMetrics] = useState<(Metric | null)[]>(() =>
-    [...Array(2)].map((_, i) => metrics[i])
+    metrics.length >= 2 ? metrics : [...Array(2)].map((_, i) => metrics[i])
   );
   useEffect(() => {
     if (metrics.length >= 2) {

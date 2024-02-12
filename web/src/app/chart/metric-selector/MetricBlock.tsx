@@ -124,7 +124,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
               ) : null}
               {/* Only show delete option if an event has been chosen */}
               {onDelete ? (
-                <div
+                <button
                   className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 hover:bg-negative-100/20"
                   onClick={onDelete}
                 >
@@ -132,7 +132,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                     size={36}
                     className="fill-primary-500 hover:fill-negative-100 p-2"
                   />
-                </div>
+                </button>
               ) : null}
             </div>
 
