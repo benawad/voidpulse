@@ -43,6 +43,13 @@
       "when": 1707609509938,
       "tag": "0005_lovely_dracula",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1707698569402,
+      "tag": "0006_smart_electro",
+      "breakpoints": true
     }
   ]
 }

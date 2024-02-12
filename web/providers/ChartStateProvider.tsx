@@ -3,6 +3,7 @@ import {
   ChartType,
   LineChartGroupByTimeType,
   ReportType,
+  RetentionNumFormat,
 } from "@voidpulse/api";
 import moment, { Moment } from "moment";
 import React, { useContext, useState } from "react";
@@ -23,6 +24,7 @@ type ChartStateType = {
   metrics: Metric[];
   globalFilters: MetricFilter[];
   breakdowns: MetricFilter[];
+  retentionNumFormat?: RetentionNumFormat | null;
 };
 
 const ChartStateContext = React.createContext<
@@ -57,6 +59,7 @@ export const ChartStateProvider: React.FC<
       visibleDataMap: null,
       lineChartGroupByTimeType: chart?.lineChartGroupByTimeType,
       timeRangeType: chart?.timeRangeType || ChartTimeRangeType["30D"],
+      retentionNumFormat: chart?.retentionNumFormat,
       from: chart?.from ? moment(chart.from) : null,
       to: chart?.to ? moment(chart.to) : null,
       globalFilters: [] as MetricFilter[],

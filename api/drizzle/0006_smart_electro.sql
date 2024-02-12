@@ -1,0 +1,1 @@
+ALTER TABLE "charts" ADD COLUMN "retention_num_format" integer;

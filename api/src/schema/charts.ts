@@ -10,6 +10,7 @@ import {
   ChartType,
   LineChartGroupByTimeType,
   ReportType,
+  RetentionNumFormat,
 } from "../app-router-type";
 import { InputMetric } from "../routes/charts/insight/eventFilterSchema";
 
@@ -28,6 +29,9 @@ export const charts = pgTable("charts", {
   lineChartGroupByTimeType: integer(
     "line_chart_group_by_time_type"
   ).$type<LineChartGroupByTimeType>(),
+  retentionNumFormat: integer(
+    "retention_num_format"
+  ).$type<RetentionNumFormat>(),
   timeRangeType: integer("time_range_type")
     .notNull()
     .$type<ChartTimeRangeType>(),
