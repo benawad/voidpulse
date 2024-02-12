@@ -9,6 +9,7 @@ import { charts } from "./schema/charts";
 import { __prod__ } from "./constants/prod";
 import { people } from "./schema/people";
 import { peoplePropTypes } from "./schema/people-prop-types";
+import { messages } from "./schema/messages";
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -26,5 +27,6 @@ export const db = drizzle(pool, {
     charts,
     people,
     peoplePropTypes,
+    messages,
   },
 });

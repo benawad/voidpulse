@@ -1,0 +1,1 @@
+ALTER TABLE "messages" ADD COLUMN "chart_id" uuid NOT NULL;

@@ -13,6 +13,7 @@ import {
   RetentionNumFormat,
 } from "../app-router-type";
 import { InputMetric } from "../routes/charts/insight/eventFilterSchema";
+import { messages } from "./messages";
 
 export const charts = pgTable("charts", {
   id: uuid("id")
@@ -48,6 +49,7 @@ export const charts = pgTable("charts", {
 
 export const chartRelations = relations(charts, ({ one, many }) => ({
   boardCharts: many(boardCharts),
+  messages: many(messages),
   creator: one(users, {
     fields: [charts.creatorId],
     references: [users.id],

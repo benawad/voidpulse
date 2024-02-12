@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import { index, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { projectUsers } from "./project-users";
 import { boards } from "./boards";
+import { messages } from "./messages";
 
 export const projects = pgTable(
   "projects",
@@ -22,4 +23,5 @@ export const projects = pgTable(
 export const projectRelations = relations(projects, ({ many }) => ({
   projectUsers: many(projectUsers),
   boards: many(boards),
+  messages: many(messages),
 }));

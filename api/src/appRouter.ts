@@ -22,6 +22,7 @@ import { createChart } from "./routes/charts/createChart";
 import { getCharts } from "./routes/charts/getCharts";
 import { updateChart } from "./routes/charts/updateChart";
 import { updateMe } from "./routes/auth/updateMe";
+import { sendMsgToAi } from "./routes/ai-messages/sendMsgToAi";
 
 export const appRouter = t.router({
   getProjects,
@@ -40,6 +41,7 @@ export const appRouter = t.router({
   getCharts,
   updateChart,
   updateMe,
+  sendMsgToAi,
 });
 
 export const app = express();
