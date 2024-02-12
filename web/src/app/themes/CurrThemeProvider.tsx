@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
 import { ThemeId } from "@voidpulse/api";
 import { colors } from "./colors";
@@ -19,6 +19,10 @@ export const CurrThemeProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [themeId, setThemeId] = useLocalStorage("theme", ThemeId.default);
+
+  useEffect(() => {
+    document.body.className = ThemeId[themeId].toString();
+  }, [themeId]);
 
   return (
     <CurrThemeContext.Provider

@@ -60,7 +60,9 @@ function Page() {
     <div className="page text-center">
       <HeaderNav />
       {/* Currently just a UI shell for fun. TODO later ;) */}
-      <div className="mt-12 text-2xl font-bold">Choose your AI PM 👩🏻‍💻</div>
+      <div className="mt-12 text-2xl font-bold">
+        Choose your product copilot 👩🏻‍💻
+      </div>
       <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2">
         {personas.map((persona) => {
           return <PersonaCard persona={persona} />;

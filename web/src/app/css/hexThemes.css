@@ -33,9 +33,59 @@
   }
 
   .mysticalFire {
+    /* Default theme */
+    /* Base colors */
+    --primary-100: #f1f1f7;
+    --primary-200: #d1d0db;
+    --primary-300: #b7b5c5;
+    --primary-400: #9c9aae;
+    --primary-500: #7d7b92;
+    --primary-600: #626076;
+    --primary-700: #403e54;
+    --primary-800: #343344;
+    --primary-900: #23222e;
+    --primary-1000: #0d0d13;
+    /* Key accent colors */
+    --accent-100: #355ce9;
+    --accent-200: #2c3d95;
+    --flair-100: #40e4d8;
+    --negative-100: #dc5068;
+    /* Additional chart colors */
+    --chart-1: #dc5068;
+    --chart-2: #ef8c34;
+    --chart-3: #f2bf3c;
+    --chart-4: #17b4a1;
+    --chart-5: #00b2ff;
+    --chart-6: #2b46a9;
+    --chart-7: #8c67f6;
   }
 
   .infiniteVoid {
+    /* Default theme */
+    /* Base colors */
+    --primary-100: #e4e4f6;
+    --primary-200: #c4c2e0;
+    --primary-300: #a19dbd;
+    --primary-400: #736f97;
+    --primary-500: #4e4a78;
+    --primary-600: #3d3a60;
+    --primary-700: #25223f;
+    --primary-800: #1e1d31;
+    --primary-900: #0c0b14;
+    --primary-1000: #040406;
+    /* Key accent colors */
+    --accent-100: #4d33e1;
+    --accent-200: #1c0f65;
+    --flair-100: #ff00ee;
+    --negative-100: #dc5068;
+    /* Additional chart colors */
+    --chart-1: #dc5068;
+    --chart-2: #ef8c34;
+    --chart-3: #f2bf3c;
+    --chart-4: #17b4a1;
+    --chart-5: #00b2ff;
+    --chart-6: #2b46a9;
+    --chart-7: #8c67f6;
   }
 
   .deepLava {
@@ -50,9 +100,44 @@
     --primary-900: #281b20;
     --primary-1000: #16080a;
     /* Key accent colors */
-    --accent-100: #355ce9;
+    --accent-100: #e02b6b;
+    --accent-200: #b90c48;
+    --flair-100: #40e4d8;
+    --negative-100: #dc5068;
+    /* Additional chart colors */
+    --chart-1: #dc5068;
+    --chart-2: #ef8c34;
+    --chart-3: #f2bf3c;
+    --chart-4: #17b4a1;
+    --chart-5: #00b2ff;
+    --chart-6: #2b46a9;
+    --chart-7: #8c67f6;
   }
 
   .electricOcean {
+    /* Base colors */
+    --primary-100: #dbdff7;
+    --primary-200: #b7bfff;
+    --primary-300: #8d9bfe;
+    --primary-400: #6879fc;
+    --primary-500: #455bff;
+    --primary-600: #2a43ff;
+    --primary-700: #1421dd;
+    --primary-800: #0d02a3;
+    --primary-900: #070165;
+    --primary-1000: #000028;
+    /* Key accent colors */
+    --accent-100: #3cbdd3;
+    --accent-200: #0094ae;
+    --flair-100: #40e4d8;
+    --negative-100: #dc5068;
+    /* Additional chart colors */
+    --chart-1: #dc5068;
+    --chart-2: #ef8c34;
+    --chart-3: #f2bf3c;
+    --chart-4: #17b4a1;
+    --chart-5: #00b2ff;
+    --chart-6: #2b46a9;
+    --chart-7: #8c67f6;
   }
 }

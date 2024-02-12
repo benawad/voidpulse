@@ -33,9 +33,59 @@
   }
 
   .mysticalFire {
+    /* Default theme */
+    /* Base colors */
+    --primary-100: 241 241 247;
+    --primary-200: 209 208 219;
+    --primary-300: 183 181 197;
+    --primary-400: 156 154 174;
+    --primary-500: 125 123 146;
+    --primary-600: 98 96 118;
+    --primary-700: 64 62 84;
+    --primary-800: 52 51 68;
+    --primary-900: 35 34 46;
+    --primary-1000: 13 13 19;
+    /* Key accent colors */
+    --accent-100: 53 92 233;
+    --accent-200: 44 61 149;
+    --flair-100: 64 228 216;
+    --negative-100: 220 80 104;
+    /* Additional chart colors */
+    --chart-1: 220 80 104;
+    --chart-2: 239 140 52;
+    --chart-3: 242 191 60;
+    --chart-4: 23 180 161;
+    --chart-5: 0 178 255;
+    --chart-6: 43 70 169;
+    --chart-7: 140 103 246;
   }
 
   .infiniteVoid {
+    /* Default theme */
+    /* Base colors */
+    --primary-100: 228 228 246;
+    --primary-200: 196 194 224;
+    --primary-300: 161 157 189;
+    --primary-400: 115 111 151;
+    --primary-500: 78 74 120;
+    --primary-600: 61 58 96;
+    --primary-700: 37 34 63;
+    --primary-800: 30 29 49;
+    --primary-900: 12 11 20;
+    --primary-1000: 4 4 6;
+    /* Key accent colors */
+    --accent-100: 77 51 225;
+    --accent-200: 28 15 101;
+    --flair-100: 255 0 238;
+    --negative-100: 220 80 104;
+    /* Additional chart colors */
+    --chart-1: 220 80 104;
+    --chart-2: 239 140 52;
+    --chart-3: 242 191 60;
+    --chart-4: 23 180 161;
+    --chart-5: 0 178 255;
+    --chart-6: 43 70 169;
+    --chart-7: 140 103 246;
   }
 
   .deepLava {
@@ -50,9 +100,44 @@
     --primary-900: 40 27 32;
     --primary-1000: 22 8 10;
     /* Key accent colors */
-    --accent-100: 53 92 233;
+    --accent-100: 224 43 107;
+    --accent-200: 185 12 72;
+    --flair-100: 64 228 216;
+    --negative-100: 220 80 104;
+    /* Additional chart colors */
+    --chart-1: 220 80 104;
+    --chart-2: 239 140 52;
+    --chart-3: 242 191 60;
+    --chart-4: 23 180 161;
+    --chart-5: 0 178 255;
+    --chart-6: 43 70 169;
+    --chart-7: 140 103 246;
   }
 
   .electricOcean {
+    /* Base colors */
+    --primary-100: 219 223 247;
+    --primary-200: 183 191 255;
+    --primary-300: 141 155 254;
+    --primary-400: 104 121 252;
+    --primary-500: 69 91 255;
+    --primary-600: 42 67 255;
+    --primary-700: 20 33 221;
+    --primary-800: 13 2 163;
+    --primary-900: 7 1 101;
+    --primary-1000: 0 0 40;
+    /* Key accent colors */
+    --accent-100: 60 189 211;
+    --accent-200: 0 148 174;
+    --flair-100: 64 228 216;
+    --negative-100: 220 80 104;
+    /* Additional chart colors */
+    --chart-1: 220 80 104;
+    --chart-2: 239 140 52;
+    --chart-3: 242 191 60;
+    --chart-4: 23 180 161;
+    --chart-5: 0 178 255;
+    --chart-6: 43 70 169;
+    --chart-7: 140 103 246;
   }
 }
