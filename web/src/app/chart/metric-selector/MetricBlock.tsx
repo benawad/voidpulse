@@ -18,6 +18,7 @@ import { MetricEvent, MetricSelector } from "./MetricSelector";
 
 interface MetricBlockProps {
   idx: number;
+  displayIdxAsNumber?: boolean;
   metric?: Metric | null;
   onEventChange: (e: MetricEvent) => void;
   onDelete?: () => void;
@@ -26,6 +27,7 @@ interface MetricBlockProps {
   setParentIsOpen?: (b: boolean) => void;
   defaultOpen?: boolean;
   showMeasurement?: boolean;
+  dragHandleProps?: any;
 }
 
 export const MetricBlock: React.FC<MetricBlockProps> = ({
@@ -38,6 +40,8 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
   parentIsOpen,
   setParentIsOpen,
   defaultOpen,
+  displayIdxAsNumber,
+  dragHandleProps,
 }) => {
   const [, setState] = useChartStateContext();
   const [_isOpen, _setIsOpen] = useState(defaultOpen);
@@ -70,7 +74,7 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
         {/* Left side of the button for the label and drag handle*/}
         <div className="flex flex-row">
           {/* Square label for the dataset letter ID */}
-          <div className={"rounded-md"}>
+          <div {...dragHandleProps} className={"rounded-md"}>
             <div
               className="text-primary-900 flex text-sm font-bold m-2 bg-accent-100 rounded-md items-center"
               style={{
@@ -81,9 +85,13 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                 marginTop: 8,
               }}
             >
-              {String.fromCharCode(idx + "A".charCodeAt(0))}
+              {displayIdxAsNumber
+                ? idx + 1
+                : String.fromCharCode(idx + "A".charCodeAt(0))}
             </div>
-            {/* <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" /> */}
+            {dragHandleProps ? (
+              <RxDragHandleDots2 className="mx-auto opacity-0 group-hover:opacity-100" />
+            ) : null}
           </div>
           {/* Main middle section for selecting events and units */}
           <div className={`flex flex-col w-full`}>

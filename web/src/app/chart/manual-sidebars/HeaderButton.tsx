@@ -10,8 +10,8 @@ export const HeaderButton: Kids<
   return (
     <button
       className={`${
-        disableHover ? "cursor-default" : "accent-hover"
-      } w-full p-2 my-2 rounded-md flex items-center group justify-between text-primary-300 text-xs mono-body ${className}`}
+        disableHover || props.disabled ? "cursor-default" : "accent-hover group"
+      } w-full p-2 my-2 rounded-md flex items-center justify-between text-primary-300 text-xs mono-body ${className}`}
       {...props}
     >
       {children}
