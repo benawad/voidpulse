@@ -1,6 +1,3 @@
-// import "./themes.css";
-// const theme = colorThemes.mysticalFire;
-
 const config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -14,11 +11,6 @@ const config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-
-      // colors: {
-      //   secondary: { ...theme.secondary },
-      //   primary: { ...theme.primary },
-      // },
       colors: {
         primary: {
           100: "rgb(var(--primary-100) / <alpha-value>)",
@@ -35,6 +27,9 @@ const config = {
         accent: {
           100: "rgb(var(--accent-100) / <alpha-value>)",
           200: "rgb(var(--accent-200) / <alpha-value>)",
+        },
+        negative: {
+          100: "rgb(var(--negative-100) / <alpha-value>)",
         },
         flair: {
           100: "rgb(var(--flair-100) / <alpha-value>)",

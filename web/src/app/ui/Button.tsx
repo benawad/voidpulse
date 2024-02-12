@@ -3,7 +3,7 @@ type ButtonType = keyof typeof buttonStyles;
 
 const buttonStyles = {
   action: "bg-accent-100/70  hover:bg-accent-100",
-  negative: "bg-secondary-red-100/70 hover:bg-secondary-red-100",
+  negative: "bg-negative-100/70 hover:bg-negative-100",
   neutral:
     "accent-hover bg-primary-100/5 hover:shadow-none hover:border-primary-800",
   default: "bg-accent-100/70 hover:bg-accent-100",

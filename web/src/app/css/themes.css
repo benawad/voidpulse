@@ -21,6 +21,7 @@
     --accent-100: 53 92 233;
     --accent-200: 44 61 149;
     --flair-100: 64 228 216;
+    --negative-100: 220 80 104;
     /* Additional chart colors */
     --chart-1: 220 80 104;
     --chart-2: 239 140 52;
@@ -48,6 +49,8 @@
     --primary-800: 62 46 56;
     --primary-900: 40 27 32;
     --primary-1000: 22 8 10;
+    /* Key accent colors */
+    --accent-100: 53 92 233;
   }
 
   .electricOcean {

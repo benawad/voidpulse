@@ -12,7 +12,7 @@ export const DeleteBoardButton: React.FC<DeleteBoardButtonProps> = ({
   return (
     <>
       <div
-        className="flex justify-start items-center p-2 rounded-lg text-secondary-red-100 group-hover:text-secondary-red-100 hover:bg-secondary-red-100/30"
+        className="flex justify-start items-center p-2 rounded-lg text-negative-100 group-hover:text-negative-100 hover:bg-negative-100/30"
         onClick={onClick}
       >
         <IoTrashOutline className="mr-2" />

@@ -48,6 +48,7 @@ export const colors: Record<
     },
     accent: { "100": "#355ce9", "200": "#2c3d95" },
     flair: { "100": "#40e4d8" },
+    negative: { "100": "#dc5068" },
     chart: {
       "1": "#dc5068",
       "2": "#ef8c34",
@@ -73,6 +74,7 @@ export const colors: Record<
       "900": "#281b20",
       "1000": "#16080a",
     },
+    accent: { "100": "#355ce9" },
   },
   [ThemeId.electricOcean]: {},
 };
