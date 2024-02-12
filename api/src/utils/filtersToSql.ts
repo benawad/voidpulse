@@ -189,7 +189,7 @@ export const filtersToSql = (
       whereStrings.push(
         `JSONExtractBool(${propertiesName}, {${paramHandler.add(
           filter.prop.value
-        )}:String}, false) = {${paramHandler.add(filter.value)}:Bool}`
+        )}:String}) = {${paramHandler.add(filter.value)}:Bool}`
       );
     } else {
       if (!__prod__) {

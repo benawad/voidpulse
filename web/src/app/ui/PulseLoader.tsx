@@ -2,7 +2,7 @@ import React from "react";
 import { text } from "stream/consumers";
 
 interface PulseLoaderProps {
-  pulseType?: string;
+  pulseType?: "list" | "text" | "plain";
 }
 
 export const PulseLoader: React.FC<PulseLoaderProps> = ({ pulseType }) => {

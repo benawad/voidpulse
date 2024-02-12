@@ -12,6 +12,7 @@ import {
   ChartType,
   LineChartGroupByTimeType,
   ReportType,
+  RetentionNumFormat,
 } from "../../app-router-type";
 
 export const updateChartDataSchemaFields = {
@@ -24,6 +25,7 @@ export const updateChartDataSchemaFields = {
   lineChartGroupByTimeType: z.nativeEnum(LineChartGroupByTimeType).optional(),
   data: chartDataSchema.optional(),
   timeRangeType: z.nativeEnum(ChartTimeRangeType).optional(),
+  retentionNumFormat: z.nativeEnum(RetentionNumFormat).optional().nullable(),
   from: z.string().optional(),
   to: z.string().optional(),
 };

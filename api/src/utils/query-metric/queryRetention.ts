@@ -34,7 +34,7 @@ import { breakdownSelectProperty } from "./breakdownSelectProperty";
 // };
 
 interface RetentionEntry {
-  breakdown?: any;
+  breakdown?: string;
   cohort_date: string;
   days_after_cohort: number;
   retained_users: number;
