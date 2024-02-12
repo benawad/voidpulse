@@ -10,6 +10,7 @@ export const FunnelChart: React.FC<{
   const { theme } = useCurrTheme();
   const colorOrder = useColorOrder();
   const chartRef = useRef<Chart<"bar", number[], string>>(null);
+  const lastDataRef = useRef<ChartData<"bar", number[], string>>(data);
   const [labelPositions, setLabelPositions] = useState<
     {
       x: number;
@@ -34,7 +35,7 @@ export const FunnelChart: React.FC<{
       }
       chart.update();
     }
-  }, [data]);
+  }, []);
 
   return (
     <div>
@@ -57,7 +58,10 @@ export const FunnelChart: React.FC<{
                   });
                 }
               );
-              setLabelPositions(newLabelPositions);
+              if (lastDataRef.current !== data) {
+                lastDataRef.current = data;
+                setLabelPositions(newLabelPositions);
+              }
             },
           },
         ]}
@@ -113,7 +117,7 @@ export const FunnelChart: React.FC<{
 
           return (
             <div
-              key={datasetIndex}
+              key={index}
               style={{
                 position: "absolute",
                 left: `${pos.x}px`,

@@ -67,9 +67,6 @@ export const prepareFiltersAndBreakdown = async ({
       from events as e
       ${joinSection}
       where ${whereSection}`;
-      if (!__prod__) {
-        console.log(query);
-      }
       const resp0 = await clickhouse.query({
         query,
         query_params: {
@@ -81,9 +78,8 @@ export const prepareFiltersAndBreakdown = async ({
       });
       const {
         data: [r0],
-      } = await resp0.json<
-        ClickHouseQueryResponse<{ shouldBucket: boolean }>
-      >();
+      } =
+        await resp0.json<ClickHouseQueryResponse<{ shouldBucket: boolean }>>();
       if (r0 && r0.shouldBucket) {
         shouldBucketData = true;
         const numBuckets = 10;

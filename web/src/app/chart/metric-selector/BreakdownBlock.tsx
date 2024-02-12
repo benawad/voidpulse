@@ -68,7 +68,7 @@ export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
         <div className="flex flex-row w-full items-center">
           <BsGrid3X3Gap className="fill-secondary-flair-100 mx-2" />
           <div className="text-sm accent-hover p-2 w-full text-left rounded-lg font-normal">
-            {breakdown ? breakdown.propName : "Select property"}
+            {breakdown ? breakdown.prop.value : "Select property"}
           </div>
         </div>
         {/* Delete button shows up if it's an existing breakdown */}
@@ -92,8 +92,8 @@ export const BreakdownBlock: React.FC<BreakdownBlockProps> = ({
           className="z-20"
         >
           <PropKeySelector
-            currPropKey={breakdown?.propName}
-            event={metrics[0].event}
+            currProp={breakdown?.prop}
+            events={metrics.map((m) => m.event)}
             onPropKey={(info) => {
               onBreakdown(info as MetricFilter);
               setIsOpen(false);

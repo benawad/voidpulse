@@ -33,7 +33,7 @@ interface FilterBlockProps {
 const isValidFilter = (
   filter: Partial<MetricFilter>
 ): filter is MetricFilter => {
-  if (!filter.propName || !filter.propOrigin || !filter.dataType) {
+  if (!filter.prop?.value || !filter.propOrigin || !filter.dataType) {
     return false;
   }
 
@@ -213,7 +213,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
     setLocalFilter(filter);
   };
   // Automatically open the selector if there's no filter, otherwise keep it closed.
-  const [isOpen, setIsOpen] = useState(!filter.propName);
+  const [isOpen, setIsOpen] = useState(!filter.prop?.value);
 
   //Floating UI info to pass to the selector
   const { refs, floatingStyles, context } = useFloating({
@@ -262,7 +262,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
           <div className="flex flex-row w-full">
             <IoFilter className="fill-secondary-flair-100 mx-2 mt-2" />
             <div className="text-sm p-2 accent-hover rounded-lg w-full">
-              {localFilter?.propName || "Select filter"}
+              {localFilter?.prop?.value || "Select filter"}
             </div>
           </div>
           {/* Delete button shows up if it's an existing filter */}
@@ -288,8 +288,8 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
             className="z-20"
           >
             <PropKeySelector
-              currPropKey={localFilter.propName}
-              event={event}
+              currProp={localFilter.prop}
+              events={event ? [event] : []}
               onPropKey={(info) => {
                 if (isValidFilter(info)) {
                   onFilterDefined(info);
@@ -303,7 +303,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
         ) : null}
       </div>
 
-      {localFilter.propName ? (
+      {localFilter.prop?.value ? (
         <div className="flex items-center">
           {/* Selector for filter operation */}
           {localFilter.dataType === DataType.boolean ? (
@@ -357,7 +357,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
                 <PropValueMultiSelect
                   values={filter.value || []}
                   event={event}
-                  propKey={localFilter.propName || ""}
+                  propKey={localFilter.prop.value || ""}
                   onConfirm={(values) => {
                     setLocalOrParentFilter({ ...localFilter, value: values });
                   }}

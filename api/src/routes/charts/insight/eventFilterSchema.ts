@@ -8,7 +8,10 @@ import {
 
 export const eventFilterSchema = z.object({
   id: z.string(),
-  propName: z.string(),
+  prop: z.object({
+    name: z.string(),
+    value: z.string(),
+  }),
   operation: z.number().int().optional(),
   dataType: z.nativeEnum(DataType),
   propOrigin: z.nativeEnum(PropOrigin),

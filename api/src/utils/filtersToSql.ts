@@ -41,7 +41,7 @@ export const filtersToSql = (
             : "NOT BETWEEN";
         whereStrings.push(
           `JSONExtractFloat(${propertiesName}, {${paramHandler.add(
-            filter.propName
+            filter.prop.value
           )}:String}) ${operator} {${paramHandler.add(
             filter.value2
           )}:Float64} and {${paramHandler.add(filter.value2)}:Float64}`
@@ -56,7 +56,7 @@ export const filtersToSql = (
         }[filter.operation];
         whereStrings.push(
           `JSONExtractFloat(${propertiesName}, {${paramHandler.add(
-            filter.propName
+            filter.prop.value
           )}:String}) ${operator}`
         );
       } else {
@@ -76,7 +76,7 @@ export const filtersToSql = (
         }
         whereStrings.push(
           `JSONExtractFloat(${propertiesName}, {${paramHandler.add(
-            filter.propName
+            filter.prop.value
           )}:String}) ${operator} {${paramHandler.add(filter.value)}:Float64}`
         );
       }
@@ -97,7 +97,7 @@ export const filtersToSql = (
             : "NOT BETWEEN";
         whereStrings.push(
           `parseDateTimeBestEffortOrNull(JSONExtractString(${propertiesName}, {${paramHandler.add(
-            filter.propName
+            filter.prop.value
           )}:String})) ${operator} {${paramHandler.add(
             filter.value
           )}:DateTime} and {${paramHandler.add(filter.value2)}:DateTime}`
@@ -116,7 +116,7 @@ export const filtersToSql = (
           continue;
         }
         let left = `parseDateTimeBestEffortOrNull(JSONExtractString(${propertiesName}, {${paramHandler.add(
-          filter.propName
+          filter.prop.value
         )}:String}))`;
         let right = `{${paramHandler.add(filter.value)}:DateTime}`;
 
@@ -141,7 +141,7 @@ export const filtersToSql = (
         }[filter.operation];
         whereStrings.push(
           `JSONExtractString(${propertiesName}, {${paramHandler.add(
-            filter.propName
+            filter.prop.value
           )}:String}) ${operator}`
         );
       } else if (
@@ -153,7 +153,7 @@ export const filtersToSql = (
         }
         whereStrings.push(
           `JSONExtractString(${propertiesName}, {${paramHandler.add(
-            filter.propName
+            filter.prop.value
           )}:String}) ${
             filter.operation === StringFilterOperation.contains
               ? "LIKE"
@@ -176,7 +176,7 @@ export const filtersToSql = (
         }[filter.operation];
         whereStrings.push(
           `JSONExtractString(${propertiesName}, {${paramHandler.add(
-            filter.propName
+            filter.prop.value
           )}:String}) ${operator} (${filter.value
             .map((x) => `{${paramHandler.add(x)}:String}`)
             .join(", ")})`
@@ -188,7 +188,7 @@ export const filtersToSql = (
       }
       whereStrings.push(
         `JSONExtractBool(${propertiesName}, {${paramHandler.add(
-          filter.propName
+          filter.prop.value
         )}:String}, false) = {${paramHandler.add(filter.value)}:Bool}`
       );
     } else {

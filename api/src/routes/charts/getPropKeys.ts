@@ -9,57 +9,65 @@ import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { propsToTypes } from "../../utils/propsToTypes";
 import { eventSchema } from "./insight/eventFilterSchema";
+import { QueryParamHandler } from "../../utils/query-metric/QueryParamHandler";
 
 export const getPropKeys = protectedProcedure
   .input(
     z.object({
       projectId: z.string(),
-      event: eventSchema.optional(),
+      events: z.array(eventSchema),
     })
   )
-  .query(async ({ input: { projectId, event }, ctx: { userId } }) => {
+  .query(async ({ input: { projectId, events }, ctx: { userId } }) => {
     await assertProjectMember({ projectId, userId });
 
-    const peoplePropTypePromise = db.query.peoplePropTypes.findFirst({
-      where: eq(peoplePropTypes.projectId, projectId),
-    });
+    const peoplePropTypePromise = db.query.peoplePropTypes
+      .findFirst({
+        where: eq(peoplePropTypes.projectId, projectId),
+      })
+      .execute();
 
     let propDefs: Record<string, { type: DataType }> = {};
 
-    if (event && event.value !== ANY_EVENT_VALUE) {
-      const resp = await clickhouse.query({
-        query: `
-			select properties
-			from events
-			where
-      name = {eventName:String}
-      and project_id = {projectId:UUID}
-			limit 3;
-		`,
-        query_params: {
-          eventName: event.value,
-          projectId,
-        },
-      });
-      const { data } = await resp.json<
-        ClickHouseQueryResponse<{ properties: string }>
-      >();
+    const paramHandler = new QueryParamHandler();
+    const querySpecificEvents = !!(
+      events.length && events.some((e) => e.value !== ANY_EVENT_VALUE)
+    );
+    const query = `
+    SELECT
+      name,
+      any(properties) AS properties
+    FROM events
+    WHERE
+      ${querySpecificEvents ? `name IN (${events.map((e) => `{${paramHandler.add(e.value)}:String}`)}) AND` : ""}
+      project_id = {projectId:UUID}
+    GROUP BY name
+    LIMIT 1500;
+  `;
+    const resp = await clickhouse.query({
+      query,
+      query_params: {
+        ...paramHandler.getParams(),
+        projectId,
+      },
+    });
+    const { data } =
+      await resp.json<ClickHouseQueryResponse<{ properties: string }>>();
 
-      data.map((x) => {
-        try {
-          propDefs = {
-            ...propDefs,
-            ...propsToTypes(JSON.parse(x.properties)),
-          };
-        } catch (err) {
-          if (!__prod__) {
-            console.log(data);
-            console.log(x);
-            console.log(err);
-          }
+    data.map((x) => {
+      try {
+        propDefs = {
+          ...propDefs,
+          ...propsToTypes(JSON.parse(x.properties)),
+        };
+      } catch (err) {
+        if (!__prod__) {
+          console.log(data);
+          console.log(x);
+          console.log(err);
         }
-      });
-    }
+      }
+    });
 
     const userPropTypes = await peoplePropTypePromise;
 

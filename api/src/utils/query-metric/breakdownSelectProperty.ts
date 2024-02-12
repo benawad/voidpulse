@@ -16,7 +16,7 @@ export const breakdownSelectProperty = (
   if (jsonExtractor) {
     return `${jsonExtractor}(${
       b.propOrigin === PropOrigin.user ? "p" : "e"
-    }.properties, {${paramHandler.add(b.propName)}:String})`;
+    }.properties, {${paramHandler.add(b.prop.value)}:String})`;
   }
 
   return "";

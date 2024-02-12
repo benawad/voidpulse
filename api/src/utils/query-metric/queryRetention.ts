@@ -174,9 +174,6 @@ export const queryRetention = async ({
     breakdownSelect ? `, breakdown` : ``
   }, days_after_cohort;
 `;
-  if (!__prod__) {
-    console.log(query);
-  }
   const resp = await clickhouse.query({
     query,
     query_params: {

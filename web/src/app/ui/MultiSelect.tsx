@@ -5,7 +5,7 @@ import {
   useInteractions,
 } from "@floating-ui/react";
 import Downshift from "downshift";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import {
   MdCheckBox,
@@ -15,6 +15,7 @@ import {
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { PulseLoader } from "./PulseLoader";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 type Opt = { value: string; lowercaseValue: string; isSpecify?: boolean };
 

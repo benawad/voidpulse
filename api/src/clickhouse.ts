@@ -1,7 +1,8 @@
-import { createClient } from "@clickhouse/client";
+import { ClickHouseLogLevel, createClient } from "@clickhouse/client";
 import fs from "fs";
 import path from "path";
 import { db } from "./db";
+import { __prod__ } from "./constants/prod";
 
 export type ClickHouseQueryResponse<T> = {
   meta: { name: string; type: string }[];
@@ -19,6 +20,14 @@ export const clickhouse = createClient({
     allow_experimental_object_type: 1,
   },
 });
+
+if (!__prod__) {
+  const ogQuery = clickhouse.query.bind(clickhouse);
+  clickhouse.query = (...params) => {
+    console.log(params[0].query);
+    return ogQuery(...params);
+  };
+}
 
 const migFolder = path.join(__dirname, "./clickhouse-migrations");
 
@@ -47,9 +56,8 @@ export const runClickhouseMigrations = async () => {
     SELECT name FROM migrations
   `,
   });
-  const appliedMigrations = await resp.json<
-    ClickHouseQueryResponse<{ name: string }>
-  >();
+  const appliedMigrations =
+    await resp.json<ClickHouseQueryResponse<{ name: string }>>();
 
   const migrationFiles = fs
     .readdirSync(migFolder)

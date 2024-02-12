@@ -81,8 +81,8 @@ export const queryLineChartMetric = async ({
           [LineChartGroupByTimeType.month]: "toStartOfMonth",
         }[lineChartGroupByTimeType]
       }(time${
-    lineChartGroupByTimeType === LineChartGroupByTimeType.week ? `, 1` : ""
-  }) AS day,
+        lineChartGroupByTimeType === LineChartGroupByTimeType.week ? `, 1` : ""
+      }) AS day,
       toInt32(count(${
         metric.type === MetricMeasurement.totalEvents
           ? ``
@@ -108,9 +108,6 @@ export const queryLineChartMetric = async ({
     order by average_count desc
     limit 500
     `;
-  }
-  if (!__prod__) {
-    console.log(query);
   }
   const resp = await clickhouse.query({
     query,

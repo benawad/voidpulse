@@ -22,27 +22,32 @@ import { RiArrowDropRightFill } from "react-icons/ri";
 import { MetricEvent } from "./MetricSelector";
 
 interface FilterSelectorProps {
-  event?: MetricEvent;
-  currPropKey?: string;
+  events: MetricEvent[];
+  currProp?: {
+    name: string;
+    value: string;
+  };
   onPropKey: (filter: Partial<MetricFilter>) => void;
 }
 
 export const PropKeySelector: React.FC<FilterSelectorProps> = ({
   onPropKey,
-  event,
-  currPropKey,
+  events,
+  currProp,
 }) => {
   const { projectId } = useProjectBoardContext();
   // Fetch filter props for the specific event we're filtering out
   const { data, isLoading } = trpc.getPropKeys.useQuery({
     projectId,
-    event,
+    events,
   });
   const dataWithAutocompleteKey = useMemo(() => {
     if (data) {
       return {
         items: data.propDefs.map((x) => ({
           ...x,
+          name: x.key,
+          value: x.key,
           lowercaseKey: x.key.toLowerCase(),
         })),
       };
@@ -65,7 +70,10 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
         if (selection) {
           onPropKey({
             id: genId(),
-            propName: selection.key,
+            prop: {
+              name: selection.name,
+              value: selection.value,
+            },
             propOrigin: selection.propOrigin,
             dataType: selection.type,
             operation: {
@@ -79,7 +87,7 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
           });
         }
       }}
-      itemToString={(item) => (item ? item.key : "")}
+      itemToString={(item) => (item ? item.name : "")}
       defaultHighlightedIndex={0}
       initialIsOpen
     >
@@ -121,14 +129,14 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
                 )
                 .map((item, index) => (
                   <div
-                    key={item.key + item.propOrigin}
+                    key={item.name + item.propOrigin}
                     {...getItemProps({
                       index,
                       item,
                     })}
                     className={`flex flex-row p-2 rounded-md items-center
                     ${
-                      item.key === currPropKey
+                      item.value === currProp?.value
                         ? "bg-accent-100 text-primary-100"
                         : ""
                     }
@@ -150,7 +158,7 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
                         />
                       </>
                     ) : null}
-                    <div>{item.key}</div>
+                    <div>{item.name}</div>
                   </div>
                 ))}
             </div>

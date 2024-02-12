@@ -65,16 +65,14 @@ export const queryBarChartMetric = async ({
   WHERE ${whereSection}
   ${breakdownSelect ? "group by breakdown" : ""}
 `;
-  if (!__prod__) {
-    console.log(query);
-  }
   const resp = await clickhouse.query({
     query,
     query_params,
   });
-  const { data } = await resp.json<
-    ClickHouseQueryResponse<{ count: number; breakdown?: any }>
-  >();
+  const { data } =
+    await resp.json<
+      ClickHouseQueryResponse<{ count: number; breakdown?: any }>
+    >();
   const eventLabel = metricToEventLabel(metric);
 
   return data.map((d) => ({

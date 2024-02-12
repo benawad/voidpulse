@@ -155,9 +155,6 @@ GROUP BY breakdown`
     : ""
 }
   `;
-  if (!__prod__) {
-    console.log(query);
-  }
   const resp = await clickhouse.query({
     query,
     query_params: {

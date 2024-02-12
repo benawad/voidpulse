@@ -24,9 +24,8 @@ export const getEventNames = protectedProcedure
         projectId,
       },
     });
-    const { data } = await resp.json<
-      ClickHouseQueryResponse<{ name: string }>
-    >();
+    const { data } =
+      await resp.json<ClickHouseQueryResponse<{ name: string }>>();
 
     return {
       items: data.map((x) => ({ name: x.name, value: x.name })),

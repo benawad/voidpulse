@@ -175,6 +175,22 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const [highlightedRowId, setHighlightedRow] = React.useState<string | null>(
     null
   );
+  const funnelData = useMemo(() => {
+    if (data?.reportType !== ReportType.funnel) {
+      return {
+        labels: [],
+        datasets: [],
+      };
+    }
+
+    return transformToFunnelChartData({
+      datas: data.datas,
+      labels: data.labels,
+      colorOrder,
+      visibleDataMap,
+      highlightedId: highlightedRowId,
+    });
+  }, [data, visibleDataMap, highlightedRowId, colorOrder]);
 
   return (
     <div>
@@ -427,15 +443,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             {/* Funnel bar graph */}
             {data?.datas.length && data.reportType === ReportType.funnel ? (
               <div>
-                <FunnelChart
-                  data={transformToFunnelChartData({
-                    datas: data.datas,
-                    labels: data.labels,
-                    colorOrder,
-                    visibleDataMap,
-                    highlightedId: highlightedRowId,
-                  })}
-                />
+                <FunnelChart data={funnelData} />
               </div>
             ) : null}
 
@@ -480,12 +488,12 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               stickyColumns={[
                 {
                   id: "a",
-                  header: breakdowns[0]?.propName || "Date",
+                  header: breakdowns[0]?.prop.value || "Date",
                   size: 200,
                   accessorFn: (row: any) =>
                     row.isSubrow
                       ? row.dt
-                      : breakdowns[0]?.propName
+                      : breakdowns[0]?.prop.value
                         ? row.breakdown
                         : row.eventLabel,
                   meta: {
@@ -548,11 +556,11 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   size: 200,
                   accessorFn: (row: any) => row.eventLabel,
                 },
-                ...(breakdowns[0]?.propName
+                ...(breakdowns[0]?.prop.value
                   ? [
                       {
                         id: "b",
-                        header: breakdowns[0]?.propName,
+                        header: breakdowns[0]?.prop.value,
                         size: 200,
                         accessorFn: (row: any) => row.breakdown,
                         meta: {

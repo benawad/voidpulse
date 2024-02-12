@@ -112,7 +112,6 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
                   <div
                     className="rounded-md opacity-0 transition-opacity group-hover:opacity-100 accent-hover"
                     onClick={() => {
-                      console.log("Adding filter");
                       setAddNewFilter(true);
                     }}
                   >
