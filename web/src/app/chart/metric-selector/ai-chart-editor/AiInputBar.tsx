@@ -14,14 +14,15 @@ interface AiInputBarProps {
 }
 
 type Inputs = {
+  prevMsgs: LocalAiMsg[];
   userInputText: string;
 };
 
-export const AiInputBar: React.FC<AiInputBarProps> = ({ onMsg }) => {
+export const AiInputBar: React.FC<AiInputBarProps> = ({ onMsg, prevMsgs }) => {
   const { mutateAsync } = trpc.sendMsgToAi.useMutation({
     onSuccess: (data) => {
       onMsg({
-        text: data.message,
+        text: data.message || "",
         role: MsgRole.ai,
       });
     },
@@ -39,6 +40,7 @@ export const AiInputBar: React.FC<AiInputBarProps> = ({ onMsg }) => {
     });
     return mutateAsync({
       text: data.userInputText,
+      prevMsgs,
     });
   };
 
