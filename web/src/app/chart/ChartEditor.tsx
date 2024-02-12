@@ -123,7 +123,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       },
     });
 
-  const { data, error } = trpc.getReport.useQuery(
+  const { data, isLoading, error } = trpc.getReport.useQuery(
     {
       metrics,
       breakdowns,
@@ -377,11 +377,11 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             <ChartDateRangePicker />
 
             {/* CHART DISPLAYS HERE */}
-            {data === null || !data?.datas.length ? (
-              <NoDataToDisplayVisual />
-            ) : null}
-            {!data?.datas.length ? (
-              <div>We couldn't find any data for this search</div>
+            {metrics.length && !isLoading && !data?.datas.length ? (
+              <>
+                <NoDataToDisplayVisual />
+                <div>We couldn't find any data for this search</div>
+              </>
             ) : null}
             {data?.reportType === ReportType.retention && data.datas.length ? (
               <LineChart

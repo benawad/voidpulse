@@ -1,17 +1,11 @@
-import React, { useEffect } from "react";
-import { ChartThumbnail } from "./ChartThumbnail";
-import { placeholderCharts } from "../../ui/charts/PlaceholderChartData";
-import { trpc } from "../../utils/trpc";
-import { DashboardStickyHeader } from "./DashboardStickyHeader";
-import { DashboardNavigator } from "./DashboardNavigator";
-import { HeaderNav } from "../../ui/HeaderNav";
-import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
+import React from "react";
 import { ProjectBoardProvider } from "../../../../providers/ProjectBoardProvider";
 import { useFetchProjectBoards } from "../../utils/useFetchProjectBoards";
 import { ChartsGrid } from "./ChartsGrid";
+import { DashboardNavigator } from "./DashboardNavigator";
+import { DashboardStickyHeader } from "./DashboardStickyHeader";
 
 interface DashboardViewProps {}
-let charts = placeholderCharts;
 
 export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
   const { isLoading, board, project, projects, boards } =

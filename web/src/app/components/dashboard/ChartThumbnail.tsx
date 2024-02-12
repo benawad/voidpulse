@@ -6,10 +6,7 @@ import React from "react";
 import { BarChart } from "../../ui/charts/BarChart";
 import { DonutChart } from "../../ui/charts/DonutChart";
 import { LineChart } from "../../ui/charts/LineChart";
-import {
-  placeholderBarData,
-  placeholderDonutData,
-} from "../../ui/charts/PlaceholderChartData";
+
 import { RouterOutput } from "../../utils/trpc";
 interface ChartThumbnailProps {
   chart: RouterOutput["getCharts"]["charts"][0];
@@ -20,7 +17,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   let minChartDisplayWidth = 300;
   switch (chart.chartType) {
     case ChartType.donut:
-      chartToDisplay = <DonutChart data={placeholderDonutData} />;
+      chartToDisplay = null;
       minChartDisplayWidth = 300;
       break;
     case ChartType.line:
@@ -28,7 +25,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
       minChartDisplayWidth = 400;
       break;
     case ChartType.bar:
-      chartToDisplay = <BarChart data={placeholderBarData} />;
+      chartToDisplay = null;
       minChartDisplayWidth = 600;
       break;
     default:

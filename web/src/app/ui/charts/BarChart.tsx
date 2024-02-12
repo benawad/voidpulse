@@ -1,6 +1,5 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { getGeneralChartOptions } from "./ChartStyle";
 import {
   Chart as ChartJS,
   BarController,
@@ -16,7 +15,6 @@ interface BarChartProps {
 }
 
 const barChartOptions = {
-  ...getGeneralChartOptions,
   maintainAspectRatio: false,
 };
 
