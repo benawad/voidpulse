@@ -53,7 +53,7 @@ export const ChartStateProvider: React.FC<
     return {
       title: chart?.title || "",
       description: chart?.description || "",
-      reportType: chart?.reportType || ReportType.retention,
+      reportType: chart?.reportType || ReportType.insight,
       chartType: chart?.chartType || ChartType.line,
       metrics: chart?.metrics.map((x) => ({ ...x, id: genId() })) || [],
       visibleDataMap: null,

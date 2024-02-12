@@ -10,32 +10,13 @@ export const FunnelChart: React.FC<{
   const { theme } = useCurrTheme();
   const colorOrder = useColorOrder();
   const chartRef = useRef<Chart<"bar", number[], string>>(null);
-  const lastDataRef = useRef<ChartData<"bar", number[], string>>(data);
+  const lastDataRef = useRef<ChartData<"bar", number[], string> | null>(null);
   const [labelPositions, setLabelPositions] = useState<
     {
       x: number;
       y: number;
     }[][]
   >([]);
-
-  useEffect(() => {
-    if (chartRef.current) {
-      const chart = chartRef.current;
-      const ctx = chart.ctx;
-
-      const startingIdx = chart.data.datasets.length / 2;
-      for (let i = startingIdx; i < chart.data.datasets.length; i++) {
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(
-          0,
-          colorOrder[(i - startingIdx) % colorOrder.length] + "80"
-        );
-        gradient.addColorStop(1, "transparent");
-        chart.data.datasets[i].backgroundColor = gradient;
-      }
-      chart.update();
-    }
-  }, []);
 
   return (
     <div>

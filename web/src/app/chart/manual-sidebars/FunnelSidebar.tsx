@@ -10,18 +10,20 @@ import { BreakdownBlock } from "../metric-selector/BreakdownBlock";
 import { FilterBlock } from "../metric-selector/FilterBlock";
 import { PlusIcon } from "./PlusIcon";
 import { MetricMeasurement } from "@voidpulse/api";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { reorder } from "../../utils/reorder";
 
 interface FunnelSidebarProps {}
 
 export const FunnelSidebar: React.FC<FunnelSidebarProps> = ({}) => {
   const [{ metrics, breakdowns, globalFilters, reportType }, setState] =
     useChartStateContext();
-  const [addNewMetric, setAddNewMetric] = useState(!metrics.length);
+  const [addNewMetric, setAddNewMetric] = useState(false);
   const [isMetricDropdownOpen, setIsMetricDropdownOpen] = useState(false);
   const [addNewBreakdown, setAddNewBreakdown] = useState(false);
   const [addNewGlobalFilter, setAddNewGlobalFilter] = useState(false);
   const [localMetrics, setLocalMetrics] = useState<(Metric | null)[]>(() =>
-    [...Array(2)].map((_, i) => metrics[i])
+    metrics.length >= 2 ? metrics : [...Array(2)].map((_, i) => metrics[i])
   );
   useEffect(() => {
     if (metrics.length >= 2) {
@@ -38,6 +40,8 @@ export const FunnelSidebar: React.FC<FunnelSidebarProps> = ({}) => {
     }
     setLocalMetrics(newMetrics);
   };
+  const isValid = !localMetrics.slice(0, 2).some((x) => !x);
+
   return (
     <div>
       {/* Choosing metrics */}
@@ -46,53 +50,104 @@ export const FunnelSidebar: React.FC<FunnelSidebarProps> = ({}) => {
           setAddNewMetric(true);
           setIsMetricDropdownOpen(true);
         }}
+        disabled={!isValid}
       >
         Funnel steps <PlusIcon />
       </HeaderButton>
       {/* Display all chosen metrics  */}
-      {localMetrics.map((m, idx) => (
-        <MetricBlock
-          showMeasurement={false}
-          defaultOpen={false}
-          key={idx}
-          onEventChange={(event) => {
-            setMetrics(
-              localMetrics.map((metric, i) =>
-                i === idx
-                  ? { ...metric, id: metric?.id || genId(), event, filters: [] }
-                  : metric
-              )
-            );
-          }}
-          onDelete={() => {
-            //If there are more than two metrics, let them delete:
-            if (localMetrics.length > 2) {
-              setMetrics(localMetrics.filter((_, i) => i !== idx));
-            } else {
-              //Don't let the user delete if there are only two metrics
-              setMetrics(localMetrics.map((x, i) => (i !== idx ? x : null)));
-            }
-          }}
-          onAddFilter={(newFilter) => {
-            setMetrics(
-              localMetrics.map((metric, i) =>
-                i === idx
-                  ? {
-                      ...metric!,
-                      filters: [...(metric?.filters || []), newFilter],
-                    }
-                  : metric
-              )
-            );
-          }}
-          idx={idx}
-          metric={m}
-        />
-      ))}
+      <DragDropContext
+        onDragEnd={(result) => {
+          // dropped outside the list
+          if (!result.destination) {
+            return;
+          }
+
+          setMetrics(
+            reorder(localMetrics, result.source.index, result.destination.index)
+          );
+        }}
+      >
+        <Droppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              {localMetrics.map((m, idx) => {
+                const id = m ? m.id : "idx" + idx;
+                return (
+                  <Draggable
+                    isDragDisabled={!isValid}
+                    key={id}
+                    draggableId={id}
+                    index={idx}
+                  >
+                    {(provided, snapshot) => (
+                      <div ref={provided.innerRef} {...provided.draggableProps}>
+                        <MetricBlock
+                          dragHandleProps={provided.dragHandleProps}
+                          displayIdxAsNumber
+                          showMeasurement={false}
+                          defaultOpen={false}
+                          onEventChange={(event) => {
+                            setMetrics(
+                              localMetrics.map((metric, i) =>
+                                i === idx
+                                  ? {
+                                      ...metric,
+                                      id: metric?.id || genId(),
+                                      event,
+                                      filters: [],
+                                    }
+                                  : metric
+                              )
+                            );
+                          }}
+                          onDelete={() => {
+                            //If there are more than two metrics, let them delete:
+                            if (localMetrics.length > 2) {
+                              setMetrics(
+                                localMetrics.filter((_, i) => i !== idx)
+                              );
+                            } else {
+                              //Don't let the user delete if there are only two metrics
+                              setMetrics(
+                                localMetrics.map((x, i) =>
+                                  i !== idx ? x : null
+                                )
+                              );
+                            }
+                          }}
+                          onAddFilter={(newFilter) => {
+                            setMetrics(
+                              localMetrics.map((metric, i) =>
+                                i === idx
+                                  ? {
+                                      ...metric!,
+                                      filters: [
+                                        ...(metric?.filters || []),
+                                        newFilter,
+                                      ],
+                                    }
+                                  : metric
+                              )
+                            );
+                          }}
+                          idx={idx}
+                          metric={m}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                );
+              })}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
       {/* If a new metric is in the process of being added, display a new metric block UI as an input*/}
       {/* Once the metric is successfully added, hide the new block and show it as part of the list above. */}
       {addNewMetric ? (
         <MetricBlock
+          displayIdxAsNumber
           showMeasurement={false}
           onEventChange={(event) => {
             setMetrics([

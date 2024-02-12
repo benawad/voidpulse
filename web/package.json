@@ -12,6 +12,7 @@
   "dependencies": {
     "@floating-ui/react": "^0.26.8",
     "@formatjs/intl-numberformat": "^8.10.0",
+    "@hello-pangea/dnd": "^16.5.0",
     "@tanstack/react-query": "^5.17.19",
     "@tanstack/react-table": "^8.11.8",
     "@tanstack/react-virtual": "^3.0.4",
