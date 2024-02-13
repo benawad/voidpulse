@@ -193,6 +193,19 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     });
   }, [data, visibleDataMap, highlightedRowId, colorOrder]);
 
+  const dataStr = useMemo(() => {
+    return !data
+      ? ""
+      : JSON.stringify({
+          ...data,
+          reportType: ReportType[data.reportType].toString(),
+          chartType:
+            data.reportType === ReportType.insight
+              ? ChartType[data.chartType].toString()
+              : "",
+        });
+  }, [data]);
+
   return (
     <div>
       {/* Navigation bar that shows hierarchy of dashboards */}
@@ -205,7 +218,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       </div>
       {/* View that houses editor and chart side by side */}
       <div className="flex w-full h-full">
-        <ChartEditorSidebar />
+        <ChartEditorSidebar dataStr={dataStr} />
         {/* Main section of the chart view */}
         <div className="flex-1 overflow-x-auto">
           {/* Div that stacks the chart and data at the bottom */}

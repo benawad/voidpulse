@@ -10,6 +10,7 @@ export type LocalAiMsg = {
 };
 
 interface AiInputBarProps {
+  dataStr: string;
   prevMsgs: LocalAiMsg[];
   onMsg: (msg: LocalAiMsg) => void;
 }
@@ -18,7 +19,11 @@ type Inputs = {
   userInputText: string;
 };
 
-export const AiInputBar: React.FC<AiInputBarProps> = ({ onMsg, prevMsgs }) => {
+export const AiInputBar: React.FC<AiInputBarProps> = ({
+  onMsg,
+  prevMsgs,
+  dataStr,
+}) => {
   const { mutateAsync } = trpc.sendMsgToAi.useMutation({
     onSuccess: (data) => {
       onMsg({
@@ -40,6 +45,7 @@ export const AiInputBar: React.FC<AiInputBarProps> = ({ onMsg, prevMsgs }) => {
       role: MsgRole.user,
     });
     return mutateAsync({
+      data: dataStr,
       text: data.userInputText,
       prevMsgs,
     });

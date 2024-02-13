@@ -4,9 +4,10 @@ import { BsBarChart } from "react-icons/bs";
 import { LiaChartAreaSolid } from "react-icons/lia";
 import { SlGraph } from "react-icons/sl";
 import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { TextToChartInputBar } from "../metric-selector/ai-chart-editor/TextToChartInputBar";
+import { FunnelSidebar } from "./FunnelSidebar";
 import { InsightSidebar } from "./InsightSidebar";
 import { RetentionSidebar } from "./RetentionSidebar";
-import { FunnelSidebar } from "./FunnelSidebar";
 
 interface ManualChartOptionsProps {}
 
@@ -91,6 +92,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
         {reportType === ReportType.insight ? <InsightSidebar /> : null}
         {reportType === ReportType.funnel ? <FunnelSidebar /> : null}
         {reportType === ReportType.retention ? <RetentionSidebar /> : null}
+        <TextToChartInputBar />
       </div>
     </>
   );

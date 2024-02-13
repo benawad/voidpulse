@@ -3,9 +3,13 @@ import { MultiToggleButtonBar } from "../ui/MultiToggleButtonBar";
 import { ManualChartOptions } from "./manual-sidebars/ManualChartOptions";
 import { AiChatInterface } from "./metric-selector/ai-chart-editor/AiChatInterface";
 
-interface ChartEditorSidebarProps {}
+interface ChartEditorSidebarProps {
+  dataStr: string;
+}
 
-export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = () => {
+export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
+  dataStr,
+}) => {
   const [editorMode, setEditorMode] = useState("ai");
   return (
     <div
@@ -31,7 +35,11 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = () => {
         ]}
         selectedButtonIdx={editorMode === "ai" ? 0 : 1}
       />
-      {editorMode === "ai" ? <AiChatInterface /> : <ManualChartOptions />}
+      {editorMode === "ai" ? (
+        <AiChatInterface dataStr={dataStr} />
+      ) : (
+        <ManualChartOptions />
+      )}
     </div>
   );
 };

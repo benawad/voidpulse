@@ -18,7 +18,7 @@ export const transformToFunnelChartData = ({
     datasets: [
       ...datas.map((data, i) => {
         return {
-          label: data.breakdown || `Step ${i + 1}`,
+          label: data.breakdown ? "" + data.breakdown : `Step ${i + 1}`,
           data: data.steps.map((x) => x.percent),
           inlineLabels: data.steps.map((x, k) => {
             return {

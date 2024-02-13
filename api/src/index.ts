@@ -1,12 +1,12 @@
 import "dotenv-safe/config";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
+import path from "path";
 import { app } from "./appRouter";
 import { runClickhouseMigrations } from "./clickhouse";
+import { db } from "./db";
 import { kafkaProducer } from "./kafka/kafka";
 import { addIngestRoute } from "./routes/express/ingest";
 import { addUpdatePeopleRoute } from "./routes/express/update-people";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { db } from "./db";
-import path from "path";
 
 const startServer = async () => {
   await migrate(db, { migrationsFolder: path.join(__dirname, "../drizzle") });

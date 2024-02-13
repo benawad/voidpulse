@@ -3,9 +3,13 @@ import PulseMotif1 from "../../../landing/PulseMotif1";
 import { AiInputBar, LocalAiMsg } from "./AiInputBar";
 import { MsgRole } from "@voidpulse/api";
 
-interface AiChatInterfaceProps {}
+interface AiChatInterfaceProps {
+  dataStr: string;
+}
 
-export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({}) => {
+export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({
+  dataStr,
+}) => {
   const [msgs, setMsgs] = useState<LocalAiMsg[]>([]);
   const greetingPrompts = [
     "What would you like to learn today?",
@@ -33,7 +37,11 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({}) => {
           {msg.text}
         </div>
       ))}
-      <AiInputBar prevMsgs={msgs} onMsg={(msg) => setMsgs([...msgs, msg])} />
+      <AiInputBar
+        dataStr={dataStr}
+        prevMsgs={msgs}
+        onMsg={(msg) => setMsgs([...msgs, msg])}
+      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 "use client";
-import { ChartType, RetentionNumFormat } from "@voidpulse/api";
+import { ChartType, ReportType, RetentionNumFormat } from "@voidpulse/api";
 import "chart.js/auto";
 import Link from "next/link";
 import React from "react";
@@ -8,6 +8,7 @@ import { useColorOrder } from "../../themes/useColorOrder";
 import { useLineChartStyle } from "../../themes/useLineChartStyle";
 import { transformToLineChartData } from "../../utils/transformToLineChartData";
 import { RouterOutput } from "../../utils/trpc";
+import { transformRetentionToLineChartData } from "../../utils/transformRetentionToLineChartData";
 
 interface ChartThumbnailProps {
   chart: RouterOutput["getCharts"]["charts"][0];
@@ -27,13 +28,24 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
       chartToDisplay = (
         <LineChart
           yPercent={chart.retentionNumFormat !== RetentionNumFormat.rawCount}
-          data={transformToLineChartData({
-            datas: chart.data.datas,
-            dateHeader: chart.data.dateHeaders,
-            colorOrder,
-            visibleDataMap: chart.visibleDataMap,
-            lineChartStyle,
-          })}
+          data={
+            chart.reportType === ReportType.retention
+              ? transformRetentionToLineChartData({
+                  datas: chart.data.datas,
+                  retHeaders: chart.data.retentionHeaders,
+                  retentionNumFormat: chart.retentionNumFormat,
+                  colorOrder,
+                  visibleDataMap: chart.visibleDataMap,
+                  lineChartStyle,
+                })
+              : transformToLineChartData({
+                  datas: chart.data.datas,
+                  dateHeader: chart.data.dateHeaders,
+                  colorOrder,
+                  visibleDataMap: chart.visibleDataMap,
+                  lineChartStyle,
+                })
+          }
           disableAnimations
         />
       );
