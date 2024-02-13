@@ -1,7 +1,7 @@
-import { ChartType, DateHeader, RetentionNumFormat } from "@voidpulse/api";
+import { DateHeader, RetentionNumFormat } from "@voidpulse/api";
 import { RouterOutput } from "./trpc";
 
-export const transformRetentionToLineChartData = ({
+export const transformRetentionData = ({
   datas,
   colorOrder,
   retHeaders,
@@ -41,7 +41,7 @@ export const transformRetentionToLineChartData = ({
           tooltips: retHeaders.map((d, i) => {
             return {
               title: d.fullLabel,
-              afterTitle: data.breakdown || "",
+              afterTitle: data.breakdown ?? "",
               beforeLabel: `${
                 data.averageRetentionByDay[i]?.avgRetainedPercent || 0
               }% retention`,

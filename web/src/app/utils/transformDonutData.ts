@@ -1,28 +1,23 @@
 import { RouterOutput } from "./trpc";
 
-export const transformToBarChartData = ({
+export const transformDonutData = ({
   datas,
   visibleDataMap,
   highlightedId,
-  barChartStyle,
+  donutChartStyle,
 }: {
   datas: Extract<RouterOutput["getReport"]["datas"], { value: number }[]>;
   visibleDataMap?: Record<string, boolean> | null;
   highlightedId?: string | null;
-  barChartStyle: any;
+  donutChartStyle: any;
 }) => {
-  const filteredData = datas.filter((data, i) => {
-    return i < 10;
-  });
   return {
-    labels: filteredData.map((x) => x.breakdown ?? x.eventLabel),
+    labels: datas.map((x) => "" + (x.breakdown ?? x.eventLabel)),
     datasets: [
       {
+        ...donutChartStyle,
         label: datas[0].eventLabel,
-        data: filteredData.map((x) => x.value),
-        ...barChartStyle,
-        borderRadius: 8,
-        borderWidth: 0,
+        data: datas.map((x) => x.value),
       },
     ],
   };

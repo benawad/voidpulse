@@ -19,7 +19,7 @@ import { WiDaySunny } from "react-icons/wi";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
 import { useColorOrder } from "../themes/useColorOrder";
-import { useLineChartStyle } from "../themes/useLineChartStyle";
+import { useChartStyle } from "../themes/useChartStyle";
 import { Button } from "../ui/Button";
 import { Dropdown } from "../ui/Dropdown";
 import { EditableTextField } from "../ui/EditableTextField";
@@ -29,10 +29,10 @@ import { DonutChart } from "../ui/charts/DonutChart";
 import { FunnelChart } from "../ui/charts/FunnelChart";
 import { LineChart } from "../ui/charts/LineChart";
 import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
-import { transformRetentionToLineChartData } from "../utils/transformRetentionToLineChartData";
-import { transformToBarChartData } from "../utils/transformToBarChartData";
-import { transformToFunnelChartData } from "../utils/transformToFunnelChartData";
-import { transformToLineChartData } from "../utils/transformToLineChartData";
+import { transformRetentionData } from "../utils/transformRetentionData";
+import { transformBarData } from "../utils/transformBarData";
+import { transformFunnelChartData } from "../utils/transformFunnelData";
+import { transformLineData } from "../utils/transformToLineData";
 import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartDateRangePicker } from "./ChartDateRangePicker";
@@ -40,6 +40,7 @@ import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
 import { ChartDataTable } from "./data-table/ChartDataTable";
 import { useCurrTheme } from "../themes/useCurrTheme";
+import { transformDonutData } from "../utils/transformDonutData";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -66,7 +67,7 @@ type RetSubRow = {
 };
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
-  const lineChartStyle = useLineChartStyle();
+  const chartStyle = useChartStyle();
   const colorOrder = useColorOrder();
   const { theme } = useCurrTheme();
   const [
@@ -184,7 +185,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       };
     }
 
-    return transformToFunnelChartData({
+    return transformFunnelChartData({
       datas: data.datas,
       labels: data.labels,
       colorOrder,
@@ -397,14 +398,14 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               <LineChart
                 disableAnimations
                 yPercent={retentionNumFormat !== RetentionNumFormat.rawCount}
-                data={transformRetentionToLineChartData({
+                data={transformRetentionData({
                   datas: data.datas,
                   colorOrder,
                   retHeaders: data.retentionHeaders,
                   visibleDataMap,
                   highlightedId: highlightedRowId,
                   retentionNumFormat,
-                  lineChartStyle,
+                  lineChartStyle: chartStyle.line,
                 })}
               />
             ) : null}
@@ -415,13 +416,13 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             data.chartType === ChartType.line ? (
               <LineChart
                 disableAnimations
-                data={transformToLineChartData({
+                data={transformLineData({
                   datas: data.datas,
                   dateHeader: data.dateHeaders,
                   colorOrder,
                   visibleDataMap,
                   highlightedId: highlightedRowId,
-                  lineChartStyle,
+                  lineChartStyle: chartStyle.line,
                 })}
               />
             ) : null}
@@ -432,20 +433,12 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             data.chartType === ChartType.donut ? (
               <div>
                 <DonutChart
-                  data={{
-                    labels: data.datas.map(
-                      (x) => "" + (x.breakdown ?? x.eventLabel)
-                    ),
-                    datasets: [
-                      {
-                        backgroundColor: [...colorOrder],
-                        borderColor: ["transparent"],
-                        hoverOffset: 4,
-                        label: data.datas[0].eventLabel,
-                        data: data.datas.map((x) => x.value),
-                      },
-                    ],
-                  }}
+                  data={transformDonutData({
+                    datas: data.datas,
+                    visibleDataMap,
+                    highlightedId: highlightedRowId,
+                    donutChartStyle: chartStyle.donut,
+                  })}
                 />
               </div>
             ) : null}
@@ -469,18 +462,11 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   </HintCallout>
                 ) : null}
                 <BarChart
-                  data={transformToBarChartData({
+                  data={transformBarData({
                     datas: data.datas,
                     visibleDataMap,
                     highlightedId: highlightedRowId,
-                    barChartStyle: {
-                      backgroundColor: [...colorOrder],
-                      borderColor: ["transparent"],
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      hoverBorderColor: [theme.primary[300]],
-                      hoverBorderRadius: 4,
-                    },
+                    barChartStyle: chartStyle.bar,
                   })}
                 />
               </div>

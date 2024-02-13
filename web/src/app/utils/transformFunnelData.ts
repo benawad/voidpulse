@@ -1,6 +1,6 @@
 import { RouterOutput } from "./trpc";
 
-export const transformToFunnelChartData = ({
+export const transformFunnelChartData = ({
   datas,
   labels,
   colorOrder,

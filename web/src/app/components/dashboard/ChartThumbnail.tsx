@@ -5,10 +5,16 @@ import Link from "next/link";
 import React from "react";
 import { LineChart } from "../../ui/charts/LineChart";
 import { useColorOrder } from "../../themes/useColorOrder";
-import { useLineChartStyle } from "../../themes/useLineChartStyle";
-import { transformToLineChartData } from "../../utils/transformToLineChartData";
+import { useChartStyle } from "../../themes/useChartStyle";
+import { transformLineData } from "../../utils/transformToLineData";
 import { RouterOutput } from "../../utils/trpc";
-import { transformRetentionToLineChartData } from "../../utils/transformRetentionToLineChartData";
+import { transformRetentionData } from "../../utils/transformRetentionData";
+import { BarChart } from "../../ui/charts/BarChart";
+import { transformBarData } from "../../utils/transformBarData";
+import { DonutChart } from "../../ui/charts/DonutChart";
+import { transformDonutData } from "../../utils/transformDonutData";
+import { FunnelChart } from "../../ui/charts/FunnelChart";
+import { transformFunnelChartData } from "../../utils/transformFunnelData";
 
 interface ChartThumbnailProps {
   chart: RouterOutput["getCharts"]["charts"][0];
@@ -16,47 +22,69 @@ interface ChartThumbnailProps {
 
 export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   const colorOrder = useColorOrder();
-  const lineChartStyle = useLineChartStyle();
+  const chartStyle = useChartStyle();
   let chartToDisplay;
   let minChartDisplayWidth = 300;
-  switch (chart.chartType) {
-    case ChartType.donut:
-      chartToDisplay = null;
-      minChartDisplayWidth = 300;
-      break;
-    case ChartType.line:
-      chartToDisplay = (
-        <LineChart
-          yPercent={chart.retentionNumFormat !== RetentionNumFormat.rawCount}
-          data={
-            chart.reportType === ReportType.retention
-              ? transformRetentionToLineChartData({
-                  datas: chart.data.datas,
-                  retHeaders: chart.data.retentionHeaders,
-                  retentionNumFormat: chart.retentionNumFormat,
-                  colorOrder,
-                  visibleDataMap: chart.visibleDataMap,
-                  lineChartStyle,
-                })
-              : transformToLineChartData({
-                  datas: chart.data.datas,
-                  dateHeader: chart.data.dateHeaders,
-                  colorOrder,
-                  visibleDataMap: chart.visibleDataMap,
-                  lineChartStyle,
-                })
-          }
-          disableAnimations
-        />
-      );
-      minChartDisplayWidth = 400;
-      break;
-    case ChartType.bar:
-      chartToDisplay = null;
-      minChartDisplayWidth = 600;
-      break;
-    default:
-      chartToDisplay = null;
+  if (chart.reportType === ReportType.funnel) {
+    chartToDisplay = (
+      <FunnelChart
+        data={transformFunnelChartData({
+          datas: chart.data.datas,
+          visibleDataMap: chart.visibleDataMap,
+          colorOrder,
+          labels: chart.data.labels,
+        })}
+      />
+    );
+    minChartDisplayWidth = 300;
+  } else if (chart.chartType === ChartType.line) {
+    chartToDisplay = (
+      <LineChart
+        yPercent={chart.retentionNumFormat !== RetentionNumFormat.rawCount}
+        data={
+          chart.reportType === ReportType.retention
+            ? transformRetentionData({
+                datas: chart.data.datas,
+                retHeaders: chart.data.retentionHeaders,
+                retentionNumFormat: chart.retentionNumFormat,
+                colorOrder,
+                visibleDataMap: chart.visibleDataMap,
+                lineChartStyle: chartStyle.line,
+              })
+            : transformLineData({
+                datas: chart.data.datas,
+                dateHeader: chart.data.dateHeaders,
+                colorOrder,
+                visibleDataMap: chart.visibleDataMap,
+                lineChartStyle: chartStyle.line,
+              })
+        }
+        disableAnimations
+      />
+    );
+    minChartDisplayWidth = 400;
+  } else if (chart.chartType === ChartType.bar) {
+    chartToDisplay = (
+      <BarChart
+        data={transformBarData({
+          datas: chart.data.datas,
+          visibleDataMap: chart.visibleDataMap,
+          barChartStyle: chartStyle.bar,
+        })}
+      />
+    );
+    minChartDisplayWidth = 600;
+  } else if (chart.chartType === ChartType.donut) {
+    chartToDisplay = (
+      <DonutChart
+        data={transformDonutData({
+          datas: chart.data.datas,
+          visibleDataMap: chart.visibleDataMap,
+          donutChartStyle: chartStyle.donut,
+        })}
+      />
+    );
+    minChartDisplayWidth = 300;
   }
 
   return (

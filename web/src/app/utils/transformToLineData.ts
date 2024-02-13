@@ -1,7 +1,7 @@
 import { ChartType, DateHeader, MetricMeasurement } from "@voidpulse/api";
 import { RouterOutput } from "./trpc";
 
-export const transformToLineChartData = ({
+export const transformLineData = ({
   datas,
   dateHeader,
   colorOrder,
@@ -39,7 +39,7 @@ export const transformToLineChartData = ({
           tooltips: dateHeader.map((d) => {
             return {
               title: data.eventLabel,
-              afterTitle: data.breakdown || "",
+              afterTitle: data.breakdown ?? "",
               beforeLabel: d.fullLabel,
               appendToLabel: data.measurement
                 ? {
