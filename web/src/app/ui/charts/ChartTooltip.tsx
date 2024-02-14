@@ -64,26 +64,54 @@ export const ChartTooltip: React.FC<Props> = ({ $event }) => {
 
   return (
     <div
-      className="absolute bg-primary-900 text-white p-2 rounded-lg shadow-lg z-20"
+      className="absolute flex flex-row text-xs bg-primary-800 border border-primary-700 text-primary-100 p-2 rounded-lg shadow-lg z-20"
       style={{
         pointerEvents: "none",
         left: left,
         top: top,
-        width: 150,
-        borderRight: `4px solid ${stripeColor}`,
       }}
     >
-      <div>{title}</div>
-      <div>{subtitle}</div>
-      <div>{dateString}</div>
-      <div>
-        {label?.highlight} {label?.annotation}
-      </div>
-      <div>
-        {sublabel?.highlight} {sublabel?.annotation}
-      </div>
-      <div>
-        {percentChange?.value} {percentChange?.annotation}
+      <div
+        className="rounded-full mr-2"
+        style={{ width: "6px", backgroundColor: stripeColor }}
+      />
+
+      <div className="flex flex-col">
+        <div className="font-semibold font-sm">{title}</div>
+        <div>{subtitle}</div>
+        <div className="text-xs text-primary-500">{dateString}</div>
+        {/* Number of users/events */}
+        <div className="mono-body mt-2">
+          <div
+            className="inline bg-primary-900 rounded-md"
+            style={{ padding: 2 }}
+          >
+            {label?.highlight}
+          </div>{" "}
+          {label?.annotation}
+        </div>
+        <div>
+          {sublabel?.highlight} {sublabel?.annotation}
+        </div>
+        {/* Shows if your data went up or down */}
+        {percentChange ? (
+          <div>
+            <div
+              className="inline mono-body bg-primary-900 rounded-md"
+              style={{
+                padding: 2,
+                color: percentChange.value > 0 ? "teal" : "indianred",
+              }}
+            >
+              {percentChange?.value}
+              {"%"}
+            </div>{" "}
+            <div className="inline text-primary-500">
+              {" "}
+              {percentChange?.annotation}
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
