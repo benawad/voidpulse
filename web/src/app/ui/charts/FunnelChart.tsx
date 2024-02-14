@@ -22,7 +22,7 @@ export const FunnelChart: React.FC<{
   >([]);
 
   return (
-    <div>
+    <div className="relative" style={{ height: 400 }}>
       <Bar
         ref={chartRef}
         data={data}
@@ -34,10 +34,9 @@ export const FunnelChart: React.FC<{
                 (dataset, datasetIndex) => {
                   const meta = chart.getDatasetMeta(datasetIndex);
                   return meta.data.map((element) => {
-                    const canvasPosition = chart.canvas.getBoundingClientRect();
                     return {
-                      x: element.x + canvasPosition.left + window.scrollX,
-                      y: element.y + canvasPosition.top + window.scrollY - 10, // Adjust as needed
+                      x: element.x,
+                      y: element.y,
                     };
                   });
                 }
@@ -51,6 +50,7 @@ export const FunnelChart: React.FC<{
         ]}
         options={{
           animation: false,
+          maintainAspectRatio: false,
           plugins: {
             tooltip: {
               enabled: false,
@@ -81,7 +81,6 @@ export const FunnelChart: React.FC<{
               },
               ticks: {
                 color: [theme.primary[500]],
-                padding: 16,
                 maxTicksLimit: 5,
                 callback: function (value) {
                   return `${value}%`;

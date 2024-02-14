@@ -29,7 +29,6 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   const colorOrder = useColorOrder();
   const chartStyle = useChartStyle();
   let chartToDisplay;
-  let minChartDisplayWidth = 300;
   if (chart.reportType === ReportType.funnel) {
     chartToDisplay = (
       <FunnelChart
@@ -104,19 +103,17 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
             -&gt;
           </span> */}
           </h2>
-          <p className={`m-0 max-w-[30ch] subtext overflow-hidden`}>
+          <p className={`m-0 max-w-[30ch] subtext truncate`}>
             {chart.description}
           </p>
         </div>
       </Link>
 
       {/* Chart display */}
-      <div className="bg-primary-800/30 pt-1 h-full overflow-x-scroll">
+      <div className="bg-primary-800/30 pt-1 h-full">
         <div
           style={{
-            minWidth: minChartDisplayWidth,
             height: "100%",
-            // minHeight: "400px",
           }}
         >
           {chartToDisplay}

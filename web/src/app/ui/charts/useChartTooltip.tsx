@@ -10,13 +10,13 @@ import { ActiveElement, ChartEvent } from "chart.js";
 
 export const useChartTooltip = (
   getTooltipData: GetTooltipData,
-  isDonut = false
+  followCursor = false
 ) => {
   const $event = useEventEmitter<ChartTooltipInfo | null>();
 
   return {
     external: useMemo(
-      () => createExternalTooltipHandler(getTooltipData, $event, isDonut),
+      () => createExternalTooltipHandler(getTooltipData, $event, followCursor),
       [getTooltipData]
     ),
     onHover: useCallback((e: ChartEvent, elements: ActiveElement[]) => {

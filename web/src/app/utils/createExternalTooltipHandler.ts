@@ -23,7 +23,7 @@ export const createExternalTooltipHandler =
   (
     getTooltipData: GetTooltipData,
     $event: EventEmitter<ChartTooltipInfo | null>,
-    isDonut: boolean
+    followerCursor: boolean
   ) =>
   ({
     chart,
@@ -48,7 +48,7 @@ export const createExternalTooltipHandler =
         tooltip.dataPoints[0].datasetIndex,
         tooltip.dataPoints[0].dataIndex
       ),
-      waitForOnHover: isDonut,
+      waitForOnHover: followerCursor,
       left: positionX + tooltip.caretX,
       top: positionY + tooltip.caretY,
     });
