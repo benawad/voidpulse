@@ -108,20 +108,23 @@ export const FunnelChart: React.FC<{
           return (
             <FloatingPortal key={index}>
               <div
+                className="bg-primary-800 border border-primary-700 rounded-lg shadow-lg mono-body cursor-default"
                 style={{
                   position: "absolute",
                   left: `${pos.x}px`,
                   top: `${pos.y - 10}px`,
                   transform: "translateX(-50%)", // Center horizontally
                   padding: "4px 8px",
-                  backgroundColor: "black",
-                  color: "white",
-                  borderRadius: "4px",
+                  borderRadius: "8px",
                   fontSize: "12px",
                 }}
               >
-                <div>{info.percent}%</div>
-                <div>{info.value.toLocaleString()}</div>
+                <div className="text-primary-100 text-center">
+                  {info.percent}%
+                </div>
+                <div className="text-primary-500 text-center">
+                  {info.value.toLocaleString()}
+                </div>
               </div>
             </FloatingPortal>
           );
