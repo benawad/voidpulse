@@ -1,8 +1,8 @@
+import { FloatingPortal } from "@floating-ui/react";
 import Chart, { ChartData } from "chart.js/auto";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useCurrTheme } from "../../themes/useCurrTheme";
-import { useColorOrder } from "../../themes/useColorOrder";
 import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
 import { useChartTooltip } from "./useChartTooltip";
 
@@ -22,7 +22,7 @@ export const FunnelChart: React.FC<{
   >([]);
 
   return (
-    <div className="relative" style={{ height: 400 }}>
+    <div style={{ height: 400 }}>
       <Bar
         ref={chartRef}
         data={data}
@@ -30,13 +30,14 @@ export const FunnelChart: React.FC<{
           {
             id: "calculateLabelPositions",
             afterDraw: (chart) => {
+              const { top, left } = chart.canvas.getBoundingClientRect();
               const newLabelPositions = chart.data.datasets.map(
                 (dataset, datasetIndex) => {
                   const meta = chart.getDatasetMeta(datasetIndex);
                   return meta.data.map((element) => {
                     return {
-                      x: element.x,
-                      y: element.y,
+                      x: left + element.x,
+                      y: top + element.y,
                     };
                   });
                 }
@@ -70,7 +71,6 @@ export const FunnelChart: React.FC<{
                 autoSkip: true,
                 maxRotation: 0,
                 maxTicksLimit: 5,
-                padding: 4,
               },
             },
             //Y axis
@@ -106,23 +106,24 @@ export const FunnelChart: React.FC<{
           }
 
           return (
-            <div
-              key={index}
-              style={{
-                position: "absolute",
-                left: `${pos.x}px`,
-                top: `${pos.y - 10}px`,
-                transform: "translateX(-50%)", // Center horizontally
-                padding: "4px 8px",
-                backgroundColor: "black",
-                color: "white",
-                borderRadius: "4px",
-                fontSize: "12px",
-              }}
-            >
-              <div>{info.percent}%</div>
-              <div>{info.value.toLocaleString()}</div>
-            </div>
+            <FloatingPortal key={index}>
+              <div
+                style={{
+                  position: "absolute",
+                  left: `${pos.x}px`,
+                  top: `${pos.y - 10}px`,
+                  transform: "translateX(-50%)", // Center horizontally
+                  padding: "4px 8px",
+                  backgroundColor: "black",
+                  color: "white",
+                  borderRadius: "4px",
+                  fontSize: "12px",
+                }}
+              >
+                <div>{info.percent}%</div>
+                <div>{info.value.toLocaleString()}</div>
+              </div>
+            </FloatingPortal>
           );
         });
       })}

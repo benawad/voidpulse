@@ -6,7 +6,7 @@ import {
 } from "../../utils/createExternalTooltipHandler";
 import { ChartTooltip } from "./ChartTooltip";
 import useEventEmitter from "./useEventEmitter";
-import { ActiveElement, ChartEvent } from "chart.js";
+import { ActiveElement, Chart, ChartEvent } from "chart.js";
 
 export const useChartTooltip = (
   getTooltipData: GetTooltipData,
@@ -19,16 +19,20 @@ export const useChartTooltip = (
       () => createExternalTooltipHandler(getTooltipData, $event, followCursor),
       [getTooltipData]
     ),
-    onHover: useCallback((e: ChartEvent, elements: ActiveElement[]) => {
-      if (elements.length && e.x && e.y) {
-        $event.emit({
-          posUpdate: true,
-          left: e.x,
-          top: e.y + 30,
-        });
-        return;
-      }
-    }, []),
+    onHover: useCallback(
+      (e: ChartEvent, elements: ActiveElement[], chart: Chart) => {
+        if (elements.length && e.x && e.y) {
+          const { top, left } = chart.canvas.getBoundingClientRect();
+          $event.emit({
+            posUpdate: true,
+            left: left + e.x,
+            top: top + e.y,
+          });
+          return;
+        }
+      },
+      []
+    ),
     tooltipNode: <ChartTooltip $event={$event} />,
   };
 };

@@ -44,38 +44,36 @@ export const DonutChart: React.FC<DonutChartProps> = ({
   );
   return (
     <div>
-      <ChartLegend
-        labels={data.labels!}
-        colors={data.datasets[0].backgroundColor}
-      />
       <div className="p-3 flex justify-center items-center margin-0">
-        <div className="relative" style={{ maxWidth: 500, width: "100%" }}>
-          <Doughnut
-            data={data}
-            options={{
-              animation: false,
-              onHover,
-              plugins: {
-                legend: {
-                  position: "top",
-                  align: "center",
+        <div style={{ maxWidth: 500, width: "100%" }}>
+          <div className="relative">
+            <Doughnut
+              data={data}
+              options={{
+                animation: false,
+                onHover,
+                plugins: {
+                  legend: {
+                    position: "top",
+                    align: "center",
+                  },
+                  tooltip: {
+                    enabled: false,
+                    animation: false,
+                    external,
+                  },
                 },
-                tooltip: {
-                  enabled: false,
-                  animation: false,
-                  external,
-                },
-              },
-            }}
-          />
-          {tooltipNode}
-          {/* Total events center label */}
-          <div className="absolute z-0 top-0 bottom-0 my-auto right-0 left-0 mx-auto h-12">
-            <div className="text-3xl font-bold text-center">
-              {numFormatter.format(total)}
+              }}
+            />
+            {/* Total events center label */}
+            <div className="absolute z-0 top-0 bottom-0 my-auto right-0 left-0 mx-auto h-12">
+              <div className="text-3xl font-bold text-center">
+                {numFormatter.format(total)}
+              </div>
+              <div className="text-xs text-center">total</div>
             </div>
-            <div className="text-xs text-center">total</div>
           </div>
+          {tooltipNode}
         </div>
       </div>
     </div>

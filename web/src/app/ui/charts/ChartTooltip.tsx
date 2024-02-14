@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { EventEmitter } from "./useEventEmitter";
 import { ChartTooltipInfo } from "../../utils/createExternalTooltipHandler";
+import { FloatingPortal } from "@floating-ui/react";
 
 export type TooltipData = {
   title?: string;
@@ -22,10 +23,11 @@ export type TooltipData = {
 };
 
 type Props = {
+  shouldPortal?: boolean;
   $event: EventEmitter<ChartTooltipInfo | null>;
 };
 
-export const ChartTooltip: React.FC<Props> = ({ $event }) => {
+export const ChartTooltip: React.FC<Props> = ({ $event, shouldPortal }) => {
   const [tooltipInfo, setTooltipInfo] = useState<null | ChartTooltipInfo>(null);
 
   $event.useSubscription((info) => {
