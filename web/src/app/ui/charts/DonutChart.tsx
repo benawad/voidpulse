@@ -42,12 +42,28 @@ export const DonutChart: React.FC<DonutChartProps> = ({
     (acc: number, val: number) => acc + val,
     0
   );
+
   return (
     <div>
       <div className="p-3 flex justify-center items-center margin-0">
         <div style={{ maxWidth: 500, width: "100%" }}>
           <div className="relative">
+            {/* Total events center label */}
+            <div
+              style={{
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+              className="absolute"
+            >
+              <div className="text-3xl font-bold text-center">
+                {numFormatter.format(total)}
+              </div>
+              <div className="text-xs text-center">total</div>
+            </div>
             <Doughnut
+              className="z-10"
               data={data}
               options={{
                 animation: false,
@@ -65,13 +81,6 @@ export const DonutChart: React.FC<DonutChartProps> = ({
                 },
               }}
             />
-            {/* Total events center label */}
-            <div className="absolute z-0 top-0 bottom-0 my-auto right-0 left-0 mx-auto h-12">
-              <div className="text-3xl font-bold text-center">
-                {numFormatter.format(total)}
-              </div>
-              <div className="text-xs text-center">total</div>
-            </div>
           </div>
           {tooltipNode}
         </div>

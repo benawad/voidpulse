@@ -64,7 +64,7 @@ export const ChartTooltip: React.FC<Props> = ({ $event, shouldPortal }) => {
     stripeColor,
   } = tooltipInfo;
 
-  return (
+  const inside = (
     <div
       className="absolute flex flex-row text-xs bg-primary-800 border border-primary-700 text-primary-100 p-2 rounded-lg shadow-lg z-20"
       style={{
@@ -117,4 +117,10 @@ export const ChartTooltip: React.FC<Props> = ({ $event, shouldPortal }) => {
       </div>
     </div>
   );
+
+  if (shouldPortal) {
+    return <FloatingPortal>{inside}</FloatingPortal>;
+  } else {
+    return inside;
+  }
 };

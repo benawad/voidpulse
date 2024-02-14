@@ -25,14 +25,14 @@ export const useChartTooltip = (
           const { top, left } = chart.canvas.getBoundingClientRect();
           $event.emit({
             posUpdate: true,
-            left: left + e.x,
-            top: top + e.y,
+            left: left + e.x + window.scrollX,
+            top: top + e.y + window.scrollY,
           });
           return;
         }
       },
       []
     ),
-    tooltipNode: <ChartTooltip $event={$event} />,
+    tooltipNode: <ChartTooltip shouldPortal={followCursor} $event={$event} />,
   };
 };
