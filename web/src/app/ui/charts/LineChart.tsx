@@ -1,3 +1,4 @@
+import "@formatjs/intl-numberformat/polyfill";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -5,18 +6,13 @@ import {
   LinearScale,
   PointElement,
   Tooltip,
-  TooltipItem,
 } from "chart.js";
-import React, { useState } from "react";
+import React from "react";
 import { Line } from "react-chartjs-2";
 import { useCurrTheme } from "../../themes/useCurrTheme";
-import { ChartTooltip, TooltipData } from "./ChartTooltip";
-import {
-  ChartTooltipInfo,
-  GetTooltipData,
-  createExternalTooltipHandler,
-} from "../../utils/createExternalTooltipHandler";
+import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
 import { useChartTooltip } from "./useChartTooltip";
+import { numFormatter } from "../../utils/numFormatter";
 
 // Register ChartJS components using ChartJS.register
 ChartJS.register(
@@ -119,7 +115,9 @@ export const LineChart: React.FC<LineChartProps> = ({
                   ? function (value) {
                       return `${value}%`; // Append a percentage sign to each label
                     }
-                  : undefined,
+                  : function (value) {
+                      return numFormatter.format(value as number);
+                    },
               },
               border: {
                 color: "transparent",

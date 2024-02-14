@@ -32,7 +32,7 @@ function Page() {
   const chart = data?.charts.find((chart) => chart.id === id);
 
   return (
-    <div className="page">
+    <div className="page flex flex-col">
       <ProjectBoardProvider projectId={project.id} boardId={board.id}>
         <ChartStateProvider chart={chart}>
           <HeaderNav />

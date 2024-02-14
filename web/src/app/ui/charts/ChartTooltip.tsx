@@ -29,10 +29,24 @@ export const ChartTooltip: React.FC<Props> = ({ $event }) => {
   const [tooltipInfo, setTooltipInfo] = useState<null | ChartTooltipInfo>(null);
 
   $event.useSubscription((info) => {
-    setTooltipInfo(info);
+    if (info?.posUpdate) {
+      setTooltipInfo((d) => {
+        if (!d) {
+          return null;
+        }
+        return {
+          ...d,
+          waitForOnHover: false,
+          left: info.left,
+          top: info.top,
+        };
+      });
+    } else {
+      setTooltipInfo(info);
+    }
   });
 
-  if (!tooltipInfo) {
+  if (!tooltipInfo || tooltipInfo.waitForOnHover) {
     return null;
   }
 
@@ -50,11 +64,12 @@ export const ChartTooltip: React.FC<Props> = ({ $event }) => {
 
   return (
     <div
-      className="absolute bg-primary-900 text-white p-2 rounded-lg shadow-lg z-10 transition-all"
+      className="absolute bg-primary-900 text-white p-2 rounded-lg shadow-lg z-20"
       style={{
         pointerEvents: "none",
         left: left,
         top: top,
+        width: 150,
         borderRight: `4px solid ${stripeColor}`,
       }}
     >

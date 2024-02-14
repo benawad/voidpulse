@@ -211,7 +211,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   }, [data]);
 
   return (
-    <div>
+    <div className="flex-1 flex flex-col">
       {/* Navigation bar that shows hierarchy of dashboards */}
       <div className="h-14 border-b border-primary-700 items-center flex">
         <Link href="/">
@@ -221,7 +221,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
         </Link>
       </div>
       {/* View that houses editor and chart side by side */}
-      <div className="flex w-full h-full">
+      <div className="flex w-full h-full flex-1">
         <ChartEditorSidebar dataStr={dataStr} />
         {/* Main section of the chart view */}
         <div className="flex-1 overflow-x-auto">

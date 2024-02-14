@@ -41,11 +41,13 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
         })}
       />
     );
-    minChartDisplayWidth = 300;
   } else if (chart.chartType === ChartType.line) {
     chartToDisplay = (
       <LineChart
-        yPercent={chart.retentionNumFormat !== RetentionNumFormat.rawCount}
+        yPercent={
+          chart.reportType === ReportType.retention &&
+          chart.retentionNumFormat !== RetentionNumFormat.rawCount
+        }
         {...(chart.reportType === ReportType.retention
           ? transformRetentionData({
               datas: chart.data.datas,
@@ -67,7 +69,6 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
         disableAnimations
       />
     );
-    minChartDisplayWidth = 400;
   } else if (chart.chartType === ChartType.bar) {
     chartToDisplay = (
       <BarChart
@@ -78,7 +79,6 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
         })}
       />
     );
-    minChartDisplayWidth = 600;
   } else if (chart.chartType === ChartType.donut) {
     chartToDisplay = (
       <DonutChart
@@ -89,7 +89,6 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
         })}
       />
     );
-    minChartDisplayWidth = 300;
   }
 
   return (
