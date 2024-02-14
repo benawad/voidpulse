@@ -4,11 +4,9 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DateHeader } from "@voidpulse/api";
-import React, { useEffect } from "react";
-import { RouterOutput } from "../../utils/trpc";
-import ResizableGrid, { ROW_HEIGHT } from "./ResizableGrid";
 import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
+import React, { useEffect } from "react";
+import ResizableGrid, { ROW_HEIGHT } from "./ResizableGrid";
 
 interface ChartDataTableProps {
   datas: any;
@@ -21,8 +19,6 @@ interface ChartDataTableProps {
   >;
   expandedDataRows?: Record<string, boolean>;
 }
-
-const COLUMN_WIDTH = 100;
 
 export const ChartDataTable: React.FC<ChartDataTableProps> = ({
   stickyColumns,

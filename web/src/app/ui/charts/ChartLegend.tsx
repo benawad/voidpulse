@@ -6,12 +6,8 @@ interface ChartLegendProps {
 }
 
 export const ChartLegend: React.FC<ChartLegendProps> = ({ labels, colors }) => {
-  //Don't bother with the legend if there's only one color.
-  if (labels.length === 1) {
-    return null;
-  }
   return (
-    <div className="flex overflow-hidden w-full flex-wrap">
+    <div className="flex overflow-hidden w-full justify-center flex-wrap">
       {labels.map((label, i) => {
         return (
           <div
@@ -20,7 +16,7 @@ export const ChartLegend: React.FC<ChartLegendProps> = ({ labels, colors }) => {
           >
             <div
               className="rounded-sm h-3 w-3 my-auto"
-              style={{ backgroundColor: colors[i] }}
+              style={{ backgroundColor: colors[i % colors.length] }}
             />
             <div className="ml-2 text-primary-200 text-xs">{label}</div>
           </div>

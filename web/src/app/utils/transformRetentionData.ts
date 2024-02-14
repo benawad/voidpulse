@@ -35,6 +35,7 @@ export const transformRetentionData = ({
       borderWidth: data.id === highlightedId ? 4 : 2,
       borderColor: col,
       pointHoverBackgroundColor: col,
+      backgroundColor: colorOrder,
       label: data.eventLabel,
       data: retHeaders.map(
         (_, i) =>

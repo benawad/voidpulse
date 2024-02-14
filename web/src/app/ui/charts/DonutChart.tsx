@@ -47,7 +47,11 @@ export const DonutChart: React.FC<DonutChartProps> = ({
     <div>
       <div className="p-3 flex justify-center items-center margin-0">
         <div style={{ maxWidth: 500, width: "100%" }}>
-          <div className="relative">
+          <ChartLegend
+            labels={data.labels as string[]}
+            colors={data.datasets?.[0].backgroundColor as string[]}
+          />
+          <div className="relative mt-4">
             {/* Total events center label */}
             <div
               style={{
@@ -70,8 +74,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
                 onHover,
                 plugins: {
                   legend: {
-                    position: "top",
-                    align: "center",
+                    display: false,
                   },
                   tooltip: {
                     enabled: false,

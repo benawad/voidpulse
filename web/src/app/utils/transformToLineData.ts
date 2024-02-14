@@ -40,6 +40,7 @@ export const transformLineData = ({
       ...lineChartStyle,
       borderWidth: data.id === highlightedId ? 4 : 2,
       borderColor: col,
+      backgroundColor: colorOrder,
       pointHoverBackgroundColor: col,
       label: data.eventLabel,
       data: dateHeader.map((d) => data.data[d.lookupValue] || 0),

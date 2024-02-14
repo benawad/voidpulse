@@ -13,6 +13,7 @@ import { useCurrTheme } from "../../themes/useCurrTheme";
 import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
 import { useChartTooltip } from "./useChartTooltip";
 import { numFormatter } from "../../utils/numFormatter";
+import { ChartLegend } from "./ChartLegend";
 
 // Register ChartJS components using ChartJS.register
 ChartJS.register(
@@ -40,12 +41,20 @@ export const LineChart: React.FC<LineChartProps> = ({
   const { external, tooltipNode } = useChartTooltip(getTooltipData);
 
   return (
-    <div className="w-full">
+    <div
+      style={{
+        height: 400,
+        display: "block",
+      }}
+      className="w-full"
+    >
+      <div className="mt-2">
+        <ChartLegend
+          labels={data.datasets.map((x: any) => x.label) as string[]}
+          colors={data.datasets[0].backgroundColor as string[]}
+        />
+      </div>
       <Line
-        style={{
-          height: 400,
-          display: "block",
-        }}
         data={data}
         options={{
           layout: {

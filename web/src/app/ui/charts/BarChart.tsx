@@ -10,6 +10,7 @@ import { Bar } from "react-chartjs-2";
 import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
 import { useChartTooltip } from "./useChartTooltip";
 import { numFormatter } from "../../utils/numFormatter";
+import { useCurrTheme } from "../../themes/useCurrTheme";
 
 ChartJS.register(BarController, CategoryScale, LinearScale, BarElement);
 
@@ -24,6 +25,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data, getTooltipData }) => {
     onHover,
     tooltipNode: toolipNode,
   } = useChartTooltip(getTooltipData);
+  const { theme } = useCurrTheme();
 
   return (
     <div>

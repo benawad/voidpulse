@@ -574,14 +574,14 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   id: "c",
                   header: "Average",
                   size: 100,
-                  accessorFn: (row: any) => row.average_count,
+                  accessorFn: (row: any) => row.average_count.toLocaleString(),
                 },
               ]}
               mainColumns={
                 data.dateHeaders.map((dateHeader) => {
                   return {
                     accessorFn: (row: any) => {
-                      return row.data[dateHeader.lookupValue];
+                      return row.data[dateHeader.lookupValue].toLocaleString();
                     },
                     header: dateHeader.label,
                     size: 100,

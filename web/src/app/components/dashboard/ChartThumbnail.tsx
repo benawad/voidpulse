@@ -98,7 +98,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
           <h2
             className={`mb-2 text-l font-semibold text-primary-100 group-hover:text-accent-100 transition-colors`}
           >
-            {chart.title}
+            {chart.title || "Untitled"}
             {/* <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
             -&gt;
           </span> */}
@@ -110,15 +110,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
       </Link>
 
       {/* Chart display */}
-      <div className="bg-primary-800/30 pt-1 h-full">
-        <div
-          style={{
-            height: "100%",
-          }}
-        >
-          {chartToDisplay}
-        </div>
-      </div>
+      <div className="bg-primary-800/30 pt-1 h-full px-2">{chartToDisplay}</div>
     </div>
   );
 };

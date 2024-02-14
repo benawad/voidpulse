@@ -5,6 +5,7 @@ import { Bar } from "react-chartjs-2";
 import { useCurrTheme } from "../../themes/useCurrTheme";
 import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
 import { useChartTooltip } from "./useChartTooltip";
+import { ChartLegend } from "./ChartLegend";
 
 export const FunnelChart: React.FC<{
   data: ChartData<"bar", number[], string>;
@@ -53,6 +54,9 @@ export const FunnelChart: React.FC<{
           animation: false,
           maintainAspectRatio: false,
           plugins: {
+            legend: {
+              display: false,
+            },
             tooltip: {
               enabled: false,
               external,
