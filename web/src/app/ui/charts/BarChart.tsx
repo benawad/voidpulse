@@ -18,14 +18,19 @@ interface BarChartProps {
 }
 
 export const BarChart: React.FC<BarChartProps> = ({ data, getTooltipData }) => {
-  const { external, tooltipNode: toolipNode } = useChartTooltip(getTooltipData);
+  const {
+    external,
+    onHover,
+    tooltipNode: toolipNode,
+  } = useChartTooltip(getTooltipData, true);
 
   return (
-    <div>
+    <div className="relative">
       <Bar
         data={data}
         options={{
           maintainAspectRatio: false,
+          onHover,
           plugins: {
             tooltip: {
               enabled: false,
