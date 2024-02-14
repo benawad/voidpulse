@@ -180,8 +180,11 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const funnelData = useMemo(() => {
     if (data?.reportType !== ReportType.funnel) {
       return {
-        labels: [],
-        datasets: [],
+        data: {
+          labels: [],
+          datasets: [],
+        },
+        getTooltipData: () => ({}),
       };
     }
 
@@ -398,7 +401,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               <LineChart
                 disableAnimations
                 yPercent={retentionNumFormat !== RetentionNumFormat.rawCount}
-                data={transformRetentionData({
+                {...transformRetentionData({
                   datas: data.datas,
                   colorOrder,
                   retHeaders: data.retentionHeaders,
@@ -416,13 +419,15 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             data.chartType === ChartType.line ? (
               <LineChart
                 disableAnimations
-                data={transformLineData({
+                {...transformLineData({
                   datas: data.datas,
                   dateHeader: data.dateHeaders,
                   colorOrder,
                   visibleDataMap,
                   highlightedId: highlightedRowId,
                   lineChartStyle: chartStyle.line,
+                  lineChartGroupByTimeType:
+                    lineChartGroupByTimeType || LineChartGroupByTimeType.day,
                 })}
               />
             ) : null}
@@ -433,7 +438,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             data.chartType === ChartType.donut ? (
               <div>
                 <DonutChart
-                  data={transformDonutData({
+                  {...transformDonutData({
                     datas: data.datas,
                     visibleDataMap,
                     highlightedId: highlightedRowId,
@@ -446,7 +451,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             {/* Funnel bar graph */}
             {data?.datas.length && data.reportType === ReportType.funnel ? (
               <div>
-                <FunnelChart data={funnelData} />
+                <FunnelChart {...funnelData} />
               </div>
             ) : null}
 
@@ -462,7 +467,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   </HintCallout>
                 ) : null}
                 <BarChart
-                  data={transformBarData({
+                  {...transformBarData({
                     datas: data.datas,
                     visibleDataMap,
                     highlightedId: highlightedRowId,

@@ -3,12 +3,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useCurrTheme } from "../../themes/useCurrTheme";
 import { useColorOrder } from "../../themes/useColorOrder";
+import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
+import { useChartTooltip } from "./useChartTooltip";
 
 export const FunnelChart: React.FC<{
   data: ChartData<"bar", number[], string>;
-}> = ({ data }) => {
+  getTooltipData: GetTooltipData;
+}> = ({ data, getTooltipData }) => {
+  const { external, tooltipNode } = useChartTooltip(getTooltipData);
   const { theme } = useCurrTheme();
-  const colorOrder = useColorOrder();
   const chartRef = useRef<Chart<"bar", number[], string>>(null);
   const lastDataRef = useRef<ChartData<"bar", number[], string> | null>(null);
   const [labelPositions, setLabelPositions] = useState<
@@ -48,6 +51,12 @@ export const FunnelChart: React.FC<{
         ]}
         options={{
           animation: false,
+          plugins: {
+            tooltip: {
+              enabled: false,
+              external,
+            },
+          },
           scales: {
             x: {
               stacked: true,
@@ -86,6 +95,7 @@ export const FunnelChart: React.FC<{
           backgroundColor: "transparent",
         }}
       />
+      {tooltipNode}
       {labelPositions.map((positions, datasetIndex) => {
         return positions.map((pos, index) => {
           const info = (data.datasets[datasetIndex] as any).inlineLabels?.[

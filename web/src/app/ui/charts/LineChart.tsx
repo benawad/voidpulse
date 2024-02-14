@@ -7,10 +7,16 @@ import {
   Tooltip,
   TooltipItem,
 } from "chart.js";
-import React from "react";
+import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useCurrTheme } from "../../themes/useCurrTheme";
-import { stripeTooltipPlugin } from "./ChartStyle";
+import { ChartTooltip, TooltipData } from "./ChartTooltip";
+import {
+  ChartTooltipInfo,
+  GetTooltipData,
+  createExternalTooltipHandler,
+} from "../../utils/createExternalTooltipHandler";
+import { useChartTooltip } from "./useChartTooltip";
 
 // Register ChartJS components using ChartJS.register
 ChartJS.register(
@@ -25,14 +31,18 @@ interface LineChartProps {
   disableAnimations?: boolean;
   data: any;
   yPercent?: boolean;
+  getTooltipData: GetTooltipData;
 }
 
 export const LineChart: React.FC<LineChartProps> = ({
   data,
   disableAnimations,
   yPercent,
+  getTooltipData,
 }) => {
   const { theme } = useCurrTheme();
+  const { external, tooltipNode } = useChartTooltip(getTooltipData);
+
   return (
     <div className="w-full">
       <Line
@@ -60,6 +70,7 @@ export const LineChart: React.FC<LineChartProps> = ({
             //   display: false,
             // },
             tooltip: {
+              enabled: false,
               mode: "nearest",
               intersect: false,
               borderColor: theme.primary[700],
@@ -70,38 +81,7 @@ export const LineChart: React.FC<LineChartProps> = ({
               boxPadding: 8,
               caretSize: 10,
               animation: false,
-
-              callbacks: {
-                title: (tooltipItems: TooltipItem<"line">[]) => {
-                  return (tooltipItems[0].dataset as any)?.tooltips[
-                    tooltipItems[0].dataIndex
-                  ]?.title;
-                },
-                afterTitle: (tooltipItems: TooltipItem<"line">[]) => {
-                  return (tooltipItems[0].dataset as any)?.tooltips[
-                    tooltipItems[0].dataIndex
-                  ]?.afterTitle;
-                },
-                beforeLabel: (tooltipItem: TooltipItem<"line">) => {
-                  return (tooltipItem.dataset as any).tooltips[
-                    tooltipItem.dataIndex
-                  ]?.beforeLabel;
-                },
-                label: (tooltipItem: TooltipItem<"line">) => {
-                  const maybeLabel = (tooltipItem.dataset as any).tooltips[
-                    tooltipItem.dataIndex
-                  ]?.label;
-
-                  if (maybeLabel) {
-                    return maybeLabel;
-                  }
-
-                  return `${tooltipItem.parsed.y?.toLocaleString()} ${
-                    (tooltipItem.dataset as any).tooltips[tooltipItem.dataIndex]
-                      ?.appendToLabel || ""
-                  }`;
-                },
-              },
+              external,
             },
           },
 
@@ -185,9 +165,10 @@ export const LineChart: React.FC<LineChartProps> = ({
               }
             },
           },
-          stripeTooltipPlugin,
+          // stripeTooltipPlugin,
         ]}
       />
+      {tooltipNode}
     </div>
   );
 };

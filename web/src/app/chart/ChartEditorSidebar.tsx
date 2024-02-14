@@ -10,7 +10,7 @@ interface ChartEditorSidebarProps {
 export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
   dataStr,
 }) => {
-  const [editorMode, setEditorMode] = useState("ai");
+  const [editorMode, setEditorMode] = useState<"ai" | "manual">("manual");
   return (
     <div
       className="border-r bg-primary-900 border-primary-800"

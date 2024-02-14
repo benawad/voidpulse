@@ -11,6 +11,9 @@ import {
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { ChartLegend } from "./ChartLegend";
+import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
+import "@formatjs/intl-numberformat/polyfill";
+import { useChartTooltip } from "./useChartTooltip";
 
 ChartJS.register(
   ArcElement,
@@ -24,10 +27,15 @@ ChartJS.register(
 // Note: I am choosing to spell Donut the shorter way for convenience.
 interface DonutChartProps {
   data: ChartData<any, any, any>;
+  getTooltipData: GetTooltipData;
 }
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
-export const DonutChart: React.FC<DonutChartProps> = ({ data }) => {
+export const DonutChart: React.FC<DonutChartProps> = ({
+  data,
+  getTooltipData,
+}) => {
+  const { external, tooltipNode } = useChartTooltip(getTooltipData);
   const total: number = data.datasets?.[0].data?.reduce(
     (acc: number, val: number) => acc + val,
     0
@@ -50,9 +58,15 @@ export const DonutChart: React.FC<DonutChartProps> = ({ data }) => {
                   position: "top",
                   align: "center",
                 },
+                tooltip: {
+                  enabled: false,
+                  animation: false,
+                  external,
+                },
               },
             }}
           />
+          {tooltipNode}
           {/* Total events center label */}
           <div className="absolute z-0 top-0 bottom-0 my-auto right-0 left-0 mx-auto h-12">
             <div className="text-3xl font-bold text-center">

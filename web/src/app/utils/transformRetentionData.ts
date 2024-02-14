@@ -1,5 +1,6 @@
 import { DateHeader, RetentionNumFormat } from "@voidpulse/api";
 import { RouterOutput } from "./trpc";
+import { TooltipData } from "../ui/charts/ChartTooltip";
 
 export const transformRetentionData = ({
   datas,
@@ -21,42 +22,54 @@ export const transformRetentionData = ({
   highlightedId?: string | null;
   retentionNumFormat?: RetentionNumFormat | null;
 }) => {
+  const filteredData = datas.filter((d, i) => {
+    if (!visibleDataMap) {
+      return i < 10;
+    }
+    return visibleDataMap[d.id];
+  });
+  const datasets = filteredData.map((data, i) => {
+    const col = colorOrder[i % colorOrder.length];
+    return {
+      ...lineChartStyle,
+      borderWidth: data.id === highlightedId ? 4 : 2,
+      borderColor: col,
+      pointHoverBackgroundColor: col,
+      label: data.eventLabel,
+      data: retHeaders.map(
+        (_, i) =>
+          (retentionNumFormat === RetentionNumFormat.rawCount
+            ? data.averageRetentionByDay[i]?.avgRetained
+            : data.averageRetentionByDay[i]?.avgRetainedPercent) || 0
+      ),
+    };
+  });
   return {
-    labels: retHeaders.map((d) => d.label),
-    datasets: datas
-      .filter((d, i) => {
-        if (!visibleDataMap) {
-          return i < 10;
-        }
-        return visibleDataMap[d.id];
-      })
-      .map((data, i) => {
-        const col = colorOrder[i % colorOrder.length];
-        return {
-          ...lineChartStyle,
-          borderWidth: data.id === highlightedId ? 4 : 2,
-          borderColor: col,
-          pointHoverBackgroundColor: col,
-          label: data.eventLabel,
-          tooltips: retHeaders.map((d, i) => {
-            return {
-              title: d.fullLabel,
-              afterTitle: data.breakdown ?? "",
-              beforeLabel: `${
-                data.averageRetentionByDay[i]?.avgRetainedPercent || 0
-              }% retention`,
-              label: `${
-                data.averageRetentionByDay[i]?.avgRetained || 0
-              } users (average)`,
-            };
-          }),
-          data: retHeaders.map(
-            (_, i) =>
-              (retentionNumFormat === RetentionNumFormat.rawCount
-                ? data.averageRetentionByDay[i]?.avgRetained
-                : data.averageRetentionByDay[i]?.avgRetainedPercent) || 0
-          ),
-        };
-      }),
+    data: {
+      labels: retHeaders.map((d) => d.label),
+      datasets,
+    },
+    getTooltipData: (datasetIndex: number, dataIndex: number): TooltipData => {
+      const { breakdown, averageRetentionByDay } = filteredData[datasetIndex];
+      const { borderColor } = datasets[datasetIndex];
+      return {
+        title: retHeaders[dataIndex].fullLabel,
+        subtitle: typeof breakdown === "undefined" ? "" : "" + breakdown,
+        label: {
+          highlight:
+            (
+              averageRetentionByDay[dataIndex]?.avgRetainedPercent || 0
+            ).toLocaleString() + "%",
+          annotation: `retention`,
+        },
+        sublabel: {
+          highlight: (
+            averageRetentionByDay[dataIndex]?.avgRetained || 0
+          ).toLocaleString(),
+          annotation: `users (average)`,
+        },
+        stripeColor: borderColor,
+      };
+    },
   };
 };

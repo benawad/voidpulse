@@ -1,5 +1,10 @@
 "use client";
-import { ChartType, ReportType, RetentionNumFormat } from "@voidpulse/api";
+import {
+  ChartType,
+  LineChartGroupByTimeType,
+  ReportType,
+  RetentionNumFormat,
+} from "@voidpulse/api";
 import "chart.js/auto";
 import Link from "next/link";
 import React from "react";
@@ -28,7 +33,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   if (chart.reportType === ReportType.funnel) {
     chartToDisplay = (
       <FunnelChart
-        data={transformFunnelChartData({
+        {...transformFunnelChartData({
           datas: chart.data.datas,
           visibleDataMap: chart.visibleDataMap,
           colorOrder,
@@ -41,24 +46,24 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
     chartToDisplay = (
       <LineChart
         yPercent={chart.retentionNumFormat !== RetentionNumFormat.rawCount}
-        data={
-          chart.reportType === ReportType.retention
-            ? transformRetentionData({
-                datas: chart.data.datas,
-                retHeaders: chart.data.retentionHeaders,
-                retentionNumFormat: chart.retentionNumFormat,
-                colorOrder,
-                visibleDataMap: chart.visibleDataMap,
-                lineChartStyle: chartStyle.line,
-              })
-            : transformLineData({
-                datas: chart.data.datas,
-                dateHeader: chart.data.dateHeaders,
-                colorOrder,
-                visibleDataMap: chart.visibleDataMap,
-                lineChartStyle: chartStyle.line,
-              })
-        }
+        {...(chart.reportType === ReportType.retention
+          ? transformRetentionData({
+              datas: chart.data.datas,
+              retHeaders: chart.data.retentionHeaders,
+              retentionNumFormat: chart.retentionNumFormat,
+              colorOrder,
+              visibleDataMap: chart.visibleDataMap,
+              lineChartStyle: chartStyle.line,
+            })
+          : transformLineData({
+              datas: chart.data.datas,
+              dateHeader: chart.data.dateHeaders,
+              colorOrder,
+              visibleDataMap: chart.visibleDataMap,
+              lineChartStyle: chartStyle.line,
+              lineChartGroupByTimeType:
+                chart.lineChartGroupByTimeType || LineChartGroupByTimeType.day,
+            }))}
         disableAnimations
       />
     );
@@ -66,7 +71,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   } else if (chart.chartType === ChartType.bar) {
     chartToDisplay = (
       <BarChart
-        data={transformBarData({
+        {...transformBarData({
           datas: chart.data.datas,
           visibleDataMap: chart.visibleDataMap,
           barChartStyle: chartStyle.bar,
@@ -77,7 +82,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   } else if (chart.chartType === ChartType.donut) {
     chartToDisplay = (
       <DonutChart
-        data={transformDonutData({
+        {...transformDonutData({
           datas: chart.data.datas,
           visibleDataMap: chart.visibleDataMap,
           donutChartStyle: chartStyle.donut,
