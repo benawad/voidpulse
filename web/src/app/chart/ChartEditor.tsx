@@ -369,6 +369,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       to: to?.toISOString(),
                       visibleDataMap,
                       retentionNumFormat,
+                      breakdowns,
+                      globalFilters,
                       data: data as any,
                     };
                     if (chart) {

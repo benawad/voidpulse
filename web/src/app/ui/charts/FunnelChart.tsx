@@ -13,7 +13,6 @@ export const FunnelChart: React.FC<{
 }> = ({ data, getTooltipData }) => {
   const { external, tooltipNode } = useChartTooltip(getTooltipData);
   const { theme } = useCurrTheme();
-  const chartRef = useRef<Chart<"bar", number[], string>>(null);
   const lastDataRef = useRef<ChartData<"bar", number[], string> | null>(null);
   const [labelPositions, setLabelPositions] = useState<
     {
@@ -25,7 +24,6 @@ export const FunnelChart: React.FC<{
   return (
     <div style={{ height: 400 }}>
       <Bar
-        ref={chartRef}
         data={data}
         plugins={[
           {

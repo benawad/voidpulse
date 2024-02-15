@@ -12,7 +12,10 @@ import {
   ReportType,
   RetentionNumFormat,
 } from "../app-router-type";
-import { InputMetric } from "../routes/charts/insight/eventFilterSchema";
+import {
+  InputMetric,
+  MetricFilter,
+} from "../routes/charts/insight/eventFilterSchema";
 import { messages } from "./messages";
 
 export const charts = pgTable("charts", {
@@ -39,6 +42,8 @@ export const charts = pgTable("charts", {
   from: date("from"),
   to: date("to"),
   metrics: jsonb("metrics").notNull().$type<InputMetric[]>(),
+  breakdowns: jsonb("breakdowns").$type<MetricFilter[]>(),
+  globalFilters: jsonb("global_filters").$type<MetricFilter[]>(),
   data: jsonb("data").notNull().$type<z.infer<typeof chartDataSchema>>(),
   boardId: uuid("board_id"),
   dataUpdatedAt: date("data_updated_at")

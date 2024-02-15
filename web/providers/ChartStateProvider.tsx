@@ -62,8 +62,8 @@ export const ChartStateProvider: React.FC<
       retentionNumFormat: chart?.retentionNumFormat,
       from: chart?.from ? moment(chart.from) : null,
       to: chart?.to ? moment(chart.to) : null,
-      globalFilters: [] as MetricFilter[],
-      breakdowns: [] as MetricFilter[],
+      globalFilters: chart?.globalFilters || ([] as MetricFilter[]),
+      breakdowns: chart?.breakdowns || ([] as MetricFilter[]),
     };
   });
 
