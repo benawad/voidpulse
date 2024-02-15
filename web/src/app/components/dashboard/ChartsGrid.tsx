@@ -12,7 +12,7 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
     projectId,
   });
   return (
-    <div className="grid text-center p-8 lg:w-full lg:mb-0 lg:grid-cols-3 lg:text-left">
+    <div className="grid text-center p-8 lg:w-full lg:mb-0 lg:grid-cols-2 lg:text-left">
       {data?.charts.map((chart) => {
         return (
           <div key={chart.id} className="m-2">

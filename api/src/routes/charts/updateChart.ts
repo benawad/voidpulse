@@ -6,7 +6,7 @@ import { charts } from "../../schema/charts";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { chartDataSchema } from "./chartDataSchema";
-import { metricSchema } from "./insight/eventFilterSchema";
+import { eventFilterSchema, metricSchema } from "./insight/eventFilterSchema";
 import {
   ChartTimeRangeType,
   ChartType,
@@ -22,6 +22,8 @@ export const updateChartDataSchemaFields = {
   reportType: z.nativeEnum(ReportType).optional(),
   description: z.string().optional(),
   metrics: z.array(metricSchema).optional(),
+  globalFilters: z.array(eventFilterSchema).optional(),
+  breakdowns: z.array(eventFilterSchema).max(1).optional(),
   lineChartGroupByTimeType: z.nativeEnum(LineChartGroupByTimeType).optional(),
   data: chartDataSchema.optional(),
   timeRangeType: z.nativeEnum(ChartTimeRangeType).optional(),

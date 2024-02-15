@@ -71,6 +71,20 @@
       "when": 1707755640303,
       "tag": "0009_open_sleeper",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1707953821597,
+      "tag": "0010_wild_stone_men",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1707953965427,
+      "tag": "0011_salty_darkhawk",
+      "breakpoints": true
     }
   ]
 }
