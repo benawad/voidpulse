@@ -221,10 +221,13 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
         </Link>
       </div>
       {/* View that houses editor and chart side by side */}
-      <div className="flex w-full h-full flex-1">
+      <div className="flex w-full flex-1 overflow-hidden">
         <ChartEditorSidebar dataStr={dataStr} />
         {/* Main section of the chart view */}
-        <div className="flex-1 overflow-x-auto">
+        <div
+          className="flex-1 overflow-x-auto overflow-y-auto"
+          style={{ height: "calc(100vh - 100px)" }}
+        >
           {/* Div that stacks the chart and data at the bottom */}
           <div className="p-12" style={{ minWidth: 800, minHeight: 500 }}>
             {/* Title and description */}
