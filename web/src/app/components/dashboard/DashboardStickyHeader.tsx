@@ -37,7 +37,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
   const [emojiPickerOpen, setEmojiPickerOpen] = React.useState(false);
 
   return (
-    <div className="flex-1 flex flex-row items-center justify-between px-6 sticky top-16 bg-primary-900 z-10">
+    <div className="flex flex-row items-center justify-between px-6 sticky top-16 bg-primary-900 z-10">
       {/* Dashboard title */}
       <div className="py-4 flex-1 flex-row">
         {/* Note: might be preferable in the future to stick the route at the top for better navigation, but for now we'll stick the title.*/}
@@ -77,11 +77,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
                   data: { description: newText },
                 });
               }}
-              text={
-                board.description?.trim()
-                  ? board.description
-                  : ""
-              }
+              text={board.description?.trim() ? board.description : ""}
               placeholder="Add description"
             />
           </div>

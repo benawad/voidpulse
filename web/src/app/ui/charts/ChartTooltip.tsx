@@ -118,7 +118,7 @@ export const ChartTooltip: React.FC<Props> = ({ $event, shouldPortal }) => {
     </div>
   );
 
-  if (shouldPortal) {
+  if (true) {
     return <FloatingPortal>{inside}</FloatingPortal>;
   } else {
     return inside;

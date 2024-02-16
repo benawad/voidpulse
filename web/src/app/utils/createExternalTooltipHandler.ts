@@ -41,7 +41,8 @@ export const createExternalTooltipHandler =
       return;
     }
 
-    const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
+    // const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
+    const { left, top } = chart.canvas.getBoundingClientRect();
 
     $event.emit({
       ...getTooltipData(
@@ -49,7 +50,7 @@ export const createExternalTooltipHandler =
         tooltip.dataPoints[0].dataIndex
       ),
       waitForOnHover: followerCursor,
-      left: positionX + tooltip.caretX,
-      top: positionY + tooltip.caretY,
+      left: left + window.scrollX + tooltip.caretX,
+      top: top + window.scrollY + tooltip.caretY,
     });
   };

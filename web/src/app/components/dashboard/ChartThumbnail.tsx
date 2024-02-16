@@ -91,7 +91,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
   }
 
   return (
-    <div className="card w-full h-full">
+    <div className="card w-full h-full flex flex-col">
       {/* Chart thumbnail header */}
       <Link href={`/chart/${chart.id}`}>
         <div className="px-5 py-3 h-18 hoverable area group border-b border-primary-800 ">
@@ -110,7 +110,9 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
       </Link>
 
       {/* Chart display */}
-      <div className="bg-primary-800/30 pt-1 h-full px-2">{chartToDisplay}</div>
+      <div className="bg-primary-800/30 pt-1 flex-1 w-full px-2">
+        {chartToDisplay}
+      </div>
     </div>
   );
 };

@@ -402,85 +402,88 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 <div>We couldn't find any data for this search</div>
               </>
             ) : null}
-            {data?.reportType === ReportType.retention && data.datas.length ? (
-              <LineChart
-                disableAnimations
-                yPercent={retentionNumFormat !== RetentionNumFormat.rawCount}
-                {...transformRetentionData({
-                  datas: data.datas,
-                  colorOrder,
-                  retHeaders: data.retentionHeaders,
-                  visibleDataMap,
-                  highlightedId: highlightedRowId,
-                  retentionNumFormat,
-                  lineChartStyle: chartStyle.line,
-                })}
-              />
-            ) : null}
-
-            {/* Insight line graph */}
-            {data?.datas.length &&
-            data?.reportType === ReportType.insight &&
-            data.chartType === ChartType.line ? (
-              <LineChart
-                disableAnimations
-                {...transformLineData({
-                  datas: data.datas,
-                  dateHeader: data.dateHeaders,
-                  colorOrder,
-                  visibleDataMap,
-                  highlightedId: highlightedRowId,
-                  lineChartStyle: chartStyle.line,
-                  lineChartGroupByTimeType:
-                    lineChartGroupByTimeType || LineChartGroupByTimeType.day,
-                })}
-              />
-            ) : null}
-
-            {/* Insight donut */}
-            {data?.datas.length &&
-            data?.reportType === ReportType.insight &&
-            data.chartType === ChartType.donut ? (
-              <div>
-                <DonutChart
-                  {...transformDonutData({
+            <div className="w-full" style={{ height: 400 }}>
+              {data?.reportType === ReportType.retention &&
+              data.datas.length ? (
+                <LineChart
+                  disableAnimations
+                  yPercent={retentionNumFormat !== RetentionNumFormat.rawCount}
+                  {...transformRetentionData({
                     datas: data.datas,
+                    colorOrder,
+                    retHeaders: data.retentionHeaders,
                     visibleDataMap,
                     highlightedId: highlightedRowId,
-                    donutChartStyle: chartStyle.donut,
+                    retentionNumFormat,
+                    lineChartStyle: chartStyle.line,
                   })}
                 />
-              </div>
-            ) : null}
+              ) : null}
 
-            {/* Funnel bar graph */}
-            {data?.datas.length && data.reportType === ReportType.funnel ? (
-              <div>
-                <FunnelChart {...funnelData} />
-              </div>
-            ) : null}
-
-            {/* Insight bar graph */}
-            {data?.datas.length &&
-            data.reportType === ReportType.insight &&
-            data.chartType === ChartType.bar ? (
-              <div>
-                {breakdowns.length === 0 && metrics.length < 2 ? (
-                  <HintCallout>
-                    Bar charts are best used to show breakdowns, or compare
-                    multiple datasets.
-                  </HintCallout>
-                ) : null}
-                <BarChart
-                  {...transformBarData({
+              {/* Insight line graph */}
+              {data?.datas.length &&
+              data?.reportType === ReportType.insight &&
+              data.chartType === ChartType.line ? (
+                <LineChart
+                  disableAnimations
+                  {...transformLineData({
                     datas: data.datas,
+                    dateHeader: data.dateHeaders,
+                    colorOrder,
                     visibleDataMap,
                     highlightedId: highlightedRowId,
-                    barChartStyle: chartStyle.bar,
+                    lineChartStyle: chartStyle.line,
+                    lineChartGroupByTimeType:
+                      lineChartGroupByTimeType || LineChartGroupByTimeType.day,
                   })}
                 />
-              </div>
-            ) : null}
+              ) : null}
+
+              {/* Insight donut */}
+              {data?.datas.length &&
+              data?.reportType === ReportType.insight &&
+              data.chartType === ChartType.donut ? (
+                <div>
+                  <DonutChart
+                    {...transformDonutData({
+                      datas: data.datas,
+                      visibleDataMap,
+                      highlightedId: highlightedRowId,
+                      donutChartStyle: chartStyle.donut,
+                    })}
+                  />
+                </div>
+              ) : null}
+
+              {/* Funnel bar graph */}
+              {data?.datas.length && data.reportType === ReportType.funnel ? (
+                <div>
+                  <FunnelChart {...funnelData} />
+                </div>
+              ) : null}
+
+              {/* Insight bar graph */}
+              {data?.datas.length &&
+              data.reportType === ReportType.insight &&
+              data.chartType === ChartType.bar ? (
+                <div>
+                  {breakdowns.length === 0 && metrics.length < 2 ? (
+                    <HintCallout>
+                      Bar charts are best used to show breakdowns, or compare
+                      multiple datasets.
+                    </HintCallout>
+                  ) : null}
+                  <BarChart
+                    {...transformBarData({
+                      datas: data.datas,
+                      visibleDataMap,
+                      highlightedId: highlightedRowId,
+                      barChartStyle: chartStyle.bar,
+                    })}
+                  />
+                </div>
+              ) : null}
+            </div>
           </div>
           {/* Additional data at the bottom */}
           {data?.datas.length && data?.reportType === ReportType.retention ? (

@@ -14,6 +14,7 @@ import { ChartLegend } from "./ChartLegend";
 import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
 import { useChartTooltip } from "./useChartTooltip";
 import { numFormatter } from "../../utils/numFormatter";
+import useResizeObserver from "use-resize-observer";
 
 ChartJS.register(
   ArcElement,
@@ -34,6 +35,9 @@ export const DonutChart: React.FC<DonutChartProps> = ({
   data,
   getTooltipData,
 }) => {
+  const { ref, height: _height, width: _width } = useResizeObserver();
+  const width = _width && _height ? Math.min(_width, _height) : _width;
+  const height = _width && _height ? Math.min(_width, _height) : _height;
   const { external, onHover, tooltipNode } = useChartTooltip(
     getTooltipData,
     true
@@ -44,48 +48,71 @@ export const DonutChart: React.FC<DonutChartProps> = ({
   );
 
   return (
-    <div>
-      <div className="p-3 flex justify-center items-center margin-0">
-        <div style={{ maxWidth: 500, width: "100%" }}>
+    <div className="w-full h-full">
+      <div className="w-full h-full p-3 flex justify-center items-center margin-0">
+        <div
+          className="w-full h-full flex flex-col"
+          style={{ maxWidth: 500, width: "100%" }}
+        >
           <ChartLegend
             labels={data.labels as string[]}
             colors={data.datasets?.[0].backgroundColor as string[]}
           />
-          <div className="relative mt-4">
-            {/* Total events center label */}
-            <div
-              style={{
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-              className="absolute"
-            >
-              <div className="text-3xl font-bold text-center">
-                {numFormatter.format(total)}
+          <div ref={ref} className="relative mt-4 w-full flex-1">
+            <div className="absolute w-full h-full flex justify-center">
+              <div
+                style={{
+                  width: width && height ? Math.min(width, height) : width,
+                  height: width && height ? Math.min(width, height) : height,
+                }}
+                className="relative"
+              >
+                {/* Total events center label */}
+                <div
+                  style={{
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                  className="absolute"
+                >
+                  <div className="text-3xl font-bold text-center">
+                    {numFormatter.format(total)}
+                  </div>
+                  <div className="text-xs text-center">total</div>
+                </div>
+                {width && height ? (
+                  <Doughnut
+                    // width={width}
+                    // height={height}
+                    style={{
+                      width,
+                      height,
+                    }}
+                    className="z-10"
+                    data={data}
+                    options={{
+                      animation: false,
+                      responsive: true,
+                      resizeDelay: 100,
+                      onHover,
+                      plugins: {
+                        legend: {
+                          display: false,
+                        },
+                        tooltip: {
+                          enabled: false,
+                          animation: false,
+                          external,
+                        },
+                      },
+                    }}
+                  />
+                ) : null}
               </div>
-              <div className="text-xs text-center">total</div>
+              {tooltipNode}
             </div>
-            <Doughnut
-              className="z-10"
-              data={data}
-              options={{
-                animation: false,
-                onHover,
-                plugins: {
-                  legend: {
-                    display: false,
-                  },
-                  tooltip: {
-                    enabled: false,
-                    animation: false,
-                    external,
-                  },
-                },
-              }}
-            />
           </div>
-          {tooltipNode}
         </div>
       </div>
     </div>

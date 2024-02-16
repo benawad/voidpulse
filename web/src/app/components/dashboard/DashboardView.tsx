@@ -1,9 +1,11 @@
 import React from "react";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { ProjectBoardProvider } from "../../../../providers/ProjectBoardProvider";
 import { useFetchProjectBoards } from "../../utils/useFetchProjectBoards";
-import { ChartsGrid } from "./ChartsGrid";
+import { ChartsGrid } from "./dashboard-grid/ChartsGrid";
 import { DashboardNavigator } from "./DashboardNavigator";
 import { DashboardStickyHeader } from "./DashboardStickyHeader";
+import { DndProvider } from "react-dnd";
 
 interface DashboardViewProps {}
 
@@ -20,17 +22,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
   }
 
   return (
-    <ProjectBoardProvider projectId={project.id} boardId={board.id}>
-      <div className="flex flex-row-reverse flex-1">
-        <div className="flex-1 relative">
-          <DashboardStickyHeader board={board} />
-          <div>
-            {/* Grid of charts */}
+    <DndProvider backend={HTML5Backend}>
+      <ProjectBoardProvider projectId={project.id} boardId={board.id}>
+        <div className="flex flex-row-reverse flex-1">
+          <div className="flex-1 relative flex flex-col">
+            <DashboardStickyHeader board={board} />
             <ChartsGrid />
           </div>
+          <DashboardNavigator boards={boards} />
         </div>
-        <DashboardNavigator boards={boards} />
-      </div>
-    </ProjectBoardProvider>
+      </ProjectBoardProvider>
+    </DndProvider>
   );
 };

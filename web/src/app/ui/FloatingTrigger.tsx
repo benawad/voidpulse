@@ -69,7 +69,7 @@ export const FloatingTrigger: React.FC<
       ref={refs.setFloating}
       {...getFloatingProps()}
       style={floatingStyles}
-      className={"z-10 flex" + isOpen ? fadeIn : fadeOut}
+      className={"z-30 flex" + isOpen ? fadeIn : fadeOut}
     >
       <div>{floatingContent}</div>
     </div>

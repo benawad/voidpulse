@@ -67,7 +67,7 @@ export const queryBarChartMetric = async ({
   }
   ${joinSection}
   WHERE ${whereSection}
-  ${breakdownSelect ? "group by breakdown" : ""}
+  ${breakdownSelect ? "group by breakdown order by count desc" : ""}
 `;
   const resp = await clickhouse.query({
     query,
