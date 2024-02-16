@@ -54,8 +54,6 @@ export const LineChart: React.FC<LineChartProps> = ({
         <div className="absolute w-full h-full">
           <div className="w-full h-full">
             <Line
-              width={width}
-              height={height}
               style={{
                 width,
                 height,
