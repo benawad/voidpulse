@@ -15,6 +15,7 @@ import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
 import { numFormatter } from "../../utils/numFormatter";
 import { ChartLegend } from "./ChartLegend";
 import { useChartTooltip } from "./useChartTooltip";
+import { CHART_RESIZE_DELAY } from "../../themes/useChartStyle";
 
 // Register ChartJS components using ChartJS.register
 ChartJS.register(
@@ -61,7 +62,7 @@ export const LineChart: React.FC<LineChartProps> = ({
               className="w-full h-full"
               data={data}
               options={{
-                resizeDelay: 1000,
+                resizeDelay: CHART_RESIZE_DELAY,
                 layout: {
                   autoPadding: true,
                 },

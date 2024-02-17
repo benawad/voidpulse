@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
-import { useDrag, useDrop } from "react-dnd";
+import React, { useEffect, useRef } from "react";
+import { DropTargetMonitor, useDrag, useDrop } from "react-dnd";
 import { Kids } from "../../../ui/FullScreenModalOverlay";
 import { usePrevious } from "../../../utils/usePrevious";
+import { DbChart } from "../../../utils/trpc";
+import { ChartThumbnail } from "../ChartThumbnail";
 
 export enum ItemTypes {
   CHART = "CHART",
@@ -9,60 +11,55 @@ export enum ItemTypes {
 
 export const DraggableChartContainer: Kids<{
   classname?: string;
-  chartId: string;
   row: string[];
   onDrop: (id: string, side: "left" | "right") => void;
   onHover: (id: string, side: "left" | "right") => void;
   clearHover: () => void;
-}> = ({ children, classname, onDrop, row, chartId, onHover, clearHover }) => {
+  chart: DbChart;
+}> = ({ children, classname, onDrop, row, chart, onHover, clearHover }) => {
   const divRef = React.useRef<HTMLDivElement>(null);
-  const canDropRef = React.useRef(
-    (item: any) => row.length < 4 || row.includes(item.chartId)
-  );
-  canDropRef.current = (item: any) =>
-    row.length < 4 || row.includes(item.chartId);
+  const canDrop = (item: any) => row.length < 4 || row.includes(item.chartId);
+  const canDropRef = React.useRef(canDrop);
+  canDropRef.current = canDrop;
+  const handler = (
+    item: any,
+    monitor: DropTargetMonitor<any, unknown>,
+    isHover: boolean
+  ) => {
+    const dropTargetElement = divRef.current!.getBoundingClientRect();
+    const dropOffset = monitor.getClientOffset();
+
+    if (!dropOffset || item.chartId === chart.id || !monitor.canDrop()) {
+      return;
+    }
+
+    const dropSide =
+      dropOffset.x < dropTargetElement.left + dropTargetElement.width / 2
+        ? "left"
+        : "right";
+
+    if (isHover) {
+      onHover(chart.id, dropSide);
+    } else {
+      onDrop(item.chartId, dropSide);
+    }
+  };
+  const handlerRef = useRef(handler);
+  handlerRef.current = handler;
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.CHART,
     canDrop: (item: any) => canDropRef.current(item),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
-    hover: (item: any, monitor) => {
-      const dropTargetElement = divRef.current!.getBoundingClientRect();
-      const dropOffset = monitor.getClientOffset();
-
-      if (!dropOffset || item.chartId === chartId || !monitor.canDrop()) {
-        return;
-      }
-
-      const dropSide =
-        dropOffset.x < dropTargetElement.left + dropTargetElement.width / 2
-          ? "left"
-          : "right";
-
-      onHover(chartId, dropSide);
-    },
-    drop: (item: any, monitor) => {
-      const dropTargetElement = divRef.current!.getBoundingClientRect();
-      const dropOffset = monitor.getClientOffset();
-
-      if (!dropOffset) {
-        return;
-      }
-
-      const dropSide =
-        dropOffset.x < dropTargetElement.left + dropTargetElement.width / 2
-          ? "left"
-          : "right";
-
-      onDrop(item.chartId, dropSide);
-    },
+    hover: (item: any, monitor) => handlerRef.current(item, monitor, true),
+    drop: (item: any, monitor) => handlerRef.current(item, monitor, false),
   }));
-  const [{ opacity }, dragRef] = useDrag(
+  const [{ opacity }, dragRef, dragPreview] = useDrag(
     () => ({
       type: ItemTypes.CHART,
       item: {
-        chartId,
+        chartId: chart.id,
       },
       collect: (monitor) => ({
         opacity: monitor.isDragging() ? 0.5 : 1,
@@ -84,14 +81,14 @@ export const DraggableChartContainer: Kids<{
     <div
       className={classname}
       ref={(r) => {
-        dragRef(r);
+        dragPreview(r);
         // @ts-expect-error
         divRef.current = r;
       }}
       style={{ opacity }}
     >
       <div className="w-full h-full" ref={drop}>
-        {children}
+        <ChartThumbnail chart={chart} dragRef={dragRef} />
       </div>
     </div>
   );

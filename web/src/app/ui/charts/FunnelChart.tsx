@@ -8,6 +8,7 @@ import { genId } from "../../utils/genId";
 import { FunnelLabels } from "./FunnelLabels";
 import { useChartTooltip } from "./useChartTooltip";
 import useEventEmitter from "./useEventEmitter";
+import { CHART_RESIZE_DELAY } from "../../themes/useChartStyle";
 
 export const FunnelChart: React.FC<{
   data: ChartData<"bar", number[], string>;
@@ -58,7 +59,7 @@ export const FunnelChart: React.FC<{
             options={{
               animation: false,
               maintainAspectRatio: false,
-              resizeDelay: 1000,
+              resizeDelay: CHART_RESIZE_DELAY,
               plugins: {
                 legend: {
                   display: false,

@@ -20,12 +20,17 @@ import { DonutChart } from "../../ui/charts/DonutChart";
 import { transformDonutData } from "../../utils/transformDonutData";
 import { FunnelChart } from "../../ui/charts/FunnelChart";
 import { transformFunnelChartData } from "../../utils/transformFunnelData";
+import { RxDragHandleDots2 } from "react-icons/rx";
 
 interface ChartThumbnailProps {
+  dragRef: any;
   chart: RouterOutput["getCharts"]["charts"][0];
 }
 
-export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
+export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
+  chart,
+  dragRef,
+}) => {
   const colorOrder = useColorOrder();
   const chartStyle = useChartStyle();
   let chartToDisplay;
@@ -94,7 +99,13 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({ chart }) => {
     <div className="card w-full h-full flex flex-col">
       {/* Chart thumbnail header */}
       <Link href={`/chart/${chart.id}`}>
-        <div className="px-5 py-3 h-18 hoverable area group border-b border-primary-800 ">
+        <div className="px-5 py-3 h-18 hoverable area group border-b border-primary-800 relative">
+          <div
+            ref={dragRef}
+            className="absolute top-4 left-1 mx-auto cursor-grab opacity-0 group-hover:opacity-100"
+          >
+            <RxDragHandleDots2 />
+          </div>
           <h2
             className={`mb-2 text-l font-semibold text-primary-100 group-hover:text-accent-100 transition-colors`}
           >

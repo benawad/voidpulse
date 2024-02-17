@@ -16,6 +16,7 @@ import { useChartTooltip } from "./useChartTooltip";
 import { genId } from "../../utils/genId";
 import useEventEmitter from "./useEventEmitter";
 import { BarLabels } from "./BarLabels";
+import { CHART_RESIZE_DELAY } from "../../themes/useChartStyle";
 
 ChartJS.register(BarController, CategoryScale, LinearScale, BarElement);
 
@@ -52,7 +53,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data, getTooltipData }) => {
             options={{
               maintainAspectRatio: false,
               animation: false,
-              resizeDelay: 1000,
+              resizeDelay: CHART_RESIZE_DELAY,
               indexAxis: "y",
               onHover,
               layout: {

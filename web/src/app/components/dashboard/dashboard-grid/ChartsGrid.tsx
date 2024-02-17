@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useProjectBoardContext } from "../../../../../providers/ProjectBoardProvider";
-import { RouterOutput, trpc } from "../../../utils/trpc";
+import { DbChart, RouterOutput, trpc } from "../../../utils/trpc";
 import { ChartThumbnail } from "../ChartThumbnail";
-import { GridResizeHandle } from "./GridResizeHandle";
+import { GridResizeHandle, HANDLE_WIDTH } from "./GridResizeHandle";
 import { VerticalResizableRow } from "./VerticalResizableRow";
 import { DraggableChartContainer } from "./DraggableChartContainer";
 import { New_Rocker } from "next/font/google";
@@ -10,8 +10,6 @@ import { HorizontalResizableProvider } from "./HorizontalResizableContext";
 import { MyPanel } from "./MyPanel";
 
 interface ChartsGridProps {}
-
-type Chart = RouterOutput["getCharts"]["charts"][0];
 
 export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
   const divRef = useRef<HTMLDivElement>(null);
@@ -26,7 +24,7 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
   }>(null);
   const [positions, setPositions] = React.useState<string[][]>([]);
   const chartMap = useMemo(() => {
-    const _chartMap: Record<string, Chart> = {};
+    const _chartMap: Record<string, DbChart> = {};
     for (const chart of data?.charts || []) {
       _chartMap[chart.id] = chart;
     }
@@ -60,17 +58,80 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
     <div className="p-8 flex-1">
       <div ref={divRef} className="flex flex-col w-full">
         {positions.map((row, i) => {
+          if (!row.length) {
+            return null;
+          }
+
+          const onDrop = (
+            idToMove: string,
+            chartIdDroppedOn: string,
+            side: "left" | "right"
+          ) => {
+            if (idToMove === chartIdDroppedOn) {
+              return;
+            }
+            const newPositions = positions
+              .map((newRow) => newRow.filter((currId) => currId !== idToMove))
+              .filter((newRow) => newRow.length > 0)
+              .map((newRow) => {
+                const dropIdx = newRow.indexOf(chartIdDroppedOn);
+                if (dropIdx === -1) {
+                  return newRow;
+                } else if (side === "left") {
+                  return [
+                    ...newRow.slice(0, dropIdx),
+                    idToMove,
+                    ...newRow.slice(dropIdx),
+                  ];
+                } else if (side === "right") {
+                  return [
+                    ...newRow.slice(0, dropIdx + 1),
+                    idToMove,
+                    ...newRow.slice(dropIdx + 1),
+                  ];
+                }
+
+                return newRow;
+              });
+            setPositions(newPositions);
+          };
+
           return (
             <VerticalResizableRow>
-              <div className="flex-1 h-full flex">
+              <div className="flex-1 h-full flex relative">
                 <HorizontalResizableProvider numItems={row.length}>
+                  <div
+                    style={{
+                      left: -HANDLE_WIDTH,
+                    }}
+                    className="absolute h-full"
+                  >
+                    <GridResizeHandle
+                      parentRef={divRef}
+                      index={-1}
+                      highlight={
+                        row[0] === hoverInfo?.chartId &&
+                        hoverInfo?.side === "left"
+                      }
+                      row={row}
+                      onDrop={(chartIdDropped) =>
+                        onDrop(chartIdDropped, row[0], "left")
+                      }
+                    />
+                  </div>
                   {row.map((id, k) => {
                     const chart = chartMap[id];
-                    const isHovered = hoverInfo?.chartId === chart.id;
 
                     if (!chart) {
                       return null;
                     }
+
+                    const highlightSeparator =
+                      (hoverInfo?.chartId === chart.id &&
+                        hoverInfo.side === "left") ||
+                      (!!k &&
+                        hoverInfo?.chartId === row[k - 1] &&
+                        hoverInfo.side === "right");
 
                     return (
                       <React.Fragment key={chart.id}>
@@ -79,55 +140,48 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
                             <GridResizeHandle
                               parentRef={divRef}
                               index={k - 1}
+                              highlight={highlightSeparator}
+                              row={row}
+                              onDrop={(chartIdDropped) =>
+                                onDrop(chartIdDropped, chart.id, "left")
+                              }
                             />
                           ) : null}
                           <DraggableChartContainer
                             row={row}
-                            chartId={chart.id}
+                            chart={chart}
                             clearHover={() => setHoverInfo(null)}
                             onHover={(chartId, side) =>
                               setHoverInfo({ chartId, side })
                             }
-                            onDrop={(idToMove, side) => {
-                              if (idToMove === chart.id) {
-                                return;
-                              }
-                              const newPositions = positions
-                                .map((newRow) =>
-                                  newRow.filter((currId) => currId !== idToMove)
-                                )
-                                .filter((newRow) => newRow.length > 0)
-                                .map((newRow) => {
-                                  const dropIdx = newRow.indexOf(id);
-                                  if (dropIdx === -1) {
-                                    return newRow;
-                                  } else if (side === "left") {
-                                    return [
-                                      ...newRow.slice(0, dropIdx),
-                                      idToMove,
-                                      ...newRow.slice(dropIdx),
-                                    ];
-                                  } else if (side === "right") {
-                                    return [
-                                      ...newRow.slice(0, dropIdx + 1),
-                                      idToMove,
-                                      ...newRow.slice(dropIdx + 1),
-                                    ];
-                                  }
-
-                                  return newRow;
-                                });
-                              setPositions(newPositions);
-                            }}
-                            classname={`w-full h-full ${isHovered && hoverInfo.side === "left" ? "border-l-4" : ""} ${isHovered && hoverInfo.side === "right" ? "border-r-4" : ""}`}
-                          >
-                            <ChartThumbnail chart={chart} />
-                            {/* <div className="w-full h-full bg-blue-400" /> */}
-                          </DraggableChartContainer>
+                            onDrop={(chartIdDropped, side) =>
+                              onDrop(chartIdDropped, chart.id, side)
+                            }
+                            classname={`w-full h-full`}
+                          />
                         </MyPanel>
                       </React.Fragment>
                     );
                   })}
+                  <div
+                    style={{
+                      right: -HANDLE_WIDTH,
+                    }}
+                    className="absolute h-full"
+                  >
+                    <GridResizeHandle
+                      parentRef={divRef}
+                      index={-1}
+                      highlight={
+                        row[row.length - 1] === hoverInfo?.chartId &&
+                        hoverInfo?.side === "right"
+                      }
+                      row={row}
+                      onDrop={(chartIdDropped) =>
+                        onDrop(chartIdDropped, row[row.length - 1], "right")
+                      }
+                    />
+                  </div>
                 </HorizontalResizableProvider>
               </div>
             </VerticalResizableRow>

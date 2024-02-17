@@ -15,6 +15,7 @@ import { GetTooltipData } from "../../utils/createExternalTooltipHandler";
 import { useChartTooltip } from "./useChartTooltip";
 import { numFormatter } from "../../utils/numFormatter";
 import useResizeObserver from "use-resize-observer";
+import { CHART_RESIZE_DELAY } from "../../themes/useChartStyle";
 
 ChartJS.register(
   ArcElement,
@@ -94,7 +95,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
                     options={{
                       animation: false,
                       responsive: true,
-                      resizeDelay: 100,
+                      resizeDelay: CHART_RESIZE_DELAY,
                       onHover,
                       plugins: {
                         legend: {

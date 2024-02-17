@@ -62,13 +62,17 @@ export const VerticalResizableRow: Kids<{}> = ({ children }) => {
     >
       {children}
       <div
-        className="w-full"
+        className="w-full p-1 group"
         style={{
           height: HANDLE_WIDTH,
           cursor: "ns-resize",
         }}
         onMouseDown={startResizing}
-      />
+      >
+        <div
+          className={`w-full h-full group-hover:bg-accent-100/30 rounded-lg ${isResizing ? "bg-accent-100/30" : ""}`}
+        />
+      </div>
     </div>
   );
 };

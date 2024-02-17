@@ -1,6 +1,8 @@
 import { useColorOrder } from "./useColorOrder";
 import { useCurrTheme } from "./useCurrTheme";
 
+export const CHART_RESIZE_DELAY = 200;
+
 export const useChartStyle = () => {
   const { theme } = useCurrTheme();
   const colorOrder = useColorOrder();
