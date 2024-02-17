@@ -1,11 +1,28 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Kids } from "../../../ui/FullScreenModalOverlay";
 import { HANDLE_WIDTH } from "./GridResizeHandle";
+import { DropTargetMonitor, useDrop } from "react-dnd";
+import { ItemTypes } from "./DraggableChartContainer";
 
 const minHeight = 400;
 const maxHeight = 800;
 
-export const VerticalResizableRow: Kids<{}> = ({ children }) => {
+export const VerticalResizableRow: Kids<{
+  onDrop: (chartId: string) => void;
+}> = ({ children, onDrop }) => {
+  const handler = (item: any, __: DropTargetMonitor<any, unknown>) => {
+    onDrop(item.chartId);
+  };
+  const handlerRef = useRef(handler);
+  handlerRef.current = handler;
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: ItemTypes.CHART,
+    canDrop: (item: any) => true,
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+    drop: (item: any, monitor) => handlerRef.current(item, monitor),
+  }));
   const [height, setHeight] = useState<number>(minHeight);
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const divRef = React.useRef<HTMLDivElement>(null);
@@ -62,6 +79,7 @@ export const VerticalResizableRow: Kids<{}> = ({ children }) => {
     >
       {children}
       <div
+        ref={drop}
         className="w-full p-1 group"
         style={{
           height: HANDLE_WIDTH,
@@ -70,7 +88,7 @@ export const VerticalResizableRow: Kids<{}> = ({ children }) => {
         onMouseDown={startResizing}
       >
         <div
-          className={`w-full h-full group-hover:bg-accent-100/30 rounded-lg ${isResizing ? "bg-accent-100/30" : ""}`}
+          className={`w-full h-full group-hover:bg-accent-100/30 rounded-lg ${isOver || isResizing ? "bg-accent-100/30" : ""}`}
         />
       </div>
     </div>

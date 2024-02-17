@@ -11,7 +11,7 @@ interface GridResizeHandleProps {
   row: string[];
 }
 
-export const HANDLE_WIDTH = 13;
+export const HANDLE_WIDTH = 15;
 
 export const GridResizeHandle: React.FC<GridResizeHandleProps> = ({
   parentRef,

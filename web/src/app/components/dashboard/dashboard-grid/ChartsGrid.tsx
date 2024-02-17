@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useProjectBoardContext } from "../../../../../providers/ProjectBoardProvider";
-import { DbChart, RouterOutput, trpc } from "../../../utils/trpc";
-import { ChartThumbnail } from "../ChartThumbnail";
-import { GridResizeHandle, HANDLE_WIDTH } from "./GridResizeHandle";
-import { VerticalResizableRow } from "./VerticalResizableRow";
+import { DbChart, trpc } from "../../../utils/trpc";
 import { DraggableChartContainer } from "./DraggableChartContainer";
-import { New_Rocker } from "next/font/google";
+import { GridResizeHandle, HANDLE_WIDTH } from "./GridResizeHandle";
 import { HorizontalResizableProvider } from "./HorizontalResizableContext";
 import { MyPanel } from "./MyPanel";
+import { VerticalResizableRow } from "./VerticalResizableRow";
+import { TopDropHandle } from "./TopDropHandle";
 
 interface ChartsGridProps {}
 
@@ -56,7 +55,22 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
 
   return (
     <div className="p-8 flex-1">
-      <div ref={divRef} className="flex flex-col w-full">
+      <div ref={divRef} className="flex flex-col w-full relative">
+        <div
+          style={{
+            top: -HANDLE_WIDTH,
+          }}
+          className="absolute w-full"
+        >
+          <TopDropHandle
+            onDrop={(idToMove) => {
+              const newPositions = positions
+                .map((newRow) => newRow.filter((currId) => currId !== idToMove))
+                .filter((newRow) => newRow.length > 0);
+              setPositions([[idToMove], ...newPositions]);
+            }}
+          />
+        </div>
         {positions.map((row, i) => {
           if (!row.length) {
             return null;
@@ -97,7 +111,20 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
           };
 
           return (
-            <VerticalResizableRow>
+            <VerticalResizableRow
+              onDrop={(idToMove) => {
+                const newPositions = positions
+                  .map((newRow) =>
+                    newRow.filter((currId) => currId !== idToMove)
+                  )
+                  .filter((newRow) => newRow.length > 0);
+                setPositions([
+                  ...newPositions.slice(0, i + 1),
+                  [idToMove],
+                  ...newPositions.slice(i + 1),
+                ]);
+              }}
+            >
               <div className="flex-1 h-full flex relative">
                 <HorizontalResizableProvider numItems={row.length}>
                   <div
