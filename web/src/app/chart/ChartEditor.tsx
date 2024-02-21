@@ -456,7 +456,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               {data?.datas.length &&
               data?.reportType === ReportType.insight &&
               data.chartType === ChartType.donut ? (
-                <div>
+                <div style={{ height: 400 }} className="w-full">
                   <DonutChart
                     {...transformDonutData({
                       datas: data.datas,
