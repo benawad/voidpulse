@@ -1,0 +1,36 @@
+.typing-indicator-container {
+    display: flex;
+    justify-content: left;
+  }
+  
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+  }
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin-right: 4px;
+  }
+  
+  @keyframes typing {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(-6px);
+    }
+  }
+  
+  .typing {
+    animation: typing 0.5s infinite;
+  }
+  

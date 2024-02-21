@@ -14,6 +14,7 @@ interface AiInputBarProps {
   prevMsgs: LocalAiMsg[];
   onMsg: (msg: LocalAiMsg) => void;
   className: string;
+  placeholder?: string;
 }
 
 type Inputs = {
@@ -25,6 +26,7 @@ export const AiInputBar: React.FC<AiInputBarProps> = ({
   prevMsgs,
   dataStr,
   className,
+  placeholder,
 }) => {
   const { mutateAsync } = trpc.sendMsgToAi.useMutation({
     onSuccess: (data) => {
@@ -57,7 +59,7 @@ export const AiInputBar: React.FC<AiInputBarProps> = ({
     <form onSubmit={handleSubmit(onSubmit)} className="mx-2">
       <Input
         autoFocus
-        placeholder="What chart should we make?"
+        placeholder={placeholder ?? "What chart should we make?"}
         {...register("userInputText", { required: true })}
         className={className}
       />
