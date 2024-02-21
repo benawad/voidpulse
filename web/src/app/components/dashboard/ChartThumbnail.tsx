@@ -7,7 +7,7 @@ import {
 } from "@voidpulse/api";
 import "chart.js/auto";
 import Link from "next/link";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { LineChart } from "../../ui/charts/LineChart";
 import { useColorOrder } from "../../themes/useColorOrder";
 import { useChartStyle } from "../../themes/useChartStyle";
@@ -21,6 +21,9 @@ import { transformDonutData } from "../../utils/transformDonutData";
 import { FunnelChart } from "../../ui/charts/FunnelChart";
 import { transformFunnelChartData } from "../../utils/transformFunnelData";
 import { RxDragHandleDots2 } from "react-icons/rx";
+import { MoreBoardOptionsButton } from "../../ui/MoreBoardOptionsButton";
+import { MoreChartOptionsButton } from "../../ui/charts/MoreChartOptionsButton";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 interface ChartThumbnailProps {
   dragRef: any;
@@ -94,31 +97,49 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
       />
     );
   }
+  const [isMoreOptionsHovered, setIsMoreOptionsHovered] = useState(false);
 
   return (
     <div className="card w-full h-full flex flex-col">
       {/* Chart thumbnail header */}
-      <Link href={`/chart/${chart.id}`}>
-        <div className="px-5 py-3 h-18 hoverable area group border-b border-primary-800 relative">
+      <div
+        className={`px-5 py-3 h-18 group border-b border-primary-800 relative cursor-grab transition-colors ${isMoreOptionsHovered ? "hover:bg-primary-900" : "hover:bg-primary-800"} `}
+        ref={dragRef}
+      >
+        {/* Space out the drag handle, title, and more options buttons */}
+
+        <div className="flex flex-row justify-between">
+          <Link href={`/chart/${chart.id}`}>
+            <div className="absolute top-4 left-1 mx-auto cursor-grab opacity-0 group-hover:opacity-100">
+              <RxDragHandleDots2 />
+            </div>
+            {/* Title and description */}
+            <div>
+              <div
+                className={`text-l mb-1 font-semibold text-primary-100 group-hover:text-accent-100 transition-colors truncate`}
+              >
+                {chart.title || "Untitled"}
+              </div>
+
+              <p className={`m-0 max-w-[30ch] subtext truncate`}>
+                {chart.description}
+              </p>
+            </div>
+          </Link>
+
           <div
-            ref={dragRef}
-            className="absolute top-4 left-1 mx-auto cursor-grab opacity-0 group-hover:opacity-100"
+            onMouseEnter={() => {
+              setIsMoreOptionsHovered(true);
+            }}
+            onMouseLeave={() => {
+              setIsMoreOptionsHovered(false);
+            }}
+            className="items-center"
           >
-            <RxDragHandleDots2 />
+            <MoreChartOptionsButton chartId={chart.id} />
           </div>
-          <h2
-            className={`mb-2 text-l font-semibold text-primary-100 group-hover:text-accent-100 transition-colors`}
-          >
-            {chart.title || "Untitled"}
-            {/* <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none opacity-35 ml-2">
-            -&gt;
-          </span> */}
-          </h2>
-          <p className={`m-0 max-w-[30ch] subtext truncate`}>
-            {chart.description}
-          </p>
         </div>
-      </Link>
+      </div>
 
       {/* Chart display */}
       <div className="bg-primary-800/30 pt-1 flex-1 w-full px-2">

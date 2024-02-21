@@ -3,7 +3,7 @@ import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSele
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 import { RouterOutput } from "../../utils/trpc";
 import { PiCaretLeftFill } from "react-icons/pi";
-import { MoreOptionsButton } from "../../ui/MoreOptionsButton";
+import { MoreBoardOptionsButton } from "../../ui/MoreBoardOptionsButton";
 import { useCurrTheme } from "../../themes/useCurrTheme";
 
 interface DashboardSidebarButtonProps {
@@ -36,7 +36,7 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
         <div className="mr-2">{board.emoji}</div>
         <div className="w-full text-ellipsis truncate">{board.title}</div>
       </div>
-      <MoreOptionsButton boardId={board.id} boardTitle={board.title} />
+      <MoreBoardOptionsButton boardId={board.id} boardTitle={board.title} />
       {boardId === board.id ? (
         <PiCaretLeftFill
           fill={theme.primary[900]}

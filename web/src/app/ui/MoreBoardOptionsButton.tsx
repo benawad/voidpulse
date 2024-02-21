@@ -7,12 +7,12 @@ import { IoTrashOutline } from "react-icons/io5";
 import { DeleteBoardButton } from "../components/dashboard/DeleteBoardButton";
 import { DeleteBoardConfirmationModal } from "../components/dashboard/DeleteBoardConfirmationModal";
 
-interface MoreOptionsButtonProps {
+interface MoreBoardOptionsButtonProps {
   boardId: string;
   boardTitle: string;
 }
 
-export const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({
+export const MoreBoardOptionsButton: React.FC<MoreBoardOptionsButtonProps> = ({
   boardId,
   boardTitle,
 }) => {
