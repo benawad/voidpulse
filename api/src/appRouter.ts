@@ -4,7 +4,6 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { createContext, t } from "./trpc";
 import {
-  getBoards,
   updateBoard,
   createBoard,
   deleteBoard,
@@ -24,6 +23,7 @@ import { updateChart } from "./routes/charts/updateChart";
 import { updateMe } from "./routes/auth/updateMe";
 import { sendMsgToAi } from "./routes/ai-messages/sendMsgToAi";
 import { textToChart } from "./routes/ai-messages/textToChart";
+import { deleteChart } from "./routes/charts/deleteChart";
 
 export const appRouter = t.router({
   getProjects,
@@ -31,7 +31,6 @@ export const appRouter = t.router({
   getMe,
   register,
   login,
-  getBoards,
   updateBoard,
   createBoard,
   deleteBoard,
@@ -44,6 +43,7 @@ export const appRouter = t.router({
   updateMe,
   sendMsgToAi,
   textToChart,
+  deleteChart,
 });
 
 export const app = express();

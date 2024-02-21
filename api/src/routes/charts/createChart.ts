@@ -41,6 +41,7 @@ export const createChart = protectedProcedure
         .insert(charts)
         .values({
           creatorId: userId,
+          projectId,
           boardId,
           chartType,
           timeRangeType,

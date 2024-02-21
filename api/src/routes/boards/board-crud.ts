@@ -7,24 +7,6 @@ import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { TRPCError } from "@trpc/server";
 
-export const getBoards = protectedProcedure
-  .input(
-    z.object({
-      projectId: z.string(),
-    })
-  )
-  .query(async ({ input: { projectId }, ctx: { userId } }) => {
-    await assertProjectMember({ projectId, userId });
-
-    const data = await db.query.boards.findMany({
-      where: eq(boards.projectId, projectId),
-    });
-
-    return {
-      boards: data,
-    };
-  });
-
 export const createBoard = protectedProcedure
   .input(
     z.object({

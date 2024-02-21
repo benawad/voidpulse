@@ -17,6 +17,7 @@ import {
   MetricFilter,
 } from "../routes/charts/insight/eventFilterSchema";
 import { messages } from "./messages";
+import { projects } from "./projects";
 
 export const charts = pgTable("charts", {
   id: uuid("id")
@@ -50,6 +51,7 @@ export const charts = pgTable("charts", {
     .notNull()
     .default(sql`now()`),
   creatorId: uuid("creator_id").notNull(),
+  projectId: uuid("project_id").notNull(),
 });
 
 export const chartRelations = relations(charts, ({ one, many }) => ({
@@ -58,5 +60,9 @@ export const chartRelations = relations(charts, ({ one, many }) => ({
   creator: one(users, {
     fields: [charts.creatorId],
     references: [users.id],
+  }),
+  project: one(projects, {
+    fields: [charts.projectId],
+    references: [projects.id],
   }),
 }));

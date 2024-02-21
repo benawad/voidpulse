@@ -8,10 +8,10 @@ export const boardCharts = pgTable(
   {
     boardId: uuid("board_id")
       .notNull()
-      .references(() => boards.id),
+      .references(() => boards.id, { onDelete: "cascade" }),
     chartId: uuid("chart_id")
       .notNull()
-      .references(() => charts.id),
+      .references(() => charts.id, { onDelete: "cascade" }),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.boardId, t.chartId] }),
