@@ -11,9 +11,16 @@ export const boards = pgTable("boards", {
   emoji: text("emoji"),
   title: text("title").notNull(),
   description: text("description"),
-  positions: jsonb("positions").$type<string[][]>(),
-  widths: jsonb("widths").$type<number[][]>(),
-  heights: jsonb("heights").$type<number[]>(),
+  positions: jsonb("positions").$type<
+    {
+      rowId: string;
+      height: number;
+      cols: {
+        width: number;
+        chartId: string;
+      }[];
+    }[]
+  >(),
   projectId: uuid("project_id").notNull(),
   creatorId: uuid("creator_id").notNull(),
 });

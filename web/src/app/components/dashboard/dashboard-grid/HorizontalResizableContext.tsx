@@ -10,6 +10,7 @@ import React, {
 } from "react";
 import { debounce } from "../../../utils/debounce";
 import { usePrevious } from "../../../utils/usePrevious";
+import { set } from "react-hook-form";
 
 interface HorizontalResizableContextState {
   widths: number[];
@@ -34,14 +35,11 @@ export const HorizontalResizableProvider: React.FC<
     () => startingWidths || Array(numItems).fill(100 / numItems)
   ); // Initialize with 2 elements at 50% width
 
-  const prevNumItems = usePrevious(numItems);
   useEffect(() => {
-    if (typeof prevNumItems !== "undefined" && prevNumItems !== numItems) {
-      const newWidths = Array(numItems).fill(100 / numItems);
-      setWidths(newWidths);
-      onWidths(newWidths);
+    if (startingWidths && startingWidths.length !== widths.length) {
+      setWidths(startingWidths);
     }
-  }, [numItems]);
+  }, [startingWidths]);
 
   const onWidthsRef = useRef(onWidths);
   onWidthsRef.current = onWidths;

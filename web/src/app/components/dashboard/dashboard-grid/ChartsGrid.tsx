@@ -9,6 +9,7 @@ import { VerticalResizableRow } from "./VerticalResizableRow";
 import { TopDropHandle } from "./TopDropHandle";
 import { useUpdateBoard } from "../../../utils/useUpdateBoard";
 import { debounce } from "../../../utils/debounce";
+import { genId } from "../../../utils/genId";
 
 interface ChartsGridProps {
   charts: DbChart[];
@@ -24,11 +25,9 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
     chartId: string;
     side: "left" | "right";
   }>(null);
-  const [positions, setPositions] = React.useState<string[][]>(
-    board.positions || []
-  );
-  const [heights, setHeights] = React.useState<number[]>(board.heights || []);
-  const [widths, setWidths] = React.useState<number[][]>(board.widths || []);
+  const [positions, setPositions] = React.useState<
+    NonNullable<RouterOutput["createBoard"]["board"]["positions"]>
+  >(board.positions || []);
   const chartMap = useMemo(() => {
     const _chartMap: Record<string, DbChart> = {};
     for (const chart of charts || []) {
@@ -51,11 +50,9 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
       id: boardId,
       data: {
         positions,
-        heights,
-        widths,
       },
     });
-  }, [positions, widths, heights]);
+  }, [positions]);
 
   return (
     <div className="p-8 flex-1">
@@ -69,14 +66,24 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
           <TopDropHandle
             onDrop={(idToMove) => {
               const newPositions = positions
-                .map((newRow) => newRow.filter((currId) => currId !== idToMove))
-                .filter((newRow) => newRow.length > 0);
-              setPositions([[idToMove], ...newPositions]);
+                .map((newRow) => ({
+                  ...newRow,
+                  cols: newRow.cols.filter((col) => col.chartId !== idToMove),
+                }))
+                .filter((newRow) => newRow.cols.length > 0);
+              setPositions([
+                {
+                  rowId: genId(),
+                  height: 400,
+                  cols: [{ chartId: idToMove, width: 100 }],
+                },
+                ...newPositions,
+              ]);
             }}
           />
         </div>
         {positions.map((row, rowIdx) => {
-          if (!row.length) {
+          if (!row?.cols?.length) {
             setPositions((prev) => prev.filter((_, idx) => idx !== rowIdx));
             return null;
           }
@@ -90,24 +97,43 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
               return;
             }
             const newPositions = positions
-              .map((newRow) => newRow.filter((currId) => currId !== idToMove))
-              .filter((newRow) => newRow.length > 0)
+              .map((newRow) => ({
+                ...newRow,
+                cols: newRow.cols.filter((col) => col.chartId !== idToMove),
+              }))
+              .filter((newRow) => newRow.cols.length > 0)
               .map((newRow) => {
-                const dropIdx = newRow.indexOf(chartIdDroppedOn);
+                const dropIdx = newRow.cols.findIndex(
+                  (x) => x.chartId === chartIdDroppedOn
+                );
                 if (dropIdx === -1) {
                   return newRow;
                 } else if (side === "left") {
-                  return [
-                    ...newRow.slice(0, dropIdx),
-                    idToMove,
-                    ...newRow.slice(dropIdx),
+                  const newCols = [
+                    ...newRow.cols.slice(0, dropIdx),
+                    { chartId: idToMove, width: 100 },
+                    ...newRow.cols.slice(dropIdx),
                   ];
+                  return {
+                    ...newRow,
+                    cols: newCols.map((newCol) => ({
+                      ...newCol,
+                      width: Math.floor(100 / newCols.length),
+                    })),
+                  };
                 } else if (side === "right") {
-                  return [
-                    ...newRow.slice(0, dropIdx + 1),
-                    idToMove,
-                    ...newRow.slice(dropIdx + 1),
+                  const newCols = [
+                    ...newRow.cols.slice(0, dropIdx + 1),
+                    { chartId: idToMove, width: 100 },
+                    ...newRow.cols.slice(dropIdx + 1),
                   ];
+                  return {
+                    ...newRow,
+                    cols: newCols.map((newCol) => ({
+                      ...newCol,
+                      width: Math.floor(100 / newCols.length),
+                    })),
+                  };
                 }
 
                 return newRow;
@@ -118,25 +144,33 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
           return (
             <VerticalResizableRow
               onHeight={(height) => {
-                setHeights((prevHeights) => {
-                  return prevHeights.map((h, idx) => {
+                setPositions((prev) => {
+                  return prev.map((x, idx) => {
                     if (idx === rowIdx) {
-                      return height;
+                      return {
+                        ...x,
+                        height,
+                      };
                     }
-                    return h;
+                    return x;
                   });
                 });
               }}
-              startingHeight={heights[rowIdx] || 400}
+              startingHeight={row.height}
               onDrop={(idToMove) => {
                 const newPositions = positions
-                  .map((newRow) =>
-                    newRow.filter((currId) => currId !== idToMove)
-                  )
-                  .filter((newRow) => newRow.length > 0);
+                  .map((newRow) => ({
+                    ...newRow,
+                    cols: newRow.cols.filter((col) => col.chartId !== idToMove),
+                  }))
+                  .filter((newRow) => newRow.cols.length > 0);
                 setPositions([
                   ...newPositions.slice(0, rowIdx + 1),
-                  [idToMove],
+                  {
+                    rowId: genId(),
+                    height: 400,
+                    cols: [{ chartId: idToMove, width: 100 }],
+                  },
                   ...newPositions.slice(rowIdx + 1),
                 ]);
               }}
@@ -144,17 +178,23 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
               <div className="flex-1 h-full flex relative">
                 <HorizontalResizableProvider
                   onWidths={(newWidths) => {
-                    setWidths((prevWidths) => {
-                      return prevWidths.map((w, idx) => {
+                    setPositions((prev) => {
+                      return prev.map((w, idx) => {
                         if (idx === rowIdx) {
-                          return newWidths;
+                          return {
+                            ...w,
+                            cols: w.cols.map((col, colIdx) => ({
+                              ...col,
+                              width: newWidths[colIdx],
+                            })),
+                          };
                         }
                         return w;
                       });
                     });
                   }}
-                  startingWidths={widths[rowIdx]}
-                  numItems={row.length}
+                  startingWidths={row.cols.map((x) => x.width)}
+                  numItems={row.cols.length}
                 >
                   <div
                     style={{
@@ -166,47 +206,40 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
                       parentRef={divRef}
                       index={-1}
                       highlight={
-                        row[0] === hoverInfo?.chartId &&
+                        row.cols[0].chartId === hoverInfo?.chartId &&
                         hoverInfo?.side === "left"
                       }
-                      row={row}
+                      row={row.cols.map((x) => x.chartId)}
                       onDrop={(chartIdDropped) =>
-                        onDrop(chartIdDropped, row[0], "left")
+                        onDrop(chartIdDropped, row.cols[0].chartId, "left")
                       }
                     />
                   </div>
-                  {row.map((id, k) => {
-                    const chart = chartMap[id];
+                  {row.cols.map((col, k) => {
+                    const chart = chartMap[col.chartId];
 
                     if (!chart) {
                       setPositions((prev) => {
-                        const newPositions = prev.map((row) =>
-                          row.filter((currId) => currId !== id)
+                        const newPositions = prev.map(
+                          (innerRow, innerRowIdx) => {
+                            if (innerRowIdx !== rowIdx) {
+                              return innerRow;
+                            }
+                            const newCols = innerRow.cols.filter(
+                              (innerCol) => col.chartId !== innerCol.chartId
+                            );
+                            return {
+                              ...innerRow,
+                              cols: newCols.map((newCol) => ({
+                                ...newCol,
+                                width: Math.floor(100 / newCols.length),
+                              })),
+                            };
+                          }
                         );
 
-                        return newPositions.filter((row) => row.length);
+                        return newPositions.filter((row) => row.cols.length);
                       });
-                      setWidths((prev) => {
-                        if (row.length === 1) {
-                          return [
-                            ...prev.slice(0, rowIdx),
-                            ...prev.slice(rowIdx + 1),
-                          ];
-                        }
-                        return prev.map((x, wIdx) =>
-                          rowIdx === wIdx
-                            ? Array(row.length - 1).fill(
-                                Math.floor(100 / (row.length - 1))
-                              )
-                            : x
-                        );
-                      });
-                      if (row.length === 1) {
-                        setHeights((prev) => {
-                          return prev.filter((_, hIdx) => hIdx !== rowIdx);
-                        });
-                      }
-
                       return null;
                     }
 
@@ -214,7 +247,7 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
                       (hoverInfo?.chartId === chart.id &&
                         hoverInfo.side === "left") ||
                       (!!k &&
-                        hoverInfo?.chartId === row[k - 1] &&
+                        hoverInfo?.chartId === row.cols[k - 1].chartId &&
                         hoverInfo.side === "right");
 
                     return (
@@ -225,14 +258,14 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
                               parentRef={divRef}
                               index={k - 1}
                               highlight={highlightSeparator}
-                              row={row}
+                              row={row.cols.map((x) => x.chartId)}
                               onDrop={(chartIdDropped) =>
                                 onDrop(chartIdDropped, chart.id, "left")
                               }
                             />
                           ) : null}
                           <DraggableChartContainer
-                            row={row}
+                            row={row.cols.map((x) => x.chartId)}
                             chart={chart}
                             clearHover={() => setHoverInfo(null)}
                             onHover={(chartId, side) =>
@@ -257,12 +290,16 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
                       parentRef={divRef}
                       index={-1}
                       highlight={
-                        row[row.length - 1] === hoverInfo?.chartId &&
-                        hoverInfo?.side === "right"
+                        row.cols[row.cols.length - 1].chartId ===
+                          hoverInfo?.chartId && hoverInfo?.side === "right"
                       }
-                      row={row}
+                      row={row.cols.map((x) => x.chartId)}
                       onDrop={(chartIdDropped) =>
-                        onDrop(chartIdDropped, row[row.length - 1], "right")
+                        onDrop(
+                          chartIdDropped,
+                          row.cols[row.cols.length - 1].chartId,
+                          "right"
+                        )
                       }
                     />
                   </div>

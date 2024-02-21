@@ -34,7 +34,9 @@ export const deleteChart = protectedProcedure
 
       const setData: Partial<InferInsertModel<typeof boards>> = {};
 
-      const rowIdx = board.positions.findIndex((row) => row.includes(chartId));
+      const rowIdx = board.positions.findIndex((row) =>
+        row.cols.find((x) => x.chartId === chartId)
+      );
 
       if (rowIdx === -1) {
         return {
@@ -42,24 +44,23 @@ export const deleteChart = protectedProcedure
         };
       }
 
-      const rowLength = board.positions[rowIdx].length;
+      const colLength = board.positions[rowIdx].cols.length;
 
       setData.positions = board.positions
-        .map((row, idx) =>
-          idx === rowIdx ? row.filter((id) => id !== chartId) : row
-        )
-        .filter((row) => row.length);
-
-      if (rowLength === 1) {
-        setData.heights = board.heights?.filter((_, idx) => idx !== rowIdx);
-        setData.widths = board.widths?.filter((_, idx) => idx !== rowIdx);
-      } else {
-        setData.widths = board.widths?.map((row, idx) =>
-          idx === rowIdx
-            ? Array(rowLength - 1).fill(Math.floor(100 / (rowLength - 1)))
-            : row
-        );
-      }
+        .map((row, idx) => {
+          if (idx === rowIdx) {
+            const newCols = row.cols.filter((x) => x.chartId !== chartId);
+            return {
+              ...row,
+              cols: newCols.map((col) => ({
+                ...col,
+                width: Math.floor(100 / newCols.length),
+              })),
+            };
+          }
+          return row;
+        })
+        .filter((row) => row.cols.length);
 
       const [newBoard] = await db
         .update(boards)
