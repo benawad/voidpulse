@@ -1,57 +1,61 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useProjectBoardContext } from "../../../../../providers/ProjectBoardProvider";
-import { DbChart, trpc } from "../../../utils/trpc";
+import { DbChart, RouterOutput, trpc } from "../../../utils/trpc";
 import { DraggableChartContainer } from "./DraggableChartContainer";
 import { GridResizeHandle, HANDLE_WIDTH } from "./GridResizeHandle";
 import { HorizontalResizableProvider } from "./HorizontalResizableContext";
 import { MyPanel } from "./MyPanel";
 import { VerticalResizableRow } from "./VerticalResizableRow";
 import { TopDropHandle } from "./TopDropHandle";
+import { useUpdateBoard } from "../../../utils/useUpdateBoard";
+import { debounce } from "../../../utils/debounce";
 
-interface ChartsGridProps {}
+interface ChartsGridProps {
+  charts: DbChart[];
+  board: RouterOutput["getProjects"]["boards"][0];
+}
 
-export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
+export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
+  const { mutateAsync } = useUpdateBoard();
   const divRef = useRef<HTMLDivElement>(null);
-  const { boardId, projectId } = useProjectBoardContext();
-  const { data } = trpc.getCharts.useQuery({
-    boardId,
-    projectId,
-  });
+  const { boardId } = useProjectBoardContext();
+
   const [hoverInfo, setHoverInfo] = useState<null | {
     chartId: string;
     side: "left" | "right";
   }>(null);
-  const [positions, setPositions] = React.useState<string[][]>([]);
+  const [positions, setPositions] = React.useState<string[][]>(
+    board.positions || []
+  );
+  const [heights, setHeights] = React.useState<number[]>(board.heights || []);
+  const [widths, setWidths] = React.useState<number[][]>(board.widths || []);
   const chartMap = useMemo(() => {
     const _chartMap: Record<string, DbChart> = {};
-    for (const chart of data?.charts || []) {
+    for (const chart of charts || []) {
       _chartMap[chart.id] = chart;
     }
     return _chartMap;
-  }, [data, positions]);
+  }, [charts, positions]);
 
+  const firstRender = useRef(true);
+  const debouncedMutateAsync = useMemo(
+    () => debounce(mutateAsync, 500),
+    [mutateAsync]
+  );
   useEffect(() => {
-    if (data && !positions.length) {
-      const posRows: string[][] = [];
-      let tmpRow: string[] = [];
-      for (const chart of data?.charts || []) {
-        if (tmpRow.length === 4) {
-          posRows.push(tmpRow);
-          tmpRow = [];
-        } else {
-          tmpRow.push(chart.id);
-        }
-      }
-      if (tmpRow.length > 0) {
-        posRows.push(tmpRow);
-      }
-      setPositions(posRows);
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
     }
-  }, [data]);
-
-  if (!positions.length) {
-    return null;
-  }
+    debouncedMutateAsync({
+      id: boardId,
+      data: {
+        positions,
+        heights,
+        widths,
+      },
+    });
+  }, [positions, widths, heights]);
 
   return (
     <div className="p-8 flex-1">
@@ -71,8 +75,9 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
             }}
           />
         </div>
-        {positions.map((row, i) => {
+        {positions.map((row, rowIdx) => {
           if (!row.length) {
+            setPositions((prev) => prev.filter((_, idx) => idx !== rowIdx));
             return null;
           }
 
@@ -112,6 +117,17 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
 
           return (
             <VerticalResizableRow
+              onHeight={(height) => {
+                setHeights((prevHeights) => {
+                  return prevHeights.map((h, idx) => {
+                    if (idx === rowIdx) {
+                      return height;
+                    }
+                    return h;
+                  });
+                });
+              }}
+              startingHeight={heights[rowIdx] || 400}
               onDrop={(idToMove) => {
                 const newPositions = positions
                   .map((newRow) =>
@@ -119,14 +135,27 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
                   )
                   .filter((newRow) => newRow.length > 0);
                 setPositions([
-                  ...newPositions.slice(0, i + 1),
+                  ...newPositions.slice(0, rowIdx + 1),
                   [idToMove],
-                  ...newPositions.slice(i + 1),
+                  ...newPositions.slice(rowIdx + 1),
                 ]);
               }}
             >
               <div className="flex-1 h-full flex relative">
-                <HorizontalResizableProvider numItems={row.length}>
+                <HorizontalResizableProvider
+                  onWidths={(newWidths) => {
+                    setWidths((prevWidths) => {
+                      return prevWidths.map((w, idx) => {
+                        if (idx === rowIdx) {
+                          return newWidths;
+                        }
+                        return w;
+                      });
+                    });
+                  }}
+                  startingWidths={widths[rowIdx]}
+                  numItems={row.length}
+                >
                   <div
                     style={{
                       left: -HANDLE_WIDTH,
@@ -150,6 +179,34 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({}) => {
                     const chart = chartMap[id];
 
                     if (!chart) {
+                      setPositions((prev) => {
+                        const newPositions = prev.map((row) =>
+                          row.filter((currId) => currId !== id)
+                        );
+
+                        return newPositions.filter((row) => row.length);
+                      });
+                      setWidths((prev) => {
+                        if (row.length === 1) {
+                          return [
+                            ...prev.slice(0, rowIdx),
+                            ...prev.slice(rowIdx + 1),
+                          ];
+                        }
+                        return prev.map((x, wIdx) =>
+                          rowIdx === wIdx
+                            ? Array(row.length - 1).fill(
+                                Math.floor(100 / (row.length - 1))
+                              )
+                            : x
+                        );
+                      });
+                      if (row.length === 1) {
+                        setHeights((prev) => {
+                          return prev.filter((_, hIdx) => hIdx !== rowIdx);
+                        });
+                      }
+
                       return null;
                     }
 

@@ -1,15 +1,18 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { Kids } from "../../../ui/FullScreenModalOverlay";
 import { HANDLE_WIDTH } from "./GridResizeHandle";
 import { DropTargetMonitor, useDrop } from "react-dnd";
 import { ItemTypes } from "./DraggableChartContainer";
+import { debounce } from "../../../utils/debounce";
 
 const minHeight = 400;
 const maxHeight = 800;
 
 export const VerticalResizableRow: Kids<{
+  startingHeight: number;
+  onHeight: (height: number) => void;
   onDrop: (chartId: string) => void;
-}> = ({ children, onDrop }) => {
+}> = ({ children, onDrop, startingHeight, onHeight }) => {
   const handler = (item: any, __: DropTargetMonitor<any, unknown>) => {
     onDrop(item.chartId);
   };
@@ -23,8 +26,8 @@ export const VerticalResizableRow: Kids<{
     }),
     drop: (item: any, monitor) => handlerRef.current(item, monitor),
   }));
-  const [height, setHeight] = useState<number>(minHeight);
   const [isResizing, setIsResizing] = useState<boolean>(false);
+  const [height, setHeight] = useState(startingHeight);
   const divRef = React.useRef<HTMLDivElement>(null);
 
   const startResizing = (mouseDownEvent: React.MouseEvent<HTMLDivElement>) => {
@@ -43,6 +46,12 @@ export const VerticalResizableRow: Kids<{
     document.removeEventListener("selectstart", preventTextSelection);
   };
 
+  const onHeightRef = useRef(onHeight);
+  onHeightRef.current = onHeight;
+  const debouncedOnHeight = useMemo(
+    () => debounce((h: number) => onHeightRef.current(h), 500),
+    []
+  );
   const resize = (mouseMoveEvent: MouseEvent) => {
     if (isResizing) {
       // Calculate new height based on mouse position
@@ -52,6 +61,7 @@ export const VerticalResizableRow: Kids<{
       // Apply constraints
       if (newHeight >= minHeight && newHeight <= maxHeight) {
         setHeight(newHeight);
+        debouncedOnHeight(newHeight);
       }
     }
   };

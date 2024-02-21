@@ -1,5 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { jsonb, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { projects } from "./projects";
 import { users } from "./users";
 import { boardCharts } from "./board-charts";
@@ -11,6 +11,9 @@ export const boards = pgTable("boards", {
   emoji: text("emoji"),
   title: text("title").notNull(),
   description: text("description"),
+  positions: jsonb("positions").$type<string[][]>(),
+  widths: jsonb("widths").$type<number[][]>(),
+  heights: jsonb("heights").$type<number[]>(),
   projectId: uuid("project_id").notNull(),
   creatorId: uuid("creator_id").notNull(),
 });

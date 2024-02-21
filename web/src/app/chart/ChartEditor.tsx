@@ -6,7 +6,7 @@ import {
   RetentionNumFormat,
 } from "@voidpulse/api";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import {
@@ -41,6 +41,7 @@ import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
 import { ChartDataTable } from "./data-table/ChartDataTable";
 import { useCurrTheme } from "../themes/useCurrTheme";
 import { transformDonutData } from "../utils/transformDonutData";
+import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -67,9 +68,10 @@ type RetSubRow = {
 };
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
+  const searchParams = useSearchParams();
   const chartStyle = useChartStyle();
   const colorOrder = useColorOrder();
-  const { theme } = useCurrTheme();
+  const { lastProjectId } = useLastSelectedProjectBoardStore();
   const [
     {
       metrics,
@@ -105,6 +107,16 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             };
           }
           return oldData;
+        });
+        utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
+          if (!old) {
+            return old;
+          }
+
+          return {
+            boards: old.boards.map((b) => (b.id === boardId ? data.board : b)),
+            projects: old.projects,
+          };
         });
       },
     });
@@ -383,6 +395,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       await createChart({
                         projectId,
                         boardId,
+                        boardIdx: parseInt(searchParams.get("idx") || "0"),
                         ...fields,
                       });
                     }

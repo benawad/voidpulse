@@ -40,7 +40,7 @@ export const appRouter = t.router({
   createChart,
   getCharts,
   updateChart,
-  updateMe,
+  // updateMe,
   sendMsgToAi,
   textToChart,
   deleteChart,

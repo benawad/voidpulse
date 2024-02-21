@@ -8,6 +8,8 @@ import React, {
   useEffect,
   useRef,
 } from "react";
+import { debounce } from "../../../utils/debounce";
+import { usePrevious } from "../../../utils/usePrevious";
 
 interface HorizontalResizableContextState {
   widths: number[];
@@ -21,24 +23,32 @@ const HorizontalResizableContext = createContext<
 interface HorizontalResizableProviderProps {
   children: ReactNode;
   numItems: number;
+  startingWidths?: number[];
+  onWidths: (widths: number[]) => void;
 }
 
 export const HorizontalResizableProvider: React.FC<
   HorizontalResizableProviderProps
-> = ({ children, numItems }) => {
-  const [widths, setWidths] = useState<number[]>(() =>
-    Array(numItems).fill(100 / numItems)
+> = ({ children, numItems, startingWidths, onWidths }) => {
+  const [widths, setWidths] = useState<number[]>(
+    () => startingWidths || Array(numItems).fill(100 / numItems)
   ); // Initialize with 2 elements at 50% width
 
-  const firstRender = useRef(true);
+  const prevNumItems = usePrevious(numItems);
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
+    if (typeof prevNumItems !== "undefined" && prevNumItems !== numItems) {
+      const newWidths = Array(numItems).fill(100 / numItems);
+      setWidths(newWidths);
+      onWidths(newWidths);
     }
-    setWidths(() => Array(numItems).fill(100 / numItems));
   }, [numItems]);
 
+  const onWidthsRef = useRef(onWidths);
+  onWidthsRef.current = onWidths;
+  const debouncedOnWidths = useMemo(
+    () => debounce((w: number[]) => onWidthsRef.current(w), 500),
+    []
+  );
   const handleResize = useCallback(
     (index: number, delta: number) => {
       setWidths((currentWidths) => {
@@ -59,6 +69,7 @@ export const HorizontalResizableProvider: React.FC<
             nextWidths[index + 1] -= delta;
           }
         }
+        debouncedOnWidths(nextWidths);
         return nextWidths;
       });
     },

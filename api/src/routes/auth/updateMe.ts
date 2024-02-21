@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { InferInsertModel, eq } from "drizzle-orm";
 import { z } from "zod";
-import { ThemeId } from "../../app-router-type";
 import { db } from "../../db";
 import { users } from "../../schema/users";
 import { protectedProcedure } from "../../trpc";
@@ -9,9 +8,7 @@ import { protectedProcedure } from "../../trpc";
 export const updateMe = protectedProcedure
   .input(
     z.object({
-      updateData: z.object({
-        themeId: z.nativeEnum(ThemeId).optional(),
-      }),
+      updateData: z.object({}),
     })
   )
   .mutation(async ({ input: { updateData }, ctx: { userId } }) => {

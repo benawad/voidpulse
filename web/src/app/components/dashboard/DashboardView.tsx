@@ -6,12 +6,22 @@ import { ChartsGrid } from "./dashboard-grid/ChartsGrid";
 import { DashboardNavigator } from "./DashboardNavigator";
 import { DashboardStickyHeader } from "./DashboardStickyHeader";
 import { DndProvider } from "react-dnd";
+import { trpc } from "../../utils/trpc";
 
 interface DashboardViewProps {}
 
 export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
   const { isLoading, board, project, projects, boards } =
     useFetchProjectBoards();
+  const { data, isLoading: loadingCharts } = trpc.getCharts.useQuery(
+    {
+      boardId: board?.id!,
+      projectId: project?.id!,
+    },
+    {
+      enabled: !!board && !!project,
+    }
+  );
 
   if (isLoading) {
     return null;
@@ -27,7 +37,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
         <div className="flex flex-row-reverse flex-1">
           <div className="flex-1 relative flex flex-col">
             <DashboardStickyHeader board={board} />
-            <ChartsGrid />
+            {loadingCharts ? null : (
+              <ChartsGrid charts={data?.charts || []} board={board} />
+            )}
           </div>
           <DashboardNavigator boards={boards} />
         </div>

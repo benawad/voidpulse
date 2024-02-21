@@ -4,27 +4,13 @@ import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvid
 import { trpc } from "../../utils/trpc";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import EmojiPicker from "emoji-picker-react";
+import { useUpdateBoard } from "../../utils/useUpdateBoard";
 
 interface AddEmojiButtonProps {}
 
 export const AddRandomEmojiButton: React.FC<AddEmojiButtonProps> = ({}) => {
-  const { lastProjectId } = useLastSelectedProjectBoardStore();
   const { boardId } = useProjectBoardContext();
-  const utils = trpc.useUtils();
-  const { mutateAsync, isPending } = trpc.updateBoard.useMutation({
-    onSuccess: (data) => {
-      utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
-        if (!old) {
-          return old;
-        }
-
-        return {
-          boards: old.boards.map((b) => (b.id === boardId ? data.board : b)),
-          projects: old.projects,
-        };
-      });
-    },
-  });
+  const { mutateAsync, isPending } = useUpdateBoard();
 
   return (
     <>

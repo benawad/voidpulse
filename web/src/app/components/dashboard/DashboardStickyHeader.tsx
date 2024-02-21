@@ -88,7 +88,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
       <div></div>
 
       {/* New chart button */}
-      <Link href="/chart">
+      <Link href={`/chart?idx=${board.positions?.length || 0}`}>
         <Button>
           <div className="flex items-center">
             <FaPlus className="mr-2" /> New chart
