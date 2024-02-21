@@ -47,7 +47,8 @@ export const TextToChartInputBar: React.FC<AiInputBarProps> = ({}) => {
     <form onSubmit={handleSubmit(onSubmit)} className="mx-2">
       <Input
         autoFocus
-        placeholder="Ask questions about your data..."
+        placeholder="Or tell me what you want to see ✨"
+        className="border border-primary-500/50"
         {...register("userInputText", { required: true })}
       />
     </form>

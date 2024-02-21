@@ -20,24 +20,26 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({
   ];
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      const scrollPosition = messagesEndRef.current.scrollTop;
+      const scrollHeight = messagesEndRef.current.scrollHeight;
+      const divHeight = messagesEndRef.current.clientHeight;
+      const atBottom = scrollHeight - scrollPosition === divHeight;
+      const atTop = scrollPosition === 0;
+
+      if (atBottom && !atTop) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   }, [msgs]);
   return (
     //Shell for the entire chat interface
-    <div
-      className="relative justify-center h-5/6 flex"
-      style={{ height: "calc(100vh - 170px)" }}
-    >
-      {/* <PulseMotif1
-        className="mx-auto mt-12"
-        style={{ width: 250, height: "auto" }}
-      />
-      <div className="bg-accent-100 p-3 rounded-lg m-3 shadow-lg text-sm mono-body">
-        {greetingPrompts[Math.floor(Math.random() * greetingPrompts.length)]}
-      </div> */}
-
+    <div className="relative flex flex-col justify-start">
       {/* Shell for the chat messages */}
-      <div className="relative pb-24 overflow-y-auto w-full px-2">
+      <div
+        className="relative overflow-y-auto w-full px-2"
+        style={{ height: "calc(70vh)" }}
+      >
         {msgs.map((msg, i) => (
           <>
             <div>
@@ -69,18 +71,18 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({
             <TypingIndicator isVisible={true} />
           </div>
         ) : null}
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="h-1" />
       </div>
 
       {/* Pinned input bar area*/}
-      <div className="absolute bottom-0 bg-primary-900 w-full">
+      <div className="bg-primary-900/50 w-full">
         <div className="w-full flex flex-row p-2">
           <div className="w-full">
             <AiInputBar
               dataStr={dataStr}
               prevMsgs={msgs}
               onMsg={(msg) => setMsgs([...msgs, msg])}
-              className="w-full m-0"
+              className="w-full m-0 border border-primary-500/50"
               placeholder="Ask me about this report..."
             />
           </div>

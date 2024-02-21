@@ -13,21 +13,21 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
   const [editorMode, setEditorMode] = useState<"ai" | "manual">("manual");
   return (
     <div
-      className="border-r bg-primary-900 border-primary-800"
-      style={{ width: 400 }}
+      className="border-r bg-primary-900 border-primary-800 overflow-y-auto"
+      style={{ width: 400, height: "calc(100vh - 100px)" }}
     >
       <MultiToggleButtonBar
         className="mono-body text-sm rounded-none p-0 border-0"
         buttonClassName="w-full justify-center"
         buttonInfo={[
           {
-            name: "AI Chat ✨",
+            name: "Chat ✨",
             action: () => {
               setEditorMode("ai");
             },
           },
           {
-            name: "Manual 💪",
+            name: "Edit 📝",
             action: () => {
               setEditorMode("manual");
             },
