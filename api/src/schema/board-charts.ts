@@ -6,12 +6,12 @@ import { charts } from "./charts";
 export const boardCharts = pgTable(
   "board_charts",
   {
-    boardId: uuid("board_id")
-      .notNull()
-      .references(() => boards.id, { onDelete: "cascade" }),
     chartId: uuid("chart_id")
       .notNull()
       .references(() => charts.id, { onDelete: "cascade" }),
+    boardId: uuid("board_id")
+      .notNull()
+      .references(() => boards.id, { onDelete: "cascade" }),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.boardId, t.chartId] }),

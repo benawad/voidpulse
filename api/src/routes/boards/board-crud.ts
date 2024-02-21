@@ -34,9 +34,20 @@ export const updateBoard = protectedProcedure
         description: z.string().optional(),
         emoji: z.string().optional(),
         randomEmoji: z.boolean().optional(),
-        positions: z.array(z.array(z.string())).optional(),
-        heights: z.array(z.number()).optional(),
-        widths: z.array(z.array(z.number())).optional(),
+        positions: z
+          .array(
+            z.object({
+              rowId: z.string(),
+              height: z.number(),
+              cols: z.array(
+                z.object({
+                  width: z.number(),
+                  chartId: z.string(),
+                })
+              ),
+            })
+          )
+          .optional(),
       }),
     })
   )
