@@ -41,12 +41,12 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
   const selectedBoardButtonStyle = "bg-primary-700 ring-primary-600/50 ";
   return (
     <div
-      className="w-1/6 bg-primary-800 border-r border border-primary-700 flex sticky top-16"
+      className="w-1/6 bg-primary-800 border-r border border-primary-700 flex sticky top-16 h-full"
       style={{ minWidth: 200 }}
     >
       <div className="w-full px-2 pt-4">
         {/* Team boards button  */}
-        <div className={sidebarButtonStyle + " border-transparent"}>
+        {/* <div className={sidebarButtonStyle + " border-transparent"}>
           <div className="flex items-center">
             <div className={"icon-box"}>
               <FaUserGroup
@@ -57,7 +57,7 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
             </div>
             Team boards
           </div>
-        </div>
+        </div> */}
         {/* New board button  */}
         <div className={sidebarButtonStyle + " border-transparent"}>
           <AddBoardButton />

@@ -34,8 +34,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <ProjectBoardProvider projectId={project.id} boardId={board.id}>
-        <div className="flex flex-row-reverse flex-1">
-          <div className="flex-1 relative flex flex-col">
+        <div className="flex flex-row-reverse flex-1 overflow-auto">
+          <div className="flex-1 relative flex flex-col h-full overflow-auto">
             <DashboardStickyHeader board={board} />
             {loadingCharts ? null : (
               <ChartsGrid

@@ -53,6 +53,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
     horizontal: true,
     overscan: 3, //how many columns to render on each side off screen each way (adjust this for performance)
   });
+
   const rowVirtualizer = useWindowVirtualizer({
     count: rows.length,
     estimateSize: () => ROW_HEIGHT, //estimate row height for accurate scrollbar dragging

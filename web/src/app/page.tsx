@@ -1,16 +1,13 @@
 "use client";
-import { HeaderNav } from "./ui/HeaderNav";
 import { DashboardView } from "./components/dashboard/DashboardView";
+import { HeaderNav } from "./ui/HeaderNav";
 import { trpc } from "./utils/trpc";
-import { DeleteBoardConfirmationModal } from "./components/dashboard/DeleteBoardConfirmationModal";
-import { useState } from "react";
 
 function Home() {
   return (
-    <main className="page flex flex-col">
+    <main className="h-screen bg-primary-900 flex flex-col">
       <HeaderNav />
       <DashboardView />
-      {/* <DeleteBoardConfirmationModal isOpen={true} /> */}
     </main>
   );
 }

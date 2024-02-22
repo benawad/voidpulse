@@ -14,11 +14,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
         <Link href="/" className={headerItemStyle}>
           boards
         </Link>
-        <div className={headerItemStyle}>users</div>
+        {/* <div className={headerItemStyle}>users</div>
         <div className={headerItemStyle}>events</div>
         <Link href="/assistant" className={headerItemStyle}>
           assistant
-        </Link>
+        </Link> */}
         <Link href="/themes" className={headerItemStyle}>
           themes
         </Link>

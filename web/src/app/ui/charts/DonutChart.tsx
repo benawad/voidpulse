@@ -56,6 +56,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
           style={{ maxWidth: 500, width: "100%" }}
         >
           <ChartLegend
+            width={width || 0}
             labels={data.labels as string[]}
             colors={data.datasets?.[0].backgroundColor as string[]}
           />

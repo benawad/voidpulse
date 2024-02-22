@@ -47,6 +47,7 @@ export const LineChart: React.FC<LineChartProps> = ({
     <div className="w-full h-full flex flex-col">
       <div className="mt-2">
         <ChartLegend
+          width={width || 0}
           labels={data.datasets.map((x: any) => x.label) as string[]}
           colors={data.datasets[0].backgroundColor as string[]}
         />

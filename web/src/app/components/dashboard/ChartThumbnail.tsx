@@ -24,7 +24,7 @@ import { transformFunnelChartData } from "../../utils/transformFunnelData";
 import { transformRetentionData } from "../../utils/transformRetentionData";
 import { transformLineData } from "../../utils/transformToLineData";
 import { RouterOutput, trpc } from "../../utils/trpc";
-import { getQueryKey } from "@trpc/react-query";
+import { chartToTagline } from "../../utils/chartToTagline";
 
 interface ChartThumbnailProps {
   dragRef: any;
@@ -172,7 +172,8 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
               </div>
 
               <p className={`m-0 max-w-[30ch] subtext truncate`}>
-                {chart.description}
+                {chartToTagline(chart)}
+                {chart.description ? ` • ${chart.description}` : ""}
               </p>
             </div>
           </Link>
