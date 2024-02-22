@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { date, jsonb, pgTable, uuid } from "drizzle-orm/pg-core";
+import { date, jsonb, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
 import { projects } from "./projects";
 
 export const peoplePropTypes = pgTable("people_prop_types", {
@@ -8,7 +8,7 @@ export const peoplePropTypes = pgTable("people_prop_types", {
     .primaryKey()
     .references(() => projects.id),
   propTypes: jsonb("prop_types").notNull(),
-  updatedAt: date("updated_at")
+  updatedAt: timestamp("updated_at")
     .notNull()
     .default(sql`now()`),
 });

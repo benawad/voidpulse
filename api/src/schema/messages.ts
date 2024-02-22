@@ -1,5 +1,12 @@
 import { relations, sql } from "drizzle-orm";
-import { date, integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import {
+  date,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { projects } from "./projects";
 import { charts } from "./charts";
@@ -11,7 +18,7 @@ export const messages = pgTable("messages", {
   text: text("text").notNull(),
   role: integer("role").notNull(),
   chartId: uuid("chart_id").notNull(),
-  createdAt: date("created_at").default(sql`now()`),
+  createdAt: timestamp("created_at").default(sql`now()`),
   projectId: uuid("project_id").notNull(),
   userId: uuid("user_id").notNull(),
 });

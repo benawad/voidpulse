@@ -55,7 +55,7 @@ export const ChartStateProvider: React.FC<
       description: chart?.description || "",
       reportType: chart?.reportType || ReportType.insight,
       chartType: chart?.chartType || ChartType.line,
-      metrics: chart?.metrics.map((x) => ({ ...x, id: genId() })) || [],
+      metrics: chart?.metrics || [],
       visibleDataMap: null,
       lineChartGroupByTimeType: chart?.lineChartGroupByTimeType,
       timeRangeType: chart?.timeRangeType || ChartTimeRangeType["30D"],

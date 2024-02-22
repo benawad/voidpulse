@@ -52,6 +52,7 @@ export const createChart = protectedProcedure
           chartType,
           timeRangeType,
           reportType,
+          dataUpdatedAt: new Date(),
           ...fields,
         })
         .returning();

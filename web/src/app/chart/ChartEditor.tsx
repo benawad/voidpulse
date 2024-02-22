@@ -18,8 +18,9 @@ import {
 import { WiDaySunny } from "react-icons/wi";
 import { useChartStateContext } from "../../../providers/ChartStateProvider";
 import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
-import { useColorOrder } from "../themes/useColorOrder";
+import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
 import { useChartStyle } from "../themes/useChartStyle";
+import { useColorOrder } from "../themes/useColorOrder";
 import { Button } from "../ui/Button";
 import { Dropdown } from "../ui/Dropdown";
 import { EditableTextField } from "../ui/EditableTextField";
@@ -29,9 +30,10 @@ import { DonutChart } from "../ui/charts/DonutChart";
 import { FunnelChart } from "../ui/charts/FunnelChart";
 import { LineChart } from "../ui/charts/LineChart";
 import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
-import { transformRetentionData } from "../utils/transformRetentionData";
 import { transformBarData } from "../utils/transformBarData";
+import { transformDonutData } from "../utils/transformDonutData";
 import { transformFunnelChartData } from "../utils/transformFunnelData";
+import { transformRetentionData } from "../utils/transformRetentionData";
 import { transformLineData } from "../utils/transformToLineData";
 import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
@@ -39,9 +41,6 @@ import { ChartDateRangePicker } from "./ChartDateRangePicker";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
 import { ChartDataTable } from "./data-table/ChartDataTable";
-import { useCurrTheme } from "../themes/useCurrTheme";
-import { transformDonutData } from "../utils/transformDonutData";
-import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -96,14 +95,33 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   const [expandedDataRows, setExpandedDataRows] = useState<
     Record<string, boolean>
   >({});
+
+  const getReportVars = {
+    metrics,
+    breakdowns,
+    globalFilters,
+    timeRangeType,
+    reportType,
+    chartType,
+    lineChartGroupByTimeType: lineChartGroupByTimeType || undefined,
+    from: from ? dateToClickhouseDateString(from) : undefined,
+    to: to ? dateToClickhouseDateString(to) : undefined,
+    projectId: projectId,
+  };
+  const { data, isLoading, error } = trpc.getReport.useQuery(getReportVars, {
+    enabled:
+      reportType === ReportType.retention
+        ? metrics.length === 2
+        : !!metrics.length,
+  });
   const { mutateAsync: createChart, isPending: pendingCreateChart } =
     trpc.createChart.useMutation({
-      onSuccess: (data) => {
+      onSuccess: (createChartData, vars) => {
         utils.getCharts.setData({ boardId, projectId }, (oldData) => {
           if (oldData) {
             return {
               ...oldData,
-              charts: [...oldData.charts, data.chart],
+              charts: [...oldData.charts, createChartData.chart],
             };
           }
           return oldData;
@@ -114,7 +132,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           }
 
           return {
-            boards: old.boards.map((b) => (b.id === boardId ? data.board : b)),
+            boards: old.boards.map((b) =>
+              b.id === boardId ? createChartData.board : b
+            ),
             projects: old.projects,
           };
         });
@@ -122,13 +142,13 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     });
   const { mutateAsync: updateChart, isPending: pendingUpdateChart } =
     trpc.updateChart.useMutation({
-      onSuccess: (data) => {
+      onSuccess: (updateChartData) => {
         utils.getCharts.setData({ boardId, projectId }, (oldData) => {
           if (oldData) {
             return {
               ...oldData,
               charts: oldData.charts.map((x) =>
-                x.id === data.chart.id ? data.chart : x
+                x.id === updateChartData.chart.id ? updateChartData.chart : x
               ),
             };
           }
@@ -137,26 +157,6 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       },
     });
 
-  const { data, isLoading, error } = trpc.getReport.useQuery(
-    {
-      metrics,
-      breakdowns,
-      globalFilters,
-      timeRangeType,
-      reportType,
-      chartType,
-      lineChartGroupByTimeType: lineChartGroupByTimeType || undefined,
-      from: from ? dateToClickhouseDateString(from) : undefined,
-      to: to ? dateToClickhouseDateString(to) : undefined,
-      projectId: projectId,
-    },
-    {
-      enabled:
-        reportType === ReportType.retention
-          ? metrics.length === 2
-          : !!metrics.length,
-    }
-  );
   const retData = useMemo(() => {
     if (data?.reportType !== ReportType.retention) {
       return [];

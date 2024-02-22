@@ -1,5 +1,13 @@
 import { relations, sql } from "drizzle-orm";
-import { date, integer, jsonb, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import {
+  date,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { boards } from "./boards";
 import { users } from "./users";
 import { boardCharts } from "./board-charts";
@@ -40,14 +48,14 @@ export const charts = pgTable("charts", {
   timeRangeType: integer("time_range_type")
     .notNull()
     .$type<ChartTimeRangeType>(),
-  from: date("from"),
-  to: date("to"),
+  from: text("from"),
+  to: text("to"),
   metrics: jsonb("metrics").notNull().$type<InputMetric[]>(),
   breakdowns: jsonb("breakdowns").$type<MetricFilter[]>(),
   globalFilters: jsonb("global_filters").$type<MetricFilter[]>(),
   data: jsonb("data").notNull().$type<z.infer<typeof chartDataSchema>>(),
   boardId: uuid("board_id"),
-  dataUpdatedAt: date("data_updated_at")
+  dataUpdatedAt: timestamp("data_updated_at")
     .notNull()
     .default(sql`now()`),
   creatorId: uuid("creator_id").notNull(),

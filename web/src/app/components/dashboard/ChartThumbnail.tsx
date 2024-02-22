@@ -7,33 +7,83 @@ import {
 } from "@voidpulse/api";
 import "chart.js/auto";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
-import { LineChart } from "../../ui/charts/LineChart";
-import { useColorOrder } from "../../themes/useColorOrder";
-import { useChartStyle } from "../../themes/useChartStyle";
-import { transformLineData } from "../../utils/transformToLineData";
-import { RouterOutput } from "../../utils/trpc";
-import { transformRetentionData } from "../../utils/transformRetentionData";
-import { BarChart } from "../../ui/charts/BarChart";
-import { transformBarData } from "../../utils/transformBarData";
-import { DonutChart } from "../../ui/charts/DonutChart";
-import { transformDonutData } from "../../utils/transformDonutData";
-import { FunnelChart } from "../../ui/charts/FunnelChart";
-import { transformFunnelChartData } from "../../utils/transformFunnelData";
+import React, { useEffect, useState } from "react";
 import { RxDragHandleDots2 } from "react-icons/rx";
-import { MoreBoardOptionsButton } from "../../ui/MoreBoardOptionsButton";
+import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
+import { useChartStyle } from "../../themes/useChartStyle";
+import { useColorOrder } from "../../themes/useColorOrder";
+import { LoadingSpinner } from "../../ui/LoadingSpinner";
+import { BarChart } from "../../ui/charts/BarChart";
+import { DonutChart } from "../../ui/charts/DonutChart";
+import { FunnelChart } from "../../ui/charts/FunnelChart";
+import { LineChart } from "../../ui/charts/LineChart";
 import { MoreChartOptionsButton } from "../../ui/charts/MoreChartOptionsButton";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { transformBarData } from "../../utils/transformBarData";
+import { transformDonutData } from "../../utils/transformDonutData";
+import { transformFunnelChartData } from "../../utils/transformFunnelData";
+import { transformRetentionData } from "../../utils/transformRetentionData";
+import { transformLineData } from "../../utils/transformToLineData";
+import { RouterOutput, trpc } from "../../utils/trpc";
+import { getQueryKey } from "@trpc/react-query";
 
 interface ChartThumbnailProps {
   dragRef: any;
   chart: RouterOutput["getCharts"]["charts"][0];
 }
 
+const ONE_HOUR = 1000 * 60 * 60;
+
 export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
   chart,
   dragRef,
 }) => {
+  const vars = {
+    breakdowns: chart.breakdowns || [],
+    chartId: chart.id,
+    from: chart.from || undefined,
+    to: chart.to || undefined,
+    globalFilters: chart.globalFilters || [],
+    metrics: chart.metrics,
+    projectId: chart.projectId,
+    reportType: chart.reportType,
+    timeRangeType: chart.timeRangeType,
+    chartType: chart.chartType,
+    lineChartGroupByTimeType: chart.lineChartGroupByTimeType || undefined,
+  };
+
+  const { data, isLoading } = trpc.getReport.useQuery(vars, {
+    enabled:
+      new Date().getTime() > new Date(chart.dataUpdatedAt).getTime() + ONE_HOUR,
+  });
+  const utils = trpc.useUtils();
+  const { boardId } = useProjectBoardContext();
+  useEffect(() => {
+    if (data) {
+      const { chartId, ...rest } = vars;
+      utils.getReport.setData(rest, data);
+      utils.getCharts.setData(
+        { projectId: chart.projectId, boardId },
+        (oldData) => {
+          if (!oldData) {
+            return oldData;
+          }
+          return {
+            ...oldData,
+            charts: oldData.charts.map((c) => {
+              if (c.id === chart.id) {
+                return {
+                  ...c,
+                  data,
+                };
+              }
+              return c;
+            }),
+          };
+        }
+      );
+    }
+  }, [data]);
+
   const colorOrder = useColorOrder();
   const chartStyle = useChartStyle();
   let chartToDisplay;
@@ -127,17 +177,21 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
             </div>
           </Link>
 
-          <div
-            onMouseEnter={() => {
-              setIsMoreOptionsHovered(true);
-            }}
-            onMouseLeave={() => {
-              setIsMoreOptionsHovered(false);
-            }}
-            className="items-center"
-          >
-            <MoreChartOptionsButton chartId={chart.id} />
-          </div>
+          {isLoading ? (
+            <LoadingSpinner size={30} />
+          ) : (
+            <div
+              onMouseEnter={() => {
+                setIsMoreOptionsHovered(true);
+              }}
+              onMouseLeave={() => {
+                setIsMoreOptionsHovered(false);
+              }}
+              className="items-center"
+            >
+              <MoreChartOptionsButton chartId={chart.id} />
+            </div>
+          )}
         </div>
       </div>
 

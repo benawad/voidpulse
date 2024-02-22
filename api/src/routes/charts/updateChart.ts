@@ -55,7 +55,7 @@ export const updateChart = protectedProcedure
 
       const setData: Partial<InferInsertModel<typeof charts>> = updateData;
       if (setData.metrics || setData.data) {
-        setData.dataUpdatedAt = new Date().toISOString();
+        setData.dataUpdatedAt = new Date();
       }
 
       const [chart] = await db
