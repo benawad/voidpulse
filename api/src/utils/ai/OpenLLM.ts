@@ -3,7 +3,7 @@ import { LLMInterface } from "./LLMInterface";
 import { openai } from "./openai";
 
 export class OpenLLM implements LLMInterface {
-  private model: "gpt-3.5-turbo";
+  private model = "gpt-3.5-turbo";
 
   constructor() {}
 
