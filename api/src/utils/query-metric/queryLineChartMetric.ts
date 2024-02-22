@@ -73,7 +73,6 @@ export const queryLineChartMetric = async ({
     to,
   });
 
-  console.log(query_params);
   let query = `
   SELECT
       ${
