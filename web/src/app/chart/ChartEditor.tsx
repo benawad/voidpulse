@@ -7,7 +7,7 @@ import {
 } from "@voidpulse/api";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import {
   PiChartBar,
@@ -67,6 +67,7 @@ type RetSubRow = {
 };
 
 export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
+  const chartContainerRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const chartStyle = useChartStyle();
   const colorOrder = useColorOrder();
@@ -233,12 +234,13 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
         </Link>
       </div>
       {/* View that houses editor and chart side by side */}
-      <div className="flex w-full flex-1 overflow-hidden">
+      <div className="flex w-full flex-1">
         <ChartEditorSidebar dataStr={dataStr} />
         {/* Main section of the chart view */}
         <div
           className="flex-1 overflow-x-auto overflow-y-auto"
           style={{ height: "calc(100vh - 100px)" }}
+          ref={chartContainerRef}
         >
           {/* Div that stacks the chart and data at the bottom */}
           <div className="p-12" style={{ minWidth: 800, minHeight: 500 }}>
@@ -507,6 +509,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               setHighlightedRow={setHighlightedRow}
               expandedDataRows={expandedDataRows}
               setExpandedDataRows={setExpandedDataRows}
+              chartContainerRef={chartContainerRef}
               stickyColumns={[
                 {
                   id: "a",
@@ -569,6 +572,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           data.chartType === ChartType.line ? (
             <ChartDataTable
               datas={data.datas}
+              chartContainerRef={chartContainerRef}
               highlightedRow={highlightedRowId}
               setHighlightedRow={setHighlightedRow}
               stickyColumns={[

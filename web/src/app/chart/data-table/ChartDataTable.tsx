@@ -14,6 +14,7 @@ interface ChartDataTableProps {
   setHighlightedRow: (rowId: string | null) => void;
   stickyColumns: ColumnDef<any>[];
   mainColumns: ColumnDef<any>[];
+  chartContainerRef: React.RefObject<HTMLDivElement>;
   setExpandedDataRows?: React.Dispatch<
     React.SetStateAction<Record<string, boolean>>
   >;
@@ -28,13 +29,16 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
   datas,
   setExpandedDataRows,
   expandedDataRows,
+  chartContainerRef,
 }) => {
   const divRef = React.useRef<HTMLDivElement | null>(null);
   const scrollMarginRef = React.useRef(0);
 
   useEffect(() => {
-    if (divRef.current) {
-      scrollMarginRef.current = divRef.current.getBoundingClientRect().top;
+    if (divRef.current && chartContainerRef.current) {
+      scrollMarginRef.current =
+        divRef.current.getBoundingClientRect().top -
+        chartContainerRef.current.getBoundingClientRect().top;
     }
   }, []);
 
@@ -54,10 +58,11 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
     overscan: 3, //how many columns to render on each side off screen each way (adjust this for performance)
   });
 
-  const rowVirtualizer = useWindowVirtualizer({
+  const rowVirtualizer = useVirtualizer({
     count: rows.length,
     estimateSize: () => ROW_HEIGHT, //estimate row height for accurate scrollbar dragging
     overscan: 5,
+    getScrollElement: () => chartContainerRef.current,
     scrollMargin: scrollMarginRef.current,
   });
 
@@ -74,10 +79,14 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
 
   return (
     <div ref={divRef}>
-      <div ref={tableContainerRef} className="w-full flex overflow-x-auto pb-2">
+      <div
+        ref={tableContainerRef}
+        className="w-full flex overflow-x-auto mb-6 pb-2"
+      >
         <div className="sticky left-0 z-10">
           <ResizableGrid
             scrollMargin={scrollMarginRef.current}
+            chartContainerRef={chartContainerRef}
             columns={stickyColumns}
             datas={datas}
             highlightedRow={highlightedRow}

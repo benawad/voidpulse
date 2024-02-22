@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useWindowVirtualizer } from "@tanstack/react-virtual";
+import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
 import React, { FC } from "react";
 import {
   MdCheckBox,
@@ -28,19 +28,21 @@ interface ResizableGridProps {
   setExpandedDataRows?: React.Dispatch<
     React.SetStateAction<Record<string, boolean>>
   >;
+  chartContainerRef: React.RefObject<HTMLDivElement>;
   expandedDataRows?: Record<string, boolean>;
 }
 
 export const ROW_HEIGHT = 35;
 
 const ResizableGrid: FC<ResizableGridProps> = ({
+  scrollMargin,
   columns,
   datas,
-  scrollMargin,
   highlightedRow,
   setHighlightedRow,
   setExpandedDataRows,
   expandedDataRows,
+  chartContainerRef,
 }) => {
   const colorOrder = useColorOrder();
   const table = useReactTable({
@@ -67,15 +69,16 @@ const ResizableGrid: FC<ResizableGridProps> = ({
     return { columnSizeVars: colSizes, columnWidths };
   }, [table.getState().columnSizingInfo]);
 
-  const rowVirtualizer = useWindowVirtualizer({
+  const rowVirtualizer = useVirtualizer({
     count: rows.length,
     estimateSize: () => ROW_HEIGHT, //estimate row height for accurate scrollbar dragging
     overscan: 5,
+    getScrollElement: () => chartContainerRef.current,
     scrollMargin,
   });
   const [{ visibleDataMap }, setState] = useChartStateContext();
   return (
-    <div className="">
+    <div>
       <table
         style={{
           ...columnSizeVars,
