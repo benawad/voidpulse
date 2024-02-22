@@ -1,19 +1,17 @@
 import React from "react";
 import { BsThreeDots } from "react-icons/bs";
-import { DeleteBoardButton } from "../../components/dashboard/DeleteBoardButton";
 import { FloatingMenu } from "../FloatingMenu";
 import { FloatingTooltip } from "../FloatingTooltip";
 import { FloatingTrigger } from "../FloatingTrigger";
 import { DeleteChartButton } from "./DeleteChartButton";
-import { FloatingPortal } from "@floating-ui/react";
 
 interface MoreChartOptionsButtonProps {
   chartId: string;
 }
 
-export const MoreChartOptionsButton: React.FC<
-  MoreChartOptionsButtonProps
-> = ({}) => {
+export const MoreChartOptionsButton: React.FC<MoreChartOptionsButtonProps> = ({
+  chartId,
+}) => {
   return (
     <div
       className={
@@ -23,16 +21,12 @@ export const MoreChartOptionsButton: React.FC<
       {/* Outside component triggers click to open a menu */}
       <FloatingTrigger
         appearsOnClick
-        hideIfOpen
         placement={"bottom-end"}
         portal
+        hideIfOpen
         floatingContent={
           <FloatingMenu>
-            <DeleteChartButton
-              onClick={(e: any) => {
-                // e.stopPropagation();
-              }}
-            />
+            <DeleteChartButton chartId={chartId} />
           </FloatingMenu>
         }
         className="flex"
