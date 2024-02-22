@@ -33,6 +33,6 @@ export const useChartTooltip = (
       },
       []
     ),
-    tooltipNode: <ChartTooltip shouldPortal={followCursor} $event={$event} />,
+    tooltipNode: <ChartTooltip $event={$event} />,
   };
 };

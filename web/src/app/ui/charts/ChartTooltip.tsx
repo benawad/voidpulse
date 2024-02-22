@@ -23,11 +23,10 @@ export type TooltipData = {
 };
 
 type Props = {
-  shouldPortal?: boolean;
   $event: EventEmitter<ChartTooltipInfo | null>;
 };
 
-export const ChartTooltip: React.FC<Props> = ({ $event, shouldPortal }) => {
+export const ChartTooltip: React.FC<Props> = ({ $event }) => {
   const [tooltipInfo, setTooltipInfo] = useState<null | ChartTooltipInfo>(null);
 
   $event.useSubscription((info) => {
@@ -69,7 +68,7 @@ export const ChartTooltip: React.FC<Props> = ({ $event, shouldPortal }) => {
       className="absolute flex flex-row text-xs bg-primary-800 border border-primary-700 text-primary-100 p-2 rounded-lg shadow-lg z-20"
       style={{
         pointerEvents: "none",
-        left: left,
+        left: Math.min(left, window.innerWidth - 220),
         top: top,
       }}
     >
@@ -118,9 +117,5 @@ export const ChartTooltip: React.FC<Props> = ({ $event, shouldPortal }) => {
     </div>
   );
 
-  if (true) {
-    return <FloatingPortal>{inside}</FloatingPortal>;
-  } else {
-    return inside;
-  }
+  return <FloatingPortal>{inside}</FloatingPortal>;
 };
