@@ -38,7 +38,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
           <div className="flex-1 relative flex flex-col">
             <DashboardStickyHeader board={board} />
             {loadingCharts ? null : (
-              <ChartsGrid charts={data?.charts || []} board={board} />
+              <ChartsGrid
+                key={board.id}
+                charts={data?.charts || []}
+                board={board}
+              />
             )}
           </div>
           <DashboardNavigator boards={boards} />

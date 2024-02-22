@@ -24,13 +24,13 @@ export const MoreChartOptionsButton: React.FC<
       <FloatingTrigger
         appearsOnClick
         hideIfOpen
-        placement={"right"}
+        placement={"bottom-end"}
         portal
         floatingContent={
           <FloatingMenu>
             <DeleteChartButton
               onClick={(e: any) => {
-                e.stopPropagation();
+                // e.stopPropagation();
               }}
             />
           </FloatingMenu>
@@ -47,12 +47,6 @@ export const MoreChartOptionsButton: React.FC<
           <BsThreeDots
             className="m-auto group-hover:opacity-100 opacity-0 fill-white hover:fill-accent-100 h-full w-full transition-opacity p-2"
             size={20}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            onMouseOver={(e) => {
-              e.stopPropagation();
-            }}
           />
         </FloatingTrigger>
       </FloatingTrigger>

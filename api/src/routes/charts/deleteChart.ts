@@ -44,8 +44,6 @@ export const deleteChart = protectedProcedure
         };
       }
 
-      const colLength = board.positions[rowIdx].cols.length;
-
       setData.positions = board.positions
         .map((row, idx) => {
           if (idx === rowIdx) {
