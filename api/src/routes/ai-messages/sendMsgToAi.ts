@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { MsgRole } from "../../app-router-type";
 import { protectedProcedure } from "../../trpc";
-import { openai } from "./openai";
+import { openai } from "../../utils/ai/openai";
+import { llm } from "../../utils/ai/llm";
 
 function approxNumTokensFromString(message: string) {
   // doing 3 instead of 4 to be safe
   return Math.ceil(message.length / 3);
 }
-const tokenLimit = 4096;
 
 export const sendMsgToAi = protectedProcedure
   .input(
@@ -34,6 +34,7 @@ export const sendMsgToAi = protectedProcedure
       ? `You are a data analyst assistant. Try to provide an insight. Here is the data in question: ${data}`
       : `You are a data analyst assistant. You are waiting for the user to create a report so you can analyze the data with them.`;
 
+    const tokenLimit = llm.getTokenLimit();
     const dataTokenLength = approxNumTokensFromString(systemMsg);
     const textTokenLength = approxNumTokensFromString(text);
     let currTokensLength = dataTokenLength + textTokenLength;
@@ -54,25 +55,19 @@ export const sendMsgToAi = protectedProcedure
     }
     allowedPrevMsgs.reverse();
 
-    const chatCompletion = await openai.chat.completions.create({
+    const message = await llm.chatCompletion({
       user: userId,
       messages: [
         {
-          role: "system",
-          content: systemMsg,
+          role: MsgRole.system,
+          text: systemMsg,
         },
-        ...allowedPrevMsgs.map((msg) => ({
-          role: (msg.role === MsgRole.user ? "user" : "assistant") as
-            | "user"
-            | "assistant",
-          content: msg.text,
-        })),
-        { role: "user", content: text },
+        ...allowedPrevMsgs,
+        { role: MsgRole.user, text: text },
       ],
-      model: "gpt-3.5-turbo",
     });
 
     return {
-      message: chatCompletion.choices[0].message.content,
+      message,
     };
   });

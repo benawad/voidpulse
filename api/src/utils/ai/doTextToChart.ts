@@ -1,14 +1,14 @@
-import { ChartType, ReportType } from "../app-router-type";
-import { openai } from "../routes/ai-messages/openai";
-import { getEventNamesQuery } from "../routes/charts/getEventNames";
+import { ChartType, MsgRole, ReportType } from "../../app-router-type";
+import { getEventNamesQuery } from "../../routes/charts/getEventNames";
+import { llm } from "./llm";
 
 export const doTextToChart = async (text: string, projectId: string) => {
   const eventNames = (await getEventNamesQuery(projectId)).map((x) => x.value);
-  const resp = await openai.chat.completions.create({
+  const data = await llm.chatCompletion({
     messages: [
       {
-        role: "user",
-        content: `Given the input "${text}"
+        role: MsgRole.user,
+        text: `Given the input "${text}"
 
 				And the following potential event names:
 
@@ -21,10 +21,7 @@ export const doTextToChart = async (text: string, projectId: string) => {
 				return only 1 json object of the following shape: { reportType: 'line'  | 'bar' | 'donut', eventNames: string[] } | { reportType: 'funnel', step1EventName: string, step2EventName: string } | { reportType: 'retention', initialEventName: string, retainingEventName: string }`,
       },
     ],
-    model: "gpt-3.5-turbo",
   });
-
-  const data = resp.choices[0].message.content;
 
   try {
     const parsed = JSON.parse(data!);

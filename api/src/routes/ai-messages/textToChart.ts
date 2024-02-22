@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { protectedProcedure } from "../../trpc";
-import { doTextToChart } from "../../utils/doTextToChart";
+import { doTextToChart } from "../../utils/ai/doTextToChart";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { TRPCError } from "@trpc/server";
 

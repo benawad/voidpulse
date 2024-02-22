@@ -112,4 +112,5 @@ export type BreakdownType = string | number;
 export enum MsgRole {
   user = 1,
   ai,
+  system,
 }
