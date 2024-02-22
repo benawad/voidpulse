@@ -1,19 +1,16 @@
 import express, { Express } from "express";
-import { z } from "zod";
-import { kafkaProducer } from "../../kafka/kafka";
-import { v4 } from "uuid";
 import geoip from "geoip-lite";
+import { v4 } from "uuid";
+import { z } from "zod";
 import { dateInputRegex } from "../../constants/regex";
-import { db } from "../../db";
-import { eq } from "drizzle-orm";
-import { projects } from "../../schema/projects";
+import { kafkaProducer } from "../../kafka/kafka";
 import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
 import { checkApiKeyMiddleware } from "./middleware/checkApiKeyMiddleware";
 
 const eventSchema = z.object({
   name: z.string().min(1).max(255),
   insert_id: z.string().uuid(),
-  created_at: z.string().regex(dateInputRegex),
+  time: z.string().regex(dateInputRegex),
   distinct_id: z.string().min(1).max(255),
   properties: z.record(z.any()),
   ip: z.string().optional(),
@@ -76,6 +73,9 @@ export const addIngestRoute = (app: Express) => {
           properties.$region = geoInfo.region;
           properties.$timezone = geoInfo.timezone;
         }
+        properties.distinct_id = event.distinct_id;
+        properties.time = event.time;
+        properties.$insert_id = event.insert_id;
         const str_props = JSON.stringify(properties);
         if (str_props.length > maxPropsSize) {
           warnings.push(

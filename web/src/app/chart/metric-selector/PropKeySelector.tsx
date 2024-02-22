@@ -11,6 +11,8 @@ import {
   NumberFilterOperation,
   PropOrigin,
   StringFilterOperation,
+  defaultPropertyNameMap,
+  hiddenPropertyNameMap,
 } from "@voidpulse/api";
 import { genId } from "../../utils/genId";
 import { CiShoppingTag } from "react-icons/ci";
@@ -44,12 +46,22 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
   const dataWithAutocompleteKey = useMemo(() => {
     if (data) {
       return {
-        items: data.propDefs.map((x) => ({
-          ...x,
-          name: x.key,
-          value: x.key,
-          lowercaseKey: x.key.toLowerCase(),
-        })),
+        items: data.propDefs
+          .filter((x) => !(x.key in hiddenPropertyNameMap))
+          .map((x) => {
+            const name =
+              x.key in defaultPropertyNameMap
+                ? defaultPropertyNameMap[
+                    x.key as keyof typeof defaultPropertyNameMap
+                  ]
+                : x.key;
+            return {
+              ...x,
+              name,
+              value: x.key,
+              lowercaseKey: name.toLowerCase(),
+            };
+          }),
       };
     }
     return null;
