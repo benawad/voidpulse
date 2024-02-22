@@ -8,7 +8,7 @@ export class MistralLLM implements LLMInterface {
   constructor() {}
 
   getTokenLimit() {
-    return 100_000;
+    return 32_000;
   }
 
   async chatCompletion({
