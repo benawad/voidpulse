@@ -24,20 +24,20 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
   const { mutateAsync } = trpc.updateBoardOrder.useMutation();
 
   //Keyboard navigation
-  useKeyPress({
-    onLeftArrowKey() {
-      const index = boards.findIndex((b) => b.id === boardId);
-      if (index) {
-        set({ lastBoardId: boards[index - 1].id });
-      }
-    },
-    onRightArrowKey() {
-      const index = boards.findIndex((b) => b.id === boardId);
-      if (index < boards.length - 1) {
-        set({ lastBoardId: boards[index + 1].id });
-      }
-    },
-  });
+  // useKeyPress({
+  //   onLeftArrowKey() {
+  //     const index = boards.findIndex((b) => b.id === boardId);
+  //     if (index) {
+  //       set({ lastBoardId: boards[index - 1].id });
+  //     }
+  //   },
+  //   onRightArrowKey() {
+  //     const index = boards.findIndex((b) => b.id === boardId);
+  //     if (index < boards.length - 1) {
+  //       set({ lastBoardId: boards[index + 1].id });
+  //     }
+  //   },
+  // });
 
   //Styling buttons
   const sidebarButtonStyle =

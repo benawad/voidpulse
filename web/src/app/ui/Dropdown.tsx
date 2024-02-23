@@ -10,6 +10,8 @@ interface DropdownProps<T> {
   onSelect: (value: T) => void;
   noCaret?: boolean;
   autoWidth?: boolean;
+  portal?: boolean;
+  placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
 }
 
 export function Dropdown<T>({
@@ -18,13 +20,15 @@ export function Dropdown<T>({
   onSelect,
   noCaret,
   autoWidth,
+  portal = true,
+  placement = "bottom-start",
 }: DropdownProps<T>) {
   const chosenOption = opts.find((x) => x.value === value);
   return (
     <FloatingTrigger
       appearsOnClick
-      placement={"bottom-start"}
-      portal
+      placement={placement}
+      portal={portal}
       floatingContent={
         <FloatingMenu autoWidth={autoWidth}>
           {opts.map((opt) => (

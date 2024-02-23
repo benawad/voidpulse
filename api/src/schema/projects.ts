@@ -1,5 +1,12 @@
 import { relations, sql } from "drizzle-orm";
-import { index, jsonb, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import {
+  index,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { projectUsers } from "./project-users";
 import { boards } from "./boards";
 import { messages } from "./messages";
@@ -14,6 +21,9 @@ export const projects = pgTable(
     name: text("name").notNull(),
     apiKey: text("api_key").notNull(),
     boardOrder: jsonb("board_order").$type<string[]>(),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .default(sql`now()`),
   },
   (table) => {
     return {

@@ -9,9 +9,9 @@ import { genApiKey } from "../../utils/genApiKey";
 import { projectUsers } from "../../schema/project-users";
 import { boards } from "../../schema/boards";
 import * as emoji from "node-emoji";
-import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { selectUserFields } from "../../utils/selectUserFields";
+import { v4 } from "uuid";
 
 export const register = publicProcedure
   .input(
@@ -51,11 +51,13 @@ export const register = publicProcedure
       });
     }
 
+    const boardId = v4();
     const [project] = await db
       .insert(projects)
       .values({
         name: "My First Project",
         apiKey: genApiKey(),
+        boardOrder: [boardId],
       })
       .returning();
 
@@ -67,6 +69,7 @@ export const register = publicProcedure
     const [board] = await db
       .insert(boards)
       .values({
+        id: boardId,
         creatorId: newUser.id,
         emoji: emoji.random().emoji,
         title: "My First Board",

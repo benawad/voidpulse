@@ -120,6 +120,13 @@
       "when": 1708659871815,
       "tag": "0019_slippery_mephistopheles",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1708711567694,
+      "tag": "0020_equal_scream",
+      "breakpoints": true
     }
   ]
 }

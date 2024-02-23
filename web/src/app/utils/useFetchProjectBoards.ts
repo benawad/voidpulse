@@ -8,7 +8,8 @@ export const useFetchProjectBoards = () => {
   const router = useRouter();
   const { lastBoardId, lastProjectId, set } =
     useLastSelectedProjectBoardStore();
-  const { data, isLoading, error } = trpc.getProjects.useQuery({
+  const utils = trpc.useUtils();
+  const { data, isLoading } = trpc.getProjects.useQuery({
     currProjectId: projectId || lastProjectId,
   });
   useEffect(() => {
@@ -23,6 +24,9 @@ export const useFetchProjectBoards = () => {
 
   useEffect(() => {
     if (!project && data?.projects.length) {
+      utils.getProjects.setData({ currProjectId: data.projects[0].id }, () => {
+        return data;
+      });
       router.replace(`/p/${data.projects[0].id}`);
     }
   }, [data]);

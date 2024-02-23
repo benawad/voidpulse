@@ -26,6 +26,7 @@ import { sendMsgToAi } from "./routes/ai-messages/sendMsgToAi";
 import { textToChart } from "./routes/ai-messages/textToChart";
 import { deleteChart } from "./routes/charts/deleteChart";
 import { updateProject } from "./routes/boards/updateProject";
+import { createProject } from "./routes/boards/createProject";
 
 export const appRouter = t.router({
   getProjects,
@@ -48,6 +49,7 @@ export const appRouter = t.router({
   deleteChart,
   updateBoardOrder,
   updateProject,
+  createProject,
 });
 
 export const app = express();

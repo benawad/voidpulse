@@ -40,7 +40,7 @@ export const DeleteBoardConfirmationModal: React.FC<
   });
 
   return (
-    <FullScreenModalOverlay isOpen={isOpen}>
+    <FullScreenModalOverlay onRequestClose={onDismissModal} isOpen={isOpen}>
       <div className="relative standard card p-4">
         <h1 className="text-2xl font-bold py-2">Delete Board</h1>
         <div style={{ maxWidth: 400 }}>
