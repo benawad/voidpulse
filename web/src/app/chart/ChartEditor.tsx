@@ -127,7 +127,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           }
           return oldData;
         });
-        utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
+        utils.getBoards.setData({ projectId: lastProjectId }, (old) => {
           if (!old) {
             return old;
           }
@@ -136,7 +136,6 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             boards: old.boards.map((b) =>
               b.id === boardId ? createChartData.board : b
             ),
-            projects: old.projects,
           };
         });
       },

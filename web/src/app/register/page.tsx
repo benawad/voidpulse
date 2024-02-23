@@ -43,7 +43,14 @@ const Page: React.FC = () => {
   const { mutateAsync } = trpc.register.useMutation({
     onSuccess: (data) => {
       if ("user" in data) {
-        utils.getMe.setData(undefined, { user: data.user });
+        utils.getMe.setData(undefined, {
+          user: data.user,
+          projects: data.projects,
+        });
+        utils.getBoards.setData(
+          { projectId: data.projects[0].id },
+          { boards: data.boards }
+        );
         router.push("/");
       }
     },

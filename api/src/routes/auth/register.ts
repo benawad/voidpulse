@@ -81,7 +81,7 @@ export const register = publicProcedure
 
     return {
       user: selectUserFields(newUser),
-      project,
-      board,
+      projects: [project],
+      boards: [board],
     };
   });

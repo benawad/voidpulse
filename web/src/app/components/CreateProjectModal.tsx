@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import Modal from "react-modal";
 import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
 import { Button } from "../ui/Button";
 import { FullScreenModalOverlay } from "../ui/FullScreenModalOverlay";
-import { trpc } from "../utils/trpc";
 import { Input } from "../ui/Input";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
+import { trpc } from "../utils/trpc";
 
 if (typeof window !== "undefined") {
   Modal.setAppElement("body");
@@ -27,11 +26,26 @@ export const CreateProjectModal: React.FC<
 > = ({ isOpen, onDismissModal }) => {
   const router = useRouter();
   const { lastProjectId } = useLastSelectedProjectBoardStore();
+  const utils = trpc.useUtils();
   const { mutateAsync, isPending } = trpc.createProject.useMutation({
     //After successful db deletion, remove the board from the local list of boards.
     onSuccess: (data) => {
       onDismissModal();
-      // @todo
+      utils.getMe.setData(undefined, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          projects: [...old.projects, data.project],
+        };
+      });
+      utils.getBoards.setData(
+        {
+          projectId: data.project.id,
+        },
+        {
+          boards: [data.board],
+        }
+      );
       router.push(`/p/${data.project.id}`);
     },
   });

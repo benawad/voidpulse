@@ -13,7 +13,7 @@ import { genId } from "../../../utils/genId";
 
 interface ChartsGridProps {
   charts: DbChart[];
-  board: RouterOutput["getProjects"]["boards"][0];
+  board: RouterOutput["getBoards"]["boards"][0];
 }
 
 export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {

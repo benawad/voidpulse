@@ -27,13 +27,12 @@ export const DeleteBoardConfirmationModal: React.FC<
   const { mutateAsync, isPending } = trpc.deleteBoard.useMutation({
     //After successful db deletion, remove the board from the local list of boards.
     onSuccess: () => {
-      utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
+      utils.getBoards.setData({ projectId: lastProjectId }, (old) => {
         if (!old) {
           return old;
         }
         return {
           boards: old.boards.filter((b) => b.id !== boardId),
-          projects: old.projects,
         };
       });
     },

@@ -12,18 +12,25 @@ export const AddBoardButton: React.FC<AddBoardButtonProps> = ({}) => {
   const utils = trpc.useUtils();
   const { mutateAsync, isPending } = trpc.createBoard.useMutation({
     onSuccess: (data) => {
-      utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
+      utils.getBoards.setData({ projectId: lastProjectId }, (old) => {
         if (!old) {
           return {
             boards: [data.board],
-            projects: [],
           };
         }
 
         return {
           boards: [...old.boards, data.board],
+        };
+      });
+      utils.getMe.setData(undefined, (old) => {
+        if (!old) {
+          return old;
+        }
+        return {
+          ...old,
           projects: old.projects.map((p) => {
-            if (p.id === projectId) {
+            if (p.id === lastProjectId) {
               return {
                 ...p,
                 boardOrder: [...(p.boardOrder || []), data.board.id],

@@ -27,23 +27,20 @@ export const DeleteChartButton: React.FC<DeleteChartButtonProps> = ({
         };
       });
       if (data.board) {
-        utils.getProjects.setData(
-          { currProjectId: lastProjectId },
-          (oldData) => {
-            if (!oldData) {
-              return oldData;
-            }
-            return {
-              ...oldData,
-              boards: oldData.boards.map((board) => {
-                if (board.id === boardId) {
-                  return data.board;
-                }
-                return board;
-              }),
-            };
+        utils.getBoards.setData({ projectId: lastProjectId }, (oldData) => {
+          if (!oldData) {
+            return oldData;
           }
-        );
+          return {
+            ...oldData,
+            boards: oldData.boards.map((board) => {
+              if (board.id === boardId) {
+                return data.board;
+              }
+              return board;
+            }),
+          };
+        });
       }
     },
   });

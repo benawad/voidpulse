@@ -8,14 +8,13 @@ export const useUpdateBoard = () => {
   const utils = trpc.useUtils();
   return trpc.updateBoard.useMutation({
     onSuccess: (data) => {
-      utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
+      utils.getBoards.setData({ projectId: lastProjectId }, (old) => {
         if (!old) {
           return old;
         }
 
         return {
           boards: old.boards.map((b) => (b.id === boardId ? data.board : b)),
-          projects: old.projects,
         };
       });
     },

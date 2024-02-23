@@ -1,4 +1,4 @@
-import { and, eq, InferInsertModel, sql } from "drizzle-orm";
+import { and, eq, InferInsertModel, is, sql } from "drizzle-orm";
 import * as emoji from "node-emoji";
 import { z } from "zod";
 import { db } from "../../db";
@@ -7,6 +7,7 @@ import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { TRPCError } from "@trpc/server";
 import { projects } from "../../schema/projects";
+import { isUuidV4 } from "../../utils/isUuid";
 
 export const updateBoardOrder = protectedProcedure
   .input(
@@ -24,6 +25,28 @@ export const updateBoardOrder = protectedProcedure
       .where(eq(projects.id, projectId));
 
     return { ok: true };
+  });
+
+export const getBoards = protectedProcedure
+  .input(
+    z.object({
+      projectId: z.string(),
+    })
+  )
+  .query(async ({ input: { projectId }, ctx: { userId } }) => {
+    if (!isUuidV4(projectId)) {
+      return {
+        boards: [],
+      };
+    }
+
+    const dashboards = await db.query.boards.findMany({
+      where: and(eq(boards.projectId, projectId), eq(boards.creatorId, userId)),
+    });
+
+    return {
+      boards: dashboards,
+    };
   });
 
 export const createBoard = protectedProcedure

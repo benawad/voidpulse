@@ -4,32 +4,31 @@ import { trpc } from "./trpc";
 import { useEffect } from "react";
 
 export const useFetchProjectBoards = () => {
-  const { projectId } = useParams<{ projectId?: string }>();
+  const { data: meData } = trpc.getMe.useQuery();
+  const { projectId: urlProjectId } = useParams<{ projectId?: string }>();
   const router = useRouter();
   const { lastBoardId, lastProjectId, set } =
     useLastSelectedProjectBoardStore();
   const utils = trpc.useUtils();
-  const { data, isLoading } = trpc.getProjects.useQuery({
-    currProjectId: projectId || lastProjectId,
+  const currProjectId = urlProjectId || lastProjectId;
+  const { data, isLoading } = trpc.getBoards.useQuery({
+    projectId: currProjectId,
   });
   useEffect(() => {
-    if (projectId && projectId !== lastProjectId) {
-      set({ lastProjectId: projectId });
+    if (urlProjectId && urlProjectId !== lastProjectId) {
+      set({ lastProjectId: urlProjectId });
     }
-  }, [projectId]);
+  }, [urlProjectId]);
 
-  const project = lastProjectId
-    ? data?.projects.find((p) => p.id === lastProjectId)
-    : data?.projects[0];
+  const project = currProjectId
+    ? meData?.projects.find((p) => p.id === currProjectId)
+    : meData?.projects[0];
 
   useEffect(() => {
-    if (!project && data?.projects.length) {
-      utils.getProjects.setData({ currProjectId: data.projects[0].id }, () => {
-        return data;
-      });
-      router.replace(`/p/${data.projects[0].id}`);
+    if (!project && meData?.projects.length) {
+      router.replace(`/p/${meData.projects[0].id}`);
     }
-  }, [data]);
+  }, [meData]);
 
   const board = lastBoardId
     ? data?.boards.find((b) => b.id === lastBoardId) || data?.boards[0]
@@ -40,6 +39,6 @@ export const useFetchProjectBoards = () => {
     project,
     board,
     boards: data?.boards,
-    projects: data?.projects,
+    projects: meData?.projects,
   };
 };

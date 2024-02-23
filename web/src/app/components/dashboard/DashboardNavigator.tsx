@@ -10,8 +10,8 @@ import { AddBoardButton } from "./AddBoardButton";
 import { DashboardSidebarButton } from "./DashboardSidebarButton";
 
 interface DashboardNavigatorProps {
-  project: RouterOutput["getProjects"]["projects"][0];
-  boards: RouterOutput["getProjects"]["boards"];
+  project: RouterOutput["getMe"]["projects"][0];
+  boards: RouterOutput["getBoards"]["boards"];
 }
 
 export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
@@ -85,26 +85,23 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
               projectId: project.id,
               boardOrder: newBoardOrder,
             });
-            utils.getProjects.setData(
-              { currProjectId: lastProjectId },
-              (oldData) => {
-                if (!oldData) {
-                  return oldData;
-                }
-                return {
-                  ...oldData,
-                  projects: oldData.projects.map((p) => {
-                    if (p.id === project.id) {
-                      return {
-                        ...p,
-                        boardOrder: newBoardOrder,
-                      };
-                    }
-                    return p;
-                  }),
-                };
+            utils.getMe.setData(undefined, (oldData) => {
+              if (!oldData) {
+                return oldData;
               }
-            );
+              return {
+                ...oldData,
+                projects: oldData.projects.map((p) => {
+                  if (p.id === project.id) {
+                    return {
+                      ...p,
+                      boardOrder: newBoardOrder,
+                    };
+                  }
+                  return p;
+                }),
+              };
+            });
           }}
         >
           <Droppable droppableId="droppable2">

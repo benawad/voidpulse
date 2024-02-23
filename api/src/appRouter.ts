@@ -1,35 +1,34 @@
 import * as trpcExpress from "@trpc/server/adapters/express";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import cookieParser from "cookie-parser";
-import { createContext, t } from "./trpc";
-import {
-  updateBoard,
-  createBoard,
-  deleteBoard,
-  updateBoardOrder,
-} from "./routes/boards/board-crud";
-import { getReport } from "./routes/charts/insight/getReport";
-import { login } from "./routes/auth/login";
 import { __prod__ } from "./constants/prod";
-import { register } from "./routes/auth/register";
-import { getMe } from "./routes/auth/getMe";
-import { getEventNames } from "./routes/charts/getEventNames";
-import { getProjects } from "./routes/boards/getProjects";
-import { getPropValues } from "./routes/charts/getPropValues";
-import { getPropKeys } from "./routes/charts/getPropKeys";
-import { createChart } from "./routes/charts/createChart";
-import { getCharts } from "./routes/charts/getCharts";
-import { updateChart } from "./routes/charts/updateChart";
-import { updateMe } from "./routes/auth/updateMe";
 import { sendMsgToAi } from "./routes/ai-messages/sendMsgToAi";
 import { textToChart } from "./routes/ai-messages/textToChart";
-import { deleteChart } from "./routes/charts/deleteChart";
-import { updateProject } from "./routes/boards/updateProject";
+import { getMe } from "./routes/auth/getMe";
+import { login } from "./routes/auth/login";
+import { register } from "./routes/auth/register";
+import {
+  createBoard,
+  deleteBoard,
+  getBoards,
+  updateBoard,
+  updateBoardOrder,
+} from "./routes/boards/board-crud";
 import { createProject } from "./routes/boards/createProject";
+import { updateProject } from "./routes/boards/updateProject";
+import { createChart } from "./routes/charts/createChart";
+import { deleteChart } from "./routes/charts/deleteChart";
+import { getCharts } from "./routes/charts/getCharts";
+import { getEventNames } from "./routes/charts/getEventNames";
+import { getPropKeys } from "./routes/charts/getPropKeys";
+import { getPropValues } from "./routes/charts/getPropValues";
+import { getReport } from "./routes/charts/insight/getReport";
+import { updateChart } from "./routes/charts/updateChart";
+import { createContext, t } from "./trpc";
 
 export const appRouter = t.router({
-  getProjects,
+  getBoards,
   getEventNames,
   getMe,
   register,

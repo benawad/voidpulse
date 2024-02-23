@@ -10,7 +10,7 @@ import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSele
 import { BoardEmojiPicker } from "./BoardEmojiPicker";
 
 interface DashboardStickyHeaderProps {
-  board: RouterOutput["getProjects"]["boards"][0];
+  board: RouterOutput["getBoards"]["boards"][0];
 }
 
 export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
@@ -22,14 +22,13 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
   const utils = trpc.useUtils();
   const { mutateAsync, isPending } = trpc.updateBoard.useMutation({
     onSuccess: (data) => {
-      utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
+      utils.getBoards.setData({ projectId: lastProjectId }, (old) => {
         if (!old) {
           return old;
         }
 
         return {
           boards: old.boards.map((b) => (b.id === boardId ? data.board : b)),
-          projects: old.projects,
         };
       });
     },

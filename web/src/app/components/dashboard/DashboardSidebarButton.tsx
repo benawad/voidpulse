@@ -7,7 +7,7 @@ import { MoreBoardOptionsButton } from "../../ui/MoreBoardOptionsButton";
 import { useCurrTheme } from "../../themes/useCurrTheme";
 
 interface DashboardSidebarButtonProps {
-  board: RouterOutput["getProjects"]["boards"][0];
+  board: RouterOutput["getBoards"]["boards"][0];
 }
 
 export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({

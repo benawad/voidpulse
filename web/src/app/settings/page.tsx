@@ -11,10 +11,9 @@ export const SettingsPage: React.FC = ({}) => {
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
   const { project } = useFetchProjectBoards();
   const utils = trpc.useUtils();
-  const { lastProjectId } = useLastSelectedProjectBoardStore();
   const { mutateAsync, isPending } = trpc.updateProject.useMutation({
     onSuccess: (data) => {
-      utils.getProjects.setData({ currProjectId: lastProjectId }, (oldData) => {
+      utils.getMe.setData(undefined, (oldData) => {
         if (!oldData) {
           return oldData;
         }
