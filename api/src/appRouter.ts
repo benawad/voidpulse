@@ -7,6 +7,7 @@ import {
   updateBoard,
   createBoard,
   deleteBoard,
+  updateBoardOrder,
 } from "./routes/boards/board-crud";
 import { getReport } from "./routes/charts/insight/getReport";
 import { login } from "./routes/auth/login";
@@ -44,6 +45,7 @@ export const appRouter = t.router({
   sendMsgToAi,
   textToChart,
   deleteChart,
+  updateBoardOrder,
 });
 
 export const app = express();

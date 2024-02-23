@@ -1,4 +1,4 @@
-import { and, eq, InferInsertModel } from "drizzle-orm";
+import { and, eq, InferInsertModel, sql } from "drizzle-orm";
 import * as emoji from "node-emoji";
 import { z } from "zod";
 import { db } from "../../db";
@@ -6,6 +6,25 @@ import { boards } from "../../schema/boards";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { TRPCError } from "@trpc/server";
+import { projects } from "../../schema/projects";
+
+export const updateBoardOrder = protectedProcedure
+  .input(
+    z.object({
+      projectId: z.string(),
+      boardOrder: z.array(z.string().uuid()),
+    })
+  )
+  .mutation(async ({ input: { projectId, boardOrder }, ctx: { userId } }) => {
+    await assertProjectMember({ projectId, userId });
+
+    await db
+      .update(projects)
+      .set({ boardOrder })
+      .where(eq(projects.id, projectId));
+
+    return { ok: true };
+  });
 
 export const createBoard = protectedProcedure
   .input(
@@ -21,6 +40,11 @@ export const createBoard = protectedProcedure
       .insert(boards)
       .values({ creatorId: userId, title, projectId })
       .returning();
+    await db.execute(sql`
+    UPDATE projects
+    SET board_order = COALESCE(board_order, '[]'::jsonb) || ${JSON.stringify([board.id])}::jsonb
+    WHERE id = ${projectId};
+    `);
 
     return { board };
   });
@@ -90,13 +114,31 @@ export const updateBoard = protectedProcedure
 export const deleteBoard = protectedProcedure
   .input(
     z.object({
+      projectId: z.string(),
       id: z.string(),
     })
   )
-  .mutation(async ({ input: { id }, ctx: { userId } }) => {
+  .mutation(async ({ input: { id, projectId }, ctx: { userId } }) => {
+    await assertProjectMember({ projectId, userId });
+
     await db
       .delete(boards)
-      .where(and(eq(boards.id, id), eq(boards.creatorId, userId)));
+      .where(
+        and(
+          eq(boards.id, id),
+          eq(boards.creatorId, userId),
+          eq(boards.projectId, projectId)
+        )
+      );
+    await db.execute(sql`
+      UPDATE projects
+      SET board_order = (
+        SELECT jsonb_agg(elem)
+        FROM jsonb_array_elements_text(board_order) AS t(elem)
+        WHERE elem <> ${id}
+      )
+      WHERE id = ${projectId};
+      `);
 
     return {
       ok: true,

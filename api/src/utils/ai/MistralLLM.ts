@@ -1,6 +1,5 @@
 import { MsgRole } from "../../app-router-type";
 import { LLMInterface } from "./LLMInterface";
-import { openai } from "./openai";
 
 export class MistralLLM implements LLMInterface {
   private model = "mistral-medium";

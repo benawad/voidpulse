@@ -22,7 +22,15 @@ export const AddBoardButton: React.FC<AddBoardButtonProps> = ({}) => {
 
         return {
           boards: [...old.boards, data.board],
-          projects: old.projects,
+          projects: old.projects.map((p) => {
+            if (p.id === projectId) {
+              return {
+                ...p,
+                boardOrder: [...(p.boardOrder || []), data.board.id],
+              };
+            }
+            return p;
+          }),
         };
       });
       set({ lastBoardId: data.board.id });

@@ -45,7 +45,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({}) => {
               />
             )}
           </div>
-          <DashboardNavigator boards={boards} />
+          <DashboardNavigator project={project} boards={boards} />
         </div>
       </ProjectBoardProvider>
     </DndProvider>

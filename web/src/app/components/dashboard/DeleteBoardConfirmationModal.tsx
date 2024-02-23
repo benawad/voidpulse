@@ -4,6 +4,7 @@ import { trpc } from "../../utils/trpc";
 import { Button } from "../../ui/Button";
 import { FullScreenModalOverlay } from "../../ui/FullScreenModalOverlay";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
+import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 
 if (typeof window !== "undefined") {
   Modal.setAppElement("body");
@@ -19,6 +20,7 @@ interface DeleteBoardConfirmationModalProps {
 export const DeleteBoardConfirmationModal: React.FC<
   DeleteBoardConfirmationModalProps
 > = ({ isOpen, onDismissModal, boardTitle, boardId }) => {
+  const { projectId } = useProjectBoardContext();
   //Keep track of last project so we stay on the same project after deleting a board.
   const { lastProjectId } = useLastSelectedProjectBoardStore();
   const utils = trpc.useUtils();
@@ -53,6 +55,7 @@ export const DeleteBoardConfirmationModal: React.FC<
             buttonType="negative"
             onClick={() => {
               mutateAsync({
+                projectId,
                 id: boardId,
               });
               onDismissModal;

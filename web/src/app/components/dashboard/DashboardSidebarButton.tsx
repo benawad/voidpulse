@@ -22,7 +22,7 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
   const { theme } = useCurrTheme();
 
   return (
-    <button
+    <div
       onClick={() => {
         set({ lastBoardId: board.id });
       }}
@@ -45,6 +45,6 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
           style={{ right: -32 }}
         />
       ) : null}
-    </button>
+    </div>
   );
 };

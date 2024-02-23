@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { PiCaretLeftFill } from "react-icons/pi";
-import { FaPlus, FaUserGroup } from "react-icons/fa6";
-import { LineSeparator } from "../../ui/LineSeparator";
-import { RouterOutput } from "../../utils/trpc";
-import { AddBoardButton } from "./AddBoardButton";
-import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import React from "react";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
-import { DashboardSidebarButton } from "./DashboardSidebarButton";
+import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
+import { LineSeparator } from "../../ui/LineSeparator";
+import { reorder } from "../../utils/reorder";
+import { RouterOutput, trpc } from "../../utils/trpc";
 import { useKeyPress } from "../../utils/useKeyPress";
+import { AddBoardButton } from "./AddBoardButton";
+import { DashboardSidebarButton } from "./DashboardSidebarButton";
 
 interface DashboardNavigatorProps {
+  project: RouterOutput["getProjects"]["projects"][0];
   boards: RouterOutput["getProjects"]["boards"];
 }
 
 export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
+  project,
   boards,
 }) => {
   const { boardId } = useProjectBoardContext();
-  const { set } = useLastSelectedProjectBoardStore();
+  const { set, lastProjectId } = useLastSelectedProjectBoardStore();
+  const utils = trpc.useUtils();
+  const { mutateAsync } = trpc.updateBoardOrder.useMutation();
 
   //Keyboard navigation
   useKeyPress({
@@ -65,9 +69,71 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
 
         <LineSeparator />
         <div className="subtext py-2">MY BOARDS</div>
-        {boards.map((board) => {
-          return <DashboardSidebarButton key={board.id} board={board} />;
-        })}
+        <DragDropContext
+          onDragEnd={(result) => {
+            // dropped outside the list
+            if (!result.destination) {
+              return;
+            }
+
+            const newBoardOrder = reorder(
+              project.boardOrder || [],
+              result.source.index,
+              result.destination.index
+            );
+            mutateAsync({
+              projectId: project.id,
+              boardOrder: newBoardOrder,
+            });
+            utils.getProjects.setData(
+              { currProjectId: lastProjectId },
+              (oldData) => {
+                if (!oldData) {
+                  return oldData;
+                }
+                return {
+                  ...oldData,
+                  projects: oldData.projects.map((p) => {
+                    if (p.id === project.id) {
+                      return {
+                        ...p,
+                        boardOrder: newBoardOrder,
+                      };
+                    }
+                    return p;
+                  }),
+                };
+              }
+            );
+          }}
+        >
+          <Droppable droppableId="droppable2">
+            {(provided, snapshot) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {project.boardOrder?.map((id, idx) => {
+                  const board = boards.find((b) => b.id === id);
+                  if (!board) {
+                    return null;
+                  }
+                  return (
+                    <Draggable key={id} draggableId={id} index={idx}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.dragHandleProps}
+                          {...provided.draggableProps}
+                        >
+                          <DashboardSidebarButton board={board} />
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                })}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
     </div>
   );

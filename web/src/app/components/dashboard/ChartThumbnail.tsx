@@ -25,6 +25,7 @@ import { transformRetentionData } from "../../utils/transformRetentionData";
 import { transformLineData } from "../../utils/transformToLineData";
 import { RouterOutput, trpc } from "../../utils/trpc";
 import { chartToTagline } from "../../utils/chartToTagline";
+import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
 
 interface ChartThumbnailProps {
   dragRef: any;
@@ -40,8 +41,10 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
   const vars = {
     breakdowns: chart.breakdowns || [],
     chartId: chart.id,
-    from: chart.from || undefined,
-    to: chart.to || undefined,
+    from: chart.from
+      ? dateToClickhouseDateString(new Date(chart.from))
+      : undefined,
+    to: chart.to ? dateToClickhouseDateString(new Date(chart.to)) : undefined,
     globalFilters: chart.globalFilters || [],
     metrics: chart.metrics,
     projectId: chart.projectId,
