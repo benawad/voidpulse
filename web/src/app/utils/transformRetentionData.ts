@@ -36,7 +36,10 @@ export const transformRetentionData = ({
       borderColor: col,
       pointHoverBackgroundColor: col,
       backgroundColor: colorOrder,
-      label: data.eventLabel,
+      label:
+        typeof data.breakdown !== "undefined"
+          ? data.breakdown
+          : data.eventLabel,
       data: retHeaders.map(
         (_, i) =>
           (retentionNumFormat === RetentionNumFormat.rawCount

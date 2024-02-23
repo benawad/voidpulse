@@ -79,26 +79,27 @@ export const ChartTooltip: React.FC<Props> = ({ $event }) => {
 
       <div className="flex flex-col">
         <div className="font-semibold font-sm">{title}</div>
-        <div>{subtitle}</div>
+        <div className="text-primary-500">{subtitle}</div>
         <div className="text-xs text-primary-500">{dateString}</div>
         {/* Number of users/events */}
         <div className="mono-body mt-2">
           <div
-            className="inline bg-primary-900 rounded-md"
+            className="inline bg-primary-900/40 rounded-md"
             style={{ padding: 2 }}
           >
             {label?.highlight}
           </div>{" "}
-          {label?.annotation}
+          <span className="text-primary-500">{label?.annotation}</span>
         </div>
         <div>
-          {sublabel?.highlight} {sublabel?.annotation}
+          {sublabel?.highlight}{" "}
+          <span className="text-primary-500">{sublabel?.annotation}</span>
         </div>
         {/* Shows if your data went up or down */}
         {percentChange ? (
           <div>
             <div
-              className="inline mono-body bg-primary-900 rounded-md"
+              className="inline mono-body bg-primary-900/40 rounded-md"
               style={{
                 padding: 2,
                 color: percentChange.value > 0 ? "teal" : "indianred",

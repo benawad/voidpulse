@@ -34,7 +34,7 @@ import { transformBarData } from "../utils/transformBarData";
 import { transformDonutData } from "../utils/transformDonutData";
 import { transformFunnelChartData } from "../utils/transformFunnelData";
 import { transformRetentionData } from "../utils/transformRetentionData";
-import { transformLineData } from "../utils/transformToLineData";
+import { transformLineData } from "../utils/transformLineData";
 import { RouterOutput, trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { ChartDateRangePicker } from "./ChartDateRangePicker";
@@ -441,6 +441,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 <LineChart
                   disableAnimations
                   {...transformLineData({
+                    numMetrics: metrics.length,
                     datas: data.datas,
                     dateHeader: data.dateHeaders,
                     colorOrder,

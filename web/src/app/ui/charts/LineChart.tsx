@@ -16,6 +16,7 @@ import { numFormatter } from "../../utils/numFormatter";
 import { ChartLegend } from "./ChartLegend";
 import { useChartTooltip } from "./useChartTooltip";
 import { CHART_RESIZE_DELAY } from "../../themes/useChartStyle";
+import { useColorOrder } from "../../themes/useColorOrder";
 
 // Register ChartJS components using ChartJS.register
 ChartJS.register(
@@ -39,6 +40,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   yPercent,
   getTooltipData,
 }) => {
+  const colorOrder = useColorOrder();
   const { ref, height, width } = useResizeObserver();
   const { theme } = useCurrTheme();
   const { external, tooltipNode } = useChartTooltip(getTooltipData);
@@ -49,7 +51,9 @@ export const LineChart: React.FC<LineChartProps> = ({
         <ChartLegend
           width={width || 0}
           labels={data.datasets.map((x: any) => x.label) as string[]}
-          colors={data.datasets[0].backgroundColor as string[]}
+          colors={
+            (data.datasets?.[0]?.backgroundColor as string[]) || colorOrder
+          }
         />
       </div>
       <div ref={ref} className="w-full flex-1 relative">

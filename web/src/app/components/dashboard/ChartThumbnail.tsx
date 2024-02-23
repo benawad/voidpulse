@@ -22,7 +22,7 @@ import { transformBarData } from "../../utils/transformBarData";
 import { transformDonutData } from "../../utils/transformDonutData";
 import { transformFunnelChartData } from "../../utils/transformFunnelData";
 import { transformRetentionData } from "../../utils/transformRetentionData";
-import { transformLineData } from "../../utils/transformToLineData";
+import { transformLineData } from "../../utils/transformLineData";
 import { RouterOutput, trpc } from "../../utils/trpc";
 import { chartToTagline } from "../../utils/chartToTagline";
 import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
@@ -121,6 +121,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
                 lineChartStyle: chartStyle.line,
               })
             : transformLineData({
+                numMetrics: chart.metrics.length,
                 datas: chart.data.datas,
                 dateHeader: chart.data.dateHeaders,
                 colorOrder,

@@ -16,11 +16,13 @@ export const transformLineData = ({
   highlightedId,
   lineChartStyle,
   lineChartGroupByTimeType,
+  numMetrics,
 }: {
   datas: Extract<
     RouterOutput["getReport"]["datas"],
     { average_count: number }[]
   >;
+  numMetrics: number;
   dateHeader: DateHeader[];
   lineChartStyle: any;
   colorOrder: string[];
@@ -42,7 +44,10 @@ export const transformLineData = ({
       borderColor: col,
       backgroundColor: colorOrder,
       pointHoverBackgroundColor: col,
-      label: data.eventLabel,
+      label:
+        numMetrics === 1 && typeof data.breakdown !== "undefined"
+          ? data.breakdown
+          : `${data.eventLabel}${typeof data.breakdown === "undefined" ? "" : ` / ${data.breakdown}`}`,
       data: dateHeader.map((d) => data.data[d.lookupValue] || 0),
     };
   });
