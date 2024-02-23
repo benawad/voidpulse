@@ -5,6 +5,7 @@ import { projects } from "../../schema/projects";
 import { protectedProcedure } from "../../trpc";
 import { z } from "zod";
 import { boards } from "../../schema/boards";
+import { isUuidV4 } from "../../utils/isUuid";
 
 export const getProjects = protectedProcedure
   .input(
@@ -28,7 +29,12 @@ export const getProjects = protectedProcedure
 
     const dashboards = await db.query.boards.findMany({
       where: and(
-        eq(boards.projectId, input.currProjectId || data[0].projects.id),
+        eq(
+          boards.projectId,
+          input.currProjectId && isUuidV4(input.currProjectId)
+            ? input.currProjectId
+            : data[0].projects.id
+        ),
         eq(boards.creatorId, userId)
       ),
     });

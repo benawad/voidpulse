@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { db } from "../../../db";
 import { projects } from "../../../schema/projects";
 
-const apiKeyCache: Record<string, string> = {};
+export const apiKeyCache: Record<string, string> = {};
 
 const apiKeyRegex = /^vp_[0-9a-f]{32}$/;
 

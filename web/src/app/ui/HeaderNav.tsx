@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import VoidpulseIcon from "../landing/VoidpulseIcon";
+import { IoSettings } from "react-icons/io5";
 
 interface HeaderNavProps {}
 
@@ -19,8 +20,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
         <Link href="/assistant" className={headerItemStyle}>
           assistant
         </Link> */}
-        <Link href="/themes" className={headerItemStyle}>
+        {/* <Link href="/themes" className={headerItemStyle}>
           themes
+        </Link> */}
+        <Link href="/settings" className={`ml-auto mr-2 ${headerItemStyle}`}>
+          <IoSettings size={24} />
         </Link>
       </div>
     </div>

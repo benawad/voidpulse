@@ -27,11 +27,11 @@ const themeOpts = [
   },
 ];
 
-function Page() {
+export const ThemePicker = () => {
   const { theme, setThemeId, themeId } = useCurrTheme();
 
   return (
-    <div className="page mono-body justify-center text-center">
+    <>
       <div className="text-xl text-primary-600 p-4">Select a theme.</div>
       <div className="grid lg:grid-cols-6 p-4 space-x-4">
         {themeOpts.map((opt) => {
@@ -133,7 +133,6 @@ function Page() {
           );
         })}
       </div>
-    </div>
+    </>
   );
-}
-export default trpc.withTRPC(Page);
+};

@@ -102,33 +102,38 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
       />
     );
   } else if (chart.chartType === ChartType.line) {
-    chartToDisplay = (
-      <LineChart
-        yPercent={
-          chart.reportType === ReportType.retention &&
-          chart.retentionNumFormat !== RetentionNumFormat.rawCount
-        }
-        {...(chart.reportType === ReportType.retention
-          ? transformRetentionData({
-              datas: chart.data.datas,
-              retHeaders: chart.data.retentionHeaders,
-              retentionNumFormat: chart.retentionNumFormat,
-              colorOrder,
-              visibleDataMap: chart.visibleDataMap,
-              lineChartStyle: chartStyle.line,
-            })
-          : transformLineData({
-              datas: chart.data.datas,
-              dateHeader: chart.data.dateHeaders,
-              colorOrder,
-              visibleDataMap: chart.visibleDataMap,
-              lineChartStyle: chartStyle.line,
-              lineChartGroupByTimeType:
-                chart.lineChartGroupByTimeType || LineChartGroupByTimeType.day,
-            }))}
-        disableAnimations
-      />
-    );
+    if (!chart.data.datas.length) {
+      chartToDisplay = <div>No data</div>;
+    } else {
+      chartToDisplay = (
+        <LineChart
+          yPercent={
+            chart.reportType === ReportType.retention &&
+            chart.retentionNumFormat !== RetentionNumFormat.rawCount
+          }
+          {...(chart.reportType === ReportType.retention
+            ? transformRetentionData({
+                datas: chart.data.datas,
+                retHeaders: chart.data.retentionHeaders,
+                retentionNumFormat: chart.retentionNumFormat,
+                colorOrder,
+                visibleDataMap: chart.visibleDataMap,
+                lineChartStyle: chartStyle.line,
+              })
+            : transformLineData({
+                datas: chart.data.datas,
+                dateHeader: chart.data.dateHeaders,
+                colorOrder,
+                visibleDataMap: chart.visibleDataMap,
+                lineChartStyle: chartStyle.line,
+                lineChartGroupByTimeType:
+                  chart.lineChartGroupByTimeType ||
+                  LineChartGroupByTimeType.day,
+              }))}
+          disableAnimations
+        />
+      );
+    }
   } else if (chart.chartType === ChartType.bar) {
     chartToDisplay = (
       <BarChart
