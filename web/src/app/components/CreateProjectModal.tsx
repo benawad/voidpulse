@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "react-modal";
 import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
 import { Button } from "../ui/Button";
@@ -7,6 +7,7 @@ import { trpc } from "../utils/trpc";
 import { Input } from "../ui/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 if (typeof window !== "undefined") {
   Modal.setAppElement("body");
@@ -26,27 +27,11 @@ export const CreateProjectModal: React.FC<
 > = ({ isOpen, onDismissModal }) => {
   const router = useRouter();
   const { lastProjectId } = useLastSelectedProjectBoardStore();
-  const utils = trpc.useUtils();
   const { mutateAsync, isPending } = trpc.createProject.useMutation({
     //After successful db deletion, remove the board from the local list of boards.
     onSuccess: (data) => {
       onDismissModal();
-      const old = utils.getProjects.getData({ currProjectId: lastProjectId });
-      utils.getProjects.setData({ currProjectId: lastProjectId }, (old) => {
-        if (!old) {
-          return old;
-        }
-        return {
-          boards: old.boards,
-          projects: [...old.projects, data.project],
-        };
-      });
-      utils.getProjects.setData({ currProjectId: data.project.id }, () => {
-        return {
-          boards: [data.board],
-          projects: [...(old?.projects || []), data.project],
-        };
-      });
+      // @todo
       router.push(`/p/${data.project.id}`);
     },
   });
