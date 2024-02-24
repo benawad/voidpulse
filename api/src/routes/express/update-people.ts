@@ -97,6 +97,9 @@ export const addUpdatePeopleRoute = (app: Express) => {
             {
               value: JSON.stringify({
                 ...row,
+                created_at: dateToClickhouseDateString(
+                  new Date(row.created_at as string)
+                ),
                 ingested_at: dateToClickhouseDateString(new Date()),
               }),
             },

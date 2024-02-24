@@ -8,6 +8,11 @@ describe("main", () => {
       noInterval: true,
     });
     voidpulse.track("test");
+    // voidpulse.identify("tester");
+    // await Promise.resolve();
+    // voidpulse.setUserProperties({
+    //   isCool: true,
+    // });
     await Promise.resolve();
     await voidpulse.flush();
   });

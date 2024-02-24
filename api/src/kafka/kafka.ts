@@ -5,7 +5,9 @@ const kafka = new Kafka({
   brokers: ["localhost:9092"],
 });
 
-export const kafkaProducer = kafka.producer({ createPartitioner: Partitioners.DefaultPartitioner });
+export const kafkaProducer = kafka.producer({
+  createPartitioner: Partitioners.LegacyPartitioner,
+});
 const errorTypes = ["unhandledRejection", "uncaughtException"];
 const signalTraps = ["SIGTERM", "SIGINT", "SIGUSR2"];
 

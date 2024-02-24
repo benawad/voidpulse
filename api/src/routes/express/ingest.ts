@@ -94,10 +94,12 @@ export const addIngestRoute = (app: Express) => {
         });
       }
 
-      await kafkaProducer.send({
-        topic: "events",
-        messages,
-      });
+      if (messages.length) {
+        await kafkaProducer.send({
+          topic: "events",
+          messages,
+        });
+      }
 
       const resp: any = {
         ok: true,

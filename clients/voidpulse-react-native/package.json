@@ -2,9 +2,13 @@
   "name": "@voidpulse/react-native",
   "version": "1.0.0",
   "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "prebuild": "node ./scripts/set-version.js",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest"
@@ -16,11 +20,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.22.2",
     "react-native-get-random-values": "^1.10.0",
     "uuid": "^9.0.1"
   },
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": ">=1.0.0",
+    "expo-application": ">= 4.0.0",
+    "expo-device": ">= 4.0.0",
+    "expo-constants": ">= 14.0.0"
+  },
   "devDependencies": {
+    "@react-native-async-storage/async-storage": "^1.22.2",
+    "expo-application": "^5.8.3",
+    "expo-constants": "^15.4.5",
+    "expo-device": "^5.9.3",
+    "expo-manifests": "^0.13.2",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",

@@ -5,10 +5,11 @@
     "target": "es5",
     "declaration": true,
     "jsx": "react",
+    "resolveJsonModule": true,
     "lib": ["es6", "esnext.asynciterable", "es2017"],
     "esModuleInterop": true,
     "types": ["jest"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.test.ts"]
+  "exclude": ["node_modules", "**/*.test.ts", "package.json"]
 }

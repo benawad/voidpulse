@@ -3,6 +3,10 @@ import { AppState } from "react-native";
 import { v4 } from "uuid";
 import "react-native-get-random-values";
 import { PersistedList } from "./PersistedList";
+import * as Application from "expo-application";
+import Constants from "expo-constants";
+import * as Device from "expo-device";
+import { version } from "./version";
 
 type Event = {
   name: string;
@@ -96,12 +100,30 @@ export class Voidpulse {
     });
   }
 
+  getDefaultProps() {
+    return {
+      $lib_version: version,
+      $app_build_number: Application.nativeBuildVersion || "",
+      $native_app_version: Application.nativeApplicationVersion || "",
+      $app_version: Constants.manifest2?.extra?.expoClient?.version || "",
+      $runtime_version: Constants.manifest2?.runtimeVersion || "",
+      $manufacturer: Device.manufacturer,
+      $model: Device.modelName,
+      $brand: Device.brand,
+      $os: Device.osName,
+      $os_version: Device.osVersion,
+    };
+  }
+
   track(name: string, properties: Record<string, any> = {}) {
     this.eventsQueue.push({
       insert_id: v4(),
       time: new Date().toISOString().slice(0, 19).replace("T", " "),
       name,
-      properties,
+      properties: {
+        ...this.getDefaultProps(),
+        ...properties,
+      },
     });
   }
 

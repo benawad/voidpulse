@@ -14,3 +14,7 @@ jest.mock("react-native", () => ({
     addEventListener: jest.fn(),
   },
 }));
+
+jest.mock("expo-application", () => ({}));
+jest.mock("expo-constants", () => ({}));
+jest.mock("expo-device", () => ({}));
