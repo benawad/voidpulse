@@ -25,7 +25,7 @@ export const trpc = createTRPCNext<AppRouter>({
       queryClient,
       links: [
         httpBatchLink({
-          url: `http://localhost:4000/trpc`,
+          url: `http://localhost:4001/trpc`,
           fetch(url, options) {
             return fetch(url, {
               ...options,

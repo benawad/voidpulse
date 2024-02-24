@@ -18,7 +18,7 @@ export const addUpdatePeopleRoute = (app: Express) => {
   app.post(
     "/update-people",
     express.json(),
-    checkApiKeyMiddleware,
+    checkApiKeyMiddleware(),
     async (req, res) => {
       let body: Body;
       try {
@@ -58,8 +58,8 @@ export const addUpdatePeopleRoute = (app: Express) => {
         sql`
       INSERT INTO people (distinct_id, project_id, properties, created_at)
       VALUES (${body.distinct_id}, ${projectId}, ${
-          body.properties_to_add || {}
-        }, now())
+        body.properties_to_add || {}
+      }, now())
       ON CONFLICT (distinct_id, project_id) DO UPDATE SET properties = `,
       ];
 

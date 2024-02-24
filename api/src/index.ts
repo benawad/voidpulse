@@ -15,8 +15,8 @@ const startServer = async () => {
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
 
-  app.listen(4000, () => {
-    console.log("server started on http://localhost:4000/trpc");
+  app.listen(4001, () => {
+    console.log("server started on http://localhost:4001/trpc");
   });
 };
 

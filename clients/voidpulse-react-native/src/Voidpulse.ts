@@ -14,6 +14,7 @@ type Event = {
 export class Voidpulse {
   private apiKey: string;
   private hostUrl: string;
+  private skipIpLookup: boolean = false;
   private incomingDistinctId: string = "";
   private distinctId: string = "";
   private hasIdentified: boolean = false;
@@ -23,7 +24,16 @@ export class Voidpulse {
     "voidpulse_user_props"
   );
 
-  constructor(apiKey: string, hostUrl: string) {
+  constructor({
+    apiKey,
+    hostUrl,
+    skipIpLookup = false,
+  }: {
+    apiKey: string;
+    hostUrl: string;
+    skipIpLookup?: boolean;
+  }) {
+    this.skipIpLookup = skipIpLookup;
     this.apiKey = apiKey;
     this.hostUrl = hostUrl;
     this.loadDistinctId();
@@ -82,7 +92,7 @@ export class Voidpulse {
     });
   }
 
-  track(name: string, properties: Record<string, any>) {
+  track(name: string, properties: Record<string, any> = {}) {
     this.eventsQueue.push({
       insert_id: v4(),
       time: new Date().toISOString().slice(0, 19).replace("T", " "),
@@ -137,6 +147,7 @@ export class Voidpulse {
           "x-api-key": this.apiKey,
         },
         body: JSON.stringify({
+          skipIpLookup: this.skipIpLookup,
           events: events.map((e) => ({
             ...e,
             distinct_id: this.distinctId,

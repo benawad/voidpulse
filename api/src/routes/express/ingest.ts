@@ -33,7 +33,7 @@ export const addIngestRoute = (app: Express) => {
     express.json({
       limit: "100mb",
     }),
-    checkApiKeyMiddleware,
+    checkApiKeyMiddleware(),
     async (req, res) => {
       let body: Body;
       try {

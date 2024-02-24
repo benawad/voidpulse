@@ -1,17 +1,19 @@
 ## Setting Up Development Environment
 
 1. Ensure that you have ClickHouse up and running:
+
    - Provide the `CLICKHOUSE_HOST` if it differs from the default (`http://localhost:8123`).
    - Provide the `CLICKHOUSE_DATABASE` if it differs from the default (`voidpulse`).
 
 2. Make sure Kafka is running.
 
 3. Ensure that your PostgreSQL database is up and running:
+
    - Provide the connection configuration in `DATABASE_URL`:
 
-      ```bash
-      DATABASE_URL=postgresql://petvoidenjoyer:secretpassword@localhost:5432/petvoid
-      ```
+     ```bash
+     DATABASE_URL=postgresql://petvoidenjoyer:secretpassword@localhost:5432/petvoid
+     ```
 
 4. Run database migrations:
 
@@ -50,4 +52,4 @@ pnpm dev
 bun dev
 ```
 
-Now, you should have a running server accessible at `http://localhost:4000/trpc` 🎉
+Now, you should have a running server accessible at `http://localhost:4001/trpc` 🎉
