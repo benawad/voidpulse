@@ -33,6 +33,7 @@ export const MoreBoardOptionsButton: React.FC<MoreBoardOptionsButtonProps> = ({
       <FloatingTrigger
         appearsOnClick
         hideIfOpen
+        portal
         placement={"right"}
         floatingContent={
           <FloatingMenu>
@@ -48,6 +49,7 @@ export const MoreBoardOptionsButton: React.FC<MoreBoardOptionsButtonProps> = ({
         {/* Inside component triggers hover to open a tooltip */}
         <FloatingTrigger
           appearsOnHover
+          portal
           placement={"top"}
           floatingContent={<FloatingTooltip>More options</FloatingTooltip>}
         >

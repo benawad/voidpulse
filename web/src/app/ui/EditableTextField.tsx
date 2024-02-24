@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "./Input";
+import { AiOutlineEdit } from "react-icons/ai";
 
 interface EditableTextFieldProps {
   text: string;
   onDone: (text: string) => void;
   placeholder?: string;
+  showEditIcon?: boolean;
 }
 
 export const EditableTextField: React.FC<EditableTextFieldProps> = ({
   placeholder,
   text: startingText,
   onDone,
+  showEditIcon,
 }) => {
   const startingTextRef = useRef(startingText);
   startingTextRef.current = startingText;
@@ -74,12 +77,13 @@ export const EditableTextField: React.FC<EditableTextFieldProps> = ({
     </form>
   ) : (
     <div
-      className="hoverable area rounded-lg px-1"
+      className="hoverable area rounded-lg px-1 flex items-center"
       onClick={() => {
         setIsEditingTitle(true);
       }}
     >
       {text || placeholder}
+      {showEditIcon ? <AiOutlineEdit className="ml-2 opacity-50" /> : null}
     </div>
   );
 };

@@ -101,7 +101,7 @@
     --primary-1000: #16080a;
     /* Key accent colors */
     --accent-100: #e02b6b;
-    --accent-200: #b90c48;
+    --accent-200: #b8004d;
     --flair-100: #ffaa00;
     --negative-100: #dc5068;
     /* Additional chart colors */
@@ -116,19 +116,20 @@
 
   .electricOcean {
     /* Base colors */
-    --primary-100: #dbdff7;
-    --primary-200: #b7bfff;
-    --primary-300: #8d9bfe;
-    --primary-400: #6879fc;
-    --primary-500: #455bff;
-    --primary-600: #2a43ff;
-    --primary-700: #1421dd;
-    --primary-800: #0d02a3;
-    --primary-900: #070165;
-    --primary-1000: #000028;
+    --primary-100: #f1f1f7; /* Slightly bluish tint */
+    --primary-200: #d1d1e0; /* More noticeable blue tint */
+    --primary-300: #b7b7cc; /* Subtle blue undertone */
+    --primary-400: #9c9cb9; /* Gentle blue hue */
+    --primary-500: #7d7da3; /* Bluish-gray appearance */
+    --primary-600: #626287; /* Grayscale with blue tint */
+    --primary-700: #403e6b; /* Darker bluish-gray */
+    --primary-800: #343359; /* Deeper blue-gray */
+    --primary-900: #232240; /* Nearly gray with a hint of blue */
+    --primary-1000: #0d0d1a; /* Dark gray-blue */
+
     /* Key accent colors */
-    --accent-100: #13c8e8;
-    --accent-200: #0094ae;
+    --accent-100: #45b3c7;
+    --accent-200: #3a67fa;
     --flair-100: #0044ff;
     --negative-100: #dc5068;
     /* Additional chart colors */

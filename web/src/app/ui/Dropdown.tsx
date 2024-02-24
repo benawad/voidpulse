@@ -6,7 +6,12 @@ import { on } from "events";
 import { HiSelector } from "react-icons/hi";
 
 interface DropdownProps<T> {
-  opts: { label: string; value: T; Icon?: ReactElement }[];
+  opts: {
+    label: string;
+    value: T;
+    Icon?: ReactElement;
+    optClassName?: string;
+  }[];
   value: T;
   onSelect: (value: T) => void;
   noCaret?: boolean;
@@ -49,7 +54,8 @@ export function Dropdown<T>({
               }}
               className={
                 `w-full flex flex-row items-center p-2 text-left accent-hover group rounded-md justify-between ` +
-                (opt.value === value ? "bg-accent-100 text-primary-100" : "")
+                (opt.value === value ? "bg-accent-100 text-primary-100" : "") +
+                (opt.optClassName ? ` ${opt.optClassName}` : "")
               }
             >
               <div className="flex flex-row justify-start">

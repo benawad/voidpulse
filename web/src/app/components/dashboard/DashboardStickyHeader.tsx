@@ -36,7 +36,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
   const [emojiPickerOpen, setEmojiPickerOpen] = React.useState(false);
 
   return (
-    <div className="flex flex-row items-center justify-between px-6 sticky top-0 bg-primary-900 z-10">
+    <div className="flex flex-row items-center justify-between px-6 sticky top-0 bg-primary-900">
       {/* Dashboard title */}
       <div className="py-4 flex-1 flex-row">
         {/* Note: might be preferable in the future to stick the route at the top for better navigation, but for now we'll stick the title.*/}

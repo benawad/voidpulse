@@ -32,8 +32,7 @@ export const ThemePicker = () => {
 
   return (
     <>
-      <div className="text-xl text-primary-600 p-4">Select a theme.</div>
-      <div className="grid lg:grid-cols-6 p-4 space-x-4">
+      <div className="grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2">
         {themeOpts.map((opt) => {
           const id = opt.id;
           const isSelected = opt.id === themeId;
@@ -45,13 +44,21 @@ export const ThemePicker = () => {
           return (
             <button
               key={opt.id}
-              className={`relative flex flex-col justify-between items-center accent-hover overflow-hidden rounded-lg shadow-lg ${isSelected ? "ring ring-accent-100" : ""} $`}
+              className={`relative flex flex-col justify-between items-center accent-hover overflow-hidden rounded-lg transform transition ease-in duration-200 shadow-lg m-2 ${isSelected ? "ring ring-accent-100" : ""} $`}
               onClick={() => {
                 setThemeId(opt.id);
               }}
               style={{
                 backgroundColor: primaryColors ? primaryColors["1000"] : "",
+                filter: "brightness(90%)",
+                transition: "filter 0.2s ease",
               }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.filter = "brightness(130%)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.filter = "brightness(90%)")
+              }
             >
               <div
                 className="mt-0 h-4 w-full"
@@ -63,7 +70,7 @@ export const ThemePicker = () => {
               />
               {/* Theme name */}
               <div
-                className="py-4 text-sm"
+                className="py-4 text-sm mono-body"
                 style={{ color: primaryColors ? primaryColors[200] : "#fff" }}
               >
                 {opt.name}

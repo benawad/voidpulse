@@ -1,15 +1,13 @@
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import VoidpulseIcon from "../landing/VoidpulseIcon";
-import { IoFolderOutline, IoHomeOutline, IoSettings } from "react-icons/io5";
-import { FiSettings } from "react-icons/fi";
-import { RouterOutput } from "../utils/trpc";
+import { IoIosSettings } from "react-icons/io";
+import { IoFolderOutline } from "react-icons/io5";
+import { PlusIcon } from "../chart/manual-sidebars/PlusIcon";
+import { CreateProjectModal } from "../components/CreateProjectModal";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { Dropdown } from "./Dropdown";
-import { useRouter } from "next/navigation";
-import { CreateProjectModal } from "../components/CreateProjectModal";
-import { FaPlus } from "react-icons/fa";
-import { PlusIcon } from "../chart/manual-sidebars/PlusIcon";
+import VoidpulseIcon from "../landing/VoidpulseIcon";
 
 interface HeaderNavProps {}
 
@@ -18,11 +16,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
   const { projects, project } = useFetchProjectBoards();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const headerItemStyle =
-    "p-3 lg:p-3 m-1 hoverable area rounded-lg items-center flex text-center";
+    "p-3 lg:p-3 m-1 hover:bg-primary-800/30 transition-colors rounded-lg items-center flex text-center";
   return (
-    <div className="w-full h-16 bg-gradient-to-r from-accent-100 to-accent-200 shadow-lg sticky top-0 z-30">
+    <div className="w-full h-14 bg-gradient-to-r from-accent-100 to-accent-200 shadow-lg sticky top-0 z-30">
       <div className="flex-row flex justify-start h-full items-center">
-        {/* <VoidpulseIcon className="ml-4 mr-2" /> */}
+        {/* <VoidpulseIcon className="ml-4" /> */}
         {/* <Link href="/" className={headerItemStyle}>
           boards
         </Link> */}
@@ -60,9 +58,16 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
                 ),
               })) || []),
               {
-                label: "Create project",
+                label: "New project...",
                 value: "new",
-                Icon: <PlusIcon className={"bg-primary-700 mr-0"} />,
+                optClassName: "font-normal text-primary-400",
+                Icon: (
+                  <PlusIcon
+                    className={
+                      "bg-primary-700 mr-0 group-hover:bg-accent-100/20"
+                    }
+                  />
+                ),
               },
             ]}
             value={project?.id}
@@ -76,8 +81,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
           />
         </div>
         <Link href="/settings" className={`ml-auto mr-2 ${headerItemStyle}`}>
-          <span className="mr-1 text-xs">Settings</span>
-          <IoSettings size={24} />
+          <span className="mr-1 text-xs font-semibold">Settings</span>
+          <IoIosSettings size={24} />
         </Link>
       </div>
     </div>
