@@ -84,3 +84,6 @@ body {
 .icon-box {
   @apply accent-hover group-hover:bg-accent-100 bg-primary-600 w-6 h-6 rounded-md mr-3;
 }
+.soft-entrance {
+  @apply animate-in fade-in zoom-in-75 duration-200;
+}
