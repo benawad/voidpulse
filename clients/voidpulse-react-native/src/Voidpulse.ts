@@ -28,10 +28,12 @@ export class Voidpulse {
     apiKey,
     hostUrl,
     skipIpLookup = false,
+    noInterval = false,
   }: {
     apiKey: string;
     hostUrl: string;
     skipIpLookup?: boolean;
+    noInterval?: boolean;
   }) {
     this.skipIpLookup = skipIpLookup;
     this.apiKey = apiKey;
@@ -40,10 +42,12 @@ export class Voidpulse {
     AppState.addEventListener("change", () => {
       this.flush();
     });
-    // flush every minute
-    setInterval(() => {
-      this.flush();
-    }, 1000 * 60);
+    if (!noInterval) {
+      // flush every minute
+      setInterval(() => {
+        this.flush();
+      }, 1000 * 60);
+    }
   }
 
   private loadDistinctId() {
@@ -140,7 +144,7 @@ export class Voidpulse {
 
   async sendEvents(events: Event[]) {
     try {
-      const resp = await fetch(`${this.hostUrl}/update-people`, {
+      const resp = await fetch(`${this.hostUrl}/ingest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -155,6 +159,7 @@ export class Voidpulse {
         }),
       });
       if (!resp.ok) {
+        console.log("rip");
         try {
           const info = await resp.json();
           console.error(`Voidpulse error: ${JSON.stringify(info, null, 2)}`);
@@ -200,7 +205,7 @@ export class Voidpulse {
           Object.assign(properties_to_add, thing);
         }
       });
-      const resp = await fetch(`${this.hostUrl}/ingest`, {
+      const resp = await fetch(`${this.hostUrl}/update-people`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

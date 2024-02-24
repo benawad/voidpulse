@@ -39,12 +39,10 @@ export const addIngestRoute = (app: Express) => {
       try {
         body = await bodySchema.parseAsync(req.body);
       } catch (e) {
-        res
-          .json({
-            ok: false,
-            errors: e.errors,
-          })
-          .status(400);
+        res.status(400).json({
+          ok: false,
+          errors: e.errors,
+        });
         return;
       }
 

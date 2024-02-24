@@ -20,12 +20,10 @@ export const checkApiKeyMiddleware =
         where: eq(projects.apiKey, apiKey),
       });
       if (!project) {
-        return res
-          .json({
-            ok: false,
-            errors: ["Invalid api key"],
-          })
-          .status(401);
+        return res.status(401).json({
+          ok: false,
+          errors: ["Invalid api key"],
+        });
       }
       apiKeyCache[apiKey] = project.id;
     }

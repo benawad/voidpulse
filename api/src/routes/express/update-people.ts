@@ -24,22 +24,18 @@ export const addUpdatePeopleRoute = (app: Express) => {
       try {
         body = await bodySchema.parseAsync(req.body);
       } catch (e) {
-        res
-          .json({
-            ok: false,
-            errors: e.errors,
-          })
-          .status(400);
+        res.status(400).json({
+          ok: false,
+          errors: e.errors,
+        });
         return;
       }
 
       if (!body.properties_to_add && !body.properties_to_remove) {
-        res
-          .json({
-            ok: false,
-            errors: ["You must provide properties to add or remove"],
-          })
-          .status(400);
+        res.status(400).json({
+          ok: false,
+          errors: ["You must provide properties to add or remove"],
+        });
         return;
       }
       if (
@@ -47,8 +43,8 @@ export const addUpdatePeopleRoute = (app: Express) => {
         Object.keys(body.properties_to_add).length === 0
       ) {
         res
-          .json({ ok: false, errors: ["properties_to_add cannot be empty"] })
-          .status(400);
+          .status(400)
+          .json({ ok: false, errors: ["properties_to_add cannot be empty"] });
         return;
       }
 

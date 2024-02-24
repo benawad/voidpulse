@@ -6,7 +6,8 @@
     "declaration": true,
     "jsx": "react",
     "lib": ["es6", "esnext.asynciterable", "es2017"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["jest"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]
