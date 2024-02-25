@@ -67,4 +67,32 @@ services:
   kafka:
     image: wurstmeister/kafka
     environment:
-      KAFKA_A
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
+    networks:
+      - overlay-net
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    networks:
+      - overlay-net
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: yourdbname
+      POSTGRES_USER: youruser
+      POSTGRES_PASSWORD: yourpassword
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - overlay-net
+
+networks:
+  overlay-net:
+    driver: overlay
+
+volumes:
+  db-data:
