@@ -12,7 +12,6 @@ import { boards } from "./boards";
 import { users } from "./users";
 import { boardCharts } from "./board-charts";
 import { z } from "zod";
-import { chartDataSchema } from "src/routes/charts/chartDataSchema";
 import {
   ChartTimeRangeType,
   ChartType,
@@ -26,6 +25,7 @@ import {
 } from "../routes/charts/insight/eventFilterSchema";
 import { messages } from "./messages";
 import { projects } from "./projects";
+import { chartDataSchema } from "../routes/charts/chartDataSchema";
 
 export const charts = pgTable("charts", {
   id: uuid("id")

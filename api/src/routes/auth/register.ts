@@ -33,7 +33,7 @@ export const register = publicProcedure
           })
           .returning()
       )[0];
-    } catch (e) {
+    } catch (e: any) {
       if (
         e.message.includes(
           'duplicate key value violates unique constraint "users_email_unique"'

@@ -36,7 +36,7 @@ export const login = publicProcedure
           message: "Invalid password",
         });
       }
-    } catch (err) {
+    } catch (err: any) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: err.message,
