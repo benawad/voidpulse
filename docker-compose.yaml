@@ -24,9 +24,9 @@ services:
       - postgres
     deploy:
       labels:
-        - "caddy.reverse_proxy": "to http://node-app:3000"
-        - "caddy.reverse_proxy.header_up Host event2.voidpet.com"
-        - "caddy.reverse_proxy.path /trpc/*"
+        - "caddy.reverse_proxy=to http://node-app:3000"
+        - "caddy.reverse_proxy.header_up=Host event2.voidpet.com"
+        - "caddy.reverse_proxy.path=/trpc/*"
       replicas: 1
       update_config:
         parallelism: 1
@@ -53,8 +53,8 @@ services:
       - overlay-net
     deploy:
       labels:
-        - "caddy.reverse_proxy": "to http://next-app:3000"
-        - "caddy.reverse_proxy.header_up Host event2.voidpet.com"
+        - "caddy.reverse_proxy=to http://next-app:3000"
+        - "caddy.reverse_proxy.header_up=Host event2.voidpet.com"
 
   clickhouse:
     image: yandex/clickhouse-server
@@ -67,32 +67,4 @@ services:
   kafka:
     image: wurstmeister/kafka
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    depends_on:
-      - zookeeper
-    networks:
-      - overlay-net
-
-  zookeeper:
-    image: wurstmeister/zookeeper
-    networks:
-      - overlay-net
-
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_DB: yourdbname
-      POSTGRES_USER: youruser
-      POSTGRES_PASSWORD: yourpassword
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - overlay-net
-
-networks:
-  overlay-net:
-    driver: overlay
-
-volumes:
-  db-data:
+      KAFKA_A
