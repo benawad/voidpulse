@@ -7,6 +7,7 @@ import { db } from "./db";
 import { kafkaProducer } from "./kafka/kafka";
 import { addIngestRoute } from "./routes/express/ingest";
 import { addUpdatePeopleRoute } from "./routes/express/update-people";
+import { __prod__ } from "./constants/prod";
 
 const startServer = async () => {
   console.log("about to migrate postgres");
@@ -21,7 +22,7 @@ const startServer = async () => {
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
 
-  app.listen(4001, () => {
+  app.listen(__prod__ ? 3000 : 4001, () => {
     console.log("server started on http://localhost:4001/trpc");
   });
 };
