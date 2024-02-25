@@ -21,6 +21,7 @@ export const pool = new Pool(
         database: "voidpulse",
         user: "youruser",
         password: "yourpassword",
+        port: 5432,
       }
     : {
         connectionString: devDbUrl,
