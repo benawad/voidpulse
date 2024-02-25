@@ -33,6 +33,8 @@ WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/.env.example ./.env.example
 
+RUN touch .env
+
 # Copy package.json (to run the application) and any other necessary files
 COPY package*.json ./
 
