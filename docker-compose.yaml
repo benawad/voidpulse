@@ -60,7 +60,7 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server
     volumes:
-      - clickhouse-data:/var/lib/clickhouse
+      - ../clickhouse-data:/var/lib/clickhouse
     environment:
       CLICKHOUSE_DB: voidpulse
     networks:
