@@ -45,10 +45,7 @@ services:
       start_period: 10s
 
   next-app:
-    image: next-app-image
-    build:
-      context: ./
-      dockerfile: ./web/Dockerfile
+    image: next-app-image:latest
     networks:
       - overlay-net
     deploy:
