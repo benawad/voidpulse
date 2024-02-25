@@ -12,7 +12,7 @@ services:
       - overlay-net
 
   node-app:
-    image: node-app-image
+    image: node-app:latest
     networks:
       - overlay-net
     depends_on:
@@ -42,7 +42,7 @@ services:
       start_period: 10s
 
   next-app:
-    image: next-app-image:latest
+    image: next-app:latest
     networks:
       - overlay-net
     deploy:
