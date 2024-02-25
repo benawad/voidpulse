@@ -14,7 +14,7 @@ export type ClickHouseQueryResponse<T> = {
 export const clickhouse = createClient(
   __prod__
     ? {
-        host: "http://clickhouse",
+        host: "http://clickhouse:8123",
         username: "default",
         database: "voidpulse",
       }
