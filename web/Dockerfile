@@ -36,6 +36,7 @@ WORKDIR /usr/src/app
 
 # Copy over the built artifacts from the builder stage
 COPY --from=builder /usr/src/app/api/dist ./api
+COPY --from=builder /usr/src/app/api/package.json ./api/package.json
 COPY --from=builder /usr/src/app/web/.next ./web/.next
 COPY --from=builder /usr/src/app/web/public ./web/public
 COPY --from=builder /usr/src/app/web/package.json ./web/package.json
