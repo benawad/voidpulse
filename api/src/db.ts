@@ -11,9 +11,21 @@ import { people } from "./schema/people";
 import { peoplePropTypes } from "./schema/people-prop-types";
 import { messages } from "./schema/messages";
 
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const devDbUrl =
+  "postgresql://postgres:postgres@localhost/voidpulse?schema=public&connection_limit=1&pool_timeout=1";
+
+export const pool = new Pool(
+  __prod__
+    ? {
+        host: "postgres",
+        database: "voidpulse",
+        user: "youruser",
+        password: "yourpassword",
+      }
+    : {
+        connectionString: devDbUrl,
+      }
+);
 
 export type DbUser = typeof users.$inferSelect;
 

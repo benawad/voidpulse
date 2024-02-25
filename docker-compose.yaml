@@ -15,6 +15,13 @@ services:
     image: api:latest
     networks:
       - overlay-net
+    environment:
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      CHATGPT_API_SECRET: ${CHATGPT_API_SECRET}
+      MIXPANEL_API_SECRET: ${MIXPANEL_API_SECRET}
+      MASTERMIND_LICENSE_KEY: ${MASTERMIND_LICENSE_KEY}
+      MISTRAL_API_SECRET: ${MISTRAL_API_SECRET}
     depends_on:
       - clickhouse
       - kafka
@@ -51,7 +58,12 @@ services:
         - "caddy.reverse_proxy.header_up=Host event2.voidpet.com"
 
   clickhouse:
-    image: yandex/clickhouse-server
+    image: clickhouse/clickhouse-server
+    volumes:
+      - clickhouse-config.xml:/etc/clickhouse-server/config.d/config.xml
+      - clickhouse-data:/var/lib/clickhouse
+    environment:
+      - CLICKHOUSE_DB: voidpulse
     networks:
       - overlay-net
     depends_on:
@@ -76,7 +88,7 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_DB: yourdbname
+      POSTGRES_DB: voidpulse
       POSTGRES_USER: youruser
       POSTGRES_PASSWORD: yourpassword
     volumes:

@@ -1,4 +1,5 @@
 import { ClickHouseClient } from "@clickhouse/client";
+import { __prod__ } from "../constants/prod";
 
 export const up = async (clickhouse: ClickHouseClient) => {
   await clickhouse.command({
@@ -13,7 +14,7 @@ export const up = async (clickhouse: ClickHouseClient) => {
 			project_id UUID
 	)
 	ENGINE = Kafka
-	SETTINGS kafka_broker_list = 'localhost:9092',
+	SETTINGS kafka_broker_list = '${__prod__ ? "kafka" : "localhost"}:9092',
 				 kafka_topic_list = 'events',
 				 kafka_group_name = 'events_consumer_group1',
 				 kafka_format = 'JSONEachRow',

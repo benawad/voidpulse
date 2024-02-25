@@ -11,15 +11,20 @@ export type ClickHouseQueryResponse<T> = {
   statistics: { elapsed: number; rows_read: number; bytes_read: number };
 };
 
-export const clickhouse = createClient({
-  host: process.env.CLICKHOUSE_HOST ?? "http://localhost:8123",
-  username: process.env.CLICKHOUSE_USER ?? "default",
-  password: process.env.CLICKHOUSE_PASSWORD ?? "",
-  database: process.env.CLICKHOUSE_DATABASE ?? "voidpulse",
-  clickhouse_settings: {
-    allow_experimental_object_type: 1,
-  },
-});
+export const clickhouse = createClient(
+  __prod__
+    ? {
+        host: "clickhouse",
+        username: "default",
+        database: "voidpulse",
+      }
+    : {
+        host: process.env.CLICKHOUSE_HOST ?? "http://localhost:8123",
+        username: process.env.CLICKHOUSE_USER ?? "default",
+        password: process.env.CLICKHOUSE_PASSWORD ?? "",
+        database: process.env.CLICKHOUSE_DATABASE ?? "voidpulse",
+      }
+);
 
 if (!__prod__) {
   const ogQuery = clickhouse.query.bind(clickhouse);

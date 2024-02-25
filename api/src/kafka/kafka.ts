@@ -1,8 +1,9 @@
 import { Kafka, Partitioners } from "kafkajs";
+import { __prod__ } from "../constants/prod";
 
 const kafka = new Kafka({
   clientId: "my-app",
-  brokers: ["localhost:9092"],
+  brokers: [__prod__ ? "kafka:9092" : "localhost:9092"],
 });
 
 export const kafkaProducer = kafka.producer({
