@@ -28,6 +28,9 @@ const maxPropsSize = 1048576;
 
 export const addIngestRoute = (app: Express) => {
   app.set("trust proxy", true);
+  app.get("/health", (_, res) => {
+    res.send("ok");
+  });
   app.post(
     "/ingest",
     express.json({

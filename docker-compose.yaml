@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.5
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.swarmMode=true"
+      - "--entrypoints.web.address=:80"
+      - "--api.dashboard=true"
+    ports:
+      - "80:80"
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - overlay-net
+
+  node-app:
+    image: node-app-image
+    build:
+      context: ./api
+      dockerfile: ./api/Dockerfile
+    networks:
+      - overlay-net
+    depends_on:
+      - clickhouse
+      - kafka
+      - postgres
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.node-app.rule=Host(`event2.voidpet.com`) && PathPrefix(`/trpc`)"
+        - "traefik.http.services.node-app.loadbalancer.server.port=3000"
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+        monitor: 10s
+        max_failure_ratio: 0.5
+      restart_policy:
+        condition: on-failure
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+        start_period: 10s
+
+  next-app:
+    image: next-app-image
+    build:
+      context: ./
+      dockerfile: ./web/Dockerfile
+    networks:
+      - overlay-net
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.next-app.rule=Host(`event2.voidpet.com`)"
+        - "traefik.http.services.next-app.loadbalancer.server.port=3000"
+
+  clickhouse:
+    image: yandex/clickhouse-server
+    networks:
+      - overlay-net
+
+  kafka:
+    image: wurstmeister/kafka
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
+    networks:
+      - overlay-net
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    networks:
+      - overlay-net
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: yourdbname
+      POSTGRES_USER: youruser
+      POSTGRES_PASSWORD: yourpassword
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - overlay-net
+
+networks:
+  overlay-net:
+    driver: overlay
+
+volumes:
+  db-data:
