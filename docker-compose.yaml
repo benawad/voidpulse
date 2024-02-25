@@ -60,7 +60,6 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server
     volumes:
-      - clickhouse-config.xml:/etc/clickhouse-server/config.d/config.xml
       - clickhouse-data:/var/lib/clickhouse
     environment:
       CLICKHOUSE_DB: voidpulse
