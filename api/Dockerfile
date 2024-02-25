@@ -31,6 +31,7 @@ WORKDIR /usr/src/app
 
 # Copy built artifacts from the builder stage
 COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/.env.example ./.env.example
 
 # Copy package.json (to run the application) and any other necessary files
 COPY package*.json ./
