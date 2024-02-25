@@ -1,20 +1,13 @@
 version: '3.8'
 
 services:
-  traefik:
-    image: traefik:v2.5
-    command:
-      - "--providers.docker=true"
-      - "--providers.docker.swarmMode=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.dashboard.address=:8081"  # Define the dashboard entrypoint
-      - "--api.dashboard=true"
-      - "--api.insecure=true"
+  caddy:
+    image: caddy:latest
     ports:
       - "80:80"
-      - "8081:8081"  # Traefik dashboard
+      - "443:443"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./Caddyfile:/etc/caddy/Caddyfile
     networks:
       - overlay-net
 
@@ -31,9 +24,9 @@ services:
       - postgres
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.node-app.rule=Host(`event2.voidpet.com`) && PathPrefix(`/trpc`)"
-        - "traefik.http.services.node-app.loadbalancer.server.port=3000"
+        - "caddy.reverse_proxy": "to http://node-app:3000"
+        - "caddy.reverse_proxy.header_up Host event2.voidpet.com"
+        - "caddy.reverse_proxy.path /trpc/*"
       replicas: 1
       update_config:
         parallelism: 1
@@ -60,9 +53,8 @@ services:
       - overlay-net
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.next-app.rule=Host(`event2.voidpet.com`)"
-        - "traefik.http.services.next-app.loadbalancer.server.port=3000"
+        - "caddy.reverse_proxy": "to http://next-app:3000"
+        - "caddy.reverse_proxy.header_up Host event2.voidpet.com"
 
   clickhouse:
     image: yandex/clickhouse-server
