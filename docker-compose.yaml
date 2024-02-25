@@ -63,7 +63,7 @@ services:
       - clickhouse-config.xml:/etc/clickhouse-server/config.d/config.xml
       - clickhouse-data:/var/lib/clickhouse
     environment:
-      - CLICKHOUSE_DB: voidpulse
+      CLICKHOUSE_DB: voidpulse
     networks:
       - overlay-net
     depends_on:
