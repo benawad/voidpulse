@@ -16,6 +16,7 @@ export const clickhouse = createClient(
     ? {
         host: "http://clickhouse:8123",
         username: "default",
+        password: "",
         database: "voidpulse",
       }
     : {
