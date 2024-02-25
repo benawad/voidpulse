@@ -8,32 +8,16 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-    networks:
-      - overlay-net
 
   api:
     image: api:latest
-    networks:
-      - overlay-net
     depends_on:
       - clickhouse
       - kafka
       - postgres
-    deploy:
-      labels:
-        - "caddy.reverse_proxy=to http://api:3000"
-        - "caddy.reverse_proxy.header_up=Host event2.voidpet.com"
-        - "caddy.reverse_proxy.path=/trpc/*"
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-        order: start-first
-        failure_action: rollback
-        monitor: 10s
-        max_failure_ratio: 0.5
-      restart_policy:
-        condition: on-failure
+    environment:
+      - VIRTUAL_HOST=event2.voidpet.com
+      - VIRTUAL_PORT=3000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 10s
@@ -43,21 +27,16 @@ services:
 
   web:
     image: web:latest
-    networks:
-      - overlay-net
-    deploy:
-      labels:
-        - "caddy.reverse_proxy=to http://web:3000"
-        - "caddy.reverse_proxy.header_up=Host event2.voidpet.com"
+    environment:
+      - VIRTUAL_HOST=event2.voidpet.com
+      - VIRTUAL_PORT=3000
 
   clickhouse:
     image: clickhouse/clickhouse-server
     volumes:
-      - ../clickhouse-data:/var/lib/clickhouse
+      - clickhouse-data:/var/lib/clickhouse
     environment:
       CLICKHOUSE_DB: voidpulse
-    networks:
-      - overlay-net
     depends_on:
       - kafka
       - zookeeper
@@ -69,13 +48,9 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     depends_on:
       - zookeeper
-    networks:
-      - overlay-net
 
   zookeeper:
     image: wurstmeister/zookeeper
-    networks:
-      - overlay-net
 
   postgres:
     image: postgres
@@ -84,13 +59,8 @@ services:
       POSTGRES_USER: youruser
       POSTGRES_PASSWORD: yourpassword
     volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - overlay-net
-
-networks:
-  overlay-net:
-    driver: overlay
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  db-data:
+  postgres-data:
+  clickhouse-data:
