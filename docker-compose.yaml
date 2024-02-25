@@ -7,12 +7,12 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.swarmMode=true"
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.dashboard.address=:8080"  # Define the dashboard entrypoint
+      - "--entrypoints.dashboard.address=:8081"  # Define the dashboard entrypoint
       - "--api.dashboard=true"
       - "--api.insecure=true"
     ports:
       - "80:80"
-      - "8080:8080"  # Traefik dashboard
+      - "8081:8081"  # Traefik dashboard
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
