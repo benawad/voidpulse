@@ -42,12 +42,12 @@ services:
         max_failure_ratio: 0.5
       restart_policy:
         condition: on-failure
-      healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-        interval: 10s
-        timeout: 5s
-        retries: 3
-        start_period: 10s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   next-app:
     image: next-app-image
