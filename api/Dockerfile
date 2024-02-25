@@ -32,6 +32,7 @@ WORKDIR /usr/src/app
 # Copy built artifacts from the builder stage
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/.env.example ./.env.example
+COPY --from=builder /usr/src/app/drizzle ./drizzle
 
 RUN touch .env
 
