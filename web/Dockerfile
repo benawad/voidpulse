@@ -10,15 +10,22 @@ RUN npm install -g pnpm
 # Copy the entire monorepo
 COPY . .
 
+# Navigate to the API directory within the monorepo
+WORKDIR /usr/src/app/api
+
+# Install dependencies for the API
+RUN pnpm install --frozen-lockfile
+
+# Build the API (assuming you have a build script defined in your package.json)
+RUN pnpm run build
+
 # Navigate to the Next.js app directory within the monorepo
 WORKDIR /usr/src/app/web
 
-# Install dependencies for the entire monorepo
-# This step ensures that all workspace dependencies are correctly linked
+# Install dependencies for the Next.js app
 RUN pnpm install --frozen-lockfile
 
 # Build the Next.js application
-# This step assumes you have a build script defined in your package.json
 RUN pnpm run build
 
 # Stage 2: Run the built code
@@ -28,9 +35,10 @@ FROM node:21-alpine
 WORKDIR /usr/src/app
 
 # Copy over the built artifacts from the builder stage
-COPY --from=builder /usr/src/app/packages/next-app/.next ./.next
-COPY --from=builder /usr/src/app/packages/next-app/public ./public
-COPY --from=builder /usr/src/app/packages/next-app/package.json ./package.json
+COPY --from=builder /usr/src/app/api/dist ./api
+COPY --from=builder /usr/src/app/web/.next ./.next
+COPY --from=builder /usr/src/app/web/public ./public
+COPY --from=builder /usr/src/app/web/package.json ./package.json
 
 # Install pnpm
 RUN npm install -g pnpm
