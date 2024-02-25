@@ -7,7 +7,9 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.swarmMode=true"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.dashboard.address=:8080"  # Define the dashboard entrypoint
       - "--api.dashboard=true"
+      - "--api.insecure=true"
     ports:
       - "80:80"
       - "8080:8080"  # Traefik dashboard
@@ -66,6 +68,9 @@ services:
     image: yandex/clickhouse-server
     networks:
       - overlay-net
+    depends_on:
+      - kafka
+      - zookeeper
 
   kafka:
     image: wurstmeister/kafka
