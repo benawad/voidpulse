@@ -45,6 +45,8 @@ ENV NODE_ENV production
 ENV DOMAIN https://event2.voidpet.com
 ENV FRONTEND_URL https://event2.voidpet.com
 
+# @inject-env-variables
+
 # Expose the port your app runs on
 EXPOSE 3000
 

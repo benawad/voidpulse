@@ -15,15 +15,6 @@ services:
     image: api:latest
     networks:
       - overlay-net
-    env_file:
-      - .env
-    environment:
-      REFRESH_TOKEN_SECRET: test
-      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
-      CHATGPT_API_SECRET: ${CHATGPT_API_SECRET}
-      MIXPANEL_API_SECRET: ${MIXPANEL_API_SECRET}
-      MASTERMIND_LICENSE_KEY: ${MASTERMIND_LICENSE_KEY}
-      MISTRAL_API_SECRET: ${MISTRAL_API_SECRET}
     depends_on:
       - clickhouse
       - kafka
