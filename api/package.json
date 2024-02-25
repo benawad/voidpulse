@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "nodemon --files src/index.ts",
     "env": "gen-env-types .env -o src/types/env.d.ts -e .",
+    "build": "tsc",
     "mig": "drizzle-kit generate:pg && ts-node src/migrate.ts",
     "seed": "ts-node --files src/scripts/seedGithubData.ts",
     "mp:load": "ts-node --files src/scripts/mixpanelLoader.ts"
