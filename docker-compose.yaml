@@ -13,9 +13,6 @@ services:
 
   node-app:
     image: node-app-image
-    build:
-      context: ./api
-      dockerfile: ./api/Dockerfile
     networks:
       - overlay-net
     depends_on:

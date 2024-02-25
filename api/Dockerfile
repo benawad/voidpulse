@@ -16,7 +16,7 @@ COPY package*.json ./
 RUN npm install
 
 # Install the GeoIP database
-RUN npm run-script updatedb.geoip-lite
+# RUN npm run-script updatedb.geoip-lite
 
 # Copy the rest of your application's source code
 COPY . .
