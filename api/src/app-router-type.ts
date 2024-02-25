@@ -1,6 +1,4 @@
-import { appRouter } from "./appRouter";
-
-export type AppRouter = typeof appRouter;
+export type { AppRouter } from "./appRouter";
 
 export enum MetricMeasurement {
   uniqueUsers = 1,

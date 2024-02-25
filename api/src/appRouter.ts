@@ -73,3 +73,5 @@ app.use(
     },
   })
 );
+
+export type AppRouter = typeof appRouter;
