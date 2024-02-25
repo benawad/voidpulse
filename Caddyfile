@@ -1,0 +1,9 @@
+event2.voidpet.com {
+  # Reverse proxy for API service
+  reverse_proxy /trpc/* api:3000 {
+    header_up Host event2.voidpet.com
+  }
+
+  # Reverse proxy for Web service
+  reverse_proxy web:3000
+}
