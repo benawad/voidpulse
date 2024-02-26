@@ -71,16 +71,11 @@ services:
 
 volumes:
   postgres-data:
-    external: true
   clickhouse-data:
-    external: true
   caddy_data:
-    external: true
   caddy_config:
   kafka-data:
-    external: true
   zookeeper-data:
-    external: true
   zookeeper-log:
 
 
