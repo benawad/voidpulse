@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { SidebarHeader } from "./SidebarHeader";
 import { MetricBlock } from "../metric-selector/MetricBlock";
-import { useChartStateContext } from "../../../../providers/ChartStateProvider";
-import { genId } from "../../utils/genId";
+import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
+import { genId } from "../../../../utils/genId";
 import { Metric } from "../metric-selector/Metric";
 import { HeaderButton } from "./HeaderButton";
-import { LineSeparator } from "../../ui/LineSeparator";
+import { LineSeparator } from "../../../../ui/LineSeparator";
 import { BreakdownBlock } from "../metric-selector/BreakdownBlock";
 import { FilterBlock } from "../metric-selector/FilterBlock";
 import { PlusIcon } from "./PlusIcon";
 import { MetricMeasurement } from "@voidpulse/api";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { reorder } from "../../utils/reorder";
+import { reorder } from "../../../../utils/reorder";
 
 interface FunnelSidebarProps {}
 

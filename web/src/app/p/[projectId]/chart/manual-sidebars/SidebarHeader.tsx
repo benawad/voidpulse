@@ -1,5 +1,5 @@
 import React from "react";
-import { Kids } from "../../ui/FullScreenModalOverlay";
+import { Kids } from "../../../../ui/FullScreenModalOverlay";
 
 export const SidebarHeader: Kids<
   React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>

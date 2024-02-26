@@ -13,9 +13,9 @@ import {
 } from "@voidpulse/api";
 import React, { useEffect, useRef, useState } from "react";
 import { IoClose, IoFilter } from "react-icons/io5";
-import { BooleanInput } from "../../ui/BooleanInput";
-import { Dropdown } from "../../ui/Dropdown";
-import { ValidatingInput } from "../../ui/ValidatingInput";
+import { BooleanInput } from "../../../../ui/BooleanInput";
+import { Dropdown } from "../../../../ui/Dropdown";
+import { ValidatingInput } from "../../../../ui/ValidatingInput";
 import { MetricFilter } from "./Metric";
 import { PropKeySelector } from "./PropKeySelector";
 import { PropValueMultiSelect } from "./PropValueMultiSelect";

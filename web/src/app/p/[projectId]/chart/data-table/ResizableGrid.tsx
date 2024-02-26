@@ -11,9 +11,9 @@ import {
   MdCheckBoxOutlineBlank,
   MdChevronRight,
 } from "react-icons/md";
-import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
 import { Resizers } from "./Resizers";
-import { useColorOrder } from "../../themes/useColorOrder";
+import { useColorOrder } from "../../../../themes/useColorOrder";
 
 interface DataItem {
   [key: string]: any; // Adjust the type according to your data structure

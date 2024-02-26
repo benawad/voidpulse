@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
-import { MultiSelect } from "../../ui/MultiSelect";
-import { trpc } from "../../utils/trpc";
-import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
+import { MultiSelect } from "../../../../ui/MultiSelect";
+import { trpc } from "../../../../utils/trpc";
+import { useProjectBoardContext } from "../../../../../../providers/ProjectBoardProvider";
 import { MetricEvent } from "./MetricSelector";
 import { PropOrigin } from "@voidpulse/api";
 

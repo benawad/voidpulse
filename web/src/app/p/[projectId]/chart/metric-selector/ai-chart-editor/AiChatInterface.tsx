@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PulseMotif1 from "../../../landing/PulseMotif1";
+import PulseMotif1 from "../../../../../landing/PulseMotif1";
 import { AiInputBar, LocalAiMsg } from "./AiInputBar";
 import { MsgRole } from "@voidpulse/api";
 import { RiSendPlaneFill } from "react-icons/ri";

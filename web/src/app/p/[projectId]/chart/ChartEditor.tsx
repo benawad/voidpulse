@@ -16,27 +16,27 @@ import {
   PiSuitcaseSimple,
 } from "react-icons/pi";
 import { WiDaySunny } from "react-icons/wi";
-import { useChartStateContext } from "../../../providers/ChartStateProvider";
-import { useProjectBoardContext } from "../../../providers/ProjectBoardProvider";
-import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
-import { useChartStyle } from "../themes/useChartStyle";
-import { useColorOrder } from "../themes/useColorOrder";
-import { Button } from "../ui/Button";
-import { Dropdown } from "../ui/Dropdown";
-import { EditableTextField } from "../ui/EditableTextField";
-import { HintCallout } from "../ui/HintCallout";
-import { BarChart } from "../ui/charts/BarChart";
-import { DonutChart } from "../ui/charts/DonutChart";
-import { FunnelChart } from "../ui/charts/FunnelChart";
-import { LineChart } from "../ui/charts/LineChart";
-import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
-import { transformBarData } from "../utils/transformBarData";
-import { transformDonutData } from "../utils/transformDonutData";
-import { transformFunnelChartData } from "../utils/transformFunnelData";
-import { transformRetentionData } from "../utils/transformRetentionData";
-import { transformLineData } from "../utils/transformLineData";
-import { RouterOutput, trpc } from "../utils/trpc";
-import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
+import { useChartStateContext } from "../../../../../providers/ChartStateProvider";
+import { useProjectBoardContext } from "../../../../../providers/ProjectBoardProvider";
+import { useLastSelectedProjectBoardStore } from "../../../../../stores/useLastSelectedProjectBoardStore";
+import { useChartStyle } from "../../../themes/useChartStyle";
+import { useColorOrder } from "../../../themes/useColorOrder";
+import { Button } from "../../../ui/Button";
+import { Dropdown } from "../../../ui/Dropdown";
+import { EditableTextField } from "../../../ui/EditableTextField";
+import { HintCallout } from "../../../ui/HintCallout";
+import { BarChart } from "../../../ui/charts/BarChart";
+import { DonutChart } from "../../../ui/charts/DonutChart";
+import { FunnelChart } from "../../../ui/charts/FunnelChart";
+import { LineChart } from "../../../ui/charts/LineChart";
+import { dateToClickhouseDateString } from "../../../utils/dateToClickhouseDateString";
+import { transformBarData } from "../../../utils/transformBarData";
+import { transformDonutData } from "../../../utils/transformDonutData";
+import { transformFunnelChartData } from "../../../utils/transformFunnelData";
+import { transformRetentionData } from "../../../utils/transformRetentionData";
+import { transformLineData } from "../../../utils/transformLineData";
+import { RouterOutput, trpc } from "../../../utils/trpc";
+import { useFetchProjectBoards } from "../../../utils/useFetchProjectBoards";
 import { ChartDateRangePicker } from "./ChartDateRangePicker";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
@@ -226,7 +226,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     <div className="flex-1 flex flex-col">
       {/* Navigation bar that shows hierarchy of dashboards */}
       <div className="h-14 border-b border-primary-700 items-center flex">
-        <Link href="/">
+        <Link href={`/p/${projectId}`}>
           <div className="mx-4 text-sm text-primary-500">
             {board?.title || "Dashboard"}
           </div>
@@ -400,7 +400,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                         ...fields,
                       });
                     }
-                    router.push(`/`);
+                    router.push(`/p/${projectId}`);
                   }
                 }}
               >

@@ -3,7 +3,7 @@ import React from "react";
 import { BsBarChart } from "react-icons/bs";
 import { LiaChartAreaSolid } from "react-icons/lia";
 import { SlGraph } from "react-icons/sl";
-import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
 import { TextToChartInputBar } from "../metric-selector/ai-chart-editor/TextToChartInputBar";
 import { FunnelSidebar } from "./FunnelSidebar";
 import { InsightSidebar } from "./InsightSidebar";

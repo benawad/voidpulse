@@ -30,7 +30,7 @@ const Page: React.FC = () => {
     onSuccess: (data) => {
       if ("user" in data) {
         utils.getMe.setData(undefined, data);
-        router.push("/");
+        router.push(`/p/${data.projects[0].id}`);
       }
     },
     onError: (err) => {

@@ -1,7 +1,7 @@
 import { MetricMeasurement } from "@voidpulse/api";
 import React from "react";
-import { useChartStateContext } from "../../../providers/ChartStateProvider";
-import { Dropdown } from "../ui/Dropdown";
+import { useChartStateContext } from "../../../../../providers/ChartStateProvider";
+import { Dropdown } from "../../../ui/Dropdown";
 import { Metric } from "./metric-selector/Metric";
 
 interface MeasurementSelectorProps {

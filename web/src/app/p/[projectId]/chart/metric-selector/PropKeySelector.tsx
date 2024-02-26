@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
 import { MetricFilter } from "./Metric";
-import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
-import { RouterOutput, trpc } from "../../utils/trpc";
+import { useProjectBoardContext } from "../../../../../../providers/ProjectBoardProvider";
+import { RouterOutput, trpc } from "../../../../utils/trpc";
 import Downshift from "downshift";
-import { Input } from "../../ui/Input";
-import { PulseLoader } from "../../ui/PulseLoader";
+import { Input } from "../../../../ui/Input";
+import { PulseLoader } from "../../../../ui/PulseLoader";
 import {
   DataType,
   DateFilterOperation,
@@ -14,7 +14,7 @@ import {
   defaultPropertyNameMap,
   hiddenPropertyNameMap,
 } from "@voidpulse/api";
-import { genId } from "../../utils/genId";
+import { genId } from "../../../../utils/genId";
 import { CiShoppingTag } from "react-icons/ci";
 import { FaCalendarCheck } from "react-icons/fa6";
 import { IoText } from "react-icons/io5";

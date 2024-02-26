@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { IoIosSettings } from "react-icons/io";
 import { IoFolderOutline } from "react-icons/io5";
-import { PlusIcon } from "../chart/manual-sidebars/PlusIcon";
+import { PlusIcon } from "../p/[projectId]/chart/manual-sidebars/PlusIcon";
 import { CreateProjectModal } from "../components/CreateProjectModal";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
 import { Dropdown } from "./Dropdown";

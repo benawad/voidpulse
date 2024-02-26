@@ -6,7 +6,7 @@ import {
 } from "@floating-ui/react";
 import React, { useEffect, useState } from "react";
 import { PropKeySelector } from "./PropKeySelector";
-import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
 import { Metric, MetricFilter } from "./Metric";
 import { BsGrid3X3Gap } from "react-icons/bs";
 import { IoClose } from "react-icons/io5";

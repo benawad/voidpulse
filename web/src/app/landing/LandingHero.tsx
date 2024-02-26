@@ -2,6 +2,7 @@ import React from "react";
 import { StretchySvgWrapper } from "./StretchySvg";
 import Waveform from "./Waveform";
 import VoidpulseIcon from "./VoidpulseIcon";
+import Link from "next/link";
 
 interface LandingHeroProps {}
 
@@ -29,6 +30,11 @@ export const LandingHero: React.FC<LandingHeroProps> = ({}) => {
             <div className="text-6xl">voidpulse</div>
           </div>
           <div className="mt-2 text-2xl pl-14">copilot for product</div>
+          <Link href="/login" className="flex">
+            <div className="mt-8 bg-primary-500 text-white py-2 px-4 rounded-md">
+              Get Started
+            </div>
+          </Link>
         </div>
       </div>
     </div>

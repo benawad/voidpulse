@@ -1,11 +1,11 @@
 "use client";
 import { useParams } from "next/navigation";
-import { ProjectBoardProvider } from "../../../providers/ProjectBoardProvider";
-import { HeaderNav } from "../ui/HeaderNav";
-import { trpc } from "../utils/trpc";
-import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
+import { ProjectBoardProvider } from "../../../../../providers/ProjectBoardProvider";
+import { HeaderNav } from "../../../ui/HeaderNav";
+import { trpc } from "../../../utils/trpc";
+import { useFetchProjectBoards } from "../../../utils/useFetchProjectBoards";
 import { ChartEditor } from "./ChartEditor";
-import { ChartStateProvider } from "../../../providers/ChartStateProvider";
+import { ChartStateProvider } from "../../../../../providers/ChartStateProvider";
 
 function Page() {
   const { isLoading, board, project, projects, boards } =

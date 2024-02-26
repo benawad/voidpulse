@@ -1,10 +1,10 @@
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useChartStateContext } from "../../../../../providers/ChartStateProvider";
-import { useProjectBoardContext } from "../../../../../providers/ProjectBoardProvider";
-import { Input } from "../../../ui/Input";
-import { genId } from "../../../utils/genId";
-import { trpc } from "../../../utils/trpc";
+import { useChartStateContext } from "../../../../../../../providers/ChartStateProvider";
+import { useProjectBoardContext } from "../../../../../../../providers/ProjectBoardProvider";
+import { Input } from "../../../../../ui/Input";
+import { genId } from "../../../../../utils/genId";
+import { trpc } from "../../../../../utils/trpc";
 
 interface AiInputBarProps {}
 

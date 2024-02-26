@@ -1,8 +1,8 @@
 import { MetricMeasurement } from "@voidpulse/api";
 import React, { useState } from "react";
-import { useChartStateContext } from "../../../../providers/ChartStateProvider";
-import { LineSeparator } from "../../ui/LineSeparator";
-import { genId } from "../../utils/genId";
+import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
+import { LineSeparator } from "../../../../ui/LineSeparator";
+import { genId } from "../../../../utils/genId";
 import { BreakdownBlock } from "../metric-selector/BreakdownBlock";
 import { FilterBlock } from "../metric-selector/FilterBlock";
 import { Metric } from "../metric-selector/Metric";

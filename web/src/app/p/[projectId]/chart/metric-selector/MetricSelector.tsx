@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import Downshift from "downshift";
-import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
-import { trpc } from "../../utils/trpc";
-import { Input } from "../../ui/Input";
+import { useProjectBoardContext } from "../../../../../../providers/ProjectBoardProvider";
+import { trpc } from "../../../../utils/trpc";
+import { Input } from "../../../../ui/Input";
 import { TbClick } from "react-icons/tb";
-import { PulseLoader } from "../../ui/PulseLoader";
-import { useChartStateContext } from "../../../../providers/ChartStateProvider";
+import { PulseLoader } from "../../../../ui/PulseLoader";
+import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
 import { ReportType } from "@voidpulse/api";
 
 export type MetricEvent = {

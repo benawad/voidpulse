@@ -26,6 +26,7 @@ import { transformLineData } from "../../utils/transformLineData";
 import { RouterOutput, trpc } from "../../utils/trpc";
 import { chartToTagline } from "../../utils/chartToTagline";
 import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
+import { useParams, useSearchParams } from "next/navigation";
 
 interface ChartThumbnailProps {
   dragRef: any;
@@ -38,6 +39,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
   chart,
   dragRef,
 }) => {
+  const { projectId } = useParams<{ projectId: string }>();
   const vars = {
     breakdowns: chart.breakdowns || [],
     chartId: chart.id,
@@ -168,7 +170,7 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
         {/* Space out the drag handle, title, and more options buttons */}
 
         <div className="flex flex-row justify-between">
-          <Link href={`/chart/${chart.id}`}>
+          <Link href={`/p/${projectId}/chart/${chart.id}`}>
             <div className="absolute top-4 left-1 mx-auto cursor-grab opacity-0 group-hover:opacity-100">
               <RxDragHandleDots2 />
             </div>

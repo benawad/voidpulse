@@ -1,5 +1,5 @@
 import React from "react";
-import PlanetMotif1 from "../landing/PlanetMotif1";
+import PlanetMotif1 from "../../../landing/PlanetMotif1";
 
 interface NoDataToDisplayVisualProps {}
 

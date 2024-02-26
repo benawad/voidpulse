@@ -7,10 +7,10 @@ import {
 import React, { useState } from "react";
 import { IoClose, IoFilter } from "react-icons/io5";
 import { RxDragHandleDots2 } from "react-icons/rx";
-import { useChartStateContext } from "../../../../providers/ChartStateProvider";
-import { FloatingTooltip } from "../../ui/FloatingTooltip";
-import { FloatingTrigger } from "../../ui/FloatingTrigger";
-import { LineSeparator } from "../../ui/LineSeparator";
+import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
+import { FloatingTooltip } from "../../../../ui/FloatingTooltip";
+import { FloatingTrigger } from "../../../../ui/FloatingTrigger";
+import { LineSeparator } from "../../../../ui/LineSeparator";
 import { MeasurementSelector } from "../MeasurementSelector";
 import { FilterBlock } from "./FilterBlock";
 import { Metric, MetricFilter } from "./Metric";

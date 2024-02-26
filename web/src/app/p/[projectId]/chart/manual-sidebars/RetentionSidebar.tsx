@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useChartStateContext } from "../../../../providers/ChartStateProvider";
-import { LineSeparator } from "../../ui/LineSeparator";
-import { genId } from "../../utils/genId";
+import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
+import { LineSeparator } from "../../../../ui/LineSeparator";
+import { genId } from "../../../../utils/genId";
 import { BreakdownBlock } from "../metric-selector/BreakdownBlock";
 import { FilterBlock } from "../metric-selector/FilterBlock";
 import { Metric } from "../metric-selector/Metric";
@@ -9,8 +9,8 @@ import { MetricBlock } from "../metric-selector/MetricBlock";
 import { HeaderButton } from "./HeaderButton";
 import { PlusIcon } from "./PlusIcon";
 import { SidebarHeader } from "./SidebarHeader";
-import { FloatingTrigger } from "../../ui/FloatingTrigger";
-import { FloatingTooltip } from "../../ui/FloatingTooltip";
+import { FloatingTrigger } from "../../../../ui/FloatingTrigger";
+import { FloatingTooltip } from "../../../../ui/FloatingTooltip";
 
 interface InsightSidebarProps {}
 

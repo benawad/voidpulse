@@ -1,5 +1,5 @@
 import React from "react";
-import { Kids } from "../../ui/FullScreenModalOverlay";
+import { Kids } from "../../../../ui/FullScreenModalOverlay";
 
 export const HeaderButton: Kids<
   React.DetailedHTMLProps<

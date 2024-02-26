@@ -7,7 +7,10 @@ import {
 } from "@voidpulse/api";
 import moment, { Moment } from "moment";
 import React, { useContext, useState } from "react";
-import { Metric, MetricFilter } from "../src/app/chart/metric-selector/Metric";
+import {
+  Metric,
+  MetricFilter,
+} from "../src/app/p/[projectId]/chart/metric-selector/Metric";
 import { genId } from "../src/app/utils/genId";
 import { RouterOutput } from "../src/app/utils/trpc";
 

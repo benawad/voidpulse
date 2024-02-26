@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Input } from "../../../ui/Input";
+import { Input } from "../../../../../ui/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "../../../../../utils/trpc";
 import { MsgRole } from "@voidpulse/api";
 
 export type LocalAiMsg = {

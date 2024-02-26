@@ -1,4 +1,4 @@
-import { RouterInput } from "../../utils/trpc";
+import { RouterInput } from "../../../../utils/trpc";
 
 export type MetricFilter = RouterInput["getReport"]["metrics"][0]["filters"][0];
 

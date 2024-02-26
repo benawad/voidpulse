@@ -8,6 +8,7 @@ import { EditableTextField } from "../../ui/EditableTextField";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { BoardEmojiPicker } from "./BoardEmojiPicker";
+import { useParams } from "next/navigation";
 
 interface DashboardStickyHeaderProps {
   board: RouterOutput["getBoards"]["boards"][0];
@@ -16,6 +17,9 @@ interface DashboardStickyHeaderProps {
 export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
   board,
 }) => {
+  const { projectId } = useParams<{
+    projectId: string;
+  }>();
   //API call for updating board info
   const { lastProjectId } = useLastSelectedProjectBoardStore();
   const { boardId } = useProjectBoardContext();
@@ -87,7 +91,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
       <div></div>
 
       {/* New chart button */}
-      <Link href={`/chart?idx=${board.positions?.length || 0}`}>
+      <Link href={`/p/${projectId}/chart?idx=${board.positions?.length || 0}`}>
         <Button>
           <div className="flex items-center">
             <FaPlus className="mr-2" /> New chart
