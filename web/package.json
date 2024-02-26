@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NEXT_PUBLIC_API_URL=http://localhost:4001 next dev",
     "build": "NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start",
     "lint": "next lint",
@@ -50,6 +50,7 @@
     "@types/react-dom": "^18",
     "@types/react-window": "^1.8.8",
     "autoprefixer": "^10.0.1",
+    "cross-env": "^7.0.3",
     "css": "^3.0.0",
     "prettier": "^3.2.5",
     "tailwindcss": "^3.3.0",

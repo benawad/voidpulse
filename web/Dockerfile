@@ -42,6 +42,8 @@ RUN npm install -g pnpm
 # Install only production dependencies
 RUN pnpm install --prod
 
+ENV NEXT_PUBLIC_API_URL=https://event2.voidpet.com
+
 # Expose the port the app runs on
 EXPOSE 3000
 
