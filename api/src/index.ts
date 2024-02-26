@@ -15,7 +15,7 @@ const startServer = async () => {
   console.log("about to migrate postgres");
   await migrate(db, { migrationsFolder: path.join(__dirname, "../drizzle") });
   console.log("postgres migration complete");
-  console.log("see if clickhouse connection is working");
+  console.log("try clickhouse connection");
   await tryToConnect(
     () =>
       clickhouse
