@@ -8,6 +8,8 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
 
   api:
     image: api:latest
@@ -64,4 +66,9 @@ services:
 
 volumes:
   postgres-data:
+    external: true
   clickhouse-data:
+    external: true
+  caddy_data:
+    external: true
+  caddy_config:
