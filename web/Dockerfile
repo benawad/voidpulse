@@ -16,6 +16,8 @@ WORKDIR /usr/src/app/web
 # Install dependencies for the Next.js app
 RUN pnpm install --frozen-lockfile
 
+ENV NEXT_PUBLIC_API_URL=https://event2.voidpet.com
+
 # Build the Next.js application
 RUN pnpm run build
 
@@ -41,8 +43,6 @@ RUN npm install -g pnpm
 
 # Install only production dependencies
 RUN pnpm install --prod
-
-ENV NEXT_PUBLIC_API_URL=https://event2.voidpet.com
 
 # Expose the port the app runs on
 EXPOSE 3000
