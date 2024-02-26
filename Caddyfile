@@ -1,6 +1,6 @@
 event2.voidpet.com {
 	# Named matcher for multiple paths
-  @apiPaths path /trpc /ingest /health /update-people
+  @apiPaths path /trpc/* /ingest /health /update-people
 
   # Reverse proxy for API service
   reverse_proxy @apiPaths api:3000 {
