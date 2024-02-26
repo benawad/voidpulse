@@ -18,7 +18,7 @@ RUN npm install
 # @inject-env-variables
 
 # Install the GeoIP database
-RUN node ./node_modules/geoip-lite/scripts/updatedb.js license_key=$MASTERMIND_LICENSE_KEY
+RUN [ -n "$MASTERMIND_LICENSE_KEY" ] && node ./node_modules/geoip-lite/scripts/updatedb.js license_key=$MASTERMIND_LICENSE_KEY
 
 # Copy the rest of your application's source code
 COPY . .
