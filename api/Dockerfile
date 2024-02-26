@@ -43,9 +43,8 @@ COPY package*.json ./
 RUN npm install --only=production
 
 ENV NODE_ENV=production
-ENV DOMAIN=event2.voidpet.com
-ENV FRONTEND_URL=https://event2.voidpet.com
 
+ENV FRONTEND_URL=https://$DOMAIN
 # @inject-env-variables
 
 # Expose the port your app runs on

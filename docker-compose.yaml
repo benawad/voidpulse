@@ -18,13 +18,13 @@ services:
       - kafka
       - postgres
     environment:
-      - VIRTUAL_HOST=event2.voidpet.com
+      - VIRTUAL_HOST=$DOMAIN
       - VIRTUAL_PORT=3000
 
   web:
     image: web:latest
     environment:
-      - VIRTUAL_HOST=event2.voidpet.com
+      - VIRTUAL_HOST=$DOMAIN
       - VIRTUAL_PORT=3000
 
   clickhouse:

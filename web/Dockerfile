@@ -16,7 +16,7 @@ WORKDIR /usr/src/app/web
 # Install dependencies for the Next.js app
 RUN pnpm install --frozen-lockfile
 
-ENV NEXT_PUBLIC_API_URL=https://event2.voidpet.com
+ENV NEXT_PUBLIC_API_URL=https://$DOMAIN
 
 # Build the Next.js application
 RUN pnpm run build

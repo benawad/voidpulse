@@ -1,10 +1,10 @@
-event2.voidpet.com {
+$DOMAIN {
 	# Named matcher for multiple paths
   @apiPaths path /trpc/* /ingest /health /update-people
 
   # Reverse proxy for API service
   reverse_proxy @apiPaths api:3000 {
-    header_up Host event2.voidpet.com
+    header_up Host $DOMAIN
   }
 
   # Reverse proxy for Web service
