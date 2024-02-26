@@ -1,15 +1,16 @@
-import "dotenv-safe/config";
+import "./utils/custom-dotenv";
+// keep ^ that at the top
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { users } from "./schema/users";
-import { projects } from "./schema/projects";
-import { projectUsers } from "./schema/project-users";
+import { __prod__ } from "./constants/prod";
 import { boards } from "./schema/boards";
 import { charts } from "./schema/charts";
-import { __prod__ } from "./constants/prod";
+import { messages } from "./schema/messages";
 import { people } from "./schema/people";
 import { peoplePropTypes } from "./schema/people-prop-types";
-import { messages } from "./schema/messages";
+import { projectUsers } from "./schema/project-users";
+import { projects } from "./schema/projects";
+import { users } from "./schema/users";
 
 const devDbUrl =
   "postgresql://postgres:postgres@localhost/voidpulse?schema=public&connection_limit=1&pool_timeout=1";

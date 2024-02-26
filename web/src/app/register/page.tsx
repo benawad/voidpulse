@@ -51,7 +51,7 @@ const Page: React.FC = () => {
           { projectId: data.projects[0].id },
           { boards: data.boards }
         );
-        router.push("/");
+        router.push(`/p/${data.projects[0].id}`);
       }
     },
     onError: (err) => {

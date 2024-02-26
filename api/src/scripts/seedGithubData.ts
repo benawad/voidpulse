@@ -1,4 +1,5 @@
-import "dotenv-safe/config";
+import "../utils/custom-dotenv";
+// keep ^ that at the top
 import * as axios from "axios";
 import * as zlib from "zlib";
 import * as fs from "fs";

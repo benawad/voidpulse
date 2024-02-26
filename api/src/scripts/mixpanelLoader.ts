@@ -1,4 +1,5 @@
-import "dotenv-safe/config";
+import "../utils/custom-dotenv";
+// keep ^ that at the top
 import fs from "fs";
 import axios from "axios";
 import { clickhouse } from "../clickhouse";

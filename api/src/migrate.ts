@@ -1,4 +1,5 @@
-import "dotenv-safe/config";
+import "./utils/custom-dotenv";
+// keep ^ that at the top
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { db, pool } from "./db";
 import path from "path";

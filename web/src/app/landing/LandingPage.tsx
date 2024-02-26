@@ -1,5 +1,4 @@
 "use client";
-import { trpc } from "../utils/trpc";
 import Aurora from "./Aurora";
 import { LandingHero } from "./LandingHero";
 import LineChartMotif from "./LineChartMotif";
@@ -10,7 +9,7 @@ import { StretchySvgWrapper } from "./StretchySvg";
 import WaveformBottom from "./WaveformBottom";
 import "./landing.css";
 
-function Home() {
+export function LandingPage() {
   const sectionStyle = "flex flex-row items-center justify-center";
   return (
     <main className="landing-body overscroll-none">
@@ -59,5 +58,3 @@ function Home() {
     </main>
   );
 }
-
-export default trpc.withTRPC(Home);
