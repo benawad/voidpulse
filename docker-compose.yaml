@@ -20,12 +20,6 @@ services:
     environment:
       - VIRTUAL_HOST=event2.voidpet.com
       - VIRTUAL_PORT=3000
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
 
   web:
     image: web:latest
@@ -60,6 +54,9 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
     volumes:
       - zookeeper-data:/var/lib/zookeeper/data
       - zookeeper-log:/var/lib/zookeeper/log
