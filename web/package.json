@@ -7,6 +7,7 @@
     "build": "NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start",
     "lint": "next lint",
+    "cf:pages": "npx @cloudflare/next-on-pages@1",
     "themes": "ts-node --project tsconfig.scripts.json scripts/convertHexThemes.ts"
   },
   "dependencies": {
