@@ -181,7 +181,6 @@ export class Voidpulse {
         }),
       });
       if (!resp.ok) {
-        console.log("rip");
         try {
           const info = await resp.json();
           console.error(`Voidpulse error: ${JSON.stringify(info, null, 2)}`);

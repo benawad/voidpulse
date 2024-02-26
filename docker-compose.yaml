@@ -44,7 +44,7 @@ services:
       - zookeeper
 
   kafka:
-    image: wurstmeister/kafka
+    image: confluentinc/cp-kafka:latest
     volumes:
       - kafka-data:/var/lib/kafka/data
     environment:
@@ -55,7 +55,7 @@ services:
       - zookeeper
 
   zookeeper:
-    image: wurstmeister/zookeeper
+    image: confluentinc/cp-zookeeper:latest
     volumes:
       - zookeeper-data:/var/lib/zookeeper/data
       - zookeeper-log:/var/lib/zookeeper/log
