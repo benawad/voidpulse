@@ -35,7 +35,8 @@ const startServer = async () => {
   await runClickhouseMigrations();
   console.log("clickhouse migration complete");
   console.log("about to connect to kafka");
-  await tryToConnect(() => kafkaProducer.connect(), "kafka");
+  await kafkaProducer.connect();
+  // await tryToConnect(() => kafkaProducer.connect(), "kafka");
   console.log("connected to kafka");
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
