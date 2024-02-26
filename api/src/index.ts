@@ -9,29 +9,23 @@ import { addIngestRoute } from "./routes/express/ingest";
 import { addUpdatePeopleRoute } from "./routes/express/update-people";
 import { __prod__ } from "./constants/prod";
 import { sleep } from "./utils/sleep";
+import { tryToConnect } from "./utils/tryToConnect";
 
 const startServer = async () => {
   console.log("about to migrate postgres");
   await migrate(db, { migrationsFolder: path.join(__dirname, "../drizzle") });
   console.log("postgres migration complete");
   console.log("see if clickhouse connection is working");
-  for (let i = 0; i++; i < 10) {
-    try {
-      await clickhouse.query({ query: "SELECT 1" });
-      break;
-    } catch {}
-    console.log(
-      "clickhouse connection failed, sleeping for " + (i + 1) + " seconds"
-    );
-    sleep((i + 1) * 1000);
-    console.log("retrying now...");
-  }
+  await tryToConnect(
+    () => clickhouse.query({ query: "SELECT 1" }),
+    "clickhouse"
+  );
   console.log("connected to clickhouse");
   console.log("about to migrate clickhouse");
   await runClickhouseMigrations();
   console.log("clickhouse migration complete");
   console.log("about to connect to kafka");
-  await kafkaProducer.connect();
+  await tryToConnect(() => kafkaProducer.connect(), "kafka");
   console.log("connected to kafka");
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
