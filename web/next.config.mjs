@@ -4,6 +4,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   productionBrowserSourceMaps: true,
+  output: "export",
 };
 
 export default nextConfig;
