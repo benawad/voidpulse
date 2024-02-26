@@ -17,7 +17,13 @@ const startServer = async () => {
   console.log("postgres migration complete");
   console.log("see if clickhouse connection is working");
   await tryToConnect(
-    () => clickhouse.query({ query: "SELECT 1" }),
+    () =>
+      clickhouse
+        .query({ query: "SELECT 1" })
+        .then((x) => x.json())
+        .catch((err) => {
+          throw err;
+        }),
     "clickhouse"
   );
   console.log("connected to clickhouse");
