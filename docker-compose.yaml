@@ -44,6 +44,7 @@ services:
   kafka:
     image: wurstmeister/kafka
     environment:
+      KAFKA_BROKER_ID: 1001
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     depends_on:
