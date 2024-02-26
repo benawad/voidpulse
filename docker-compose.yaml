@@ -45,8 +45,10 @@ services:
 
   kafka:
     image: wurstmeister/kafka
+    volumes:
+      - kafka-data:/var/lib/kafka/data
     environment:
-      KAFKA_BROKER_ID: 1001
+      KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     depends_on:
@@ -54,6 +56,9 @@ services:
 
   zookeeper:
     image: wurstmeister/zookeeper
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
 
   postgres:
     image: postgres
@@ -72,3 +77,10 @@ volumes:
   caddy_data:
     external: true
   caddy_config:
+  kafka-data:
+    external: true
+  zookeeper-data:
+    external: true
+  zookeeper-log:
+
+
