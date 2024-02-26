@@ -29,7 +29,7 @@ const Page: React.FC = () => {
   const { mutateAsync } = trpc.login.useMutation({
     onSuccess: (data) => {
       if ("user" in data) {
-        utils.getMe.setData(undefined, { user: data.user });
+        utils.getMe.setData(undefined, data);
         router.push("/");
       }
     },

@@ -1,13 +1,15 @@
 import { z } from "zod";
 import { publicProcedure } from "../../trpc";
 import { db } from "../../db";
-import { ilike } from "drizzle-orm";
+import { eq, ilike } from "drizzle-orm";
 import { users } from "../../schema/users";
 import argon2d from "argon2";
 import { __prod__ } from "../../constants/prod";
 import { sendAuthCookies } from "../../utils/createAuthTokens";
 import { TRPCError } from "@trpc/server";
 import { selectUserFields } from "../../utils/selectUserFields";
+import { projectUsers } from "../../schema/project-users";
+import { projects } from "../../schema/projects";
 
 export const login = publicProcedure
   .input(
@@ -47,5 +49,12 @@ export const login = publicProcedure
 
     return {
       user: selectUserFields(user),
+      projects: (
+        await db
+          .select()
+          .from(projectUsers)
+          .innerJoin(projects, eq(projectUsers.projectId, projects.id))
+          .where(eq(projectUsers.userId, user.id))
+      ).map((x) => x.projects),
     };
   });

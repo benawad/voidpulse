@@ -22,7 +22,7 @@ export const useFetchProjectBoards = () => {
 
   const project = currProjectId
     ? meData?.projects.find((p) => p.id === currProjectId)
-    : meData?.projects[0];
+    : meData?.projects?.[0];
 
   useEffect(() => {
     if (!project && meData?.projects.length) {
@@ -32,7 +32,7 @@ export const useFetchProjectBoards = () => {
 
   const board = lastBoardId
     ? data?.boards.find((b) => b.id === lastBoardId) || data?.boards[0]
-    : data?.boards[0];
+    : data?.boards?.[0];
 
   return {
     isLoading,
