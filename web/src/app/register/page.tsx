@@ -42,7 +42,7 @@ const Page: React.FC = () => {
   } = useForm<Inputs>();
   const { mutateAsync } = trpc.register.useMutation({
     onSuccess: (data) => {
-      if ("user" in data) {
+      if ("projects" in data) {
         utils.getMe.setData(undefined, {
           user: data.user,
           projects: data.projects,
@@ -52,6 +52,8 @@ const Page: React.FC = () => {
           { boards: data.boards }
         );
         router.push(`/p/${data.projects[0].id}`);
+      } else {
+        router.push("/check-email");
       }
     },
     onError: (err) => {

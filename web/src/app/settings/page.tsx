@@ -1,16 +1,16 @@
 "use client";
 import React, { useState } from "react";
+import { IoChevronBack } from "react-icons/io5";
+import { ThemePicker } from "../themes/ThemePicker";
+import { Button } from "../ui/Button";
+import { EditableTextField } from "../ui/EditableTextField";
 import { HeaderNav } from "../ui/HeaderNav";
+import { LineSeparator } from "../ui/LineSeparator";
 import { trpc } from "../utils/trpc";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
-import { EditableTextField } from "../ui/EditableTextField";
-import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
-import { ThemePicker } from "../themes/ThemePicker";
-import { IoChevronBack } from "react-icons/io5";
-import { LineSeparator } from "../ui/LineSeparator";
-import { Button } from "../ui/Button";
 
 export const SettingsPage: React.FC = ({}) => {
+  const { mutateAsync: logout } = trpc.logout.useMutation();
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
   const { project } = useFetchProjectBoards();
   const utils = trpc.useUtils();
@@ -36,7 +36,7 @@ export const SettingsPage: React.FC = ({}) => {
   const headerLabelStyle = "text-xs text-primary-400 my-3";
   const sectionStyle = "p-12";
   return (
-    <main className="h-full bg-primary-900 flex flex-col">
+    <main className="h-full min-h-screen bg-primary-900 flex flex-col">
       <HeaderNav />
       {/* Settings content body */}
       <div>
@@ -107,6 +107,17 @@ export const SettingsPage: React.FC = ({}) => {
         <div className={sectionStyle}>
           <div className={headerLabelStyle}>THEMES</div>
           <ThemePicker />
+        </div>
+
+        <div className={sectionStyle}>
+          <Button
+            onClick={async () => {
+              await logout({});
+              window.location.href = "/";
+            }}
+          >
+            Logout
+          </Button>
         </div>
       </div>
     </main>

@@ -26,6 +26,8 @@ import { getPropValues } from "./routes/charts/getPropValues";
 import { getReport } from "./routes/charts/insight/getReport";
 import { updateChart } from "./routes/charts/updateChart";
 import { createContext, t } from "./trpc";
+import { confirmEmail } from "./routes/auth/confirmEmail";
+import { logout } from "./routes/auth/logout";
 
 export const appRouter = t.router({
   getBoards,
@@ -49,6 +51,8 @@ export const appRouter = t.router({
   updateBoardOrder,
   updateProject,
   createProject,
+  confirmEmail,
+  logout,
 });
 
 export const app = express();

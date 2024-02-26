@@ -4,7 +4,7 @@ import { db } from "../../db";
 import { eq, ilike } from "drizzle-orm";
 import { users } from "../../schema/users";
 import argon2d from "argon2";
-import { __prod__ } from "../../constants/prod";
+import { __cloud__, __prod__ } from "../../constants/prod";
 import { sendAuthCookies } from "../../utils/createAuthTokens";
 import { TRPCError } from "@trpc/server";
 import { selectUserFields } from "../../utils/selectUserFields";
@@ -20,7 +20,7 @@ export const login = publicProcedure
   )
   .mutation(async ({ input, ctx }) => {
     const user = await db.query.users.findFirst({
-      where: ilike(users.email, input.email),
+      where: eq(users.email, input.email.toLowerCase()),
     });
 
     if (!user) {
@@ -42,6 +42,13 @@ export const login = publicProcedure
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: err.message,
+      });
+    }
+
+    if (__cloud__ && !user.confirmed) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Check your email for a confirmation email.",
       });
     }
 

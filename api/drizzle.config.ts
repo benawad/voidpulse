@@ -1,4 +1,3 @@
-require("dotenv-safe").config();
 import type { Config } from "drizzle-kit";
 
 export default {
@@ -6,6 +5,7 @@ export default {
   out: "./drizzle",
   driver: "pg",
   dbCredentials: {
-    connectionString: process.env.DATABASE_URL as string,
+    connectionString:
+      "postgresql://postgres:postgres@localhost/voidpulse?schema=public&connection_limit=1&pool_timeout=1",
   },
 } satisfies Config;

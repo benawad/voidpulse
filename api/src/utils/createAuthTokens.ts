@@ -36,17 +36,23 @@ const createAuthTokens = (
   return { refreshToken, accessToken };
 };
 
+const cookieOpts = {
+  path: "/",
+  httpOnly: true,
+  secure: __prod__,
+  domain: __prod__ ? `.${process.env.DOMAIN}` : "",
+  maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 year
+};
+
 export const sendAuthCookies = (res: Response, user: DbUser) => {
   const { accessToken, refreshToken } = createAuthTokens(user);
-  const opts = {
-    path: "/",
-    httpOnly: true,
-    secure: __prod__,
-    domain: __prod__ ? `.${process.env.DOMAIN}` : "",
-    maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 year
-  };
-  res.cookie("id", accessToken, opts);
-  res.cookie("rid", refreshToken, opts);
+  res.cookie("id", accessToken, cookieOpts);
+  res.cookie("rid", refreshToken, cookieOpts);
+};
+
+export const clearAuthCookies = (res: Response) => {
+  res.clearCookie("id", cookieOpts);
+  res.clearCookie("rid", cookieOpts);
 };
 
 export const checkTokens = async (

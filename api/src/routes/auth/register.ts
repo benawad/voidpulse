@@ -1,17 +1,14 @@
+import { TRPCError } from "@trpc/server";
+import argon2d from "argon2";
 import { z } from "zod";
-import { publicProcedure } from "../../trpc";
+import { __cloud__ } from "../../constants/prod";
 import { DbUser, db } from "../../db";
 import { users } from "../../schema/users";
-import argon2d from "argon2";
+import { publicProcedure } from "../../trpc";
 import { sendAuthCookies } from "../../utils/createAuthTokens";
-import { projects } from "../../schema/projects";
-import { genApiKey } from "../../utils/genApiKey";
-import { projectUsers } from "../../schema/project-users";
-import { boards } from "../../schema/boards";
-import * as emoji from "node-emoji";
-import { TRPCError } from "@trpc/server";
+import { sendConfirmationEmail } from "../../utils/email/sendConfirmationEmail";
+import { initNewUser } from "../../utils/initNewUser";
 import { selectUserFields } from "../../utils/selectUserFields";
-import { v4 } from "uuid";
 
 export const register = publicProcedure
   .input(
@@ -21,6 +18,18 @@ export const register = publicProcedure
     })
   )
   .mutation(async ({ input, ctx }) => {
+    // @todo remove the `|| true` when launching
+    if (!__cloud__ || true) {
+      const user = await db.query.users.findFirst();
+      if (user) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            "Only one user can be created in self-hosted mode (to prevent bad actors).",
+        });
+      }
+    }
+
     let newUser: DbUser;
 
     try {
@@ -28,7 +37,7 @@ export const register = publicProcedure
         await db
           .insert(users)
           .values({
-            email: input.email,
+            email: input.email.toLowerCase(),
             passwordHash: await argon2d.hash(input.password),
           })
           .returning()
@@ -51,37 +60,19 @@ export const register = publicProcedure
       });
     }
 
-    const boardId = v4();
-    const [project] = await db
-      .insert(projects)
-      .values({
-        name: "My First Project",
-        apiKey: genApiKey(),
-        boardOrder: [boardId],
-      })
-      .returning();
+    if (__cloud__) {
+      await sendConfirmationEmail(newUser.email, newUser.id);
+      return {
+        user: selectUserFields(newUser),
+      };
+    } else {
+      const { project, board } = await initNewUser(newUser.id);
+      sendAuthCookies(ctx.res, newUser);
 
-    await db.insert(projectUsers).values({
-      projectId: project.id,
-      userId: newUser.id,
-    });
-
-    const [board] = await db
-      .insert(boards)
-      .values({
-        id: boardId,
-        creatorId: newUser.id,
-        emoji: emoji.random().emoji,
-        title: "My First Board",
-        projectId: project.id,
-      })
-      .returning();
-
-    sendAuthCookies(ctx.res, newUser);
-
-    return {
-      user: selectUserFields(newUser),
-      projects: [project],
-      boards: [board],
-    };
+      return {
+        user: selectUserFields(newUser),
+        projects: [project],
+        boards: [board],
+      };
+    }
   });

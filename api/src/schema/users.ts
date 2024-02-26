@@ -1,5 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import { integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { projectUsers } from "./project-users";
 import { boards } from "./boards";
 import { messages } from "./messages";
@@ -11,6 +11,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   refreshTokenVersion: integer("token_version").notNull().default(0),
   passwordHash: text("password_hash").notNull(),
+  confirmed: boolean("confirmed").notNull().default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
