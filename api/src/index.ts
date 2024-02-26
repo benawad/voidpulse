@@ -20,8 +20,12 @@ const startServer = async () => {
     () =>
       clickhouse
         .query({ query: "SELECT 1" })
-        .then((x) => x.json())
+        .then((x) => {
+          console.log("in then...");
+          return x.json();
+        })
         .catch((err) => {
+          console.log("in catch...");
           throw err;
         }),
     "clickhouse"
