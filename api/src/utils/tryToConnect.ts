@@ -1,4 +1,4 @@
-import { sleep } from "openai/core";
+import { sleep } from "./sleep";
 
 export const tryToConnect = async (fn: () => Promise<any>, label: string) => {
   for (let i = 0; i++; i < 10) {
