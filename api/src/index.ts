@@ -26,6 +26,7 @@ const startServer = async () => {
     await systemClient.query({
       query: `CREATE DATABASE IF NOT EXISTS voidpulse`,
     });
+    await systemClient.close();
   }
   console.log("try clickhouse connection");
   await tryToConnect(
