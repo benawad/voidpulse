@@ -15,7 +15,12 @@ if (missingEnvVars.length) {
   );
 }
 
-const requiredEnvVarsCloud = ["POSTMARK_API_KEY", "FROM_EMAIL"];
+const requiredEnvVarsCloud = [
+  "POSTMARK_API_KEY",
+  "FROM_EMAIL",
+  "CLOUD_KAFKA_HOST",
+  "CLOUD_CLICKHOUSE_HOST",
+];
 
 const missingEnvVarsCloud = requiredEnvVarsCloud.filter(
   (envVar) => !process.env[envVar]

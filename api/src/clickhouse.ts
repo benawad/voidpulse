@@ -2,7 +2,7 @@ import { ClickHouseLogLevel, createClient } from "@clickhouse/client";
 import fs from "fs";
 import path from "path";
 import { db } from "./db";
-import { __prod__ } from "./constants/prod";
+import { __cloud__, __prod__ } from "./constants/prod";
 
 export type ClickHouseQueryResponse<T> = {
   meta: { name: string; type: string }[];
@@ -14,7 +14,9 @@ export type ClickHouseQueryResponse<T> = {
 export const clickhouse = createClient(
   __prod__
     ? {
-        host: "http://clickhouse:8123",
+        host: __cloud__
+          ? process.env.CLOUD_CLICKHOUSE_HOST
+          : "http://clickhouse:8123",
         username: "default",
         password: "",
         database: "voidpulse",

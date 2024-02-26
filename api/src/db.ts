@@ -2,7 +2,7 @@ import "./utils/custom-dotenv";
 // keep ^ that at the top
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { __prod__ } from "./constants/prod";
+import { __cloud__, __prod__ } from "./constants/prod";
 import { boards } from "./schema/boards";
 import { charts } from "./schema/charts";
 import { messages } from "./schema/messages";
@@ -17,13 +17,17 @@ const devDbUrl =
 
 export const pool = new Pool(
   __prod__
-    ? {
-        host: "postgres",
-        database: "voidpulse",
-        user: "youruser",
-        password: "yourpassword",
-        port: 5432,
-      }
+    ? __cloud__
+      ? {
+          connectionString: process.env.DATABASE_URL,
+        }
+      : {
+          host: "postgres",
+          database: "voidpulse",
+          user: "youruser",
+          password: "yourpassword",
+          port: 5432,
+        }
     : {
         connectionString: devDbUrl,
       }

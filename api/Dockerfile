@@ -15,10 +15,18 @@ COPY package*.json ./
 # Install npm dependencies, including 'geoip-lite'
 RUN npm install
 
+ARG CLOUD_MASTERMIND_LICENSE_KEY
+ENV MASTERMIND_LICENSE_KEY=${CLOUD_MASTERMIND_LICENSE_KEY}
+
 # @inject-env-variables
 
 # Install the GeoIP database
-RUN [ -n "$MASTERMIND_LICENSE_KEY" ] && node ./node_modules/geoip-lite/scripts/updatedb.js license_key=$MASTERMIND_LICENSE_KEY
+RUN if [ -n "$MASTERMIND_LICENSE_KEY" ]; then \
+	node ./node_modules/geoip-lite/scripts/updatedb.js license_key=$MASTERMIND_LICENSE_KEY; \
+	else \
+	echo "MASTERMIND_LICENSE_KEY is not set, skipping GeoIP database update"; \
+	fi
+
 
 # Copy the rest of your application's source code
 COPY . .
