@@ -67,7 +67,7 @@ export const runClickhouseMigrations = async () => {
 
   const migrationFiles = fs
     .readdirSync(migFolder)
-    .filter((file) => file.endsWith(".ts"))
+    .filter((file) => file.endsWith(".ts") || file.endsWith(".js"))
     .sort();
 
   for (const file of migrationFiles) {
