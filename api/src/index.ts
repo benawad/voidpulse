@@ -17,7 +17,7 @@ const startServer = async () => {
   console.log("see if clickhouse connection is working");
   for (let i = 0; i++; i < 10) {
     try {
-      clickhouse.query({ query: "SELECT 1" });
+      await clickhouse.query({ query: "SELECT 1" });
       break;
     } catch {}
     console.log(
