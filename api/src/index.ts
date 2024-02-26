@@ -4,6 +4,7 @@ import path from "path";
 import { app } from "./appRouter";
 import { clickhouse, runClickhouseMigrations } from "./clickhouse";
 import { db } from "./db";
+import { ClickHouseLogLevel, createClient } from "@clickhouse/client";
 import { kafkaProducer } from "./kafka/kafka";
 import { addIngestRoute } from "./routes/express/ingest";
 import { addUpdatePeopleRoute } from "./routes/express/update-people";
@@ -15,6 +16,17 @@ const startServer = async () => {
   console.log("about to migrate postgres");
   await migrate(db, { migrationsFolder: path.join(__dirname, "../drizzle") });
   console.log("postgres migration complete");
+  if (__prod__) {
+    const systemClient = createClient({
+      host: "http://clickhouse:8123",
+      username: "default",
+      password: "",
+      database: "",
+    });
+    await systemClient.query({
+      query: `CREATE DATABASE IF NOT EXISTS voidpulse`,
+    });
+  }
   console.log("try clickhouse connection");
   await tryToConnect(
     () => clickhouse.query({ query: "SELECT 1" }),
