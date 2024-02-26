@@ -1,16 +1,15 @@
 import { sleep } from "./sleep";
 
 export const tryToConnect = async (fn: () => Promise<any>, label: string) => {
-  for (let i = 0; i++; i < 10) {
+  for (let i = 0; i < 10; i++) {
     try {
-      const res = await fn();
-      console.log("res: ", res);
+      await fn();
       break;
     } catch {}
     console.log(
       label + " connection failed, sleeping for " + (i + 1) + " seconds"
     );
-    sleep((i + 1) * 1000);
+    await sleep((i + 1) * 1000);
     console.log("retrying now...");
   }
 };

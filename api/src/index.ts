@@ -17,17 +17,7 @@ const startServer = async () => {
   console.log("postgres migration complete");
   console.log("try clickhouse connection");
   await tryToConnect(
-    () =>
-      clickhouse
-        .query({ query: "SELECT 1" })
-        .then((x) => {
-          console.log("in then...");
-          return x.json();
-        })
-        .catch((err) => {
-          console.log("in catch...");
-          throw err;
-        }),
+    () => clickhouse.query({ query: "SELECT 1" }),
     "clickhouse"
   );
   console.log("connected to clickhouse");
@@ -35,8 +25,7 @@ const startServer = async () => {
   await runClickhouseMigrations();
   console.log("clickhouse migration complete");
   console.log("about to connect to kafka");
-  await kafkaProducer.connect();
-  // await tryToConnect(() => kafkaProducer.connect(), "kafka");
+  await tryToConnect(() => kafkaProducer.connect(), "kafka");
   console.log("connected to kafka");
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
