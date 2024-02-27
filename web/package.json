@@ -7,7 +7,6 @@
     "build": "NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start",
     "lint": "next lint",
-    "cf:pages": "npx @cloudflare/next-on-pages@1",
     "themes": "ts-node --project tsconfig.scripts.json scripts/convertHexThemes.ts"
   },
   "dependencies": {
@@ -24,7 +23,7 @@
     "@trpc/server": "11.0.0-next-beta.242",
     "@types/react-dates": "^21.8.6",
     "@types/react-modal": "^3.16.3",
-    "@voidpulse/api": "workspace:^",
+    "@voidpulse/api": "1.0.0",
     "chart.js": "^4.4.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "downshift": "^8.3.1",
