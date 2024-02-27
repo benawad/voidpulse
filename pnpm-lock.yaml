@@ -200,7 +200,7 @@ importers:
         specifier: ^3.16.3
         version: 3.16.3
       '@voidpulse/api':
-        specifier: workspace:^
+        specifier: 1.0.0
         version: link:../api
       chart.js:
         specifier: ^4.4.1
