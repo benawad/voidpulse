@@ -9,7 +9,7 @@ import { ClickHouseLogLevel, createClient } from "@clickhouse/client";
 import { kafkaProducer } from "./kafka/kafka";
 import { addIngestRoute } from "./routes/express/ingest";
 import { addUpdatePeopleRoute } from "./routes/express/update-people";
-import { __prod__ } from "./constants/prod";
+import { __cloud__, __prod__ } from "./constants/prod";
 import { sleep } from "./utils/sleep";
 import { tryToConnect } from "./utils/tryToConnect";
 
@@ -44,7 +44,7 @@ const startServer = async () => {
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
 
-  app.listen(__prod__ ? 3000 : 4001, () => {
+  app.listen(__prod__ ? (__cloud__ ? process.env.PORT : 3000) : 4001, () => {
     console.log("server started on http://localhost:4001/trpc");
   });
 };
