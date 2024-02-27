@@ -1,12 +1,12 @@
-import { and, eq, InferInsertModel, is, sql } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
+import { and, eq, InferInsertModel, sql } from "drizzle-orm";
 import * as emoji from "node-emoji";
 import { z } from "zod";
 import { db } from "../../db";
 import { boards } from "../../schema/boards";
+import { projectUsers } from "../../schema/project-users";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
-import { TRPCError } from "@trpc/server";
-import { projects } from "../../schema/projects";
 import { isUuidV4 } from "../../utils/isUuid";
 
 export const updateBoardOrder = protectedProcedure
@@ -20,9 +20,14 @@ export const updateBoardOrder = protectedProcedure
     await assertProjectMember({ projectId, userId });
 
     await db
-      .update(projects)
+      .update(projectUsers)
       .set({ boardOrder })
-      .where(eq(projects.id, projectId));
+      .where(
+        and(
+          eq(projectUsers.projectId, projectId),
+          eq(projectUsers.userId, userId)
+        )
+      );
 
     return { ok: true };
   });

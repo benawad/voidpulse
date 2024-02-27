@@ -1,24 +1,26 @@
 "use client";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { trpc } from "../utils/trpc";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
-import { ErrorMessage } from "../ui/ErrorMessage";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Button } from "../../ui/Button";
+import { ErrorMessage } from "../../ui/ErrorMessage";
+import { Input } from "../../ui/Input";
+import { trpc } from "../../utils/trpc";
 
 type Inputs = {
-  email: string;
   password: string;
 };
 
 type InputKey = keyof Inputs;
 
 const Page: React.FC = () => {
+  const { code } = useParams<{ code: string }>();
   const utils = trpc.useUtils();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    mutateAsync(data);
+    mutateAsync({
+      code,
+      password: data.password,
+    });
   };
   const {
     register,
@@ -26,7 +28,7 @@ const Page: React.FC = () => {
     setError,
     formState: { errors },
   } = useForm<Inputs>();
-  const { mutateAsync } = trpc.login.useMutation({
+  const { mutateAsync } = trpc.setPassword.useMutation({
     onSuccess: (data) => {
       if ("user" in data) {
         utils.getMe.setData(undefined, data);
@@ -34,7 +36,7 @@ const Page: React.FC = () => {
       }
     },
     onError: (err) => {
-      let keys: InputKey[] = ["email", "password"];
+      let keys: InputKey[] = ["password"];
 
       let key = err.data?.path;
 
@@ -56,36 +58,14 @@ const Page: React.FC = () => {
       <div className="flex justify-center">
         <div className="card p-12 mt-8 max-w-md">
           <div className="text-center mb-4 text-primary-500 font-bold">
-            Log in
+            Set password
           </div>
           {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
             <div>
-              {/* register your input into the hook by invoking the "register" function */}
-              <Input
-                placeholder="email"
-                autoComplete="email"
-                type="email"
-                {...register("email", {
-                  required: true,
-                  minLength: {
-                    value: 3,
-                    message: "Must contain at least 3 characters",
-                  },
-                  maxLength: {
-                    value: 255,
-                    message: "Must contain at most 255 characters",
-                  },
-                })}
-              />
-              {errors.email && (
-                <ErrorMessage>{errors.email.message}</ErrorMessage>
-              )}
-
               {/* include validation with required or other standard HTML validation rules */}
               <Input
-                placeholder="password"
-                autoComplete="current-password"
+                placeholder="new password"
                 type="password"
                 {...register("password", {
                   required: true,
@@ -99,12 +79,6 @@ const Page: React.FC = () => {
                   },
                 })}
               />
-              <Link
-                href="/forgot-password"
-                className="text-primary-500 underline self-center"
-              >
-                forgot password?
-              </Link>
               {errors.password && (
                 <ErrorMessage>{errors.password.message}</ErrorMessage>
               )}
@@ -119,13 +93,6 @@ const Page: React.FC = () => {
             <Button type="submit" className="my-4 text-primary-300">
               Enter
             </Button>
-
-            <Link
-              href="/register"
-              className="text-primary-500 underline self-center"
-            >
-              don't have an account? create one
-            </Link>
           </form>
         </div>
       </div>

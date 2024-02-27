@@ -7,6 +7,7 @@ import { projects } from "../../schema/projects";
 import { protectedProcedure } from "../../trpc";
 import { genApiKey } from "../../utils/genApiKey";
 import { v4 } from "uuid";
+import { ProjectRoleId } from "../../app-router-type";
 
 export const createProject = protectedProcedure
   .input(
@@ -21,13 +22,14 @@ export const createProject = protectedProcedure
       .values({
         name,
         apiKey: genApiKey(),
-        boardOrder: [boardId],
       })
       .returning();
 
     await db.insert(projectUsers).values({
       projectId: project.id,
       userId,
+      boardOrder: [boardId],
+      role: ProjectRoleId.owner,
     });
 
     const [board] = await db

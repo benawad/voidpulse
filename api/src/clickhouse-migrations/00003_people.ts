@@ -1,5 +1,5 @@
 import { ClickHouseClient } from "@clickhouse/client";
-import { __kafka_host__, __prod__ } from "../constants/prod";
+import { __clickhouse_kafka_host__ } from "../constants/prod";
 
 export const up = async (clickhouse: ClickHouseClient) => {
   await clickhouse.command({
@@ -27,7 +27,7 @@ export const up = async (clickhouse: ClickHouseClient) => {
       ingested_at DateTime
 	)
 	ENGINE = Kafka
-	SETTINGS kafka_broker_list = '${__kafka_host__}:9092',
+	SETTINGS kafka_broker_list = '${__clickhouse_kafka_host__}:9092',
 				 kafka_topic_list = 'people',
 				 kafka_group_name = 'people_consumer_group1',
 				 kafka_format = 'JSONEachRow',

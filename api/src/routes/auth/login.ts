@@ -1,15 +1,14 @@
-import { z } from "zod";
-import { publicProcedure } from "../../trpc";
-import { db } from "../../db";
-import { eq, ilike } from "drizzle-orm";
-import { users } from "../../schema/users";
-import argon2d from "argon2";
-import { __cloud__, __prod__ } from "../../constants/prod";
-import { sendAuthCookies } from "../../utils/createAuthTokens";
 import { TRPCError } from "@trpc/server";
+import argon2d from "argon2";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { __cloud__ } from "../../constants/prod";
+import { db } from "../../db";
+import { users } from "../../schema/users";
+import { publicProcedure } from "../../trpc";
+import { sendAuthCookies } from "../../utils/createAuthTokens";
+import { getProjects } from "../../utils/getProjects";
 import { selectUserFields } from "../../utils/selectUserFields";
-import { projectUsers } from "../../schema/project-users";
-import { projects } from "../../schema/projects";
 
 export const login = publicProcedure
   .input(
@@ -27,6 +26,13 @@ export const login = publicProcedure
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "User not found",
+      });
+    }
+
+    if (!user.passwordHash) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Click 'Forgot password?' to set a password.",
       });
     }
 
@@ -56,12 +62,6 @@ export const login = publicProcedure
 
     return {
       user: selectUserFields(user),
-      projects: (
-        await db
-          .select()
-          .from(projectUsers)
-          .innerJoin(projects, eq(projectUsers.projectId, projects.id))
-          .where(eq(projectUsers.userId, user.id))
-      ).map((x) => x.projects),
+      projects: await getProjects(user.id),
     };
   });

@@ -6,6 +6,7 @@ import { checkTokens } from "../../utils/createAuthTokens";
 import { selectUserFields } from "../../utils/selectUserFields";
 import { projectUsers } from "../../schema/project-users";
 import { projects } from "../../schema/projects";
+import { getProjects } from "../../utils/getProjects";
 
 export const getMe = publicProcedure.query(async ({ ctx }) => {
   const { id, rid } = ctx.req.cookies;
@@ -23,15 +24,7 @@ export const getMe = publicProcedure.query(async ({ ctx }) => {
 
     return {
       user: user ? selectUserFields(user) : null,
-      projects: user
-        ? (
-            await db
-              .select()
-              .from(projectUsers)
-              .innerJoin(projects, eq(projectUsers.projectId, projects.id))
-              .where(eq(projectUsers.userId, userId))
-          ).map((x) => x.projects)
-        : [],
+      projects: user ? await getProjects(user.id) : [],
     };
   } catch {
     return {

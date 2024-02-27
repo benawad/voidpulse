@@ -9,6 +9,7 @@ import { sendAuthCookies } from "../../utils/createAuthTokens";
 import { sendConfirmationEmail } from "../../utils/email/sendConfirmationEmail";
 import { initNewUser } from "../../utils/initNewUser";
 import { selectUserFields } from "../../utils/selectUserFields";
+import { ProjectRoleId } from "../../app-router-type";
 
 export const register = publicProcedure
   .input(

@@ -5,6 +5,7 @@ import * as emoji from "node-emoji";
 import { projectUsers } from "../schema/project-users";
 import { projects } from "../schema/projects";
 import { genApiKey } from "./genApiKey";
+import { ProjectRoleId } from "../app-router-type";
 
 export const initNewUser = async (userId: string) => {
   const boardId = v4();
@@ -13,13 +14,14 @@ export const initNewUser = async (userId: string) => {
     .values({
       name: "My First Project",
       apiKey: genApiKey(),
-      boardOrder: [boardId],
     })
     .returning();
 
   await db.insert(projectUsers).values({
     projectId: project.id,
     userId,
+    role: ProjectRoleId.owner,
+    boardOrder: [boardId],
   });
 
   const [board] = await db
@@ -34,7 +36,11 @@ export const initNewUser = async (userId: string) => {
     .returning();
 
   return {
-    project,
+    project: {
+      ...project,
+      role: ProjectRoleId.owner,
+      boardOrder: [boardId],
+    },
     board,
   };
 };

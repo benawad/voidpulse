@@ -15,8 +15,8 @@ import {
   updateBoard,
   updateBoardOrder,
 } from "./routes/boards/board-crud";
-import { createProject } from "./routes/boards/createProject";
-import { updateProject } from "./routes/boards/updateProject";
+import { createProject } from "./routes/projects/createProject";
+import { updateProject } from "./routes/projects/updateProject";
 import { createChart } from "./routes/charts/createChart";
 import { deleteChart } from "./routes/charts/deleteChart";
 import { getCharts } from "./routes/charts/getCharts";
@@ -28,6 +28,10 @@ import { updateChart } from "./routes/charts/updateChart";
 import { createContext, t } from "./trpc";
 import { confirmEmail } from "./routes/auth/confirmEmail";
 import { logout } from "./routes/auth/logout";
+import { forgotPassword } from "./routes/auth/forgotPassword";
+import { acceptProjectInvite } from "./routes/projects/acceptProjectInvite";
+import { sendProjectInvite } from "./routes/projects/sendProjectInvite";
+import { setPassword } from "./routes/auth/setPassword";
 
 export const appRouter = t.router({
   getBoards,
@@ -53,6 +57,10 @@ export const appRouter = t.router({
   createProject,
   confirmEmail,
   logout,
+  setPassword,
+  forgotPassword,
+  acceptProjectInvite,
+  sendProjectInvite,
 });
 
 export const app = express();

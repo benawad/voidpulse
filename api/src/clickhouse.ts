@@ -15,7 +15,7 @@ export const clickhouse = createClient(
   __prod__
     ? {
         host: __cloud__
-          ? process.env.CLOUD_CLICKHOUSE_HOST
+          ? process.env.CLOUD_CLICKHOUSE_URL
           : "http://clickhouse:8123",
         username: "default",
         password: "",

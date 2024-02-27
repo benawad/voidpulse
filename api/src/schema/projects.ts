@@ -20,7 +20,6 @@ export const projects = pgTable(
       .default(sql`uuid_generate_v4()`),
     name: text("name").notNull(),
     apiKey: text("api_key").notNull(),
-    boardOrder: jsonb("board_order").$type<string[]>(),
     createdAt: timestamp("created_at")
       .notNull()
       .default(sql`now()`),

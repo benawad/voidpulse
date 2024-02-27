@@ -153,3 +153,10 @@ export const hiddenPropertyNameMap = {
   mp_lib: "MP Lib",
   mp_processing_time_ms: "MP Processing Time MS",
 };
+
+export enum ProjectRoleId {
+  viewer = 10,
+  editor = 20,
+  admin = 30,
+  owner = 40,
+}

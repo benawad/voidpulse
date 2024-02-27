@@ -4,8 +4,12 @@ import { trpc } from "./utils/trpc";
 import { CurrThemeProvider } from "./themes/CurrThemeProvider";
 import { LoadingSpinner } from "./ui/LoadingSpinner";
 
-const publicPaths = ["/", "/check-email"];
-const publicPathsStartWiths = ["/confirm-email/"];
+const publicPaths = ["/", "/check-email", "/forgot-password"];
+const publicPathsStartWiths = [
+  "/confirm-email/",
+  "/accept-invite/",
+  "/set-password/",
+];
 
 function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

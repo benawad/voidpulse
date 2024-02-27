@@ -19,7 +19,8 @@ const requiredEnvVarsCloud = [
   "POSTMARK_API_KEY",
   "FROM_EMAIL",
   "CLOUD_KAFKA_HOST",
-  "CLOUD_CLICKHOUSE_HOST",
+  "CLOUD_KAFKA_HOST_FOR_CLICKHOUSE",
+  "CLOUD_CLICKHOUSE_URL",
 ];
 
 const missingEnvVarsCloud = requiredEnvVarsCloud.filter(
