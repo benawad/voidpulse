@@ -14,3 +14,4 @@ const ProjectPage: React.FC = ({}) => {
 };
 
 export default trpc.withTRPC(ProjectPage);
+export const runtime = "edge";

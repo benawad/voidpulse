@@ -34,3 +34,4 @@ export const ConfirmEmail: React.FC = ({}) => {
 };
 
 export default trpc.withTRPC(ConfirmEmail);
+export const runtime = "edge";
