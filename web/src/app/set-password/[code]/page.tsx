@@ -101,3 +101,5 @@ const Page: React.FC = () => {
 };
 
 export default trpc.withTRPC(Page);
+
+export const runtime = "edge";
