@@ -9,7 +9,7 @@
     "env": "gen-env-types .env -o src/types/env.d.ts -e .",
     "build": "tsc",
     "mig": "drizzle-kit generate:pg && ts-node src/migrate.ts",
-    "seed": "ts-node --files src/scripts/seedGithubData.ts",
+    "seed": "ts-node --files src/scripts/seedEventData.ts",
     "mp:load": "ts-node --files src/scripts/mixpanelLoader.ts"
   },
   "keywords": [],
@@ -40,6 +40,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/cookie-parser": "^1.4.6",
     "@types/cors": "^2.8.17",
     "@types/dotenv-safe": "^8.1.5",
