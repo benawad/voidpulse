@@ -1,8 +1,8 @@
 "use client";
 import { redirect, usePathname } from "next/navigation";
-import { trpc } from "./utils/trpc";
 import { CurrThemeProvider } from "./themes/CurrThemeProvider";
-import { LoadingSpinner } from "./ui/LoadingSpinner";
+import { FullScreenLoading } from "./ui/FullScreenLoading";
+import { trpc } from "./utils/trpc";
 
 const publicPaths = ["/", "/check-email", "/forgot-password"];
 const publicPathsStartWiths = [
@@ -21,11 +21,7 @@ function Template({ children }: { children: React.ReactNode }) {
   });
 
   if (isLoading) {
-    return (
-      <div className="w-full h-screen bg-primary-900 flex justify-center items-center">
-        <LoadingSpinner size={50} />
-      </div>
-    );
+    return <FullScreenLoading />;
   }
 
   if (

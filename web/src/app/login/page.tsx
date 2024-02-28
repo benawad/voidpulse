@@ -7,6 +7,7 @@ import { trpc } from "../utils/trpc";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
 import { ErrorMessage } from "../ui/ErrorMessage";
+import { __cloud__ } from "../constants";
 
 type Inputs = {
   email: string;
@@ -99,12 +100,14 @@ const Page: React.FC = () => {
                   },
                 })}
               />
-              <Link
-                href="/forgot-password"
-                className="text-primary-500 underline self-center"
-              >
-                forgot password?
-              </Link>
+              {__cloud__ ? (
+                <Link
+                  href="/forgot-password"
+                  className="text-primary-500 underline self-center"
+                >
+                  forgot password?
+                </Link>
+              ) : null}
               {errors.password && (
                 <ErrorMessage>{errors.password.message}</ErrorMessage>
               )}

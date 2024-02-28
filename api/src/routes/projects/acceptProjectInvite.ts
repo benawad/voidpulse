@@ -11,6 +11,7 @@ import { users } from "../../schema/users";
 import { publicProcedure } from "../../trpc";
 import { sendAuthCookies } from "../../utils/createAuthTokens";
 import { checkProjectInviteCode } from "../../utils/email/sendProjectInviteEmail";
+import { getProjects } from "../../utils/getProjects";
 
 export const acceptProjectInvite = publicProcedure
   .input(
@@ -65,7 +66,8 @@ export const acceptProjectInvite = publicProcedure
     sendAuthCookies(ctx.res, user);
 
     return {
-      projectId: info.projectId,
+      user,
+      projects: await getProjects(user.id),
       board,
     };
   });

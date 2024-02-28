@@ -1,11 +1,10 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import React from "react";
+import React, { useMemo } from "react";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { LineSeparator } from "../../ui/LineSeparator";
 import { reorder } from "../../utils/reorder";
 import { RouterOutput, trpc } from "../../utils/trpc";
-import { useKeyPress } from "../../utils/useKeyPress";
 import { AddBoardButton } from "./AddBoardButton";
 import { DashboardSidebarButton } from "./DashboardSidebarButton";
 
@@ -18,6 +17,14 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
   project,
   boards,
 }) => {
+  const boardOrder = useMemo(() => {
+    return [
+      ...(project.boardOrder || []),
+      ...boards
+        .filter((b) => !project.boardOrder?.includes(b.id))
+        .map((b) => b.id),
+    ];
+  }, [project.boardOrder, boards]);
   const { boardId } = useProjectBoardContext();
   const { set, lastProjectId } = useLastSelectedProjectBoardStore();
   const utils = trpc.useUtils();
@@ -77,7 +84,7 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
             }
 
             const newBoardOrder = reorder(
-              project.boardOrder || [],
+              boardOrder || [],
               result.source.index,
               result.destination.index
             );
@@ -107,7 +114,7 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
           <Droppable droppableId="droppable2">
             {(provided, snapshot) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                {project.boardOrder?.map((id, idx) => {
+                {boardOrder.map((id, idx) => {
                   const board = boards.find((b) => b.id === id);
                   if (!board) {
                     return null;

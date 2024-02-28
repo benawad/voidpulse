@@ -11,7 +11,7 @@ import { projects } from "../../schema/projects";
 export const sendProjectInvite = protectedProcedure
   .input(
     z.object({
-      email: z.string(),
+      email: z.string().min(3).max(255),
       projectId: z.string(),
     })
   )
