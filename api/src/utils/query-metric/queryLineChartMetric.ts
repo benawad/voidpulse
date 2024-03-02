@@ -13,6 +13,7 @@ import {
 import { InsightData } from "../../routes/charts/insight/getReport";
 import { metricToEventLabel } from "./metricToEventLabel";
 import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";
+import { eventTime } from "../eventTime";
 
 type BreakdownData = {
   id: string;
@@ -76,7 +77,7 @@ export const queryLineChartMetric = async ({
           [LineChartGroupByTimeType.week]: "toStartOfWeek",
           [LineChartGroupByTimeType.month]: "toStartOfMonth",
         }[lineChartGroupByTimeType]
-      }(time${
+      }(${eventTime(timezone)}${
         lineChartGroupByTimeType === LineChartGroupByTimeType.week ? `, 1` : ""
       }) AS day,
       toInt32(count(${

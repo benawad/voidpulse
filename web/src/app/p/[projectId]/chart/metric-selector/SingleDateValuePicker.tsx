@@ -13,6 +13,7 @@ export const SingleDateValuePicker: React.FC<SingleDateValuePickerProps> = ({
   currentDate,
   onDatePicked,
 }) => {
+  const today = moment();
   const [isOpen, setIsOpen] = useState(false);
   //Dismissing the custom date picker when you click outside of it
   const datePickerRef = React.useRef<HTMLInputElement>(null);
@@ -47,7 +48,7 @@ export const SingleDateValuePicker: React.FC<SingleDateValuePickerProps> = ({
             small
             numberOfMonths={1}
             hideKeyboardShortcutsPanel
-            isOutsideRange={() => false}
+            isOutsideRange={(day) => day.isAfter(today)}
             displayFormat="MMM D, YYYY"
           />
         </div>

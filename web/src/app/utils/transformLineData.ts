@@ -7,6 +7,7 @@ import {
 import { RouterOutput } from "./trpc";
 import { calcPercentageChange } from "./calcPercentChange";
 import { TooltipData } from "../ui/charts/ChartTooltip";
+import moment from "moment";
 
 export const transformLineData = ({
   datas,
@@ -36,6 +37,17 @@ export const transformLineData = ({
     }
     return visibleDataMap[d.id];
   });
+  const lastDataNotDone =
+    dateHeader.length > 0 &&
+    moment(dateHeader[dateHeader.length - 1].lookupValue).isSame(
+      moment(),
+      {
+        [LineChartGroupByTimeType.day]: "day",
+        [LineChartGroupByTimeType.week]: "week",
+        [LineChartGroupByTimeType.month]: "month",
+      }[lineChartGroupByTimeType] as "day" | "week" | "month"
+    );
+
   const datasets = filteredData.map((data, i) => {
     const col = colorOrder[i % colorOrder.length];
     return {
@@ -44,6 +56,14 @@ export const transformLineData = ({
       borderColor: col,
       backgroundColor: colorOrder,
       pointHoverBackgroundColor: col,
+      segment: {
+        borderDash: (ctx: any) => {
+          if (dateHeader.length === ctx.p1DataIndex + 1 && lastDataNotDone) {
+            return [4, 4];
+          }
+          return [];
+        },
+      },
       label:
         numMetrics === 1 && typeof data.breakdown !== "undefined"
           ? data.breakdown

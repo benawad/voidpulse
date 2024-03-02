@@ -1,19 +1,13 @@
-import React, { use, useEffect, useState } from "react";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { MultiToggleButtonBar } from "../../../ui/MultiToggleButtonBar";
-import {
-  DateRangePicker,
-  SingleDatePicker,
-  DayPickerRangeController,
-  FocusedInputShape,
-} from "react-dates";
+import { ChartTimeRangeType, LineChartGroupByTimeType } from "@voidpulse/api";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { DateRangePicker, FocusedInputShape } from "react-dates";
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
-import "./react_dates_overrides.css";
-import moment from "moment";
-import { set } from "react-hook-form";
-import { ChartTimeRangeType, LineChartGroupByTimeType } from "@voidpulse/api";
+import { FaRegCalendarAlt } from "react-icons/fa";
 import { useChartStateContext } from "../../../../../providers/ChartStateProvider";
+import { MultiToggleButtonBar } from "../../../ui/MultiToggleButtonBar";
+import "./react_dates_overrides.css";
 
 interface ChartDateRangePickerProps {}
 
@@ -41,7 +35,8 @@ export const ChartDateRangePicker: React.FC<
     startDate: from || null,
     endDate: to || null,
   });
-  const isToday = (day: moment.Moment) => moment().isSame(day, "day");
+  const today = moment();
+  const isToday = (day: moment.Moment) => today.isSame(day, "day");
   const dateRangeAsString = (dateRange: {
     startDate: moment.Moment;
     endDate: moment.Moment;
@@ -160,12 +155,15 @@ export const ChartDateRangePicker: React.FC<
             numberOfMonths={1}
             hideKeyboardShortcutsPanel
             minimumNights={0}
-            isOutsideRange={() => false}
+            isOutsideRange={(day) => day.isAfter(today)}
             renderDayContents={(day) => (
               <div
                 className={
                   isToday(day) ? "font-bold text-primary-100 underline" : ""
                 }
+                style={{
+                  opacity: day.isAfter(today) ? 0.5 : 1,
+                }}
               >
                 {day.format("D")}
               </div>

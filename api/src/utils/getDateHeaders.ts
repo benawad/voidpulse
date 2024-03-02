@@ -42,22 +42,17 @@ export const getDateHeaders = (
     endDate = new Date();
   } else if (timeRangeType === ChartTimeRangeType["3M"]) {
     startDate = subMonths(new Date(), 3);
-    if (lineChartGroupByTimeType === LineChartGroupByTimeType.week) {
-      startDate = startOfWeek(startDate, { weekStartsOn: 1 });
-    }
     endDate = new Date();
   } else if (timeRangeType === ChartTimeRangeType["6M"]) {
     startDate = subMonths(new Date(), 6);
-    if (lineChartGroupByTimeType === LineChartGroupByTimeType.week) {
-      startDate = startOfWeek(startDate, { weekStartsOn: 1 });
-    }
     endDate = new Date();
   } else if (timeRangeType === ChartTimeRangeType["12M"]) {
     startDate = subMonths(new Date(), 12);
-    if (lineChartGroupByTimeType === LineChartGroupByTimeType.week) {
-      startDate = startOfWeek(startDate, { weekStartsOn: 1 });
-    }
     endDate = new Date();
+  }
+
+  if (lineChartGroupByTimeType === LineChartGroupByTimeType.week) {
+    startDate = startOfWeek(startDate, { weekStartsOn: 1 });
   }
 
   const dateMap: Record<string, number> = {};
