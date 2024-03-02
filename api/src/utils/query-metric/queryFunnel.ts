@@ -1,23 +1,19 @@
-import { v4 } from "uuid";
 import {
   BreakdownType,
   ChartTimeRangeType,
   FilterAndOr,
-  MetricMeasurement,
   PropOrigin,
 } from "../../app-router-type";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
-import { __prod__ } from "../../constants/prod";
 import {
   InputMetric,
   MetricFilter,
 } from "../../routes/charts/insight/eventFilterSchema";
-import { metricToEventLabel } from "./metricToEventLabel";
-import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";
+import { eventTime, inputTime } from "../eventTime";
+import { filtersToSql } from "../filtersToSql";
 import { getDateRange } from "../getDateRange";
 import { QueryParamHandler } from "./QueryParamHandler";
 import { breakdownSelectProperty } from "./breakdownSelectProperty";
-import { filtersToSql } from "../filtersToSql";
 
 /*
 sequenceMatch('(?1)')(time, name = 'Event A') AS sequenceA,
@@ -33,6 +29,7 @@ export const queryFunnel = async ({
   breakdowns,
   timeRangeType,
   globalFilters,
+  timezone,
 }: {
   globalFilters: MetricFilter[];
   projectId: string;
@@ -41,6 +38,7 @@ export const queryFunnel = async ({
   timeRangeType: ChartTimeRangeType;
   breakdowns: MetricFilter[];
   metrics: InputMetric[];
+  timezone: string;
 }) => {
   const paramHandler = new QueryParamHandler();
   const peopleJoin = `inner join people as p on e.distinct_id = p.distinct_id`;
@@ -85,7 +83,7 @@ export const queryFunnel = async ({
     SELECT ${breakdownSelect} as breakdown
     FROM events as e
     ${breakdownNeedsPeopleJoin ? peopleJoin : ""}
-    WHERE time >= toDate({from:DateTime}) AND time <= toDate({to:DateTime})
+    WHERE ${eventTime(timezone)} >= ${inputTime("from", timezone)} AND ${eventTime(timezone)} <= ${inputTime("to", timezone)}
     AND e.project_id = {projectId:String}
     GROUP BY breakdown
     ORDER BY COUNT(DISTINCT distinct_id) DESC
@@ -152,7 +150,7 @@ GROUP BY breakdown`
     query,
     query_params: {
       projectId,
-      ...getDateRange(timeRangeType, from, to),
+      ...getDateRange({ timeRangeType, from, to }),
       ...paramHandler.getParams(),
     },
   });

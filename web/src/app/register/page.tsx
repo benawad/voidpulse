@@ -3,7 +3,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { trpc } from "../utils/trpc";
+import { RouterInput, trpc } from "../utils/trpc";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
 import { ErrorMessage } from "../ui/ErrorMessage";
@@ -14,9 +14,9 @@ type Inputs = {
   repeatPassword: string;
 };
 
-type ServerInputs = Omit<Inputs, "repeatPassword">;
+type ServerInputs = RouterInput["register"];
 
-type ServerKey = keyof ServerInputs;
+type ServerKey = keyof Omit<ServerInputs, "timezone">;
 
 const Page: React.FC = () => {
   const utils = trpc.useUtils();
@@ -31,6 +31,7 @@ const Page: React.FC = () => {
     let serverData: ServerInputs = {
       email: data.email,
       password: data.password,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
     mutateAsync(serverData);
   };

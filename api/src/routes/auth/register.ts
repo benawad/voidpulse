@@ -16,6 +16,7 @@ export const register = publicProcedure
     z.object({
       email: z.string().min(3).max(255),
       password: z.string().min(6).max(255),
+      timezone: z.string(),
     })
   )
   .mutation(async ({ input, ctx }) => {
@@ -67,7 +68,7 @@ export const register = publicProcedure
         user: selectUserFields(newUser),
       };
     } else {
-      const { project, board } = await initNewUser(newUser.id);
+      const { project, board } = await initNewUser(newUser.id, input.timezone);
       sendAuthCookies(ctx.res, newUser);
 
       return {

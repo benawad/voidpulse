@@ -12,6 +12,7 @@ export const ConfirmEmail: React.FC = ({}) => {
   useEffect(() => {
     mutateAsync({
       code,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     }).then((data) => {
       utils.getMe.setData(undefined, data);
       utils.getBoards.setData(

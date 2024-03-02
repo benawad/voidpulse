@@ -2,11 +2,15 @@ import { ChartTimeRangeType } from "../app-router-type";
 import { startOfDay, endOfDay, subMonths } from "date-fns";
 import { dateToClickhouseDateString } from "./dateToClickhouseDateString";
 
-export const getDateRange = (
-  timeRangeType: ChartTimeRangeType,
-  from?: string,
-  to?: string
-) => {
+export const getDateRange = ({
+  timeRangeType,
+  from,
+  to,
+}: {
+  timeRangeType: ChartTimeRangeType;
+  from?: string;
+  to?: string;
+}) => {
   if (timeRangeType === ChartTimeRangeType.Custom) {
     if (from && to) {
       return { from, to };

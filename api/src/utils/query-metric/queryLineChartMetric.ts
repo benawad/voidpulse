@@ -1,26 +1,18 @@
+import { v4 } from "uuid";
 import {
-  ANY_EVENT_VALUE,
   BreakdownType,
   ChartTimeRangeType,
-  DataType,
-  FilterAndOr,
   LineChartGroupByTimeType,
   MetricMeasurement,
-  PropOrigin,
 } from "../../app-router-type";
-import { QueryParamHandler } from "./QueryParamHandler";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
-import { __prod__ } from "../../constants/prod";
-import { filtersToSql } from "../filtersToSql";
 import {
   InputMetric,
   MetricFilter,
 } from "../../routes/charts/insight/eventFilterSchema";
 import { InsightData } from "../../routes/charts/insight/getReport";
-import { getDateRange } from "../getDateRange";
-import { v4 } from "uuid";
-import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";
 import { metricToEventLabel } from "./metricToEventLabel";
+import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";
 
 type BreakdownData = {
   id: string;
@@ -42,6 +34,7 @@ export const queryLineChartMetric = async ({
   lineChartGroupByTimeType = LineChartGroupByTimeType.day,
   dateMap,
   globalFilters,
+  timezone,
 }: {
   dateMap: Record<string, number>;
   dateHeaders: Array<{
@@ -56,6 +49,7 @@ export const queryLineChartMetric = async ({
   breakdowns: MetricFilter[];
   metric: InputMetric;
   lineChartGroupByTimeType?: LineChartGroupByTimeType;
+  timezone: string;
 }): Promise<BreakdownData[]> => {
   const {
     breakdownBucketMinMaxQuery,
@@ -64,6 +58,7 @@ export const queryLineChartMetric = async ({
     query_params,
     whereSection,
   } = await prepareFiltersAndBreakdown({
+    timezone,
     metric,
     globalFilters,
     breakdowns,

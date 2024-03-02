@@ -8,20 +8,23 @@ import { protectedProcedure } from "../../trpc";
 import { genApiKey } from "../../utils/genApiKey";
 import { v4 } from "uuid";
 import { ProjectRoleId } from "../../app-router-type";
+import { defaultTimezone, timezones } from "../../constants/timezones";
 
 export const createProject = protectedProcedure
   .input(
     z.object({
       name: z.string(),
+      timezone: z.string(),
     })
   )
-  .mutation(async ({ input: { name }, ctx: { userId } }) => {
+  .mutation(async ({ input: { name, timezone }, ctx: { userId } }) => {
     const boardId = v4();
     const [project] = await db
       .insert(projects)
       .values({
         name,
         apiKey: genApiKey(),
+        timezone: timezones.has(timezone) ? timezone : defaultTimezone,
       })
       .returning();
 
@@ -44,7 +47,11 @@ export const createProject = protectedProcedure
       .returning();
 
     return {
-      project,
+      project: {
+        ...project,
+        role: ProjectRoleId.owner,
+        boardOrder: [boardId],
+      },
       board,
     };
   });

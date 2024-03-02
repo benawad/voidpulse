@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ALTER COLUMN "timezone" DROP DEFAULT;

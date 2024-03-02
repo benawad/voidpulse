@@ -11,6 +11,7 @@ import {
   InputMetric,
   MetricFilter,
 } from "../../routes/charts/insight/eventFilterSchema";
+import { eventTime, inputTime } from "../eventTime";
 import { filtersToSql } from "../filtersToSql";
 import { getDateRange } from "../getDateRange";
 import { QueryParamHandler } from "./QueryParamHandler";
@@ -24,7 +25,9 @@ export const prepareFiltersAndBreakdown = async ({
   timeRangeType,
   from,
   to,
+  timezone,
 }: {
+  timezone: string;
   projectId: string;
   from?: string;
   to?: string;
@@ -46,8 +49,8 @@ export const prepareFiltersAndBreakdown = async ({
       : "";
   const whereSection = `
   project_id = {projectId:UUID}
-    AND time >= {from:DateTime}
-    AND time <= {to:DateTime}
+    AND ${eventTime(timezone)} >= ${inputTime("from", timezone)}
+    AND ${eventTime(timezone)} <= ${inputTime("to", timezone)}
     ${
       metric.event.value !== ANY_EVENT_VALUE
         ? `AND name = {eventName:String}`
@@ -71,7 +74,7 @@ export const prepareFiltersAndBreakdown = async ({
         query,
         query_params: {
           projectId,
-          ...getDateRange(timeRangeType, from, to),
+          ...getDateRange({ timeRangeType, from, to }),
           eventName: metric.event.value,
           ...paramHandler.getParams(),
         },
@@ -105,7 +108,7 @@ export const prepareFiltersAndBreakdown = async ({
   return {
     query_params: {
       projectId,
-      ...getDateRange(timeRangeType, from, to),
+      ...getDateRange({ timeRangeType, from, to }),
       eventName: metric.event.value,
       ...paramHandler.getParams(),
     },

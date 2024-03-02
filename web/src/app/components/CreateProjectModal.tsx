@@ -1,12 +1,13 @@
 import { useRouter } from "next/navigation";
-import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import React, { useMemo } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Modal from "react-modal";
 import { useLastSelectedProjectBoardStore } from "../../../stores/useLastSelectedProjectBoardStore";
 import { Button } from "../ui/Button";
 import { FullScreenModalOverlay } from "../ui/FullScreenModalOverlay";
 import { Input } from "../ui/Input";
 import { trpc } from "../utils/trpc";
+import { SearchSelect } from "../ui/SearchSelect";
 
 if (typeof window !== "undefined") {
   Modal.setAppElement("body");
@@ -19,6 +20,7 @@ interface DeleteBoardConfirmationModalProps {
 
 type Inputs = {
   name: string;
+  timezone: string;
 };
 
 export const CreateProjectModal: React.FC<
@@ -53,11 +55,26 @@ export const CreateProjectModal: React.FC<
     return mutateAsync(data);
   };
   const {
+    control,
     register,
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({
+    values: {
+      name: "",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+  });
+  const opts = useMemo(
+    () =>
+      Intl.supportedValuesOf("timeZone").map((x) => ({
+        label: x,
+        value: x,
+        searchValue: x.toLowerCase(),
+      })),
+    []
+  );
 
   return (
     <FullScreenModalOverlay onRequestClose={onDismissModal} isOpen={isOpen}>
@@ -71,6 +88,28 @@ export const CreateProjectModal: React.FC<
               {...register("name", {
                 required: true,
               })}
+            />
+          </div>
+          <div>
+            <div className="text-xs pl-2 mt-6 mb-1 text-primary-300/50">
+              Timezone
+            </div>
+            <Controller
+              name="timezone"
+              control={control}
+              render={({ field }) => (
+                <SearchSelect
+                  value={field.value}
+                  opts={opts}
+                  onSelect={(x) => {
+                    field.onChange({
+                      target: {
+                        value: x,
+                      },
+                    });
+                  }}
+                />
+              )}
             />
           </div>
           <div className="flex flex-row space-x-2 justify-end mt-4">

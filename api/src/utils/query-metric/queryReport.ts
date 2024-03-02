@@ -15,6 +15,8 @@ import { queryBarChartMetric } from "./queryBarChartMetric";
 import { queryFunnel } from "./queryFunnel";
 import { queryLineChartMetric } from "./queryLineChartMetric";
 import { queryRetention } from "./queryRetention";
+import { getProject } from "../cache/getProject";
+import { TRPCError } from "@trpc/server";
 
 export const reportInputSchema = z.object({
   chartId: z.string().optional(),
@@ -42,12 +44,20 @@ export const queryReport = async ({
   lineChartGroupByTimeType = LineChartGroupByTimeType.day,
   globalFilters,
 }: z.infer<typeof reportInputSchema>) => {
+  const project = await getProject(projectId);
   const { dateHeaders, dateMap, retentionHeaders } = getDateHeaders(
     timeRangeType,
     lineChartGroupByTimeType,
     from,
     to
   );
+
+  if (!project) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Project not found",
+    });
+  }
 
   if (ReportType.funnel === reportType) {
     return {
@@ -65,6 +75,7 @@ export const queryReport = async ({
               globalFilters,
               breakdowns,
               timeRangeType,
+              timezone: project.timezone,
             }),
     };
   }
@@ -85,6 +96,7 @@ export const queryReport = async ({
               globalFilters,
               breakdowns,
               timeRangeType,
+              timezone: project.timezone,
             }),
     };
   }
@@ -104,6 +116,7 @@ export const queryReport = async ({
               globalFilters,
               breakdowns,
               timeRangeType,
+              timezone: project.timezone,
             })
           )
         )
@@ -129,6 +142,7 @@ export const queryReport = async ({
             breakdowns,
             timeRangeType,
             lineChartGroupByTimeType,
+            timezone: project.timezone,
           })
         )
       )

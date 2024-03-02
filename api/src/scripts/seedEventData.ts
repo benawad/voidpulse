@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { endOfDay, startOfDay, subDays } from "date-fns";
+import { addDays, endOfDay, startOfDay, subDays } from "date-fns";
 import { v4 } from "uuid";
 import { DataType } from "../app-router-type";
 import { clickhouse } from "../clickhouse";
@@ -7,6 +7,7 @@ import { db } from "../db";
 import { people } from "../schema/people";
 import { peoplePropTypes } from "../schema/people-prop-types";
 import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
+import { eq } from "drizzle-orm";
 
 const shake = (n: number, percent = 0.05, isInt = true) => {
   let v = n * percent * (Math.random() > 0.5 ? 1 : -1);
@@ -33,8 +34,10 @@ function getRandomDateBetween(startDate: Date, endDate: Date): Date {
 const config = {
   newUsersPerDay: 100,
   d1: 0.6,
-  d90: 0.05,
-  daysToSimulate: 90,
+  d30: 0.2,
+  daysToSimulate: 60,
+  debug: false,
+  dropDataBeforeInsert: true,
   possibleEvents: [
     {
       name: `CreatePost`,
@@ -152,10 +155,32 @@ const simEvents = (users: Person[], start: Date, end: Date) => {
   return events;
 };
 
-const calcCohortSizeOnDay = (numUsers: number, dn: number) => {
-  const diff = config.d1 - config.d90;
+const calcCohortSizeOnDay = (initialCohortSize: number, dayX: number) => {
+  const { d1, d30 } = config;
+  // Calculate the daily decline rate based on d1 and d30 percentages
+  let dailyDeclineRate = (d1 - d30) / 29;
 
-  return Math.floor(shake(((numUsers * diff) / config.daysToSimulate) * dn));
+  // Calculate the expected retention percentage for day X
+  let retentionRateX = d1 - dailyDeclineRate * (dayX - 1);
+
+  // If daysX is beyond 30, continue to extrapolate the retention rate decline
+  if (dayX > 30) {
+    // For days beyond day 30, apply a very small daily decline rate to simulate a slow trickle
+    const post30DailyDeclineRate = dailyDeclineRate * 0.15; // 5% of the initial daily decline rate
+    retentionRateX = d30 - post30DailyDeclineRate * (dayX - 30);
+  }
+
+  // Calculate the cohort size for day X before adding variance
+  let cohortSizeX = initialCohortSize * retentionRateX;
+
+  // Introduce some variance (e.g., +/- 10% of the cohortSizeX)
+  let variance = cohortSizeX * 0.1; // 10% variance
+  let randomVariance = Math.random() * variance * 2 - variance; // Random value between -variance and +variance
+
+  // Calculate final size with variance and ensure it's not less than 0
+  let finalSize = Math.max(0, cohortSizeX + randomVariance);
+
+  return Math.round(finalSize);
 };
 
 const runSimulation = () => {
@@ -163,11 +188,29 @@ const runSimulation = () => {
   const people: Person[] = [];
 
   const cohorts: ReturnType<typeof createUsers>[] = [];
-  let td = new Date();
+  let td = subDays(new Date(), config.daysToSimulate - 3);
   for (let i = 0; i < config.daysToSimulate; i++) {
-    console.log("Simmulating day", i, "of", config.daysToSimulate);
+    console.log(
+      "Simmulating day",
+      i,
+      "of",
+      config.daysToSimulate,
+      td.toDateString()
+    );
     const dayStart = startOfDay(td);
     const dayEnd = endOfDay(td);
+    cohorts.forEach((users, k) => {
+      const dn = cohorts.length - k;
+
+      const userSubset = users
+        .sort(() => Math.random() - 0.5)
+        .slice(0, calcCohortSizeOnDay(users.length, dn));
+
+      // console.log("size", userSubset.length.toLocaleString());
+
+      events.push(...simEvents(userSubset, dayStart, dayEnd));
+    });
+
     const newUsers = createUsers({ start: dayStart, end: dayEnd });
     for (const user of newUsers) {
       events.push({
@@ -179,21 +222,10 @@ const runSimulation = () => {
       });
     }
     people.push(...newUsers);
-
     events.push(...simEvents(newUsers, dayStart, dayEnd));
-    cohorts.forEach((users, i) => {
-      const dn = cohorts.length - i;
-
-      const userSubset = users
-        .sort(() => Math.random() - 0.5)
-        .slice(0, calcCohortSizeOnDay(users.length, dn));
-
-      events.push(...simEvents(userSubset, dayStart, dayEnd));
-    });
-
     cohorts.push(newUsers);
 
-    td = subDays(td, 1);
+    td = addDays(td, 1);
   }
 
   return {
@@ -215,6 +247,15 @@ const main = async () => {
   console.log(
     `events.length: ${events.length.toLocaleString()}, peopleList.length: ${peopleList.length.toLocaleString()}`
   );
+  if (config.debug) {
+    return;
+  }
+
+  if (config.dropDataBeforeInsert) {
+    await clickhouse.query({ query: "TRUNCATE events" });
+    await clickhouse.query({ query: "TRUNCATE TABLE people" });
+    await db.delete(people).where(eq(people.projectId, project_id)).execute();
+  }
 
   const batchSize = 50_000;
   let page = 1;
@@ -266,6 +307,10 @@ const main = async () => {
         createdAt: x.created_at,
       }))
     )
+    .execute();
+  await db
+    .delete(peoplePropTypes)
+    .where(eq(peoplePropTypes.projectId, project_id))
     .execute();
   await db
     .insert(peoplePropTypes)

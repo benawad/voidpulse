@@ -15,6 +15,7 @@ export const confirmEmail = publicProcedure
   .input(
     z.object({
       code: z.string(),
+      timezone: z.string(),
     })
   )
   .mutation(async ({ input, ctx }) => {
@@ -49,7 +50,7 @@ export const confirmEmail = publicProcedure
       .where(eq(users.id, userId))
       .returning();
 
-    const { project, board } = await initNewUser(user.id);
+    const { project, board } = await initNewUser(user.id, input.timezone);
     sendAuthCookies(ctx.res, user);
 
     return {

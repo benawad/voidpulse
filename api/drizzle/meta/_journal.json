@@ -141,6 +141,20 @@
       "when": 1709074333813,
       "tag": "0022_known_sunset_bain",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1709401362051,
+      "tag": "0023_fixed_khan",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1709401369187,
+      "tag": "0024_romantic_golden_guardian",
+      "breakpoints": true
     }
   ]
 }

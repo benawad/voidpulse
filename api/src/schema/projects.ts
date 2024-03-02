@@ -19,6 +19,7 @@ export const projects = pgTable(
       .primaryKey()
       .default(sql`uuid_generate_v4()`),
     name: text("name").notNull(),
+    timezone: text("timezone").notNull(),
     apiKey: text("api_key").notNull(),
     createdAt: timestamp("created_at")
       .notNull()

@@ -29,7 +29,9 @@ export const queryBarChartMetric = async ({
   breakdowns,
   timeRangeType,
   globalFilters,
+  timezone,
 }: {
+  timezone: string;
   globalFilters: MetricFilter[];
   projectId: string;
   from?: string;
@@ -45,6 +47,7 @@ export const queryBarChartMetric = async ({
     query_params,
     whereSection,
   } = await prepareFiltersAndBreakdown({
+    timezone,
     metric,
     globalFilters,
     breakdowns,

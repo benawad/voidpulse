@@ -13,10 +13,7 @@ export const projectUsers = pgTable(
     projectId: uuid("project_id")
       .notNull()
       .references(() => projects.id),
-    role: integer("role")
-      .notNull()
-      .$type<ProjectRoleId>()
-      .default(ProjectRoleId.owner),
+    role: integer("role").notNull().$type<ProjectRoleId>(),
     boardOrder: jsonb("board_order").$type<string[]>(),
   },
   (t) => ({

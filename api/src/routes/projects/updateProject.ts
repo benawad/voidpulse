@@ -7,6 +7,7 @@ import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { genApiKey } from "../../utils/genApiKey";
 import { apiKeyCache } from "../express/middleware/checkApiKeyMiddleware";
+import { updateProjectCache } from "../../utils/cache/getProject";
 
 export const updateProject = protectedProcedure
   .input(
@@ -53,6 +54,7 @@ export const updateProject = protectedProcedure
       .set(setData)
       .where(eq(projects.id, id))
       .returning();
+    updateProjectCache(updatedProject);
 
     return { project: updatedProject };
   });

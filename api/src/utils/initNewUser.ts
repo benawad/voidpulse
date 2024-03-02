@@ -6,14 +6,16 @@ import { projectUsers } from "../schema/project-users";
 import { projects } from "../schema/projects";
 import { genApiKey } from "./genApiKey";
 import { ProjectRoleId } from "../app-router-type";
+import { defaultTimezone, timezones } from "../constants/timezones";
 
-export const initNewUser = async (userId: string) => {
+export const initNewUser = async (userId: string, timezone: string) => {
   const boardId = v4();
   const [project] = await db
     .insert(projects)
     .values({
       name: "My First Project",
       apiKey: genApiKey(),
+      timezone: timezones.has(timezone) ? timezone : defaultTimezone,
     })
     .returning();
 

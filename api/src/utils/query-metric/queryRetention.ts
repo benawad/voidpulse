@@ -24,6 +24,7 @@ import { metricToEventLabel } from "./metricToEventLabel";
 import { QueryParamHandler } from "./QueryParamHandler";
 import { breakdownSelectProperty } from "./breakdownSelectProperty";
 import { clampNum } from "../clampNum";
+import { eventTime, inputTime } from "../eventTime";
 
 // type RetentionData = {
 //   id: string;
@@ -70,7 +71,9 @@ export const queryRetention = async ({
   metrics,
   breakdowns,
   globalFilters,
+  timezone,
 }: {
+  timezone: string;
   globalFilters: MetricFilter[];
   projectId: string;
   from?: string;
@@ -95,7 +98,7 @@ export const queryRetention = async ({
       ? peopleJoin
       : ""
   }
-  WHERE time >= toDate({from:DateTime}) AND time <= toDate({to:DateTime})
+  WHERE ${eventTime(timezone)} >= ${inputTime("from", timezone)} AND ${eventTime(timezone)} <= ${inputTime("to", timezone)}
   ${metrics[0].event.value !== ANY_EVENT_VALUE ? `AND name = {startEventName:String}` : ``} AND e.project_id = {projectId:String}
   ${whereStrings.length ? `AND (${whereStrings.join(whereCombiner)})` : ""}`;
   const breakdownSelect = breakdowns.length
@@ -119,7 +122,7 @@ export const queryRetention = async ({
     SELECT
       ${breakdownSelect ? `${breakdownSelect} as breakdown,` : ``}
       distinct_id,
-      MIN(toDate(time)) AS cohort_date  -- The first activity date for each user within the specified time range
+      MIN(toDate(${eventTime(timezone)})) AS cohort_date  -- The first activity date for each user within the specified time range
     FROM events as e
     ${firstWhereSection}
     ${
@@ -142,12 +145,12 @@ export const queryRetention = async ({
       ${breakdownSelect ? `c.breakdown,` : ``}
       e.distinct_id,
       c.cohort_date,
-      toDate(e.time) AS activity_date,
-      dateDiff('day', c.cohort_date, toDate(e.time)) AS days_after_cohort  -- Calculate the difference in days from the cohort date
+      toDate(${eventTime(timezone, "e.")}) AS activity_date,
+      dateDiff('day', c.cohort_date, activity_date) AS days_after_cohort  -- Calculate the difference in days from the cohort date
     FROM events as e
     ${needsPeopleJoin2 ? peopleJoin : ""}
     JOIN cohort_users c ON e.distinct_id = c.distinct_id
-    WHERE toDate(e.time) >= c.cohort_date AND toDate(e.time) <= toDate({to:DateTime})  -- Use actual DateTime value
+    WHERE activity_date >= c.cohort_date AND activity_date <= ${inputTime("to", timezone)}  -- Use actual DateTime value
     ${metrics[1].event.value !== ANY_EVENT_VALUE ? `AND name = {endEventName:String}` : ``}
     AND e.project_id = {projectId:String}
     ${whereStrings2.length ? `AND (${whereStrings2.join(whereCombiner2)})` : ""}
@@ -183,7 +186,7 @@ export const queryRetention = async ({
       projectId,
       startEventName: metrics[0].event.value,
       endEventName: metrics[1].event.value,
-      ...getDateRange(timeRangeType, from, to),
+      ...getDateRange({ timeRangeType, from, to }),
       ...paramHandler.getParams(),
     },
   });
