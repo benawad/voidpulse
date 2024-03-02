@@ -30,6 +30,7 @@ export const transformRetentionData = ({
   });
   const datasets = filteredData.map((data, i) => {
     const col = colorOrder[i % colorOrder.length];
+
     return {
       ...lineChartStyle,
       borderWidth: data.id === highlightedId ? 4 : 2,
@@ -37,7 +38,7 @@ export const transformRetentionData = ({
       pointHoverBackgroundColor: col,
       backgroundColor: colorOrder,
       label:
-        typeof data.breakdown !== "undefined"
+        typeof data.breakdown !== "undefined" && data.breakdown !== ""
           ? data.breakdown
           : data.eventLabel,
       data: retHeaders.map(

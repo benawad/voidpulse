@@ -122,6 +122,9 @@ const convertCssToTsObject = (filePath: string) => {
     flair: {
       "100": string;
     };
+    negative: {
+      "100": string;
+    };
     chart: {
       "1": string;
       "2": string;

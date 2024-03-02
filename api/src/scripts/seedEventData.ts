@@ -79,7 +79,7 @@ const config = {
     {
       name: `SharePost`,
       simTodayCount: () => {
-        return faker.number.int({ min: 1, max: 5 });
+        return faker.number.int({ min: 0, max: 5 });
       },
       genProps: () => {
         return {
@@ -99,7 +99,7 @@ const createUsers = ({
   start: Date;
   end: Date;
 }) => {
-  return Array(shake(n))
+  return Array(shake(n, 0.5))
     .fill(0)
     .map(() => {
       return {
@@ -107,6 +107,7 @@ const createUsers = ({
         properties: {
           username: faker.internet.userName(),
           email: faker.internet.email(),
+          isVerified: Math.random() < 0.1,
         },
         created_at: getRandomDateBetween(start, end),
       };

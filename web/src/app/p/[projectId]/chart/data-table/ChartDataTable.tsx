@@ -10,6 +10,9 @@ import ResizableGrid, { ROW_HEIGHT } from "./ResizableGrid";
 
 interface ChartDataTableProps {
   datas: any;
+  mainBgs?: {
+    getBgColor: (row: any) => string | undefined;
+  }[];
   highlightedRow?: string | null;
   setHighlightedRow: (rowId: string | null) => void;
   stickyColumns: ColumnDef<any>[];
@@ -22,6 +25,7 @@ interface ChartDataTableProps {
 }
 
 export const ChartDataTable: React.FC<ChartDataTableProps> = ({
+  mainBgs,
   stickyColumns,
   highlightedRow,
   setHighlightedRow,
@@ -180,6 +184,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                   ) : null}
                   {virtualColumns.map((vc) => {
                     const cell = visibleCells[vc.index];
+
                     return (
                       <td
                         key={cell.id}
@@ -192,6 +197,9 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                           height: ROW_HEIGHT,
                           display: "flex",
                           width: cell.column.getSize(),
+                          backgroundColor: mainBgs
+                            ? mainBgs[vc.index]?.getBgColor(cell.row.original)
+                            : undefined,
                         }}
                       >
                         {flexRender(

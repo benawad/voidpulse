@@ -41,6 +41,7 @@ import { ChartDateRangePicker } from "./ChartDateRangePicker";
 import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
 import { ChartDataTable } from "./data-table/ChartDataTable";
+import moment from "moment";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -505,8 +506,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
             <ChartDataTable
               key={retentionNumFormat}
               datas={retData}
-              highlightedRow={highlightedRowId}
-              setHighlightedRow={setHighlightedRow}
+              highlightedRow={""}
+              setHighlightedRow={() => {}}
               expandedDataRows={expandedDataRows}
               setExpandedDataRows={setExpandedDataRows}
               chartContainerRef={chartContainerRef}
@@ -534,11 +535,36 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     row.cohortSize.toLocaleString(),
                 },
               ]}
+              mainBgs={data.retentionHeaders.map((retHeader, i) => {
+                return {
+                  getBgColor: (row: any) => {
+                    let percent = 0;
+                    if ("isSubrow" in row) {
+                      if (moment(row.dt).add(i, "day").isAfter(moment())) {
+                        return undefined;
+                      }
+                      percent =
+                        row.retentionByDay[i]?.retained_users_percent || 0;
+                    } else {
+                      percent =
+                        row.averageRetentionByDay[i]?.avgRetainedPercent || 0;
+                    }
+                    percent /= 10;
+                    percent = Math.ceil(percent);
+                    percent /= 10;
+
+                    return `rgb(var(--accent-100) / ${percent})`;
+                  },
+                };
+              })}
               mainColumns={
                 data.retentionHeaders.map((retHeader, i) => {
                   return {
                     accessorFn: (row: RetRow | RetSubRow) => {
                       if ("isSubrow" in row) {
+                        if (moment(row.dt).add(i, "day").isAfter(moment())) {
+                          return null;
+                        }
                         if (
                           retentionNumFormat === RetentionNumFormat.rawCount
                         ) {
