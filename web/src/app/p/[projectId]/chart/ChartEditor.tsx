@@ -224,7 +224,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   }, [data]);
 
   return (
-    <div className="flex-1 flex flex-col">
+    <>
       {/* Navigation bar that shows hierarchy of dashboards */}
       <div className="h-14 border-b border-primary-700 items-center flex">
         <Link href={`/p/${projectId}`}>
@@ -234,14 +234,10 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
         </Link>
       </div>
       {/* View that houses editor and chart side by side */}
-      <div className="flex w-full flex-1">
+      <div className="flex w-full flex-1 overflow-auto">
         <ChartEditorSidebar dataStr={dataStr} />
         {/* Main section of the chart view */}
-        <div
-          className="flex-1 overflow-x-auto overflow-y-auto"
-          style={{ height: "calc(100vh - 100px)" }}
-          ref={chartContainerRef}
-        >
+        <div className="flex-1 h-full overflow-auto" ref={chartContainerRef}>
           {/* Div that stacks the chart and data at the bottom */}
           <div className="p-12" style={{ minWidth: 800, minHeight: 500 }}>
             {/* Title and description */}
@@ -642,6 +638,6 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           ) : null}
         </div>
       </div>
-    </div>
+    </>
   );
 };

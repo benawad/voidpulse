@@ -27,22 +27,19 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({
       const atBottom = scrollHeight - scrollPosition === divHeight;
       const atTop = scrollPosition === 0;
 
-      if (atBottom && !atTop) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
+      // if (atBottom && !atTop) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // }
     }
   }, [msgs]);
   return (
     //Shell for the entire chat interface
-    <div className="relative flex flex-col justify-start">
+    <div className="relative flex flex-col justify-start flex-1 overflow-y-auto">
       {/* Shell for the chat messages */}
-      <div
-        className="relative overflow-y-auto w-full px-2"
-        style={{ height: "calc(70vh)" }}
-      >
+      <div className="relative overflow-y-auto w-full px-2 flex-1">
         {msgs.map((msg, i) => (
           <>
-            <div>
+            <div className="flex flex-col">
               {MsgRole[msg.role] === "ai" ? (
                 <div className="text-left text-primary-700 text-xs mt-2">
                   Voidpulse
@@ -56,7 +53,7 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({
                 key={i}
                 className={`p-3 rounded-lg my-1 shadow-lg text-sm text-primary-100 ${
                   msg.role === MsgRole.user
-                    ? "text-right bg-accent-100"
+                    ? "text-right bg-accent-100 ml-auto"
                     : "bg-primary-700"
                 }`}
               >
@@ -67,7 +64,7 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({
         ))}
         {/* If the AI has not responded, show loading... */}
         {msgs[msgs.length - 1]?.role === MsgRole.user ? (
-          <div className="w-full pl-4 py-2">
+          <div className="w-full pl-4 py-2 pt-2">
             <TypingIndicator isVisible={true} />
           </div>
         ) : null}
@@ -75,8 +72,8 @@ export const AiChatInterface: React.FC<AiChatInterfaceProps> = ({
       </div>
 
       {/* Pinned input bar area*/}
-      <div className="bg-primary-900/50 w-full">
-        <div className="w-full flex flex-row p-2">
+      <div className="bg-primary-900/50 w-full pb-2">
+        <div className="w-full flex flex-row p-4">
           <div className="w-full">
             <AiInputBar
               dataStr={dataStr}

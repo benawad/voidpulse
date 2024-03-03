@@ -1,4 +1,5 @@
 import { MsgRole } from "../../app-router-type";
+import { __prod__ } from "../../constants/prod";
 import { LLMInterface } from "./LLMInterface";
 
 export class MistralLLM implements LLMInterface {
@@ -33,6 +34,9 @@ export class MistralLLM implements LLMInterface {
     });
 
     const data = await response.json();
-    return data.choices[0].message.content || "";
+    if (!__prod__ && !data.choices) {
+      console.log(data);
+    }
+    return data.choices?.[0].message.content || "something went wrong";
   }
 }

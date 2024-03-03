@@ -13,8 +13,8 @@ export const ChartEditorSidebar: React.FC<ChartEditorSidebarProps> = ({
   const [editorMode, setEditorMode] = useState<"ai" | "manual">("manual");
   return (
     <div
-      className="border-r bg-primary-900 border-primary-800 overflow-y-auto"
-      style={{ width: 400, height: "calc(100vh - 100px)" }}
+      className="border-r bg-primary-900 border-primary-800 flex flex-col overflow-y-auto"
+      style={{ width: 400 }}
     >
       <MultiToggleButtonBar
         className="mono-body text-sm rounded-none p-0 border-0"

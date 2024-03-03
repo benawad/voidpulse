@@ -8,7 +8,7 @@ export class OpenLLM implements LLMInterface {
   constructor() {}
 
   getTokenLimit() {
-    return 4096;
+    return 16_000;
   }
 
   async chatCompletion({

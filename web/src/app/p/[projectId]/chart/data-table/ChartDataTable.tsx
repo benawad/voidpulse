@@ -83,10 +83,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
 
   return (
     <div ref={divRef}>
-      <div
-        ref={tableContainerRef}
-        className="w-full flex overflow-x-auto mb-6 pb-2"
-      >
+      <div ref={tableContainerRef} className="w-full flex overflow-x-auto pb-2">
         <div className="sticky left-0 z-10">
           <ResizableGrid
             scrollMargin={scrollMarginRef.current}

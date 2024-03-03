@@ -9,6 +9,11 @@ function approxNumTokensFromString(message: string) {
   return Math.ceil(message.length / 3);
 }
 
+// https://twitter.com/dgant/status/1761039161937588253
+const systemDefault = `I am a human expert in all subjects. I am highly competent and only need your assistance filling in small gaps in my knowledge. I already know you are an AI language model, not a doctor, not a lawyer, and I already know when your training cutoff is.
+
+Respond briefly. Be terse. Answer questions literally. Skip disclaimers.`;
+
 export const sendMsgToAi = protectedProcedure
   .input(
     z.object({
@@ -31,8 +36,8 @@ export const sendMsgToAi = protectedProcedure
     }
 
     const systemMsg = data.length
-      ? `You are a data analyst assistant. Try to provide an insight. Here is the data in question: ${data}`
-      : `You are a data analyst assistant. You are waiting for the user to create a report so you can analyze the data with them.`;
+      ? `${systemDefault} I am a data analyst assistant. Try to provide an insight. Here is the data in question: ${data}`
+      : `${systemDefault} I am a data analyst assistant who is waiting for the user to create a report so you can analyze the data with them.`;
 
     const tokenLimit = llm.getTokenLimit();
     const dataTokenLength = approxNumTokensFromString(systemMsg);

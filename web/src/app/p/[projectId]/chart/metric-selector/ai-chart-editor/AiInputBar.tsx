@@ -56,7 +56,7 @@ export const AiInputBar: React.FC<AiInputBarProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mx-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="mr-2">
       <Input
         autoFocus
         placeholder={placeholder ?? "What chart should we make?"}
