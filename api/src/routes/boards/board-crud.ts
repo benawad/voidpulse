@@ -22,12 +22,7 @@ export const updateBoardOrder = protectedProcedure
     await db
       .update(projectUsers)
       .set({ boardOrder })
-      .where(
-        and(
-          eq(projectUsers.projectId, projectId),
-          eq(projectUsers.userId, userId)
-        )
-      );
+      .where(eq(projectUsers.projectId, projectId));
 
     return { ok: true };
   });
@@ -46,11 +41,16 @@ export const getBoards = protectedProcedure
     }
 
     const dashboards = await db.query.boards.findMany({
-      where: and(eq(boards.projectId, projectId), eq(boards.creatorId, userId)),
+      where: eq(boards.projectId, projectId),
     });
 
     return {
-      boards: dashboards,
+      boards: dashboards.sort((a, b) => {
+        const va = a.creatorId === userId ? -1 : 1;
+        const vb = b.creatorId === userId ? -1 : 1;
+
+        return va - vb;
+      }),
     };
   });
 
@@ -81,6 +81,7 @@ export const updateBoard = protectedProcedure
   .input(
     z.object({
       id: z.string(),
+      projectId: z.string(),
       data: z.object({
         title: z.string().optional(),
         description: z.string().optional(),
@@ -103,7 +104,9 @@ export const updateBoard = protectedProcedure
       }),
     })
   )
-  .mutation(async ({ input: { id, data }, ctx: { userId } }) => {
+  .mutation(async ({ input: { id, projectId, data }, ctx: { userId } }) => {
+    await assertProjectMember({ projectId, userId });
+
     if (Object.keys(data).length === 0) {
       throw new TRPCError({
         code: "BAD_REQUEST",
@@ -112,7 +115,7 @@ export const updateBoard = protectedProcedure
     }
 
     const board = await db.query.boards.findFirst({
-      where: and(eq(boards.id, id), eq(boards.creatorId, userId)),
+      where: and(eq(boards.id, id), eq(boards.projectId, projectId)),
     });
 
     if (!board) {

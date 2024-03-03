@@ -75,7 +75,7 @@ export const DashboardNavigator: React.FC<DashboardNavigatorProps> = ({
         </div>
 
         <LineSeparator />
-        <div className="subtext py-2">MY BOARDS</div>
+        <div className="subtext py-2">BOARDS</div>
         <DragDropContext
           onDragEnd={(result) => {
             // dropped outside the list

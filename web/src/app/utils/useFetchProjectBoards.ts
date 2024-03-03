@@ -19,16 +19,15 @@ export const useFetchProjectBoards = () => {
       set({ lastProjectId: urlProjectId });
     }
   }, [urlProjectId]);
-
-  const project = currProjectId
-    ? meData?.projects.find((p) => p.id === currProjectId)
-    : meData?.projects?.[0];
-
   useEffect(() => {
     if (!project && meData?.projects.length) {
       router.replace(`/p/${meData.projects[0].id}`);
     }
   }, [meData]);
+
+  const project = currProjectId
+    ? meData?.projects.find((p) => p.id === currProjectId)
+    : meData?.projects?.[0];
 
   const board = lastBoardId
     ? data?.boards.find((b) => b.id === lastBoardId) || data?.boards[0]

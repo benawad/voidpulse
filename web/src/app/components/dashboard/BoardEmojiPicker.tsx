@@ -12,7 +12,7 @@ export const BoardEmojiPicker: React.FC<BoardEmojiPickerProps> = ({
   onDone,
 }) => {
   const { lastProjectId } = useLastSelectedProjectBoardStore();
-  const { boardId } = useProjectBoardContext();
+  const { boardId, projectId } = useProjectBoardContext();
   const utils = trpc.useUtils();
   const pickerRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +55,7 @@ export const BoardEmojiPicker: React.FC<BoardEmojiPickerProps> = ({
           onDone();
           mutateAsync({
             id: boardId,
+            projectId,
             data: { emoji: emoji.emoji },
           });
           console.log(emoji);

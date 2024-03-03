@@ -13,8 +13,8 @@ interface HeaderNavProps {}
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
   const router = useRouter();
-  const { projects, project } = useFetchProjectBoards();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { projects, project } = useFetchProjectBoards();
   const headerItemStyle =
     "p-3 lg:p-3 m-1 hover:bg-primary-800/30 transition-colors rounded-lg items-center flex text-center";
   return (

@@ -35,7 +35,7 @@ const config = {
   newUsersPerDay: 100,
   d1: 0.6,
   d30: 0.2,
-  daysToSimulate: 60,
+  daysToSimulate: 90,
   debug: false,
   dropDataBeforeInsert: true,
   possibleEvents: [
@@ -189,7 +189,7 @@ const runSimulation = () => {
   const people: Person[] = [];
 
   const cohorts: ReturnType<typeof createUsers>[] = [];
-  let td = subDays(new Date(), config.daysToSimulate - 3);
+  let td = subDays(new Date(), Math.floor(config.daysToSimulate / 2));
   for (let i = 0; i < config.daysToSimulate; i++) {
     console.log(
       "Simmulating day",

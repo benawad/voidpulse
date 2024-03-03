@@ -19,7 +19,7 @@ interface ChartsGridProps {
 export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
   const { mutateAsync } = useUpdateBoard();
   const divRef = useRef<HTMLDivElement>(null);
-  const { boardId } = useProjectBoardContext();
+  const { boardId, projectId } = useProjectBoardContext();
 
   const [hoverInfo, setHoverInfo] = useState<null | {
     chartId: string;
@@ -48,6 +48,7 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
     }
     debouncedMutateAsync({
       id: boardId,
+      projectId,
       data: {
         positions,
       },

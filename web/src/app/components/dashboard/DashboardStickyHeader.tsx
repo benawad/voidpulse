@@ -20,7 +20,6 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
   const { projectId } = useParams<{
     projectId: string;
   }>();
-  //API call for updating board info
   const { lastProjectId } = useLastSelectedProjectBoardStore();
   const { boardId } = useProjectBoardContext();
   const utils = trpc.useUtils();
@@ -60,6 +59,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
             onDone={(newText) => {
               mutateAsync({
                 id: boardId,
+                projectId,
                 data: { title: newText },
               });
             }}
@@ -77,6 +77,7 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
               onDone={(newText) => {
                 mutateAsync({
                   id: boardId,
+                  projectId,
                   data: { description: newText },
                 });
               }}

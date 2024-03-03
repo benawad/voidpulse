@@ -27,6 +27,7 @@ const Page: React.FC = () => {
     setError,
     formState: { errors },
   } = useForm<Inputs>();
+  const router = useRouter();
   const { mutateAsync } = trpc.login.useMutation({
     onSuccess: (data) => {
       if ("user" in data) {
@@ -50,7 +51,6 @@ const Page: React.FC = () => {
       }
     },
   });
-  let router = useRouter();
 
   return (
     <div className="page">
