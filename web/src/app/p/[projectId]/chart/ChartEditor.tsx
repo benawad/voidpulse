@@ -367,7 +367,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 ) : null}
               </div>
               <Button
-                disabled={pendingCreateChart || pendingUpdateChart}
+                loading={pendingCreateChart || pendingUpdateChart}
                 onClick={async () => {
                   if (metrics.length && data) {
                     const fields = {

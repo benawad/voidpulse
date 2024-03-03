@@ -1,4 +1,5 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
+import { LoadingSpinner } from "./LoadingSpinner";
 type ButtonType = keyof typeof buttonStyles;
 
 const buttonStyles = {
@@ -14,23 +15,42 @@ export const Button: React.FC<
     DetailedHTMLProps<
       ButtonHTMLAttributes<HTMLButtonElement>,
       HTMLButtonElement
-    > & { buttonType?: ButtonType }
+    > & { buttonType?: ButtonType; loading?: boolean }
   >
-> = ({ className, buttonType = "default", ...props }) => {
+> = ({
+  className,
+  loading,
+  disabled,
+  children,
+  buttonType = "default",
+  ...props
+}) => {
   return (
     <button
       className={
         buttonStyles[buttonType] +
         ` rounded-lg ${
-          props.disabled
+          disabled
             ? ""
             : "hover:shadow-lg transition area transform ease-in duration-200"
-        } p-3 ${className}`
+        } p-3 relative ${className}`
       }
-      style={{ filter: "brightness(90%)", transition: "filter 0.2s ease" }}
+      disabled={disabled || loading}
+      style={{
+        filter: "brightness(90%)",
+        transition: "filter 0.2s ease",
+        color: loading ? "transparent" : "inherit",
+      }}
       onMouseEnter={(e) => (e.currentTarget.style.filter = "brightness(110%)")}
       onMouseLeave={(e) => (e.currentTarget.style.filter = "brightness(90%)")}
       {...props}
-    />
+    >
+      {children}
+      {loading ? (
+        <div className="absolute w-full h-full justify-center items-center flex inset-0">
+          <LoadingSpinner size={20} />
+        </div>
+      ) : null}
+    </button>
   );
 };
