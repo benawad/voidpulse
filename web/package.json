@@ -9,7 +9,8 @@
     "lint": "next lint",
     "themes": "ts-node --project tsconfig.scripts.json scripts/convertHexThemes.ts",
     "pages:build": "pnpm dlx @cloudflare/next-on-pages@1",
-    "deploy": "pnpm run pages:build && wrangler pages deploy --branch=prod .vercel/output/static"
+    "deploy": "pnpm run pages:build && wrangler pages deploy --branch=prod .vercel/output/static",
+    "svgr": "npx @svgr/cli --typescript --no-index --icon --out-dir src/app/svgx -- svgs"
   },
   "dependencies": {
     "@floating-ui/react": "^0.26.8",
@@ -48,6 +49,7 @@
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.9.0",
     "@cloudflare/workers-types": "^4.20240222.0",
+    "@svgr/cli": "^8.1.0",
     "@types/css": "^0.0.37",
     "@types/node": "^20.11.10",
     "@types/react": "^18",

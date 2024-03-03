@@ -1,10 +1,12 @@
 import React from "react";
-import PlanetMotif1 from "../../../landing/PlanetMotif1";
+import NoData from "../../../svgx/NoData";
 
-interface NoDataToDisplayVisualProps {}
+interface NoDataToDisplayVisualProps {
+  size?: string | number;
+}
 
-export const NoDataToDisplayVisual: React.FC<
-  NoDataToDisplayVisualProps
-> = ({}) => {
-  return <PlanetMotif1></PlanetMotif1>;
+export const NoDataToDisplayVisual: React.FC<NoDataToDisplayVisualProps> = ({
+  size = 100,
+}) => {
+  return <NoData width={size} height={size} />;
 };

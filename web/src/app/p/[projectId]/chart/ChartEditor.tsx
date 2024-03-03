@@ -412,10 +412,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
 
             {/* CHART DISPLAYS HERE */}
             {metrics.length && !isLoading && !data?.datas.length ? (
-              <>
-                <NoDataToDisplayVisual />
-                <div>We couldn't find any data for this search</div>
-              </>
+              <div className="flex flex-col justify-center w-full items-center mt-8">
+                <NoDataToDisplayVisual size={300} />
+              </div>
             ) : null}
             <div className="w-full" style={{ height: 400 }}>
               {data?.reportType === ReportType.retention &&

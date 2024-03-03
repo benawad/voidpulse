@@ -113,6 +113,11 @@ export const queryLineChartMetric = async ({
   const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();
   const eventLabel = metricToEventLabel(metric);
 
+  if (!data.length) {
+    // No data
+    return [];
+  }
+
   if (breakdownSelect) {
     return (
       data as unknown as (BreakdownData & { data: [string, number][] })[]
