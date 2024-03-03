@@ -7,9 +7,11 @@ import {
 } from "@voidpulse/api";
 import "chart.js/auto";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
+import { NoDataToDisplayVisual } from "../../p/[projectId]/chart/NoDataToDisplayVisual";
 import { useChartStyle } from "../../themes/useChartStyle";
 import { useColorOrder } from "../../themes/useColorOrder";
 import { LoadingSpinner } from "../../ui/LoadingSpinner";
@@ -18,15 +20,14 @@ import { DonutChart } from "../../ui/charts/DonutChart";
 import { FunnelChart } from "../../ui/charts/FunnelChart";
 import { LineChart } from "../../ui/charts/LineChart";
 import { MoreChartOptionsButton } from "../../ui/charts/MoreChartOptionsButton";
+import { chartToTagline } from "../../utils/chartToTagline";
+import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
 import { transformBarData } from "../../utils/transformBarData";
 import { transformDonutData } from "../../utils/transformDonutData";
 import { transformFunnelChartData } from "../../utils/transformFunnelData";
-import { transformRetentionData } from "../../utils/transformRetentionData";
 import { transformLineData } from "../../utils/transformLineData";
+import { transformRetentionData } from "../../utils/transformRetentionData";
 import { RouterOutput, trpc } from "../../utils/trpc";
-import { chartToTagline } from "../../utils/chartToTagline";
-import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
-import { useParams, useSearchParams } from "next/navigation";
 
 interface ChartThumbnailProps {
   dragRef: any;
@@ -92,7 +93,13 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
   const colorOrder = useColorOrder();
   const chartStyle = useChartStyle();
   let chartToDisplay;
-  if (chart.reportType === ReportType.funnel) {
+  if (!chart.data.datas.length) {
+    chartToDisplay = (
+      <div className="w-full h-full justify-center flex items-center p-4">
+        <NoDataToDisplayVisual size={"80%"} />
+      </div>
+    );
+  } else if (chart.data.reportType === ReportType.funnel) {
     chartToDisplay = (
       <FunnelChart
         {...transformFunnelChartData({
@@ -103,41 +110,39 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
         })}
       />
     );
-  } else if (chart.chartType === ChartType.line) {
-    if (!chart.data.datas.length) {
-      chartToDisplay = <div>No data</div>;
-    } else {
-      chartToDisplay = (
-        <LineChart
-          yPercent={
-            chart.reportType === ReportType.retention &&
-            chart.retentionNumFormat !== RetentionNumFormat.rawCount
-          }
-          {...(chart.reportType === ReportType.retention
-            ? transformRetentionData({
-                datas: chart.data.datas,
-                retHeaders: chart.data.retentionHeaders,
-                retentionNumFormat: chart.retentionNumFormat,
-                colorOrder,
-                visibleDataMap: chart.visibleDataMap,
-                lineChartStyle: chartStyle.line,
-              })
-            : transformLineData({
-                numMetrics: chart.metrics.length,
-                datas: chart.data.datas,
-                dateHeader: chart.data.dateHeaders,
-                colorOrder,
-                visibleDataMap: chart.visibleDataMap,
-                lineChartStyle: chartStyle.line,
-                lineChartGroupByTimeType:
-                  chart.lineChartGroupByTimeType ||
-                  LineChartGroupByTimeType.day,
-              }))}
-          disableAnimations
-        />
-      );
-    }
-  } else if (chart.chartType === ChartType.bar) {
+  } else if (chart.data.chartType === ChartType.line) {
+    chartToDisplay = (
+      <LineChart
+        yPercent={
+          chart.reportType === ReportType.retention &&
+          chart.retentionNumFormat !== RetentionNumFormat.rawCount
+        }
+        {...(chart.data.reportType === ReportType.retention
+          ? transformRetentionData({
+              datas: chart.data.datas,
+              retHeaders: chart.data.retentionHeaders,
+              retentionNumFormat: chart.retentionNumFormat,
+              colorOrder,
+              visibleDataMap: chart.visibleDataMap,
+              lineChartStyle: chartStyle.line,
+            })
+          : transformLineData({
+              numMetrics: chart.metrics.length,
+              datas: chart.data.datas,
+              dateHeader: chart.data.dateHeaders,
+              colorOrder,
+              visibleDataMap: chart.visibleDataMap,
+              lineChartStyle: chartStyle.line,
+              lineChartGroupByTimeType:
+                chart.lineChartGroupByTimeType || LineChartGroupByTimeType.day,
+            }))}
+        disableAnimations
+      />
+    );
+  } else if (
+    chart.data.reportType === ReportType.insight &&
+    chart.data.chartType === ChartType.bar
+  ) {
     chartToDisplay = (
       <BarChart
         {...transformBarData({
@@ -147,7 +152,10 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
         })}
       />
     );
-  } else if (chart.chartType === ChartType.donut) {
+  } else if (
+    chart.data.reportType === ReportType.insight &&
+    chart.data.chartType === ChartType.donut
+  ) {
     chartToDisplay = (
       <DonutChart
         {...transformDonutData({

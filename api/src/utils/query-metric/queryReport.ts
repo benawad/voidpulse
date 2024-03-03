@@ -19,6 +19,7 @@ import { getProject } from "../cache/getProject";
 import { TRPCError } from "@trpc/server";
 
 export const reportInputSchema = z.object({
+  noCache: z.boolean().optional(),
   chartId: z.string().optional(),
   projectId: z.string(),
   from: z.string().regex(dateInputRegex).optional(),

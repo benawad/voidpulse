@@ -11,10 +11,7 @@ const dateHeaderSchema = z.object({
   fullLabel: z.string(),
   lookupValue: z.string(),
 });
-const breakdownSchema = z
-  .union([z.string(), z.number(), z.boolean()])
-  .nullable()
-  .optional();
+const breakdownSchema = z.union([z.string(), z.number()]).optional();
 
 export const chartDataSchema = z.union([
   // funnel

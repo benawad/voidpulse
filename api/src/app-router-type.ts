@@ -64,7 +64,7 @@ export enum ReportType {
   insight = 1,
   funnel,
   retention,
-  flow,
+  // flow,
 }
 
 export enum ChartTimeRangeType {
