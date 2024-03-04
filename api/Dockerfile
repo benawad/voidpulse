@@ -9,11 +9,8 @@ RUN apk add --no-cache bash g++ gcc libgcc libstdc++ linux-headers make python3
 ENV PYTHONUNBUFFERED=1
 RUN ln -sf python3 /usr/bin/python
 
-# Copy package.json and package-lock.json (or yarn.lock if you use yarn)
-COPY package*.json ./
-
-# Install npm dependencies, including 'geoip-lite'
-RUN npm install
+RUN npm init -y
+RUN npm i geoip-lite@1.4.10
 
 ARG CLOUD_MASTERMIND_LICENSE_KEY
 ENV MASTERMIND_LICENSE_KEY=${CLOUD_MASTERMIND_LICENSE_KEY}
@@ -27,6 +24,13 @@ RUN if [ -n "$MASTERMIND_LICENSE_KEY" ]; then \
 	echo "MASTERMIND_LICENSE_KEY is not set, skipping GeoIP database update"; \
 	fi
 
+RUN rm package.json package-lock.json
+
+# Copy package.json and package-lock.json (or yarn.lock if you use yarn)
+COPY package*.json ./
+
+# Install npm dependencies, including 'geoip-lite'
+RUN npm install
 
 # Copy the rest of your application's source code
 COPY . .
