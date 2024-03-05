@@ -4,3 +4,4 @@ data.json.gz
 Dockerfile.api.tmp
 .env.production
 .wrangler
+clickhouse-backup-config.yml

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppState } from "react-native";
+import { AppState, Platform } from "react-native";
 import { v4 } from "uuid";
 import "react-native-get-random-values";
 import { PersistedList } from "./PersistedList";
@@ -110,7 +110,14 @@ export class Voidpulse {
       $manufacturer: Device.manufacturer,
       $model: Device.modelName,
       $brand: Device.brand,
-      $os: Device.osName,
+      $os:
+        {
+          ios: Device.osName,
+          android: "Android",
+          macos: "MacOS",
+          windows: "Windows",
+          web: "Web",
+        }[Platform.OS] || Device.osName,
       $os_version: Device.osVersion,
     };
   }

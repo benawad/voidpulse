@@ -24,7 +24,10 @@ const bodySchema = z.object({
 type Body = z.infer<typeof bodySchema>;
 
 // 1mb - approx
-const maxPropsSize = 1048576;
+const maxPropsSize = 1_048_576;
+
+let numWarnings = 0;
+let numEvents = 0;
 
 export const addIngestRoute = (app: Express) => {
   app.set("trust proxy", true);
@@ -53,7 +56,7 @@ export const addIngestRoute = (app: Express) => {
       const project_id = (req as any).project_id;
       const messages: Array<{ value: string }> = [];
       const warnings: Array<string> = [];
-      const ingest_at = dateToClickhouseDateString(new Date());
+      const ingested_at = dateToClickhouseDateString(new Date());
       let geoInfo: {
         city: string;
         country: string;
@@ -79,18 +82,27 @@ export const addIngestRoute = (app: Express) => {
         properties.$insert_id = event.insert_id;
         const str_props = JSON.stringify(properties);
         if (str_props.length > maxPropsSize) {
-          warnings.push(
-            `Event ${event.name} has properties that are too large: ${
-              str_props.length
-            } bytes and max size is ${maxPropsSize.toLocaleString()}. Event has been dropped.`
-          );
+          if (numWarnings < 10) {
+            console.log(properties);
+          }
+          numWarnings++;
+          if (numWarnings)
+            warnings.push(
+              `Event ${event.name} has properties that are too large: ${
+                str_props.length
+              } bytes and max size is ${maxPropsSize.toLocaleString()}. Event has been dropped.`
+            );
           continue;
+        }
+        numEvents++;
+        if (numEvents % 100_000 === 0) {
+          console.log("ingested", numEvents.toLocaleString(), "events");
         }
         messages.push({
           value: JSON.stringify({
             id: v4(),
             project_id,
-            ingest_at,
+            ingested_at,
             properties: str_props,
             ...event,
           }),
