@@ -74,7 +74,7 @@ export const prepareFiltersAndBreakdown = async ({
         query,
         query_params: {
           projectId,
-          ...getDateRange({ timeRangeType, from, to }),
+          ...getDateRange({ timeRangeType, timezone, from, to }),
           eventName: metric.event.value,
           ...paramHandler.getParams(),
         },
@@ -108,7 +108,7 @@ export const prepareFiltersAndBreakdown = async ({
   return {
     query_params: {
       projectId,
-      ...getDateRange({ timeRangeType, from, to }),
+      ...getDateRange({ timeRangeType, timezone, from, to }),
       eventName: metric.event.value,
       ...paramHandler.getParams(),
     },

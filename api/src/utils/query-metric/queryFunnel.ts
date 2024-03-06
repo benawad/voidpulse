@@ -150,7 +150,7 @@ GROUP BY breakdown`
     query,
     query_params: {
       projectId,
-      ...getDateRange({ timeRangeType, from, to }),
+      ...getDateRange({ timeRangeType, timezone, from, to }),
       ...paramHandler.getParams(),
     },
   });

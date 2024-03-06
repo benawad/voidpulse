@@ -26,9 +26,6 @@ type Body = z.infer<typeof bodySchema>;
 // 1mb - approx
 const maxPropsSize = 1_048_576;
 
-let numWarnings = 0;
-let numEvents = 0;
-
 export const addIngestRoute = (app: Express) => {
   app.set("trust proxy", true);
   app.get("/health", (_, res) => {
@@ -56,6 +53,8 @@ export const addIngestRoute = (app: Express) => {
       const project_id = (req as any).project_id;
       const messages: Array<{ value: string }> = [];
       const warnings: Array<string> = [];
+      // 1 day in the future
+      const acceptableFutureTime = new Date().getTime() + 1000 * 60 * 60 * 24;
       const ingested_at = dateToClickhouseDateString(new Date());
       let geoInfo: {
         city: string;
@@ -77,26 +76,20 @@ export const addIngestRoute = (app: Express) => {
           properties.$region = geoInfo.region;
           properties.$timezone = geoInfo.timezone;
         }
+        if (new Date(event.time).getTime() > acceptableFutureTime) {
+          event.time = dateToClickhouseDateString(new Date());
+        }
         properties.distinct_id = event.distinct_id;
         properties.time = event.time;
         properties.$insert_id = event.insert_id;
         const str_props = JSON.stringify(properties);
         if (str_props.length > maxPropsSize) {
-          if (numWarnings < 10) {
-            console.log(properties);
-          }
-          numWarnings++;
-          if (numWarnings)
-            warnings.push(
-              `Event ${event.name} has properties that are too large: ${
-                str_props.length
-              } bytes and max size is ${maxPropsSize.toLocaleString()}. Event has been dropped.`
-            );
+          warnings.push(
+            `Event ${event.name} has properties that are too large: ${
+              str_props.length
+            } bytes and max size is ${maxPropsSize.toLocaleString()}. Event has been dropped.`
+          );
           continue;
-        }
-        numEvents++;
-        if (numEvents % 100_000 === 0) {
-          console.log("ingested", numEvents.toLocaleString(), "events");
         }
         messages.push({
           value: JSON.stringify({

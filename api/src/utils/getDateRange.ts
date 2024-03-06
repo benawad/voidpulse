@@ -1,13 +1,16 @@
 import { ChartTimeRangeType } from "../app-router-type";
 import { startOfDay, endOfDay, subMonths } from "date-fns";
+import { DateTime } from "luxon";
 import { dateToClickhouseDateString } from "./dateToClickhouseDateString";
 
 export const getDateRange = ({
   timeRangeType,
+  timezone,
   from,
   to,
 }: {
   timeRangeType: ChartTimeRangeType;
+  timezone: string;
   from?: string;
   to?: string;
 }) => {
@@ -21,54 +24,51 @@ export const getDateRange = ({
       to: str,
     };
   } else if (timeRangeType === ChartTimeRangeType.Today) {
-    const today = new Date();
+    const td = DateTime.now().setZone(timezone);
     return {
-      from: dateToClickhouseDateString(startOfDay(today)),
-      to: dateToClickhouseDateString(endOfDay(today)),
+      from: dateToClickhouseDateString(td.startOf("day").toJSDate()),
+      to: dateToClickhouseDateString(td.endOf("day").toJSDate()),
     };
   } else if (timeRangeType === ChartTimeRangeType.Yesterday) {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const td = DateTime.now().setZone(timezone).minus({ day: 1 });
     return {
-      from: dateToClickhouseDateString(startOfDay(yesterday)),
-      to: dateToClickhouseDateString(endOfDay(yesterday)),
+      from: dateToClickhouseDateString(td.startOf("day").toJSDate()),
+      to: dateToClickhouseDateString(td.endOf("day").toJSDate()),
     };
   } else if (timeRangeType === ChartTimeRangeType["7D"]) {
-    const today = new Date();
-    const from = new Date(today);
-    from.setDate(from.getDate() - 7);
+    const td = DateTime.now().setZone(timezone);
+    const from = td.minus({ days: 7 });
     return {
-      from: dateToClickhouseDateString(startOfDay(from)),
-      to: dateToClickhouseDateString(endOfDay(today)),
+      from: dateToClickhouseDateString(from.startOf("day").toJSDate()),
+      to: dateToClickhouseDateString(td.endOf("day").toJSDate()),
     };
   } else if (timeRangeType === ChartTimeRangeType["30D"]) {
-    const today = new Date();
-    const from = new Date(today);
-    from.setDate(from.getDate() - 30);
+    const td = DateTime.now().setZone(timezone);
+    const from = td.minus({ days: 30 });
     return {
-      from: dateToClickhouseDateString(startOfDay(from)),
-      to: dateToClickhouseDateString(endOfDay(today)),
+      from: dateToClickhouseDateString(from.startOf("day").toJSDate()),
+      to: dateToClickhouseDateString(td.endOf("day").toJSDate()),
     };
   } else if (timeRangeType === ChartTimeRangeType["3M"]) {
-    const today = new Date();
-    const from = subMonths(new Date(today), 3);
+    const td = DateTime.now().setZone(timezone);
+    const from = td.minus({ months: 3 });
     return {
-      from: dateToClickhouseDateString(startOfDay(from)),
-      to: dateToClickhouseDateString(endOfDay(today)),
+      from: dateToClickhouseDateString(from.startOf("day").toJSDate()),
+      to: dateToClickhouseDateString(td.endOf("day").toJSDate()),
     };
   } else if (timeRangeType === ChartTimeRangeType["6M"]) {
-    const today = new Date();
-    const from = subMonths(new Date(today), 6);
+    const td = DateTime.now().setZone(timezone);
+    const from = td.minus({ months: 6 });
     return {
-      from: dateToClickhouseDateString(startOfDay(from)),
-      to: dateToClickhouseDateString(endOfDay(today)),
+      from: dateToClickhouseDateString(from.startOf("day").toJSDate()),
+      to: dateToClickhouseDateString(td.endOf("day").toJSDate()),
     };
   } else if (timeRangeType === ChartTimeRangeType["12M"]) {
-    const today = new Date();
-    const from = subMonths(new Date(today), 12);
+    const td = DateTime.now().setZone(timezone);
+    const from = td.minus({ months: 12 });
     return {
-      from: dateToClickhouseDateString(startOfDay(from)),
-      to: dateToClickhouseDateString(endOfDay(today)),
+      from: dateToClickhouseDateString(from.startOf("day").toJSDate()),
+      to: dateToClickhouseDateString(td.endOf("day").toJSDate()),
     };
   }
 

@@ -186,7 +186,7 @@ export const queryRetention = async ({
       projectId,
       startEventName: metrics[0].event.value,
       endEventName: metrics[1].event.value,
-      ...getDateRange({ timeRangeType, from, to }),
+      ...getDateRange({ timeRangeType, timezone, from, to }),
       ...paramHandler.getParams(),
     },
   });
