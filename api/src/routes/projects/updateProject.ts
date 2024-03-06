@@ -8,6 +8,7 @@ import { assertProjectMember } from "../../utils/assertProjectMember";
 import { genApiKey } from "../../utils/genApiKey";
 import { apiKeyCache } from "../express/middleware/checkApiKeyMiddleware";
 import { updateProjectCache } from "../../utils/cache/getProject";
+import { defaultTimezone, timezones } from "../../constants/timezones";
 
 export const updateProject = protectedProcedure
   .input(
@@ -15,6 +16,7 @@ export const updateProject = protectedProcedure
       id: z.string(),
       data: z.object({
         name: z.string().optional(),
+        timezone: z.string().optional(),
         revokeApiKey: z.boolean().optional(),
       }),
     })
@@ -40,13 +42,17 @@ export const updateProject = protectedProcedure
       });
     }
 
-    const { revokeApiKey, ...values } = data;
+    const { revokeApiKey, timezone, ...values } = data;
 
     const setData: Partial<InferInsertModel<typeof projects>> = values;
 
     if (revokeApiKey) {
       delete apiKeyCache[project.apiKey];
       setData.apiKey = genApiKey();
+    }
+
+    if (timezone && timezones.has(timezone)) {
+      setData.timezone = timezone;
     }
 
     const [updatedProject] = await db

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import { ThemePicker } from "../themes/ThemePicker";
 import { Button } from "../ui/Button";
@@ -12,6 +12,7 @@ import { InviteMemberForm } from "./InviteMemberForm";
 import { ProjectBoardProvider } from "../../../providers/ProjectBoardProvider";
 import { FullScreenLoading } from "../ui/FullScreenLoading";
 import { __cloud__ } from "../constants";
+import { SearchSelect } from "../ui/SearchSelect";
 
 export const SettingsPage: React.FC = ({}) => {
   const { mutateAsync: logout } = trpc.logout.useMutation();
@@ -39,6 +40,15 @@ export const SettingsPage: React.FC = ({}) => {
       });
     },
   });
+  const opts = useMemo(
+    () =>
+      Intl.supportedValuesOf("timeZone").map((x) => ({
+        label: x,
+        value: x,
+        searchValue: x.toLowerCase(),
+      })),
+    []
+  );
 
   if (!project || !board) {
     return <FullScreenLoading />;
@@ -79,6 +89,19 @@ export const SettingsPage: React.FC = ({}) => {
                 />
               )}
             </div>
+            <div className={headerLabelStyle}>PROJECT TIMEZONE</div>
+            <SearchSelect
+              value={project.timezone}
+              opts={opts}
+              onSelect={(x) => {
+                mutateAsync({
+                  id: project!.id,
+                  data: {
+                    timezone: x,
+                  },
+                });
+              }}
+            />
           </div>
           <LineSeparator />
           {__cloud__ ? (
