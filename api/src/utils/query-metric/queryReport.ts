@@ -46,12 +46,6 @@ export const queryReport = async ({
   globalFilters,
 }: z.infer<typeof reportInputSchema>) => {
   const project = await getProject(projectId);
-  const { dateHeaders, dateMap, retentionHeaders } = getDateHeaders(
-    timeRangeType,
-    lineChartGroupByTimeType,
-    from,
-    to
-  );
 
   if (!project) {
     throw new TRPCError({
@@ -59,6 +53,14 @@ export const queryReport = async ({
       message: "Project not found",
     });
   }
+
+  const { dateHeaders, dateMap, retentionHeaders } = getDateHeaders(
+    timeRangeType,
+    lineChartGroupByTimeType,
+    project.timezone,
+    from,
+    to
+  );
 
   if (ReportType.funnel === reportType) {
     return {
