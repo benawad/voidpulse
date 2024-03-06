@@ -29,21 +29,21 @@ type ReportResult = Awaited<ReturnType<typeof queryReport>>;
 
 export const getReport = protectedProcedure
   .input(reportInputSchema)
-  .query(async ({ input, ctx: { userId } }) => {
+  .query(async ({ input: { chartId, noCache, ...input }, ctx: { userId } }) => {
     await assertProjectMember({ projectId: input.projectId, userId });
 
     const key = stringify(input);
 
     let result = cache.get(key);
 
-    if (!result) {
+    if (!result || noCache) {
       result = await queryReport(input);
       if (result.datas.length) {
         cache.set(key, result);
       }
     }
 
-    if (!input.chartId) {
+    if (!chartId) {
       return result;
     }
 
@@ -53,7 +53,7 @@ export const getReport = protectedProcedure
         dataUpdatedAt: new Date(),
         data: result as any,
       })
-      .where(and(eq(charts.id, input.chartId), eq(charts.creatorId, userId)))
+      .where(and(eq(charts.id, chartId), eq(charts.creatorId, userId)))
       .execute();
 
     return result;

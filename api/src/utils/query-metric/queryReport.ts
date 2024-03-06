@@ -64,6 +64,7 @@ export const queryReport = async ({
 
   if (ReportType.funnel === reportType) {
     return {
+      computedAt: new Date(),
       reportType,
       chartType,
       labels: metrics.map((x, i) => `${i + 1} ${x.event.name}`),
@@ -85,6 +86,7 @@ export const queryReport = async ({
 
   if (ReportType.retention === reportType) {
     return {
+      computedAt: new Date(),
       reportType,
       chartType,
       retentionHeaders,
@@ -106,6 +108,7 @@ export const queryReport = async ({
 
   if (chartType !== ChartType.line) {
     return {
+      computedAt: new Date(),
       reportType,
       chartType,
       datas: (
@@ -128,6 +131,7 @@ export const queryReport = async ({
   }
 
   return {
+    computedAt: new Date(),
     reportType,
     chartType,
     dateHeaders,

@@ -7,7 +7,7 @@ import {
 } from "@voidpulse/api";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import {
   PiChartBar,
@@ -42,6 +42,7 @@ import { ChartEditorSidebar } from "./ChartEditorSidebar";
 import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
 import { ChartDataTable } from "./data-table/ChartDataTable";
 import moment from "moment";
+import { msToDurationString } from "../../../utils/msToDurationString";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -110,7 +111,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     to: to ? dateToClickhouseDateString(to) : undefined,
     projectId: projectId,
   };
-  const { data, isLoading, error } = trpc.getReport.useQuery(getReportVars, {
+  const { data, isLoading } = trpc.getReport.useQuery(getReportVars, {
     enabled:
       reportType === ReportType.retention
         ? metrics.length === 2
@@ -405,6 +406,28 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               </Button>
             </div>
             <ChartDateRangePicker />
+
+            {data?.computedAt ? (
+              <div className="text-xs text-primary-400">
+                Computed{" "}
+                {msToDurationString(
+                  new Date().getTime() - new Date(data.computedAt).getTime()
+                )}{" "}
+                ago
+                <button
+                  onClick={async () => {
+                    const x = await utils.getReport.fetch({
+                      ...getReportVars,
+                      noCache: true,
+                    });
+                    utils.getReport.setData(getReportVars, x);
+                  }}
+                  className="text-accent-100 ml-1"
+                >
+                  Refresh
+                </button>
+              </div>
+            ) : null}
 
             {/* CHART DISPLAYS HERE */}
             {metrics.length && !isLoading && !data?.datas.length ? (
