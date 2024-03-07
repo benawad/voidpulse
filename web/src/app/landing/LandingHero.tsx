@@ -30,11 +30,11 @@ export const LandingHero: React.FC<LandingHeroProps> = ({}) => {
             <div className="text-6xl">voidpulse</div>
           </div>
           <div className="mt-2 text-2xl pl-14">copilot for product</div>
-          <Link href="/login" className="flex">
+          <a href="https://forms.gle/fEWj9yCyEwnhjRdB7" className="flex">
             <div className="mt-8 bg-primary-500 text-white py-2 px-4 rounded-md">
-              Get Started
+              Join waitlist
             </div>
-          </Link>
+          </a>
         </div>
       </div>
     </div>

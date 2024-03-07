@@ -4,6 +4,8 @@ import { CurrThemeProvider } from "./themes/CurrThemeProvider";
 import { FullScreenLoading } from "./ui/FullScreenLoading";
 import { trpc } from "./utils/trpc";
 import { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const publicPaths = ["/", "/check-email", "/forgot-password"];
 const publicPathsStartWiths = [
@@ -43,7 +45,12 @@ function Template({ children }: { children: React.ReactNode }) {
     return <FullScreenLoading />;
   }
 
-  return <CurrThemeProvider>{children}</CurrThemeProvider>;
+  return (
+    <CurrThemeProvider>
+      {children}
+      <ToastContainer />
+    </CurrThemeProvider>
+  );
 }
 
 export default trpc.withTRPC(Template);

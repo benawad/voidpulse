@@ -9,6 +9,7 @@ import {
 } from "../../../utils/query-metric/queryReport";
 import { LRUCache } from "lru-cache";
 import stringify from "json-stringify-deterministic";
+import { TRPCError } from "@trpc/server";
 
 export type InsightData = { day: string; count: number };
 
