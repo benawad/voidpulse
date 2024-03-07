@@ -95,7 +95,7 @@ export const queryFunnel = async ({
 
   SELECT
   ${breakdownSelect ? `breakdown,` : ""}
-  toInt32(count(DISTINCT distinct_id)) as step0_reached,
+  toInt32(COUNT(DISTINCT IF(step0, distinct_id, NULL))) AS step0_reached,
   ${metrics
     .map(
       (_, i) =>
@@ -107,6 +107,7 @@ FROM (
   SELECT
       distinct_id,
       ${breakdownSelect ? `max(${breakdownSelect}) AS breakdown,` : ""}
+      MAX(name = {p1:String}) AS step0,
       ${metrics
         .map((_, i) => {
           const currMetrics = metrics.slice(0, i + 1);
