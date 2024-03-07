@@ -194,15 +194,6 @@ export const queryRetention = async ({
 
   const breakdownGroups: Record<string, RetentionBreakdownGroup> = {};
 
-  console.log({
-    projectId,
-    startEventName: metrics[0].event.value,
-    endEventName: metrics[1].event.value,
-    ...getDateRange({ timeRangeType, timezone, from, to }),
-    ...paramHandler.getParams(),
-  });
-  console.log(data.filter((x) => x.breakdown === 0).slice(0, 5));
-
   // First, group data by breakdown
   data.forEach((item) => {
     const {
