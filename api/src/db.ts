@@ -36,7 +36,7 @@ export const pool = new Pool(
 export type DbUser = typeof users.$inferSelect;
 
 export const db = drizzle(pool, {
-  logger: !__prod__,
+  // logger: !__prod__,
   schema: {
     users,
     projects,

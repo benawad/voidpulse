@@ -61,6 +61,17 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
               value: x.key,
               lowercaseKey: name.toLowerCase(),
             };
+          })
+          .sort((a, b) => {
+            const aIsDefaultProp = a.key in defaultPropertyNameMap;
+            const bIsDefaultProp = b.key in defaultPropertyNameMap;
+            if (aIsDefaultProp && !bIsDefaultProp) {
+              return 1;
+            }
+            if (!aIsDefaultProp && bIsDefaultProp) {
+              return -1;
+            }
+            return a.name.localeCompare(b.name);
           }),
       };
     }

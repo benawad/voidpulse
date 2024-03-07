@@ -140,6 +140,7 @@ export const defaultPropertyNameMap = {
   $screen_width: "Screen Width",
   $wifi: "Wifi",
   $radio: "Radio",
+  $native_app_version: "Native App Version",
 };
 
 export const hiddenPropertyNameMap = {
