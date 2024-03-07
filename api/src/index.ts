@@ -12,6 +12,7 @@ import { addUpdatePeopleRoute } from "./routes/express/update-people";
 import { __cloud__, __prod__ } from "./constants/prod";
 import { sleep } from "./utils/sleep";
 import { tryToConnect } from "./utils/tryToConnect";
+import { normalizeOsDataMigration } from "./data-migrations/normalizeOs";
 
 const startServer = async () => {
   console.log("about to migrate postgres");
@@ -43,6 +44,10 @@ const startServer = async () => {
   console.log("connected to kafka");
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
+
+  // if (__prod__) {
+  //   normalizeOsDataMigration();
+  // }
 
   app.listen(__prod__ ? (__cloud__ ? process.env.PORT : 3000) : 4001, () => {
     console.log("server started on http://localhost:4001/trpc");

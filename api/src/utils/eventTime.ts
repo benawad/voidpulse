@@ -3,5 +3,5 @@ export const eventTime = (timezone: string, prefix = "") => {
 };
 
 export const inputTime = (varName: string, timezone: string) => {
-  return `toDate(toDateTime({${varName}:DateTime}, '${timezone}'))`;
+  return `toDateTime(toDateTime({${varName}:DateTime}), '${timezone}')`;
 };

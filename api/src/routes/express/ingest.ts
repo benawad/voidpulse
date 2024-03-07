@@ -79,6 +79,15 @@ export const addIngestRoute = (app: Express) => {
         if (new Date(event.time).getTime() > acceptableFutureTime) {
           event.time = dateToClickhouseDateString(new Date());
         }
+        if (
+          properties.$lib_version === "1.0.0" &&
+          properties.$os &&
+          !["iOS", "iPadOS", "Android", "Windows", "Web"].includes(
+            properties["$os"]
+          )
+        ) {
+          properties.$os = "Android";
+        }
         properties.distinct_id = event.distinct_id;
         properties.time = event.time;
         properties.$insert_id = event.insert_id;
