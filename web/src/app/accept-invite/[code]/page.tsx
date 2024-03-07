@@ -17,10 +17,6 @@ export const AcceptInvite: React.FC = ({}) => {
         user: data.user,
         projects: data.projects,
       });
-      utils.getBoards.setData(
-        { projectId: data.projects[0].id },
-        { boards: [data.board] }
-      );
       router.push(`/p/${data.projects[0].id}`);
     });
   }, []);

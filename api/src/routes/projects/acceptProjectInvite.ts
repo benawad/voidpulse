@@ -52,22 +52,10 @@ export const acceptProjectInvite = publicProcedure
       boardOrder: [boardId],
     });
 
-    const [board] = await db
-      .insert(boards)
-      .values({
-        id: boardId,
-        creatorId: user.id,
-        emoji: emoji.random().emoji,
-        title: "My Board",
-        projectId: info.projectId,
-      })
-      .returning();
-
     sendAuthCookies(ctx.res, user);
 
     return {
       user,
       projects: await getProjects(user.id),
-      board,
     };
   });

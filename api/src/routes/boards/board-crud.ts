@@ -8,6 +8,7 @@ import { projectUsers } from "../../schema/project-users";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
 import { isUuidV4 } from "../../utils/isUuid";
+import { ProjectRoleId } from "../../app-router-type";
 
 export const updateBoardOrder = protectedProcedure
   .input(
@@ -150,26 +151,17 @@ export const deleteBoard = protectedProcedure
     })
   )
   .mutation(async ({ input: { id, projectId }, ctx: { userId } }) => {
-    await assertProjectMember({ projectId, userId });
+    const { role } = await assertProjectMember({ projectId, userId });
 
     await db
       .delete(boards)
       .where(
         and(
           eq(boards.id, id),
-          eq(boards.creatorId, userId),
-          eq(boards.projectId, projectId)
+          eq(boards.projectId, projectId),
+          ...(role >= ProjectRoleId.admin ? [] : [eq(boards.creatorId, userId)])
         )
       );
-    await db.execute(sql`
-      UPDATE projects
-      SET board_order = (
-        SELECT jsonb_agg(elem)
-        FROM jsonb_array_elements_text(board_order) AS t(elem)
-        WHERE elem <> ${id}
-      )
-      WHERE id = ${projectId};
-      `);
 
     return {
       ok: true,
