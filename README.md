@@ -18,3 +18,5 @@ I don't want to pay $40k for analytics.
 - Node.js with TRPC & Drizzle ORM
 - Postgresql
 - Clickhouse (for storing/querying events)
+- Kafka (batch event insertion)
+- Redis (cache)
