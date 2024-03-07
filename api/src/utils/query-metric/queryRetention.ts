@@ -163,7 +163,7 @@ export const queryRetention = async ({
       COUNT(DISTINCT a.distinct_id) AS retained_users,  -- Count unique users for each day after the cohort date
       s.cohort_size
     FROM activity_after_first_day a
-    JOIN cohort_sizes s ON a.cohort_date = s.cohort_date
+    JOIN cohort_sizes s ON a.cohort_date = s.cohort_date ${breakdownSelect ? `AND a.breakdown = s.breakdown` : ``}
     GROUP BY a.cohort_date${
       breakdownSelect ? `, a.breakdown` : ``
     }, a.days_after_cohort, s.cohort_size
@@ -193,6 +193,15 @@ export const queryRetention = async ({
   const { data } = await resp.json<ClickHouseQueryResponse<RetentionEntry>>();
 
   const breakdownGroups: Record<string, RetentionBreakdownGroup> = {};
+
+  console.log({
+    projectId,
+    startEventName: metrics[0].event.value,
+    endEventName: metrics[1].event.value,
+    ...getDateRange({ timeRangeType, timezone, from, to }),
+    ...paramHandler.getParams(),
+  });
+  console.log(data.filter((x) => x.breakdown === 0).slice(0, 5));
 
   // First, group data by breakdown
   data.forEach((item) => {
