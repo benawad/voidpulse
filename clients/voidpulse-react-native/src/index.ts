@@ -1,1 +1,1 @@
-export * from "./Voidpulse";
+export * from "./VoidpulseReactNative";

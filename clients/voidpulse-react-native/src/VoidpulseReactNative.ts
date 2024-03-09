@@ -103,6 +103,7 @@ export class Voidpulse {
   getDefaultProps() {
     return {
       $lib_version: version,
+      $voidpulse_client: "react-native",
       $app_build_number: Application.nativeBuildVersion || "",
       $native_app_version: Application.nativeApplicationVersion || "",
       $app_version: Constants.manifest2?.extra?.expoClient?.version || "",

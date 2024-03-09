@@ -34,6 +34,7 @@ export const setPassword = publicProcedure
     const [user] = await db
       .update(users)
       .set({
+        confirmed: true,
         passwordHash: await argon2d.hash(input.password),
       })
       .where(eq(users.id, userId))

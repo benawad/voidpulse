@@ -18,6 +18,7 @@ const eventSchema = z.object({
 
 const bodySchema = z.object({
   skipIpLookup: z.boolean().optional(),
+  isFromServer: z.boolean().optional(),
   events: z.array(eventSchema),
 });
 
@@ -62,7 +63,7 @@ export const addIngestRoute = (app: Express) => {
         region: string;
         timezone: string;
       } | null = null;
-      if (!body.skipIpLookup && req.ip) {
+      if (!body.skipIpLookup && body.isFromServer && req.ip) {
         geoInfo = geoip.lookup(req.ip);
       }
 

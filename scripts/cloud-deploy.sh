@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 OLD_VERSION=`cat scripts/version.txt`
 NEW_VERSION=`expr $OLD_VERSION + 1`
 echo $NEW_VERSION > scripts/version.txt
