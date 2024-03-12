@@ -142,6 +142,7 @@ export const defaultPropertyNameMap = {
   $radio: "Radio",
   $native_app_version: "Native App Version",
   $voidpulse_client: "Voidpulse Client",
+  $runtime_version: "Runtime Version",
 };
 
 export const hiddenPropertyNameMap = {
