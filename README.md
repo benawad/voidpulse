@@ -4,7 +4,7 @@ Open source Mixpanel with AI
 
 ![voidpulse graph ui](/assets/readme-visual3.jpeg)
 
-This project is in private beta as I iron out the bugs.
+This project is in private beta.
 
 We are currently using this in production for the [Voidpet app](https://voidpet.com).
 

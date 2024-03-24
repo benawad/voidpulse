@@ -81,7 +81,7 @@ export const getPropKeys = protectedProcedure
         ...(userPropTypes?.propTypes
           ? Object.entries(userPropTypes.propTypes).map(([key, value]) => ({
               key,
-              type: value.type as DataType,
+              type: value as DataType,
               propOrigin: PropOrigin.user,
             }))
           : []),

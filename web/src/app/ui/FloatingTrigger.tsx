@@ -8,6 +8,8 @@ import {
 } from "@floating-ui/react";
 import React, { useState } from "react";
 
+type SetOpen = (x: boolean) => void;
+
 interface FloatingTriggerProps {
   portal?: boolean;
   startOpen?: boolean;
@@ -28,7 +30,10 @@ interface FloatingTriggerProps {
     | "bottom-end"
     | "left-start"
     | "left-end";
-  floatingContent: React.JSX.Element;
+  floatingContent:
+    | React.JSX.Element
+    | ((setOpen: SetOpen) => React.JSX.Element);
+  noCloseOnClick?: boolean;
 }
 
 export const FloatingTrigger: React.FC<
@@ -43,6 +48,7 @@ export const FloatingTrigger: React.FC<
   hideIfOpen,
   placement,
   floatingContent,
+  noCloseOnClick,
 }) => {
   //Floating content needs to know if it's open or not
   const [isOpen, setIsOpen] = useState(startOpen);
@@ -71,27 +77,36 @@ export const FloatingTrigger: React.FC<
       style={floatingStyles}
       className={"z-30 flex" + isOpen ? fadeIn : fadeOut}
     >
-      <div>{floatingContent}</div>
+      <div>
+        {typeof floatingContent === "function"
+          ? floatingContent(setIsOpen)
+          : floatingContent}
+      </div>
     </div>
   ) : null;
 
+  const menu = isOpen ? (
+    portal ? (
+      <FloatingPortal>{inside}</FloatingPortal>
+    ) : (
+      inside
+    )
+  ) : null;
+
   return (
-    <button
-      {...getReferenceProps()}
-      ref={refs.setReference}
-      className={className}
-    >
-      <div className="flex" style={{ opacity: hideIfOpen && isOpen ? 0 : 1 }}>
-        {children}
-      </div>
+    <>
+      <button
+        {...getReferenceProps()}
+        ref={refs.setReference}
+        className={className}
+      >
+        <div className="flex" style={{ opacity: hideIfOpen && isOpen ? 0 : 1 }}>
+          {children}
+        </div>
+        {noCloseOnClick ? null : menu}
+      </button>
       {/* Floating content */}
-      {isOpen ? (
-        portal ? (
-          <FloatingPortal>{inside}</FloatingPortal>
-        ) : (
-          inside
-        )
-      ) : null}
-    </button>
+      {noCloseOnClick ? menu : null}
+    </>
   );
 };

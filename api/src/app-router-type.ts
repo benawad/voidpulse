@@ -3,6 +3,18 @@ export type { AppRouter } from "./appRouter";
 export enum MetricMeasurement {
   uniqueUsers = 1,
   totalEvents,
+  frequencyPerUser,
+  aggProp,
+}
+
+export enum AggType {
+  avg = 1,
+  median,
+  percentile25,
+  percentile75,
+  percentile90,
+  min,
+  max,
 }
 
 export enum DataType {

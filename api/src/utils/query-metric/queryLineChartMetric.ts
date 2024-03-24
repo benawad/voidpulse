@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import {
+  AggType,
   BreakdownType,
   ChartTimeRangeType,
   LineChartGroupByTimeType,
@@ -14,6 +15,7 @@ import { InsightData } from "../../routes/charts/insight/getReport";
 import { metricToEventLabel } from "./metricToEventLabel";
 import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";
 import { eventTime } from "../eventTime";
+import { getAggFn } from "./getAggFn";
 
 type BreakdownData = {
   id: string;
@@ -36,6 +38,7 @@ export const queryLineChartMetric = async ({
   dateMap,
   globalFilters,
   timezone,
+  dateHeaders,
 }: {
   dateMap: Record<string, number>;
   dateHeaders: Array<{
@@ -69,6 +72,8 @@ export const queryLineChartMetric = async ({
     to,
   });
 
+  const isFrequency = metric.type === MetricMeasurement.frequencyPerUser;
+
   let query = `
   SELECT
       ${
@@ -81,7 +86,7 @@ export const queryLineChartMetric = async ({
         lineChartGroupByTimeType === LineChartGroupByTimeType.week ? `, 1` : ""
       }) AS day,
       toInt32(count(${
-        metric.type === MetricMeasurement.totalEvents
+        metric.type !== MetricMeasurement.uniqueUsers
           ? ``
           : `DISTINCT distinct_id`
       })) AS count
@@ -91,14 +96,27 @@ export const queryLineChartMetric = async ({
   }
   ${joinSection}
   WHERE ${whereSection}
-  GROUP BY day${breakdownSelect ? ", breakdown" : ""}
+  GROUP BY day
+  ${isFrequency ? ",distinct_id" : ""}
+  ${breakdownSelect ? ",breakdown" : ""}
   ORDER BY day ASC
 `;
+  if (isFrequency) {
+    query = `
+    select
+    day,
+    ${getAggFn(metric.typeAgg || AggType.avg)}(x.count) as count
+    ${breakdownSelect ? `,breakdown` : ""}
+    from (${query}) as x
+    group by day${breakdownSelect ? `,breakdown` : ""}
+    order by day asc
+    `;
+  }
   if (breakdownSelect) {
     query = `
     select
     breakdown,
-    round(avg(count), 1) as average_count,
+    round(sum(count) / ${dateHeaders.length}, 1) as average_count,
     groupArray((day, count)) as data
     from (${query})
     group by breakdown
@@ -153,7 +171,7 @@ export const queryLineChartMetric = async ({
         average_count: !data.length
           ? 0
           : Math.round(
-              (10 * data.reduce((a, b) => a + b.count, 0)) / data.length
+              (10 * data.reduce((a, b) => a + b.count, 0)) / dateHeaders.length
             ) / 10,
         data: {
           ...dateMap,

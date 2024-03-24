@@ -1,6 +1,7 @@
 import { MetricMeasurement } from "@voidpulse/api";
 import { TooltipData } from "../ui/charts/ChartTooltip";
 import { RouterOutput } from "./trpc";
+import { measurementAnnotationMap } from "./measurementAnnotationMap";
 
 export const transformDonutData = ({
   datas,
@@ -39,12 +40,7 @@ export const transformDonutData = ({
         subtitle: typeof breakdown === "undefined" ? "" : "" + breakdown,
         label: {
           highlight: value.toLocaleString(),
-          annotation: measurement
-            ? {
-                [MetricMeasurement.totalEvents]: "events",
-                [MetricMeasurement.uniqueUsers]: "users",
-              }[measurement]
-            : "",
+          annotation: measurement ? measurementAnnotationMap[measurement] : "",
         },
         sublabel: {
           highlight: `${!total ? "0" : ((100 * value) / total).toFixed(2)}%`,

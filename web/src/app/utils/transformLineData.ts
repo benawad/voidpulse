@@ -8,6 +8,7 @@ import { RouterOutput } from "./trpc";
 import { calcPercentageChange } from "./calcPercentChange";
 import { TooltipData } from "../ui/charts/ChartTooltip";
 import moment from "moment";
+import { measurementAnnotationMap } from "./measurementAnnotationMap";
 
 export const transformLineData = ({
   datas,
@@ -86,12 +87,7 @@ export const transformLineData = ({
         dateString: dateHeader[dataIndex].fullLabel,
         label: {
           highlight: data[dataIndex].toLocaleString(),
-          annotation: measurement
-            ? {
-                [MetricMeasurement.totalEvents]: "events",
-                [MetricMeasurement.uniqueUsers]: "users",
-              }[measurement]
-            : "",
+          annotation: measurement ? measurementAnnotationMap[measurement] : "",
         },
         stripeColor: borderColor,
         percentChange:
