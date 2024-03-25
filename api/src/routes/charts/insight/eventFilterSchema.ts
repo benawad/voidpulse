@@ -32,7 +32,13 @@ export const metricSchema = z.object({
   event: eventSchema,
   type: z.nativeEnum(MetricMeasurement).optional(),
   typeAgg: z.nativeEnum(AggType).optional(),
-  typeProp: eventPropSchema.optional(),
+  typeProp: z
+    .object({
+      name: z.string(),
+      value: z.string(),
+      propOrigin: z.nativeEnum(PropOrigin),
+    })
+    .optional(),
   andOr: z.nativeEnum(FilterAndOr).optional(),
   filters: z.array(eventFilterSchema),
 });

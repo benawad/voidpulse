@@ -5,6 +5,7 @@ import {
   ChartTimeRangeType,
   LineChartGroupByTimeType,
   MetricMeasurement,
+  PropOrigin,
 } from "../../app-router-type";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
 import {
@@ -55,6 +56,7 @@ export const queryLineChartMetric = async ({
   lineChartGroupByTimeType?: LineChartGroupByTimeType;
   timezone: string;
 }): Promise<BreakdownData[]> => {
+  const isAggProp = metric.type === MetricMeasurement.aggProp;
   const {
     breakdownBucketMinMaxQuery,
     breakdownSelect,
@@ -70,6 +72,7 @@ export const queryLineChartMetric = async ({
     timeRangeType,
     from,
     to,
+    doPeopleJoin: isAggProp && metric.typeProp?.propOrigin === PropOrigin.user,
   });
 
   const isFrequency = metric.type === MetricMeasurement.frequencyPerUser;
@@ -85,11 +88,15 @@ export const queryLineChartMetric = async ({
       }(${eventTime(timezone)}${
         lineChartGroupByTimeType === LineChartGroupByTimeType.week ? `, 1` : ""
       }) AS day,
-      toInt32(count(${
-        metric.type !== MetricMeasurement.uniqueUsers
-          ? ``
-          : `DISTINCT distinct_id`
-      })) AS count
+      ${
+        isAggProp
+          ? `${getAggFn(metric.typeAgg || AggType.avg)}(JSONExtractFloat(${metric.typeProp?.propOrigin === PropOrigin.user ? "p.properties" : "e.properties"}, {typeProp:String})) as count`
+          : `toInt32(count(${
+              metric.type !== MetricMeasurement.uniqueUsers
+                ? ``
+                : `DISTINCT distinct_id`
+            })) AS count`
+      }
       ${breakdownSelect ? `, ${breakdownSelect}` : ""}
   FROM events as e${
     breakdownBucketMinMaxQuery ? `${breakdownBucketMinMaxQuery}` : ""
@@ -126,7 +133,10 @@ export const queryLineChartMetric = async ({
   }
   const resp = await clickhouse.query({
     query,
-    query_params,
+    query_params: {
+      ...query_params,
+      typeProp: metric.typeProp?.value,
+    },
   });
   const { data } = await resp.json<ClickHouseQueryResponse<InsightData>>();
   const eventLabel = metricToEventLabel(metric);

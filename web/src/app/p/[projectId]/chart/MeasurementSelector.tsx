@@ -51,7 +51,34 @@ export const MeasurementSelector: React.FC<MeasurementSelectorProps> = ({
             return (
               <React.Fragment key={opt.label}>
                 <DropdownOption
+                  metric={metric}
                   aggValue={active && opt.agg ? metric?.typeAgg : undefined}
+                  propValue={active && opt.prop ? metric?.typeProp : undefined}
+                  onProp={
+                    opt.prop
+                      ? (prop, agg) => {
+                          if (metric) {
+                            setOpen(false);
+                            setState((state) => {
+                              return {
+                                ...state,
+                                metrics: state.metrics.map((m) => {
+                                  if (m === metric) {
+                                    return {
+                                      ...m,
+                                      type: opt.value,
+                                      typeAgg: agg,
+                                      typeProp: prop,
+                                    };
+                                  }
+                                  return m;
+                                }),
+                              };
+                            });
+                          }
+                        }
+                      : undefined
+                  }
                   onAgg={
                     opt.agg
                       ? (aggValue) => {
@@ -117,7 +144,19 @@ export const MeasurementSelector: React.FC<MeasurementSelectorProps> = ({
               [AggType.min]: "Min Frequency per user",
               [AggType.max]: "Max Frequency per user",
             }[metric?.typeAgg || AggType.avg]
-          : chosenOption?.label}
+          : chosenOption?.value === MetricMeasurement.aggProp
+            ? `${
+                {
+                  [AggType.avg]: "Average",
+                  [AggType.median]: "Median",
+                  [AggType.percentile25]: "P25",
+                  [AggType.percentile75]: "P75",
+                  [AggType.percentile90]: "P90",
+                  [AggType.min]: "Min",
+                  [AggType.max]: "Max",
+                }[metric?.typeAgg || AggType.avg]
+              } of ${metric?.typeProp?.name}`
+            : chosenOption?.label}
       </DropdownStartButton>
     </FloatingTrigger>
   );

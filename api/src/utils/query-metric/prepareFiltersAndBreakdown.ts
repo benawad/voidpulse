@@ -26,6 +26,7 @@ export const prepareFiltersAndBreakdown = async ({
   from,
   to,
   timezone,
+  doPeopleJoin,
 }: {
   timezone: string;
   projectId: string;
@@ -35,6 +36,7 @@ export const prepareFiltersAndBreakdown = async ({
   metric: InputMetric;
   globalFilters: MetricFilter[];
   breakdowns: MetricFilter[];
+  doPeopleJoin?: boolean;
 }) => {
   const paramHandler = new QueryParamHandler();
   const { whereStrings, needsPeopleJoin } = filtersToSql(
@@ -43,6 +45,7 @@ export const prepareFiltersAndBreakdown = async ({
   );
   const whereCombiner = metric.andOr === FilterAndOr.or ? " OR " : " AND ";
   const joinSection =
+    doPeopleJoin ||
     needsPeopleJoin ||
     (breakdowns.length && breakdowns[0].propOrigin === PropOrigin.user)
       ? `inner join people as p on e.distinct_id = p.distinct_id `
