@@ -167,6 +167,9 @@ export class Voidpulse {
   flush() {
     const events = [...this.eventsQueue];
     this.eventsQueue = [];
+    if (!events.length) {
+      return;
+    }
     return this.sendEvents(events);
   }
 }
