@@ -318,8 +318,8 @@ const main = async () => {
     .values({
       projectId: project_id,
       propTypes: {
-        username: DataType.string,
-        email: DataType.string,
+        username: { type: DataType.string },
+        email: { type: DataType.string },
       },
     })
     .execute();
