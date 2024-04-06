@@ -54,7 +54,7 @@ export const getReport = protectedProcedure
         dataUpdatedAt: new Date(),
         data: result as any,
       })
-      .where(and(eq(charts.id, chartId), eq(charts.creatorId, userId)))
+      .where(and(eq(charts.id, chartId), eq(charts.projectId, input.projectId)))
       .execute();
 
     return result;
