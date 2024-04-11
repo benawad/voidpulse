@@ -60,6 +60,7 @@ export const DraggableChartContainer: Kids<{
       type: ItemTypes.CHART,
       item: {
         chartId: chart.id,
+        boardId: chart.boardId,
       },
       collect: (monitor) => ({
         opacity: monitor.isDragging() ? 0.5 : 1,

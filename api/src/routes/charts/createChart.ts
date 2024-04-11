@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { boardCharts } from "../../schema/board-charts";
 import { charts } from "../../schema/charts";
 import { protectedProcedure } from "../../trpc";
 import { assertProjectMember } from "../../utils/assertProjectMember";
@@ -56,7 +55,6 @@ export const createChart = protectedProcedure
           ...fields,
         })
         .returning();
-      await db.insert(boardCharts).values({ boardId, chartId: chart.id });
       const board = await db.query.boards.findFirst({
         where: eq(boards.id, boardId),
       });

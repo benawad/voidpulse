@@ -53,7 +53,7 @@ export const AddBoardButton: React.FC<AddBoardButtonProps> = ({}) => {
         })
       }
       disabled={isPending}
-      className="flex items-center"
+      className="flex items-center w-full"
     >
       <div className={"icon-box"}>
         <FaPlus

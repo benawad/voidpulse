@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
-import { RouterOutput } from "../../utils/trpc";
+import { RouterOutput, trpc } from "../../utils/trpc";
 import { PiCaretLeftFill } from "react-icons/pi";
 import { MoreBoardOptionsButton } from "../../ui/MoreBoardOptionsButton";
 import { useCurrTheme } from "../../themes/useCurrTheme";
+import { DropTargetMonitor, useDrop } from "react-dnd";
+import { ItemTypes } from "./dashboard-grid/DraggableChartContainer";
 
 interface DashboardSidebarButtonProps {
   board: RouterOutput["getBoards"]["boards"][0];
@@ -13,6 +15,54 @@ interface DashboardSidebarButtonProps {
 export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
   board,
 }) => {
+  const utils = trpc.useUtils();
+  const { mutateAsync } = trpc.updateChart.useMutation();
+  const handler = (item: any, __: DropTargetMonitor<any, unknown>) => {
+    const chartId = item.chartId;
+    if (board.id === item.boardId) {
+      return;
+    }
+    mutateAsync({
+      id: chartId,
+      projectId: board.projectId,
+      updateData: {
+        boardId: board.id,
+      },
+    }).then(({ chart }) => {
+      // remove from old board
+      utils.getCharts.setData(
+        { projectId: board.projectId, boardId: item.boardId },
+        (d) => {
+          if (!d) return d;
+          return {
+            ...d,
+            charts: d.charts.filter((c) => c.id !== chartId),
+          };
+        }
+      );
+      // add to new board
+      utils.getCharts.setData(
+        { projectId: board.projectId, boardId: board.id },
+        (d) => {
+          if (!d) return d;
+          return {
+            ...d,
+            charts: [...d.charts, chart],
+          };
+        }
+      );
+    });
+  };
+  const handlerRef = useRef(handler);
+  handlerRef.current = handler;
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: ItemTypes.CHART,
+    canDrop: () => true,
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+    drop: (item: any, monitor) => handlerRef.current(item, monitor),
+  }));
   const { set } = useLastSelectedProjectBoardStore();
   const { boardId } = useProjectBoardContext();
   const isSelectedBoard = board.id === boardId;
@@ -22,11 +72,15 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
   const { theme } = useCurrTheme();
 
   return (
-    <div
+    <button
+      ref={drop}
       onClick={() => {
         set({ lastBoardId: board.id });
       }}
       key={board.id}
+      style={{
+        backgroundColor: isOver ? theme.primary[900] : undefined,
+      }}
       className={
         sidebarButtonStyle +
         (isSelectedBoard ? selectedBoardButtonStyle : " border-transparent")
@@ -45,6 +99,6 @@ export const DashboardSidebarButton: React.FC<DashboardSidebarButtonProps> = ({
           style={{ right: -32 }}
         />
       ) : null}
-    </div>
+    </button>
   );
 };

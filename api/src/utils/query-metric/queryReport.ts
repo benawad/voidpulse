@@ -56,7 +56,9 @@ export const queryReport = async ({
 
   const { dateHeaders, dateMap, retentionHeaders } = getDateHeaders(
     timeRangeType,
-    lineChartGroupByTimeType,
+    ReportType.retention === reportType
+      ? LineChartGroupByTimeType.day
+      : lineChartGroupByTimeType,
     project.timezone,
     from,
     to

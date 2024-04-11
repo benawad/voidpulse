@@ -28,6 +28,31 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
   const [positions, setPositions] = React.useState<
     NonNullable<RouterOutput["createBoard"]["board"]["positions"]>
   >(board.positions || []);
+  useEffect(() => {
+    const missingPositions: string[] = [];
+    charts.forEach((chart) => {
+      if (
+        !positions.some((row) =>
+          row.cols.some((col) => col.chartId === chart.id)
+        )
+      ) {
+        missingPositions.push(chart.id);
+      }
+    });
+    if (missingPositions.length) {
+      setPositions((prev) => {
+        const newPositions = [...prev];
+        for (const chartId of missingPositions) {
+          newPositions.push({
+            rowId: genId(),
+            height: 400,
+            cols: [{ chartId, width: 100 }],
+          });
+        }
+        return newPositions;
+      });
+    }
+  }, [boardId]);
   const chartMap = useMemo(() => {
     const _chartMap: Record<string, DbChart> = {};
     for (const chart of charts || []) {

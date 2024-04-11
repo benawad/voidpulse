@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { InferInsertModel, eq } from "drizzle-orm";
+import { InferInsertModel, and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "../../db";
 import { charts } from "../../schema/charts";
@@ -14,6 +14,7 @@ import {
   ReportType,
   RetentionNumFormat,
 } from "../../app-router-type";
+import { boards } from "../../schema/boards";
 
 export const updateChartDataSchemaFields = {
   title: z.string().optional(),
@@ -39,6 +40,7 @@ export const updateChart = protectedProcedure
       projectId: z.string(),
       updateData: z.object({
         ...updateChartDataSchemaFields,
+        boardId: z.string().optional(),
       }),
     })
   )
@@ -56,6 +58,21 @@ export const updateChart = protectedProcedure
       const setData: Partial<InferInsertModel<typeof charts>> = updateData;
       if (setData.metrics || setData.data) {
         setData.dataUpdatedAt = new Date();
+      }
+      if (setData.boardId) {
+        const board = await db.query.boards.findFirst({
+          where: and(
+            eq(boards.id, setData.boardId),
+            eq(boards.projectId, projectId)
+          ),
+        });
+
+        if (!board) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Board not found",
+          });
+        }
       }
 
       const [chart] = await db

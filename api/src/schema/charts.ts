@@ -1,6 +1,5 @@
 import { relations, sql } from "drizzle-orm";
 import {
-  date,
   integer,
   jsonb,
   pgTable,
@@ -8,9 +7,6 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import { boards } from "./boards";
-import { users } from "./users";
-import { boardCharts } from "./board-charts";
 import { z } from "zod";
 import {
   ChartTimeRangeType,
@@ -19,13 +15,14 @@ import {
   ReportType,
   RetentionNumFormat,
 } from "../app-router-type";
+import { chartDataSchema } from "../routes/charts/chartDataSchema";
 import {
   InputMetric,
   MetricFilter,
 } from "../routes/charts/insight/eventFilterSchema";
 import { messages } from "./messages";
 import { projects } from "./projects";
-import { chartDataSchema } from "../routes/charts/chartDataSchema";
+import { users } from "./users";
 
 export const charts = pgTable("charts", {
   id: uuid("id")
@@ -63,7 +60,6 @@ export const charts = pgTable("charts", {
 });
 
 export const chartRelations = relations(charts, ({ one, many }) => ({
-  boardCharts: many(boardCharts),
   messages: many(messages),
   creator: one(users, {
     fields: [charts.creatorId],

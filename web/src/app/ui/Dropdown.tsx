@@ -100,7 +100,11 @@ export const DropdownOption: Kids<{
                   key={opt.label}
                   onClick={() => {
                     if (onProp) {
-                      setTmpAgg(opt.value);
+                      if (metric?.typeProp) {
+                        onAgg?.(opt.value);
+                      } else {
+                        setTmpAgg(opt.value);
+                      }
                     } else {
                       onAgg?.(opt.value);
                     }

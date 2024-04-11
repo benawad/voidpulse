@@ -69,11 +69,11 @@ export const createBoard = protectedProcedure
       .insert(boards)
       .values({ creatorId: userId, title, projectId })
       .returning();
-    await db.execute(sql`
-    UPDATE projects
-    SET board_order = COALESCE(board_order, '[]'::jsonb) || ${JSON.stringify([board.id])}::jsonb
-    WHERE id = ${projectId};
-    `);
+    // await db.execute(sql`
+    // UPDATE project_users
+    // SET board_order = COALESCE(board_order, '[]'::jsonb) || ${JSON.stringify([board.id])}::jsonb
+    // WHERE project_id = ${projectId};
+    // `);
 
     return { board };
   });

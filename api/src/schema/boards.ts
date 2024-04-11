@@ -2,7 +2,6 @@ import { relations, sql } from "drizzle-orm";
 import { jsonb, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { projects } from "./projects";
 import { users } from "./users";
-import { boardCharts } from "./board-charts";
 
 export const boards = pgTable("boards", {
   id: uuid("id")
@@ -26,7 +25,6 @@ export const boards = pgTable("boards", {
 });
 
 export const boardRelations = relations(boards, ({ one, many }) => ({
-  boardCharts: many(boardCharts),
   project: one(projects, {
     fields: [boards.projectId],
     references: [projects.id],
