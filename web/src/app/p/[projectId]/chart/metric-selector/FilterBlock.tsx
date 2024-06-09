@@ -357,7 +357,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
                 localFilter.operation
               ) ? (
                 <PropValueMultiSelect
-                  values={filter.value || []}
+                  values={localFilter.value || []}
                   event={event}
                   propKey={localFilter.prop.value || ""}
                   propOrigin={localFilter.propOrigin || PropOrigin.event}

@@ -1,4 +1,4 @@
-import { httpBatchLink } from "@trpc/client";
+import { httpLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import type { AppRouter } from "@voidpulse/api";
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
@@ -39,7 +39,7 @@ export const trpc = createTRPCNext<AppRouter>({
     return {
       queryClient,
       links: [
-        httpBatchLink({
+        httpLink({
           url: `${process.env.NEXT_PUBLIC_API_URL}/trpc`,
           fetch(url, options) {
             return fetch(url, {

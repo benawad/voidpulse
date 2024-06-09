@@ -72,9 +72,9 @@ export const queryFunnel = async ({
         : []),
     ].join(" AND ");
   });
-  const sequenceMatchConds = metrics.map(
-    (m) => `name = {${paramHandler.add(m.event.value)}:String}`
-  );
+  // const sequenceMatchConds = metrics.map(
+  //   (m) => `name = {${paramHandler.add(m.event.value)}:String}`
+  // );
 
   const query = `
   ${
@@ -107,13 +107,13 @@ FROM (
   SELECT
       distinct_id,
       ${breakdownSelect ? `max(${breakdownSelect}) AS breakdown,` : ""}
-      MAX(name = {p1:String}) AS step0,
+      MAX(${whereStringsArray[0]}) AS step0,
       ${metrics
         .map((_, i) => {
           const currMetrics = metrics.slice(0, i + 1);
           return `sequenceMatch('${currMetrics
             .map((_, k) => `(?${k + 1})`)
-            .join(".*")}')(time, ${sequenceMatchConds
+            .join(".*")}')(time, ${whereStringsArray
             .slice(0, i + 1)
             .join(", ")}) as step${i}`;
         })
