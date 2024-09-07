@@ -6,10 +6,10 @@
     "dev": "cross-env NEXT_PUBLIC_API_URL=http://localhost:4001 next dev",
     "build": "NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start",
-    "lint": "next lint",
-    "themes": "ts-node --project tsconfig.scripts.json scripts/convertHexThemes.ts",
     "pages:build": "pnpm dlx @cloudflare/next-on-pages@1",
     "deploy": "pnpm run pages:build && wrangler pages deploy --branch=prod .vercel/output/static",
+    "lint": "next lint",
+    "themes": "ts-node --project tsconfig.scripts.json scripts/convertHexThemes.ts",
     "svgr": "npx @svgr/cli --typescript --no-index --icon --out-dir src/app/svgx -- svgs"
   },
   "dependencies": {
