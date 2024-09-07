@@ -32,6 +32,8 @@ export class Voidpulse {
     }
   }
 
+  private isDocumentAvailable: boolean;
+
   constructor({
     apiKey,
     hostUrl,
@@ -46,16 +48,22 @@ export class Voidpulse {
     this.skipIpLookup = skipIpLookup;
     this.apiKey = apiKey;
     this.hostUrl = hostUrl;
+    this.isDocumentAvailable = typeof document !== "undefined";
     this.loadDistinctId();
-    if (!noInterval) {
+    if (!noInterval && this.isDocumentAvailable) {
       // flush every minute
       setInterval(() => {
         this.flush();
       }, 1000 * 60);
     }
 
-    // Add visibility change event listener
-    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+    // Add visibility change event listener only if document is available
+    if (this.isDocumentAvailable) {
+      document.addEventListener(
+        "visibilitychange",
+        this.handleVisibilityChange
+      );
+    }
   }
 
   private loadDistinctId() {
@@ -108,18 +116,8 @@ export class Voidpulse {
     }
   }
 
-  getDefaultProps() {
-    return {
-      $lib_version: version,
-      $voidpulse_client: "react",
-      $manufacturer: navigator.vendor || "",
-      $model: navigator.platform || "",
-      $os: this.getOS(),
-      $os_version: this.getOSVersion(),
-    };
-  }
-
   private getOS(): string {
+    if (!this.isDocumentAvailable) return "Unknown";
     const userAgent = window.navigator.userAgent.toLowerCase();
     if (userAgent.indexOf("win") > -1) return "Windows";
     if (userAgent.indexOf("mac") > -1) return "MacOS";
@@ -130,11 +128,29 @@ export class Voidpulse {
   }
 
   private getOSVersion(): string {
+    if (!this.isDocumentAvailable) return "";
     const userAgent = window.navigator.userAgent;
     const osVersion = userAgent.match(
       /(Windows NT|Mac OS X|Android|CPU OS)\s*([^;)]*)/
     );
     return osVersion ? osVersion[2] : "";
+  }
+
+  getDefaultProps() {
+    if (!this.isDocumentAvailable) {
+      return {
+        $lib_version: version,
+        $voidpulse_client: "react",
+      };
+    }
+    return {
+      $lib_version: version,
+      $voidpulse_client: "react",
+      $manufacturer: navigator.vendor || "",
+      $model: navigator.platform || "",
+      $os: this.getOS(),
+      $os_version: this.getOSVersion(),
+    };
   }
 
   track(name: string, properties: Record<string, any> = {}) {
@@ -364,10 +380,12 @@ export class Voidpulse {
 
     this.incomingDistinctId = "";
 
-    // Remove visibility change event listener
-    document.removeEventListener(
-      "visibilitychange",
-      this.handleVisibilityChange
-    );
+    // Remove visibility change event listener only if document is available
+    if (this.isDocumentAvailable) {
+      document.removeEventListener(
+        "visibilitychange",
+        this.handleVisibilityChange
+      );
+    }
   }
 }
