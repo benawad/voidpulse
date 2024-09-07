@@ -22,6 +22,16 @@ export class Voidpulse {
     "voidpulse_user_props"
   );
 
+  private isLocalStorageAvailable(): boolean {
+    try {
+      localStorage.setItem("test", "test");
+      localStorage.removeItem("test");
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   constructor({
     apiKey,
     hostUrl,
@@ -49,6 +59,11 @@ export class Voidpulse {
   }
 
   private loadDistinctId() {
+    if (!this.isLocalStorageAvailable()) {
+      this.distinctId = v4();
+      return;
+    }
+
     const data = localStorage.getItem("voidpulse_distinct_id");
     if (!data) {
       // identify called before initial load
@@ -147,13 +162,15 @@ export class Voidpulse {
 
   private handleFirstIdentify() {
     this.hasIdentified = true;
-    localStorage.setItem(
-      "voidpulse_distinct_id",
-      JSON.stringify({
-        distinctId: this.distinctId,
-        hasIdentified: true,
-      })
-    );
+    if (this.isLocalStorageAvailable()) {
+      localStorage.setItem(
+        "voidpulse_distinct_id",
+        JSON.stringify({
+          distinctId: this.distinctId,
+          hasIdentified: true,
+        })
+      );
+    }
     this.eventsQueue.push(...this.anonEventsQueue.drain());
   }
 
@@ -331,13 +348,15 @@ export class Voidpulse {
   reset() {
     this.distinctId = v4();
     this.hasIdentified = false;
-    localStorage.setItem(
-      "voidpulse_distinct_id",
-      JSON.stringify({
-        distinctId: this.distinctId,
-        hasIdentified: false,
-      })
-    );
+    if (this.isLocalStorageAvailable()) {
+      localStorage.setItem(
+        "voidpulse_distinct_id",
+        JSON.stringify({
+          distinctId: this.distinctId,
+          hasIdentified: false,
+        })
+      );
+    }
 
     this.eventsQueue.drain();
     this.anonEventsQueue.drain();
