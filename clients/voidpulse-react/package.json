@@ -1,6 +1,6 @@
 {
   "name": "@voidpulse/react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "publishConfig": {
     "access": "public"
@@ -22,8 +22,7 @@
   "dependencies": {
     "uuid": "^9.0.1"
   },
-  "peerDependencies": {
-  },
+  "peerDependencies": {},
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
