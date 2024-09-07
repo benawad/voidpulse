@@ -34,11 +34,15 @@ export const addIngestRoute = (app: Express) => {
   app.get("/health", (_, res) => {
     res.send("ok");
   });
-  app.post(
+  app.use(
     "/ingest",
     cors({
       maxAge: __prod__ ? 86400 : undefined,
-    }),
+      origin: "*",
+    })
+  );
+  app.post(
+    "/ingest",
     express.json({
       limit: "100mb",
     }),

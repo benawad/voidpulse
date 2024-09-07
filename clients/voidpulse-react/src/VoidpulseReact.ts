@@ -64,6 +64,11 @@ export class Voidpulse {
         this.handleVisibilityChange
       );
     }
+
+    // Add beforeunload event listener only if document is available
+    if (this.isDocumentAvailable) {
+      window.addEventListener("beforeunload", this.handleBeforeUnload);
+    }
   }
 
   private loadDistinctId() {
@@ -307,6 +312,10 @@ export class Voidpulse {
     }
   };
 
+  private handleBeforeUnload = () => {
+    this.flush();
+  };
+
   private flush() {
     const events = this.eventsQueue.drain();
     const userProps = this.userPropQueue.drain();
@@ -374,13 +383,5 @@ export class Voidpulse {
     this.userPropQueue.drain();
 
     this.incomingDistinctId = "";
-
-    // Remove visibility change event listener only if document is available
-    if (this.isDocumentAvailable) {
-      document.removeEventListener(
-        "visibilitychange",
-        this.handleVisibilityChange
-      );
-    }
   }
 }
