@@ -2,10 +2,12 @@ import express, { Express } from "express";
 import geoip from "geoip-lite";
 import { v4 } from "uuid";
 import { z } from "zod";
+import cors from "cors";
 import { dateInputRegex } from "../../constants/regex";
 import { kafkaProducer } from "../../kafka/kafka";
 import { dateToClickhouseDateString } from "../../utils/dateToClickhouseDateString";
 import { checkApiKeyMiddleware } from "./middleware/checkApiKeyMiddleware";
+import { __prod__ } from "../../constants/prod";
 
 const eventSchema = z.object({
   name: z.string().min(1).max(255),
@@ -34,6 +36,9 @@ export const addIngestRoute = (app: Express) => {
   });
   app.post(
     "/ingest",
+    cors({
+      maxAge: __prod__ ? 86400 : undefined,
+    }),
     express.json({
       limit: "100mb",
     }),

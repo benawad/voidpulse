@@ -303,25 +303,30 @@ export class Voidpulse {
 
   private handleVisibilityChange = () => {
     if (document.visibilityState === "hidden") {
-      this.flushWithBeacon();
+      this.flush();
     }
   };
 
-  private flushWithBeacon() {
+  private flush() {
     const events = this.eventsQueue.drain();
     const userProps = this.userPropQueue.drain();
 
     if (events.length) {
-      navigator.sendBeacon(
-        `${this.hostUrl}/ingest`,
-        JSON.stringify({
+      fetch(`${this.hostUrl}/ingest`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": this.apiKey,
+        },
+        body: JSON.stringify({
           skipIpLookup: this.skipIpLookup,
           events: events.map((e) => ({
             ...e,
             distinct_id: this.distinctId,
           })),
-        })
-      );
+        }),
+        keepalive: true,
+      });
     }
 
     if (userProps.length) {
@@ -335,30 +340,20 @@ export class Voidpulse {
         }
       });
 
-      navigator.sendBeacon(
-        `${this.hostUrl}/update-people`,
-        JSON.stringify({
+      fetch(`${this.hostUrl}/update-people`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": this.apiKey,
+        },
+        body: JSON.stringify({
           distinct_id: this.distinctId,
           properties_to_add,
           properties_to_remove,
-        })
-      );
+        }),
+        keepalive: true,
+      });
     }
-  }
-
-  flush() {
-    const events = this.eventsQueue.drain();
-    const userProps = this.userPropQueue.drain();
-    const promises: Promise<void>[] = [];
-    if (events.length) {
-      promises.push(this.sendEvents(events));
-    }
-
-    if (userProps.length) {
-      promises.push(this.sendUserProps(userProps));
-    }
-
-    return Promise.all(promises);
   }
 
   reset() {

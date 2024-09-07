@@ -69,9 +69,7 @@ app.use(
   cors({
     maxAge: __prod__ ? 86400 : undefined,
     credentials: true,
-    origin: (origin, callback) => {
-      callback(null, true);
-    },
+    origin: process.env.FRONTEND_URL,
   }),
   cookieParser(),
   trpcExpress.createExpressMiddleware({
