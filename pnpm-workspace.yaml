@@ -2,3 +2,5 @@ packages:
   - "api"
   - "web"
   - "clients/voidpulse-react-native"
+  - "clients/voidpulse-react"
+  - "clients/voidpulse-node"
