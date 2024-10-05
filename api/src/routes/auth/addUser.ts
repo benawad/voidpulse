@@ -40,6 +40,7 @@ export const addUser = protectedProcedure
           .values({
             email: input.email.toLowerCase(),
             passwordHash: await argon2d.hash(input.password),
+            confirmed: true,
           })
           .returning()
       )[0];

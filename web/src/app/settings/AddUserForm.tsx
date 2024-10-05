@@ -91,7 +91,7 @@ export const AddUserForm: React.FC<{}> = ({}) => {
         </div>
 
         <Button type="submit" className="my-4 text-primary-300">
-          Send
+          Create
         </Button>
         {done ? <div className="mt-1">Done!</div> : null}
       </form>
