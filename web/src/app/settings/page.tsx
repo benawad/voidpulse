@@ -13,6 +13,7 @@ import { ProjectBoardProvider } from "../../../providers/ProjectBoardProvider";
 import { FullScreenLoading } from "../ui/FullScreenLoading";
 import { __cloud__ } from "../constants";
 import { SearchSelect } from "../ui/SearchSelect";
+import { AddUserForm } from "./AddUserForm";
 
 export const SettingsPage: React.FC = ({}) => {
   const { mutateAsync: logout } = trpc.logout.useMutation();
@@ -113,6 +114,11 @@ export const SettingsPage: React.FC = ({}) => {
               <LineSeparator />
             </>
           ) : null}
+          <div className={sectionStyle}>
+            <div className={headerLabelStyle}>ADD USER</div>
+            <AddUserForm />
+            <LineSeparator />
+          </div>
           <div className={sectionStyle}>
             <div className={headerLabelStyle}>API KEY</div>
             <input

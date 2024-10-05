@@ -32,6 +32,7 @@ import { forgotPassword } from "./routes/auth/forgotPassword";
 import { acceptProjectInvite } from "./routes/projects/acceptProjectInvite";
 import { sendProjectInvite } from "./routes/projects/sendProjectInvite";
 import { setPassword } from "./routes/auth/setPassword";
+import { addUser } from "./routes/auth/addUser";
 
 export const appRouter = t.router({
   getBoards,
@@ -61,6 +62,7 @@ export const appRouter = t.router({
   forgotPassword,
   acceptProjectInvite,
   sendProjectInvite,
+  addUser,
 });
 
 export const app = express();
