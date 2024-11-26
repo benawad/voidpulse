@@ -87,6 +87,21 @@ const config = {
         };
       },
     },
+    {
+      name: `Purchase`,
+      simTodayCount: () => {
+        if (Math.random() < 0.01) {
+          return 1;
+        } else {
+          return 0;
+        }
+      },
+      genProps: () => {
+        return {
+          price: 999,
+        };
+      },
+    },
   ],
 };
 

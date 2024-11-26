@@ -68,7 +68,9 @@ export const queryBarChartMetric = async ({
   SELECT
       ${
         isAggProp
-          ? `${getAggFn(metric.typeAgg || AggType.avg)}(JSONExtractFloat(${metric.typeProp?.propOrigin === PropOrigin.user ? "p.properties" : "e.properties"}, {typeProp:String})) as count`
+          ? `${getAggFn(metric.typeAgg || AggType.avg)}(JSONExtractFloat(${metric.typeProp?.propOrigin === PropOrigin.user ? "p.properties" : "e.properties"}, {typeProp:String}))${
+              metric.typeAgg === AggType.sumDivide100 ? "/100" : ""
+            } as count`
           : `toInt32(count(${
               metric.type !== MetricMeasurement.uniqueUsers
                 ? ``
@@ -89,7 +91,9 @@ export const queryBarChartMetric = async ({
   if (isFrequency) {
     query = `
   select
-  ${getAggFn(metric.typeAgg || AggType.avg)}(x.count) as count
+  ${getAggFn(metric.typeAgg || AggType.avg)}(x.count)${
+              metric.typeAgg === AggType.sumDivide100 ? "/100" : ""
+            } as count
   ${breakdownSelect ? `,breakdown` : ""}
   from (${query}) as x
   ${breakdownSelect ? `group by breakdown` : ""}

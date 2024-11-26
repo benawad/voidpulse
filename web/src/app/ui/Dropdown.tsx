@@ -35,6 +35,8 @@ const aggOpts = [
   { label: "90th Percentile", value: AggType.percentile90 },
   { label: "Min", value: AggType.min },
   { label: "Max", value: AggType.max },
+  { label: "Sum", value: AggType.sum },
+  { label: "Sum/100", value: AggType.sumDivide100 },
 ];
 
 type Prop = {

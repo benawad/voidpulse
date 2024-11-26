@@ -15,6 +15,8 @@ export enum AggType {
   percentile90,
   min,
   max,
+  sum,
+  sumDivide100,
 }
 
 export enum DataType {

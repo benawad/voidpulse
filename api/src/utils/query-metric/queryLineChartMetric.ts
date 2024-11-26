@@ -90,7 +90,9 @@ export const queryLineChartMetric = async ({
       }) AS day,
       ${
         isAggProp
-          ? `${getAggFn(metric.typeAgg || AggType.avg)}(JSONExtractFloat(${metric.typeProp?.propOrigin === PropOrigin.user ? "p.properties" : "e.properties"}, {typeProp:String})) as count`
+          ? `${getAggFn(metric.typeAgg || AggType.avg)}(JSONExtractFloat(${metric.typeProp?.propOrigin === PropOrigin.user ? "p.properties" : "e.properties"}, {typeProp:String}))${
+              metric.typeAgg === AggType.sumDivide100 ? "/100" : ""
+            } as count`
           : `toInt32(count(${
               metric.type !== MetricMeasurement.uniqueUsers
                 ? ``
@@ -112,7 +114,9 @@ export const queryLineChartMetric = async ({
     query = `
     select
     day,
-    ${getAggFn(metric.typeAgg || AggType.avg)}(x.count) as count
+    ${getAggFn(metric.typeAgg || AggType.avg)}(x.count)${
+      metric.typeAgg === AggType.sumDivide100 ? "/100" : ""
+    } as count
     ${breakdownSelect ? `,breakdown` : ""}
     from (${query}) as x
     group by day${breakdownSelect ? `,breakdown` : ""}

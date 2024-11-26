@@ -320,6 +320,7 @@ export const FilterBlock: React.FC<FilterBlockProps> = ({
             <div className="ml-8">
               <Dropdown
                 noCaret
+                portal={false}
                 opts={options}
                 value={localFilter.operation}
                 onSelect={(op) => {

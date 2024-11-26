@@ -9,5 +9,7 @@ export const getAggFn = (typeAgg: AggType) => {
     [AggType.percentile90]: "quantile(0.90)",
     [AggType.min]: "min",
     [AggType.max]: "max",
+    [AggType.sum]: "sum",
+    [AggType.sumDivide100]: "sum",
   }[typeAgg];
 };

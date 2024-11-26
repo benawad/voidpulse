@@ -14,6 +14,8 @@ export const metricToEventLabel = (metric: InputMetric) => {
         [AggType.percentile90]: "P90 Frequency per user",
         [AggType.min]: "Min Frequency per user",
         [AggType.max]: "Max Frequency per user",
+        [AggType.sum]: "Sum Frequency per user",
+        [AggType.sumDivide100]: "Sum/100 Frequency per user",
       }[metric.typeAgg || AggType.avg],
       [MetricMeasurement.aggProp]: `${
         {
@@ -24,6 +26,8 @@ export const metricToEventLabel = (metric: InputMetric) => {
           [AggType.percentile90]: "P90",
           [AggType.min]: "Min",
           [AggType.max]: "Max",
+          [AggType.sum]: "Sum",
+          [AggType.sumDivide100]: "Sum/100",
         }[metric.typeAgg || AggType.avg]
       } ${metric.typeProp?.name}`,
     }[metric.type || MetricMeasurement.uniqueUsers]
