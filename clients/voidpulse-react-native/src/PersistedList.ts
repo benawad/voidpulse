@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Storage from "expo-sqlite/kv-store";
 
 export class PersistedList<T> {
   private list: T[] = [];
@@ -7,42 +7,39 @@ export class PersistedList<T> {
 
   constructor(key: string) {
     this.key = key;
-    AsyncStorage.getItem(key).then((list) => {
-      const shouldSave = this.list.length;
-      if (list) {
-        this.list.unshift(...JSON.parse(list));
-      }
-      this.initialized = true;
-
-      if (shouldSave) {
-        AsyncStorage.setItem(this.key, JSON.stringify(this.list));
-      }
-    });
   }
 
-  public isReady() {
-    return this.initialized;
+  private initialize() {
+    const list = Storage.getItemSync(this.key);
+    if (list) {
+      this.list.unshift(...JSON.parse(list));
+    }
+    this.initialized = true;
   }
 
   public get() {
+    if (!this.initialized) {
+      this.initialize();
+    }
     return this.list;
   }
 
   public push(...items: T[]) {
-    this.list.push(...items);
-    if (this.initialized) {
-      AsyncStorage.setItem(this.key, JSON.stringify(this.list));
+    if (!this.initialized) {
+      this.initialize();
     }
+    this.list.push(...items);
+    Storage.setItemSync(this.key, JSON.stringify(this.list));
   }
 
   public drain() {
     if (!this.initialized) {
-      return [];
+      this.initialize();
     }
     const list = this.list;
     this.list = [];
     if (list.length) {
-      AsyncStorage.removeItem(this.key);
+      Storage.removeItemSync(this.key);
     }
     return list;
   }

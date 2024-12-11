@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Storage from "expo-sqlite/kv-store";
 import { AppState, Platform } from "react-native";
 import { v4 } from "uuid";
 import "react-native-get-random-values";
@@ -19,7 +19,6 @@ export class Voidpulse {
   private apiKey: string;
   private hostUrl: string;
   private skipIpLookup: boolean = false;
-  private incomingDistinctId: string = "";
   private distinctId: string = "";
   private hasIdentified: boolean = false;
   private eventsQueue = new PersistedList<Event>("voidpulse_events");
@@ -55,49 +54,23 @@ export class Voidpulse {
   }
 
   private loadDistinctId() {
-    AsyncStorage.getItem("voidpulse_distinct_id").then((data) => {
-      if (!data) {
-        // identify called before initial load
-        if (this.incomingDistinctId) {
-          this.distinctId = this.incomingDistinctId;
-          this.handleFirstIdentify();
-        } else {
-          // give anon id
-          this.distinctId = v4();
-          AsyncStorage.setItem(
-            "voidpulse_distinct_id",
-            JSON.stringify({
-              distinctId: this.distinctId,
-              hasIdentified: false,
-            })
-          );
-        }
-      } else {
-        const { distinctId, hasIdentified } = JSON.parse(data);
-        // identify called before initial load
-        if (this.incomingDistinctId) {
-          if (!this.hasIdentified) {
-            this.distinctId = this.incomingDistinctId;
-            this.handleFirstIdentify();
-          } else {
-            // take new distinct id, but don't need to drain anon queue
-            this.distinctId = this.incomingDistinctId;
-            this.hasIdentified = true;
-            AsyncStorage.setItem(
-              "voidpulse_distinct_id",
-              JSON.stringify({
-                distinctId: this.distinctId,
-                hasIdentified: true,
-              })
-            );
-          }
-        } else {
-          // load from storage
-          this.distinctId = distinctId;
-          this.hasIdentified = hasIdentified;
-        }
-      }
-    });
+    const data = Storage.getItemSync("voidpulse_distinct_id");
+    if (!data) {
+      // give anon id
+      this.distinctId = v4();
+      Storage.setItemSync(
+        "voidpulse_distinct_id",
+        JSON.stringify({
+          distinctId: this.distinctId,
+          hasIdentified: false,
+        })
+      );
+    } else {
+      const { distinctId, hasIdentified } = JSON.parse(data);
+      // load from storage
+      this.distinctId = distinctId;
+      this.hasIdentified = hasIdentified;
+    }
   }
 
   getDefaultProps() {
@@ -138,8 +111,6 @@ export class Voidpulse {
   identify(distinctId: string) {
     if (this.distinctId === distinctId) {
       return;
-    } else if (!this.distinctId) {
-      this.incomingDistinctId = distinctId;
     } else if (distinctId) {
       this.distinctId = distinctId;
       this.handleFirstIdentify();
@@ -148,7 +119,7 @@ export class Voidpulse {
 
   private handleFirstIdentify() {
     this.hasIdentified = true;
-    AsyncStorage.setItem(
+    Storage.setItemSync(
       "voidpulse_distinct_id",
       JSON.stringify({
         distinctId: this.distinctId,
@@ -159,16 +130,10 @@ export class Voidpulse {
   }
 
   setUserProperties(properties: Record<string, any>) {
-    if (!this.hasIdentified) {
-      throw new Error("Must call identify before setting user properties");
-    }
     this.userPropQueue.push(properties);
   }
 
   unsetUserProperties(propertiesKeys: string[]) {
-    if (!this.hasIdentified) {
-      throw new Error("Must call identify before setting user properties");
-    }
     this.userPropQueue.push(propertiesKeys);
   }
 
@@ -271,7 +236,7 @@ export class Voidpulse {
 
   flush() {
     const events = this.eventsQueue.drain();
-    const userProps = this.userPropQueue.drain();
+    const userProps = this.hasIdentified ? this.userPropQueue.drain() : [];
     const promises: Promise<void>[] = [];
     if (events.length) {
       promises.push(this.sendEvents(events));
@@ -287,7 +252,7 @@ export class Voidpulse {
   reset() {
     this.distinctId = v4();
     this.hasIdentified = false;
-    AsyncStorage.setItem(
+    Storage.setItemSync(
       "voidpulse_distinct_id",
       JSON.stringify({
         distinctId: this.distinctId,
@@ -298,7 +263,5 @@ export class Voidpulse {
     this.eventsQueue.drain();
     this.anonEventsQueue.drain();
     this.userPropQueue.drain();
-
-    this.incomingDistinctId = "";
   }
 }
