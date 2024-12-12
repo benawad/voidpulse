@@ -47,6 +47,7 @@ export const queryBarChartMetric = async ({
   const {
     breakdownBucketMinMaxQuery,
     breakdownSelect,
+    breakdownJoin,
     joinSection,
     query_params,
     whereSection,
@@ -82,6 +83,7 @@ export const queryBarChartMetric = async ({
     breakdownBucketMinMaxQuery ? `${breakdownBucketMinMaxQuery}` : ""
   }
   ${joinSection}
+  ${breakdownJoin}
   WHERE ${whereSection}
   ${breakdownSelect || isFrequency ? `group by` : ""}
   ${isFrequency ? "distinct_id" : ""}
@@ -92,8 +94,8 @@ export const queryBarChartMetric = async ({
     query = `
   select
   ${getAggFn(metric.typeAgg || AggType.avg)}(x.count)${
-              metric.typeAgg === AggType.sumDivide100 ? "/100" : ""
-            } as count
+    metric.typeAgg === AggType.sumDivide100 ? "/100" : ""
+  } as count
   ${breakdownSelect ? `,breakdown` : ""}
   from (${query}) as x
   ${breakdownSelect ? `group by breakdown` : ""}

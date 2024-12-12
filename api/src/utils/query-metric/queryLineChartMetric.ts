@@ -60,6 +60,7 @@ export const queryLineChartMetric = async ({
   const {
     breakdownBucketMinMaxQuery,
     breakdownSelect,
+    breakdownJoin,
     joinSection,
     query_params,
     whereSection,
@@ -104,6 +105,7 @@ export const queryLineChartMetric = async ({
     breakdownBucketMinMaxQuery ? `${breakdownBucketMinMaxQuery}` : ""
   }
   ${joinSection}
+  ${breakdownJoin}
   WHERE ${whereSection}
   GROUP BY day
   ${isFrequency ? ",distinct_id" : ""}

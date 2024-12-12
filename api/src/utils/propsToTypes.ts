@@ -16,6 +16,8 @@ export const propsToTypes = (props: any) => {
         }
       } else if (typeof value === "boolean") {
         propTypes[key] = { type: DataType.boolean };
+      } else if (Array.isArray(value)) {
+        propTypes[key] = { type: DataType.array };
       } else {
         propTypes[key] = { type: DataType.other };
       }

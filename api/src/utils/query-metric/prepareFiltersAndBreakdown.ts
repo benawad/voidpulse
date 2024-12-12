@@ -62,11 +62,14 @@ export const prepareFiltersAndBreakdown = async ({
     ${whereStrings.length ? `AND (${whereStrings.join(whereCombiner)})` : ""}
     `;
   let breakdownSelect = "";
+  let breakdownJoin = "";
   let breakdownBucketMinMaxQuery = "";
   let shouldBucketData = false;
   if (breakdowns.length) {
     const b = breakdowns[0];
-    breakdownSelect = breakdownSelectProperty(b, paramHandler);
+    const { select, join } = breakdownSelectProperty(b, paramHandler);
+    breakdownSelect = select;
+    breakdownJoin = join;
     if (b.dataType === DataType.number) {
       const query = `
       select count(distinct ${breakdownSelect}) > 10 as shouldBucket
@@ -104,7 +107,9 @@ export const prepareFiltersAndBreakdown = async ({
       }
     }
   }
-  if (breakdownSelect && !shouldBucketData) {
+  if (breakdowns.length && breakdowns[0].dataType === DataType.array) {
+    breakdownSelect = `breakdown`;
+  } else if (breakdownSelect && !shouldBucketData) {
     breakdownSelect = `${breakdownSelect} as breakdown`;
   }
 
@@ -118,6 +123,7 @@ export const prepareFiltersAndBreakdown = async ({
     joinSection,
     whereSection,
     breakdownSelect,
+    breakdownJoin,
     breakdownBucketMinMaxQuery,
   };
 };

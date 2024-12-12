@@ -11,13 +11,29 @@ export const breakdownSelectProperty = (
     [DataType.number]: `JSONExtractFloat`,
     [DataType.boolean]: `JSONExtractBool`,
     [DataType.date]: `JSONExtractString`,
+    [DataType.array]: ``,
     [DataType.other]: ``,
   }[b.dataType];
   if (jsonExtractor) {
-    return `${jsonExtractor}(${
-      b.propOrigin === PropOrigin.user ? "p" : "e"
-    }.properties, {${paramHandler.add(b.prop.value)}:String})`;
+    return {
+      select: `${jsonExtractor}(${
+        b.propOrigin === PropOrigin.user ? "p" : "e"
+      }.properties, {${paramHandler.add(b.prop.value)}:String})`,
+      join: "",
+    };
   }
 
-  return "";
+  if (b.dataType === DataType.array) {
+    return {
+      select: `breakdown`,
+      join: `ARRAY JOIN ${`JSONExtractArrayRaw(${
+        b.propOrigin === PropOrigin.user ? "p" : "e"
+      }.properties, {${paramHandler.add(b.prop.value)}:String})`} AS breakdown`,
+    };
+  }
+
+  return {
+    select: "",
+    join: "",
+  };
 };

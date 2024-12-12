@@ -102,7 +102,7 @@ export const queryRetention = async ({
   ${metrics[0].event.value !== ANY_EVENT_VALUE ? `AND name = {startEventName:String}` : ``} AND e.project_id = {projectId:String}
   ${whereStrings.length ? `AND (${whereStrings.join(whereCombiner)})` : ""}`;
   const breakdownSelect = breakdowns.length
-    ? breakdownSelectProperty(breakdowns[0], paramHandler)
+    ? breakdownSelectProperty(breakdowns[0], paramHandler).select
     : "";
 
   let query = `

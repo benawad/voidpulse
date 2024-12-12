@@ -24,6 +24,7 @@ export enum DataType {
   number,
   boolean,
   date,
+  array,
   other,
 }
 

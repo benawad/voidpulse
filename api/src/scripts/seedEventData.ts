@@ -35,7 +35,7 @@ const config = {
   newUsersPerDay: 100,
   d1: 0.6,
   d30: 0.2,
-  daysToSimulate: 90,
+  daysToSimulate: 30,
   debug: false,
   dropDataBeforeInsert: true,
   possibleEvents: [
@@ -62,6 +62,22 @@ const config = {
       genProps: () => {
         return {
           from: choose(["home", "feed", "profile", "search"]),
+        };
+      },
+    },
+    {
+      name: `StartBattle`,
+      simTodayCount: () => {
+        return faker.number.int({ min: 5, max: 30 });
+      },
+      genProps: () => {
+        return {
+          species: [
+            faker.animal.dog(),
+            faker.animal.dog(),
+            faker.animal.dog(),
+            faker.animal.dog(),
+          ],
         };
       },
     },

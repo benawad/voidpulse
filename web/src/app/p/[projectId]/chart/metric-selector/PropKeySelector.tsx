@@ -19,7 +19,7 @@ import { CiShoppingTag } from "react-icons/ci";
 import { FaCalendarCheck } from "react-icons/fa6";
 import { IoText } from "react-icons/io5";
 import { LiaHashtagSolid } from "react-icons/lia";
-import { TbCircleCheck } from "react-icons/tb";
+import { TbCircleCheck, TbList } from "react-icons/tb";
 import { RiArrowDropRightFill } from "react-icons/ri";
 import { MetricEvent } from "./MetricSelector";
 
@@ -84,6 +84,7 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
     [DataType.number]: <LiaHashtagSolid className={dataTypeIconStyle} />,
     [DataType.date]: <FaCalendarCheck className={dataTypeIconStyle} />,
     [DataType.boolean]: <TbCircleCheck className={dataTypeIconStyle} />,
+    [DataType.array]: <TbList className={dataTypeIconStyle} />,
     [DataType.other]: <CiShoppingTag className={dataTypeIconStyle} />,
   };
 
@@ -104,6 +105,7 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
               [DataType.number]: NumberFilterOperation.equals,
               [DataType.date]: DateFilterOperation.on,
               [DataType.boolean]: undefined,
+              [DataType.array]: undefined,
               [DataType.other]: undefined,
             }[selection.type],
             value: selection.type === DataType.boolean ? true : undefined,

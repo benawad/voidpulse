@@ -43,7 +43,7 @@ export const queryFunnel = async ({
   const paramHandler = new QueryParamHandler();
   const peopleJoin = `inner join people as p on e.distinct_id = p.distinct_id`;
   const breakdownSelect = breakdowns.length
-    ? breakdownSelectProperty(breakdowns[0], paramHandler)
+    ? breakdownSelectProperty(breakdowns[0], paramHandler).select
     : "";
   const breakdownNeedsPeopleJoin =
     breakdowns.length && breakdowns[0].propOrigin === PropOrigin.user;
