@@ -65,4 +65,6 @@ export const EventsPage: React.FC = ({}) => {
   );
 };
 
+export const runtime = "edge";
+
 export default trpc.withTRPC(EventsPage);

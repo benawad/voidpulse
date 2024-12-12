@@ -28,10 +28,9 @@ export const syncProperties = protectedProcedure
     FROM events
     WHERE
       name = {${paramHandler.add(eventValue)}:String}
-			and
-      project_id = {projectId:UUID}
+      and project_id = {projectId:UUID}
+      and time > now() - INTERVAL 10 DAY
     ORDER BY time DESC
-    LIMIT 1500;
   `;
     const resp = await clickhouse.query({
       query,

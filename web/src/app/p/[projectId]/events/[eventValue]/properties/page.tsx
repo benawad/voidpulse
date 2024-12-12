@@ -85,4 +85,6 @@ export const PropertiesPage: React.FC = ({}) => {
   );
 };
 
+export const runtime = "edge";
+
 export default trpc.withTRPC(PropertiesPage);
