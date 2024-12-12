@@ -24,10 +24,11 @@ export const syncProperties = protectedProcedure
     const query = `
     SELECT
       name,
-      any(properties) AS properties
+      properties
     FROM events
     WHERE
       name = {${paramHandler.add(eventValue)}:String}
+			and
       project_id = {projectId:UUID}
     ORDER BY time DESC
     LIMIT 1500;
