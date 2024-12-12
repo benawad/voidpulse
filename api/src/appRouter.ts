@@ -33,6 +33,7 @@ import { acceptProjectInvite } from "./routes/projects/acceptProjectInvite";
 import { sendProjectInvite } from "./routes/projects/sendProjectInvite";
 import { setPassword } from "./routes/auth/setPassword";
 import { addUser } from "./routes/auth/addUser";
+import { syncProperties } from "./routes/charts/syncProperties";
 
 export const appRouter = t.router({
   getBoards,
@@ -63,6 +64,7 @@ export const appRouter = t.router({
   acceptProjectInvite,
   sendProjectInvite,
   addUser,
+  syncProperties,
 });
 
 export const app = express();

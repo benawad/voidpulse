@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { IoIosSettings } from "react-icons/io";
-import { IoFolderOutline } from "react-icons/io5";
+import { IoFolderOutline, IoStatsChart, IoTelescope } from "react-icons/io5";
 import { PlusIcon } from "../p/[projectId]/chart/manual-sidebars/PlusIcon";
 import { CreateProjectModal } from "../components/CreateProjectModal";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
@@ -80,10 +80,19 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({}) => {
             }}
           />
         </div>
-        <Link href="/settings" className={`ml-auto mr-2 ${headerItemStyle}`}>
-          <span className="mr-1 text-xs font-semibold">Settings</span>
-          <IoIosSettings size={24} />
-        </Link>
+        <div className="flex-row flex ml-auto">
+          <Link
+            href={`/p/${project?.id}/events`}
+            className={` mr-2 ${headerItemStyle}`}
+          >
+            <span className="mr-1 text-xs font-semibold">Events</span>
+            <IoStatsChart size={24} />
+          </Link>
+          <Link href="/settings" className={`ml-auto mr-2 ${headerItemStyle}`}>
+            <span className="mr-1 text-xs font-semibold">Settings</span>
+            <IoIosSettings size={24} />
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -155,6 +155,20 @@
       "when": 1709401369187,
       "tag": "0024_romantic_golden_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1733965454122,
+      "tag": "0025_tidy_scarlet_witch",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1733965626667,
+      "tag": "0026_tearful_shatterstar",
+      "breakpoints": true
     }
   ]
 }

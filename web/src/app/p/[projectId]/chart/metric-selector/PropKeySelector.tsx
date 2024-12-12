@@ -31,6 +31,15 @@ interface FilterSelectorProps {
   };
   onPropKey: (filter: Partial<MetricFilter>) => void;
 }
+const dataTypeIconStyle = "mr-2 opacity-40 my-auto";
+export const dataTypeToIconMap = {
+  [DataType.string]: <IoText className={dataTypeIconStyle} />,
+  [DataType.number]: <LiaHashtagSolid className={dataTypeIconStyle} />,
+  [DataType.date]: <FaCalendarCheck className={dataTypeIconStyle} />,
+  [DataType.boolean]: <TbCircleCheck className={dataTypeIconStyle} />,
+  [DataType.array]: <TbList className={dataTypeIconStyle} />,
+  [DataType.other]: <CiShoppingTag className={dataTypeIconStyle} />,
+};
 
 export const PropKeySelector: React.FC<FilterSelectorProps> = ({
   onPropKey,
@@ -77,16 +86,6 @@ export const PropKeySelector: React.FC<FilterSelectorProps> = ({
     }
     return null;
   }, [data]);
-
-  const dataTypeIconStyle = "mr-2 opacity-40 my-auto";
-  const dataTypeToIconMap = {
-    [DataType.string]: <IoText className={dataTypeIconStyle} />,
-    [DataType.number]: <LiaHashtagSolid className={dataTypeIconStyle} />,
-    [DataType.date]: <FaCalendarCheck className={dataTypeIconStyle} />,
-    [DataType.boolean]: <TbCircleCheck className={dataTypeIconStyle} />,
-    [DataType.array]: <TbList className={dataTypeIconStyle} />,
-    [DataType.other]: <CiShoppingTag className={dataTypeIconStyle} />,
-  };
 
   return (
     <Downshift<NonNullable<typeof dataWithAutocompleteKey>["items"][0]>

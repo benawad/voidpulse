@@ -11,6 +11,7 @@ import { peoplePropTypes } from "./schema/people-prop-types";
 import { projectUsers } from "./schema/project-users";
 import { projects } from "./schema/projects";
 import { users } from "./schema/users";
+import { eventPropTypes } from "./schema/event-prop-types";
 
 const devDbUrl =
   "postgresql://postgres:postgres@localhost/voidpulse?schema=public&connection_limit=1&pool_timeout=1";
@@ -46,5 +47,6 @@ export const db = drizzle(pool, {
     people,
     peoplePropTypes,
     messages,
+    eventPropTypes,
   },
 });
