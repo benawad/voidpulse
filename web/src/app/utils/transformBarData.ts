@@ -16,7 +16,7 @@ export const transformBarData = ({
 }) => {
   const filteredData = datas.filter((d, i) => {
     if (!visibleDataMap) {
-      return i < 50;
+      return i < 10;
     }
     return visibleDataMap[d.id];
   });

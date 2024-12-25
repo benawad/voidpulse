@@ -1,4 +1,4 @@
-import { MetricMeasurement } from "@voidpulse/api";
+import { MetricMeasurement, NumOperation } from "@voidpulse/api";
 import React, { useState } from "react";
 import { useChartStateContext } from "../../../../../../providers/ChartStateProvider";
 import { LineSeparator } from "../../../../ui/LineSeparator";
@@ -9,11 +9,12 @@ import { Metric } from "../metric-selector/Metric";
 import { MetricBlock } from "../metric-selector/MetricBlock";
 import { HeaderButton } from "./HeaderButton";
 import { PlusIcon } from "./PlusIcon";
+import { CombinationBlock } from "../metric-selector/CombinationBlock";
 
 interface InsightSidebarProps {}
 
 export const InsightSidebar: React.FC<InsightSidebarProps> = ({}) => {
-  const [{ metrics, breakdowns, globalFilters, reportType }, setState] =
+  const [{ metrics, breakdowns, globalFilters, combinations }, setState] =
     useChartStateContext();
   const setMetrics = (newMetrics: Metric[]) => {
     setState((prev) => ({
@@ -175,6 +176,47 @@ export const InsightSidebar: React.FC<InsightSidebarProps> = ({}) => {
             setAddNewBreakdown(false);
           }}
         />
+      ) : null}
+      {/* Choosing Combination */}
+      {metrics.filter((x) => x.event).length > 1 ? (
+        <>
+          <HeaderButton
+            onClick={() =>
+              setState((prev) => ({
+                ...prev,
+                combinations: [
+                  {
+                    eventIdx1: 0,
+                    eventIdx2: 1,
+                    operation: NumOperation.divide,
+                  },
+                ],
+                visibleDataMap: null,
+              }))
+            }
+          >
+            Combine <PlusIcon />
+          </HeaderButton>
+          {combinations.length ? (
+            <CombinationBlock
+              combination={combinations[0]}
+              onCombination={(combination) => {
+                setState((prev) => ({
+                  ...prev,
+                  combinations: [combination],
+                  visibleDataMap: null,
+                }));
+              }}
+              onDelete={() => {
+                setState((prev) => ({
+                  ...prev,
+                  combinations: [],
+                  visibleDataMap: null,
+                }));
+              }}
+            />
+          ) : null}
+        </>
       ) : null}
     </>
   );

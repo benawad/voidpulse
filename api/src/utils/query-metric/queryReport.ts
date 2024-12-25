@@ -4,9 +4,12 @@ import {
   ReportType,
   ChartType,
   ChartTimeRangeType,
+  NumOperation,
+  MetricMeasurement,
 } from "../../app-router-type";
 import { dateInputRegex } from "../../constants/regex";
 import {
+  eventCombinationSchema,
   eventFilterSchema,
   metricSchema,
 } from "../../routes/charts/insight/eventFilterSchema";
@@ -17,6 +20,7 @@ import { queryLineChartMetric } from "./queryLineChartMetric";
 import { queryRetention } from "./queryRetention";
 import { getProject } from "../cache/getProject";
 import { TRPCError } from "@trpc/server";
+import { v4 } from "uuid";
 
 export const reportInputSchema = z.object({
   noCache: z.boolean().optional(),
@@ -31,6 +35,7 @@ export const reportInputSchema = z.object({
   globalFilters: z.array(eventFilterSchema),
   breakdowns: z.array(eventFilterSchema).max(1),
   metrics: z.array(metricSchema),
+  combinations: z.array(eventCombinationSchema).optional(),
 });
 
 export const queryReport = async ({
@@ -39,6 +44,7 @@ export const queryReport = async ({
   to,
   metrics,
   breakdowns,
+  combinations,
   chartType,
   reportType,
   timeRangeType,
@@ -132,29 +138,66 @@ export const queryReport = async ({
     };
   }
 
+  let datas = (
+    await Promise.all(
+      metrics.map((x) =>
+        queryLineChartMetric({
+          dateMap,
+          dateHeaders,
+          projectId,
+          from,
+          to,
+          metric: x,
+          globalFilters,
+          breakdowns,
+          timeRangeType,
+          combinations,
+          lineChartGroupByTimeType,
+          timezone: project.timezone,
+        })
+      )
+    )
+  ).flat();
+
+  if (combinations?.length) {
+    const { eventIdx1, eventIdx2, operation } = combinations[0];
+    const event1 = datas[eventIdx1];
+    const event2 = datas[eventIdx2];
+    datas = datas.filter((_, i) => i !== eventIdx1 && i !== eventIdx2);
+    let count = 0;
+    let sum = 0;
+    const newData: Record<string, number> = {};
+    const keys = new Set([
+      ...Object.keys(event1.data),
+      ...Object.keys(event2.data),
+    ]);
+    for (const key of keys) {
+      const v1 = event1.data[key] || 0;
+      const v2 = event2.data[key] || 0;
+      if (operation === NumOperation.multiply) {
+        newData[key] = v1 * v2;
+      } else if (v2) {
+        newData[key] = v1 / v2;
+      } else {
+        newData[key] = 0;
+      }
+      count++;
+      sum += newData[key] ?? 0;
+    }
+    datas.push({
+      id: v4(),
+      eventLabel: `${event1.eventLabel} ${operation === NumOperation.multiply ? "*" : "/"} ${event2.eventLabel}`,
+      measurement: MetricMeasurement.uniqueUsers,
+      average_count: sum / count,
+      data: newData,
+    });
+  }
+
   return {
     computedAt: new Date(),
     reportType,
     chartType,
     dateHeaders,
-    datas: (
-      await Promise.all(
-        metrics.map((x) =>
-          queryLineChartMetric({
-            dateMap,
-            dateHeaders,
-            projectId,
-            from,
-            to,
-            metric: x,
-            globalFilters,
-            breakdowns,
-            timeRangeType,
-            lineChartGroupByTimeType,
-            timezone: project.timezone,
-          })
-        )
-      )
-    ).flat(),
+    datas,
   };
 };

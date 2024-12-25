@@ -178,3 +178,14 @@ export enum ProjectRoleId {
   admin = 30,
   owner = 40,
 }
+
+export enum NumOperation {
+  multiply = 1,
+  divide,
+}
+
+export type EventCombination = {
+  eventIdx1: number;
+  eventIdx2: number;
+  operation: NumOperation;
+};

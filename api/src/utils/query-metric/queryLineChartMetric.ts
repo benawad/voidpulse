@@ -3,6 +3,7 @@ import {
   AggType,
   BreakdownType,
   ChartTimeRangeType,
+  EventCombination,
   LineChartGroupByTimeType,
   MetricMeasurement,
   PropOrigin,
@@ -52,6 +53,7 @@ export const queryLineChartMetric = async ({
   to?: string;
   timeRangeType: ChartTimeRangeType;
   breakdowns: MetricFilter[];
+  combinations?: EventCombination[];
   metric: InputMetric;
   lineChartGroupByTimeType?: LineChartGroupByTimeType;
   timezone: string;

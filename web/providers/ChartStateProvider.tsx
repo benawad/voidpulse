@@ -1,7 +1,9 @@
 import {
   ChartTimeRangeType,
   ChartType,
+  EventCombination,
   LineChartGroupByTimeType,
+  NumOperation,
   ReportType,
   RetentionNumFormat,
 } from "@voidpulse/api";
@@ -27,6 +29,7 @@ type ChartStateType = {
   metrics: Metric[];
   globalFilters: MetricFilter[];
   breakdowns: MetricFilter[];
+  combinations: EventCombination[];
   retentionNumFormat?: RetentionNumFormat | null;
 };
 
@@ -43,6 +46,7 @@ const ChartStateContext = React.createContext<
     metrics: [],
     globalFilters: [],
     breakdowns: [],
+    combinations: [],
   },
   () => {},
 ]);
@@ -67,6 +71,7 @@ export const ChartStateProvider: React.FC<
       to: chart?.to ? moment(chart.to) : null,
       globalFilters: chart?.globalFilters || ([] as MetricFilter[]),
       breakdowns: chart?.breakdowns || ([] as MetricFilter[]),
+      combinations: chart?.combinations || ([] as EventCombination[]),
     };
   });
 

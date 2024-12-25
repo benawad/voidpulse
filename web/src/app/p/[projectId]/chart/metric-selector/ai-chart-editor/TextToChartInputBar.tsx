@@ -43,6 +43,10 @@ export const TextToChartInputBar: React.FC<AiInputBarProps> = ({}) => {
     });
   };
 
+  if (5 > 3) {
+    return null;
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mx-2">
       <Input

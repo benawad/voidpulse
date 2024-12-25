@@ -89,6 +89,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       timeRangeType,
       visibleDataMap,
       globalFilters,
+      combinations,
     },
     setState,
   ] = useChartStateContext();
@@ -106,6 +107,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     timeRangeType,
     reportType,
     chartType,
+    combinations,
     lineChartGroupByTimeType: lineChartGroupByTimeType || undefined,
     from: from ? dateToClickhouseDateString(from) : undefined,
     to: to ? dateToClickhouseDateString(to) : undefined,

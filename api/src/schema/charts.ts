@@ -11,6 +11,7 @@ import { z } from "zod";
 import {
   ChartTimeRangeType,
   ChartType,
+  EventCombination,
   LineChartGroupByTimeType,
   ReportType,
   RetentionNumFormat,
@@ -49,6 +50,7 @@ export const charts = pgTable("charts", {
   to: text("to"),
   metrics: jsonb("metrics").notNull().$type<InputMetric[]>(),
   breakdowns: jsonb("breakdowns").$type<MetricFilter[]>(),
+  combinations: jsonb("combinations").$type<EventCombination[]>(),
   globalFilters: jsonb("global_filters").$type<MetricFilter[]>(),
   data: jsonb("data").notNull().$type<z.infer<typeof chartDataSchema>>(),
   boardId: uuid("board_id"),

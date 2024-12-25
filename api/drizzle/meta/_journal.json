@@ -169,6 +169,13 @@
       "when": 1733965626667,
       "tag": "0026_tearful_shatterstar",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1734541378623,
+      "tag": "0027_luxuriant_the_enforcers",
+      "breakpoints": true
     }
   ]
 }

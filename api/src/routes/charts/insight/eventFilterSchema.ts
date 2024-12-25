@@ -4,6 +4,7 @@ import {
   DataType,
   FilterAndOr,
   MetricMeasurement,
+  NumOperation,
   PropOrigin,
 } from "../../../app-router-type";
 
@@ -41,6 +42,12 @@ export const metricSchema = z.object({
     .optional(),
   andOr: z.nativeEnum(FilterAndOr).optional(),
   filters: z.array(eventFilterSchema),
+});
+
+export const eventCombinationSchema = z.object({
+  eventIdx1: z.number().int(),
+  eventIdx2: z.number().int(),
+  operation: z.nativeEnum(NumOperation),
 });
 
 export type MetricFilter = z.infer<typeof eventFilterSchema>;
