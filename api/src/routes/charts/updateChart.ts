@@ -11,6 +11,8 @@ import {
   ChartTimeRangeType,
   ChartType,
   LineChartGroupByTimeType,
+  LtvType,
+  LtvWindowType,
   ReportType,
   RetentionNumFormat,
 } from "../../app-router-type";

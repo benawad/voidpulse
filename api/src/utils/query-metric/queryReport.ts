@@ -6,6 +6,8 @@ import {
   ChartTimeRangeType,
   NumOperation,
   MetricMeasurement,
+  LtvType,
+  LtvWindowType,
 } from "../../app-router-type";
 import { dateInputRegex } from "../../constants/regex";
 import {
@@ -21,6 +23,7 @@ import { queryRetention } from "./queryRetention";
 import { getProject } from "../cache/getProject";
 import { TRPCError } from "@trpc/server";
 import { v4 } from "uuid";
+import { queryLTV } from "./queryLTV";
 
 export const reportInputSchema = z.object({
   noCache: z.boolean().optional(),
@@ -31,6 +34,8 @@ export const reportInputSchema = z.object({
   lineChartGroupByTimeType: z.nativeEnum(LineChartGroupByTimeType).optional(),
   reportType: z.nativeEnum(ReportType),
   chartType: z.nativeEnum(ChartType),
+  ltvType: z.nativeEnum(LtvType).optional().nullable(),
+  ltvWindowType: z.nativeEnum(LtvWindowType).optional().nullable(),
   timeRangeType: z.nativeEnum(ChartTimeRangeType),
   globalFilters: z.array(eventFilterSchema),
   breakdowns: z.array(eventFilterSchema).max(1),
@@ -47,6 +52,8 @@ export const queryReport = async ({
   combinations,
   chartType,
   reportType,
+  ltvType,
+  ltvWindowType,
   timeRangeType,
   lineChartGroupByTimeType = LineChartGroupByTimeType.day,
   globalFilters,
@@ -111,6 +118,33 @@ export const queryReport = async ({
               timeRangeType,
               timezone: project.timezone,
             }),
+    };
+  }
+
+  if (ReportType.ltv === reportType) {
+    return {
+      computedAt: new Date(),
+      reportType,
+      chartType,
+      ltvType,
+      dateHeaders,
+      datas: (
+        await queryLTV({
+          dateHeaders,
+          projectId,
+          dateMap,
+          from,
+          to,
+          metrics,
+          globalFilters,
+          ltvType,
+          breakdowns,
+          lineChartGroupByTimeType,
+          ltvWindowType,
+          timeRangeType,
+          timezone: project.timezone,
+        })
+      ).flat(),
     };
   }
 

@@ -10,7 +10,7 @@ import {
   ChartType,
   ReportType,
 } from "../../app-router-type";
-import { chartDataSchema } from "./chartDataSchema";
+import { chartDataSchema, ltvDataSchema } from "./chartDataSchema";
 import { InferInsertModel, eq } from "drizzle-orm";
 import { boards } from "../../schema/boards";
 import { TRPCError } from "@trpc/server";

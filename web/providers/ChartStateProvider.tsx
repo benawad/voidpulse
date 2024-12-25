@@ -3,6 +3,8 @@ import {
   ChartType,
   EventCombination,
   LineChartGroupByTimeType,
+  LtvType,
+  LtvWindowType,
   NumOperation,
   ReportType,
   RetentionNumFormat,
@@ -31,6 +33,8 @@ type ChartStateType = {
   breakdowns: MetricFilter[];
   combinations: EventCombination[];
   retentionNumFormat?: RetentionNumFormat | null;
+  ltvType?: LtvType | null;
+  ltvWindowType?: LtvWindowType | null;
 };
 
 const ChartStateContext = React.createContext<
@@ -47,6 +51,8 @@ const ChartStateContext = React.createContext<
     globalFilters: [],
     breakdowns: [],
     combinations: [],
+    ltvType: null,
+    ltvWindowType: null,
   },
   () => {},
 ]);
@@ -64,6 +70,8 @@ export const ChartStateProvider: React.FC<
       chartType: chart?.chartType || ChartType.line,
       metrics: chart?.metrics || [],
       visibleDataMap: null,
+      ltvType: chart?.ltvType,
+      ltvWindowType: chart?.ltvWindowType,
       lineChartGroupByTimeType: chart?.lineChartGroupByTimeType,
       timeRangeType: chart?.timeRangeType || ChartTimeRangeType["30D"],
       retentionNumFormat: chart?.retentionNumFormat,

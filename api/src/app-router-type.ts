@@ -79,7 +79,7 @@ export enum ReportType {
   insight = 1,
   funnel,
   retention,
-  // flow,
+  ltv,
 }
 
 export enum ChartTimeRangeType {
@@ -91,6 +91,18 @@ export enum ChartTimeRangeType {
   "3M",
   "6M",
   "12M",
+}
+
+export enum LtvType {
+  allUsers = 1,
+  payingUsers,
+}
+
+export enum LtvWindowType {
+  d7 = 1,
+  d30,
+  d90,
+  AllTime,
 }
 
 export enum LineChartGroupByTimeType {

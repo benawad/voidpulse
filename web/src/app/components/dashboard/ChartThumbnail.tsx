@@ -52,6 +52,8 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
     metrics: chart.metrics,
     projectId: chart.projectId,
     reportType: chart.reportType,
+    ltvType: chart.ltvType,
+    ltvWindowType: chart.ltvWindowType,
     timeRangeType: chart.timeRangeType,
     chartType: chart.chartType,
     lineChartGroupByTimeType: chart.lineChartGroupByTimeType || undefined,

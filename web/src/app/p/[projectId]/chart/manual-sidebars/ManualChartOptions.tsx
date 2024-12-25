@@ -8,6 +8,8 @@ import { TextToChartInputBar } from "../metric-selector/ai-chart-editor/TextToCh
 import { FunnelSidebar } from "./FunnelSidebar";
 import { InsightSidebar } from "./InsightSidebar";
 import { RetentionSidebar } from "./RetentionSidebar";
+import { TbPigMoney } from "react-icons/tb";
+import { LTVSidebar } from "./LTVSidebar";
 
 interface ManualChartOptionsProps {}
 
@@ -15,8 +17,8 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
   const [{ reportType }, setState] = useChartStateContext();
 
   // Top section with square icons
-  const reportTypeIconStyle = "w-6 h-6 rounded-md";
-  const reportTypeButtonStyle = `accent-hover group py-1 w-full flex items-center flex flex-row text-xs`;
+  const reportTypeIconStyle = "w-4 h-4 rounded-md";
+  const reportTypeButtonStyle = `accent-hover group py-1 w-full flex items-center justify-center flex flex-row text-xs`;
   const reportTypes = [
     {
       name: "Insights",
@@ -38,17 +40,17 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
       type: ReportType.retention,
       colorClass: "text-pink-500",
     },
-    // {
-    //   name: "Flow",
-    //   icon: <TiFlowSwitch className={reportTypeIconStyle} />,
-    //   type: ReportType.flow,
-    // },
+    {
+      name: "LTV",
+      icon: <TbPigMoney className={reportTypeIconStyle} />,
+      type: ReportType.ltv,
+    },
   ];
 
   return (
     <>
       {/* Choosing report type */}
-      <div className="flex flex-row w-full justify-between mt-2 mono-body">
+      <div className="flex flex-row w-full justify-between mono-body">
         {reportTypes.map((rt) => {
           return (
             <button
@@ -75,7 +77,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
             >
               {/* Div around icon */}
               <div
-                className={`rounded-full group-hover:text-accent-100 w-8 h-8 flex items-center justify-center ml-3 mr-1 ${
+                className={`rounded-full group-hover:text-accent-100 w-4 h-8 flex items-center justify-center mr-1 ${
                   rt.type === reportType
                     ? "text-primary-100"
                     : "text-primary-500"
@@ -92,6 +94,7 @@ export const ManualChartOptions: React.FC<ManualChartOptionsProps> = ({}) => {
         {reportType === ReportType.insight ? <InsightSidebar /> : null}
         {reportType === ReportType.funnel ? <FunnelSidebar /> : null}
         {reportType === ReportType.retention ? <RetentionSidebar /> : null}
+        {reportType === ReportType.ltv ? <LTVSidebar /> : null}
         <TextToChartInputBar />
       </div>
     </>

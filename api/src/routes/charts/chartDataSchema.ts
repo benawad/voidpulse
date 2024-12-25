@@ -2,6 +2,8 @@ import { z } from "zod";
 import {
   ChartType,
   LineChartGroupByTimeType,
+  LtvType,
+  LtvWindowType,
   MetricMeasurement,
   ReportType,
 } from "../../app-router-type";
@@ -13,11 +15,32 @@ const dateHeaderSchema = z.object({
 });
 const breakdownSchema = z.union([z.string(), z.number()]).optional();
 
+export const ltvDataSchema = z.object({
+  reportType: z.literal(ReportType.ltv),
+  chartType: z.nativeEnum(ChartType),
+  dateHeaders: z.array(dateHeaderSchema),
+  ltvType: z.nativeEnum(LtvType).optional().nullable(),
+  ltvWindowType: z.nativeEnum(LtvWindowType).optional().nullable(),
+  datas: z.array(
+    z.object({
+      id: z.string(),
+      tableOnly: z.boolean().optional(),
+      breakdown: breakdownSchema.optional(),
+      eventLabel: z.string(),
+      lineChartGroupByTimeType: z
+        .nativeEnum(LineChartGroupByTimeType)
+        .optional(),
+      average_count: z.number(),
+      data: z.record(z.number()),
+    })
+  ),
+});
+
 export const chartDataSchema = z.union([
   // funnel
   z.object({
-    chartType: z.nativeEnum(ChartType),
     reportType: z.literal(ReportType.funnel),
+    chartType: z.nativeEnum(ChartType),
     labels: z.array(z.string()),
     datas: z.array(
       z.object({
@@ -33,8 +56,8 @@ export const chartDataSchema = z.union([
   }),
   // retention
   z.object({
-    chartType: z.nativeEnum(ChartType),
     reportType: z.literal(ReportType.retention),
+    chartType: z.nativeEnum(ChartType),
     retentionHeaders: z.array(dateHeaderSchema),
     datas: z.array(
       z.object({
@@ -66,10 +89,12 @@ export const chartDataSchema = z.union([
       })
     ),
   }),
+  // ltv
+  ltvDataSchema,
   // line
   z.object({
-    chartType: z.literal(ChartType.line),
     reportType: z.literal(ReportType.insight),
+    chartType: z.literal(ChartType.line),
     dateHeaders: z.array(dateHeaderSchema),
     datas: z.array(
       z.object({
@@ -87,8 +112,8 @@ export const chartDataSchema = z.union([
   }),
   // bar & donut
   z.object({
-    chartType: z.union([z.literal(ChartType.bar), z.literal(ChartType.donut)]),
     reportType: z.literal(ReportType.insight),
+    chartType: z.union([z.literal(ChartType.bar), z.literal(ChartType.donut)]),
     datas: z.array(
       z.object({
         id: z.string(),

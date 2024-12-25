@@ -2,18 +2,22 @@ import {
   BreakdownType,
   ChartType,
   LineChartGroupByTimeType,
+  LtvType,
+  LtvWindowType,
   ReportType,
   RetentionNumFormat,
 } from "@voidpulse/api";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { MdOutlineCalendarMonth } from "react-icons/md";
+import { MdOutlineCalendarMonth, MdWindow } from "react-icons/md";
 import {
   PiChartBar,
   PiChartDonut,
   PiChartLine,
+  PiMoney,
   PiSuitcaseSimple,
+  PiUsers,
 } from "react-icons/pi";
 import { WiDaySunny } from "react-icons/wi";
 import { useChartStateContext } from "../../../../../providers/ChartStateProvider";
@@ -43,6 +47,7 @@ import { NoDataToDisplayVisual } from "./NoDataToDisplayVisual";
 import { ChartDataTable } from "./data-table/ChartDataTable";
 import moment from "moment";
 import { msToDurationString } from "../../../utils/msToDurationString";
+import { RiWindowLine } from "react-icons/ri";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -88,6 +93,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       to,
       timeRangeType,
       visibleDataMap,
+      ltvType,
+      ltvWindowType,
       globalFilters,
       combinations,
     },
@@ -106,6 +113,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     globalFilters,
     timeRangeType,
     reportType,
+    ltvType,
+    ltvWindowType,
     chartType,
     combinations,
     lineChartGroupByTimeType: lineChartGroupByTimeType || undefined,
@@ -115,7 +124,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
   };
   const { data, isLoading } = trpc.getReport.useQuery(getReportVars, {
     enabled:
-      reportType === ReportType.retention
+      reportType === ReportType.retention || reportType === ReportType.ltv
         ? metrics.length === 2
         : !!metrics.length,
   });
@@ -297,7 +306,8 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     />
                   </div>
                 ) : null}
-                {reportType === ReportType.insight ? (
+                {reportType === ReportType.insight ||
+                reportType === ReportType.ltv ? (
                   <>
                     {/* Group by time selector */}
                     <div className="my-auto standard card shadow-lg">
@@ -332,6 +342,10 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                         }}
                       />
                     </div>
+                  </>
+                ) : null}
+                {reportType === ReportType.insight ? (
+                  <>
                     {/* Chart type selector */}
                     <div className="my-auto standard card shadow-lg">
                       <Dropdown
@@ -358,6 +372,70 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                           setState((prev) => ({
                             ...prev,
                             chartType: value,
+                          }));
+                        }}
+                      />
+                    </div>
+                  </>
+                ) : null}
+                {reportType === ReportType.ltv ? (
+                  <>
+                    {/* Chart type selector */}
+                    <div className="my-auto standard card shadow-lg">
+                      <Dropdown
+                        autoWidth
+                        value={ltvType || LtvType.payingUsers}
+                        opts={[
+                          {
+                            label: "Paying users",
+                            value: LtvType.payingUsers,
+                            Icon: <PiMoney />,
+                          },
+                          {
+                            label: "All users",
+                            value: LtvType.allUsers,
+                            Icon: <PiUsers />,
+                          },
+                        ]}
+                        onSelect={(value) => {
+                          setState((prev) => ({
+                            ...prev,
+                            ltvType: value,
+                          }));
+                        }}
+                      />
+                    </div>
+                    {/* LTV window */}
+                    <div className="my-auto standard card shadow-lg">
+                      <Dropdown
+                        autoWidth
+                        value={ltvWindowType || LtvWindowType.AllTime}
+                        opts={[
+                          {
+                            label: "7 days",
+                            value: LtvWindowType.d7,
+                            Icon: <MdWindow />,
+                          },
+                          {
+                            label: "30 days",
+                            value: LtvWindowType.d30,
+                            Icon: <MdWindow />,
+                          },
+                          {
+                            label: "90 days",
+                            value: LtvWindowType.d90,
+                            Icon: <MdWindow />,
+                          },
+                          {
+                            label: "All time",
+                            value: LtvWindowType.AllTime,
+                            Icon: <MdWindow />,
+                          },
+                        ]}
+                        onSelect={(value) => {
+                          setState((prev) => ({
+                            ...prev,
+                            ltvWindowType: value,
                           }));
                         }}
                       />
@@ -457,8 +535,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
 
               {/* Insight line graph */}
               {data?.datas.length &&
-              data?.reportType === ReportType.insight &&
-              data.chartType === ChartType.line ? (
+              ((data?.reportType === ReportType.insight &&
+                data.chartType === ChartType.line) ||
+                data?.reportType === ReportType.ltv) ? (
                 <LineChart
                   disableAnimations
                   {...transformLineData({
@@ -614,8 +693,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           ) : null}
           {/* Additional data at the bottom */}
           {data?.datas.length &&
-          data?.reportType === ReportType.insight &&
-          data.chartType === ChartType.line ? (
+          ((data?.reportType === ReportType.insight &&
+            data.chartType === ChartType.line) ||
+            data?.reportType === ReportType.ltv) ? (
             <ChartDataTable
               datas={data.datas}
               chartContainerRef={chartContainerRef}

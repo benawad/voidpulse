@@ -1,0 +1,1 @@
+ALTER TABLE "charts" ADD COLUMN "ltv_type" integer;

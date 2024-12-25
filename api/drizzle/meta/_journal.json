@@ -176,6 +176,20 @@
       "when": 1734541378623,
       "tag": "0027_luxuriant_the_enforcers",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "5",
+      "when": 1735151353378,
+      "tag": "0028_tricky_wiccan",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "5",
+      "when": 1735154800873,
+      "tag": "0029_superb_deathbird",
+      "breakpoints": true
     }
   ]
 }

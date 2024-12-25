@@ -13,6 +13,8 @@ import {
   ChartType,
   EventCombination,
   LineChartGroupByTimeType,
+  LtvType,
+  LtvWindowType,
   ReportType,
   RetentionNumFormat,
 } from "../app-router-type";
@@ -37,6 +39,8 @@ export const charts = pgTable("charts", {
     string,
     boolean
   > | null>(),
+  ltvType: integer("ltv_type").$type<LtvType | null>(),
+  ltvWindowType: integer("ltv_window_type").$type<LtvWindowType | null>(),
   lineChartGroupByTimeType: integer(
     "line_chart_group_by_time_type"
   ).$type<LineChartGroupByTimeType>(),

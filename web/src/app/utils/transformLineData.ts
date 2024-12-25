@@ -33,6 +33,9 @@ export const transformLineData = ({
   highlightedId?: string | null;
 }) => {
   const filteredData = datas.filter((d, i) => {
+    if ("tableOnly" in d && d.tableOnly) {
+      return false;
+    }
     if (!visibleDataMap) {
       return i < 10;
     }
