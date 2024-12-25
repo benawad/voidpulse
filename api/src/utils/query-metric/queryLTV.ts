@@ -114,7 +114,7 @@ purchase_data AS (
         ${breakdownSelect ? `cu.breakdown,` : ``}
         e.distinct_id,
         cu.cohort_date,
-        JSONExtractFloat(e.properties, 'price') as purchase_amount
+        JSONExtractFloat(e.properties, 'price')/100 as purchase_amount
     FROM events as e
     JOIN cohort_users cu ON e.distinct_id = cu.distinct_id
     WHERE name = {endEventName:String} ${
