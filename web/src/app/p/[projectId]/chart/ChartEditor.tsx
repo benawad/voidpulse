@@ -463,6 +463,9 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                       breakdowns,
                       globalFilters,
                       data: data as any,
+                      ltvType,
+                      ltvWindowType,
+                      combinations,
                     };
                     if (chart) {
                       await updateChart({

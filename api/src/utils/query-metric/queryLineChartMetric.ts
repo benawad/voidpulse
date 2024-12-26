@@ -53,7 +53,7 @@ export const queryLineChartMetric = async ({
   to?: string;
   timeRangeType: ChartTimeRangeType;
   breakdowns: MetricFilter[];
-  combinations?: EventCombination[];
+  combinations?: EventCombination[] | null;
   metric: InputMetric;
   lineChartGroupByTimeType?: LineChartGroupByTimeType;
   timezone: string;

@@ -40,7 +40,7 @@ export const reportInputSchema = z.object({
   globalFilters: z.array(eventFilterSchema),
   breakdowns: z.array(eventFilterSchema).max(1),
   metrics: z.array(metricSchema),
-  combinations: z.array(eventCombinationSchema).optional(),
+  combinations: z.array(eventCombinationSchema).optional().nullable(),
 });
 
 export const queryReport = async ({

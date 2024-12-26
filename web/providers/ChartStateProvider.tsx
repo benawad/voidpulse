@@ -62,6 +62,7 @@ export const ChartStateProvider: React.FC<
     chart?: RouterOutput["getCharts"]["charts"][0] | null;
   }>
 > = ({ children, chart }) => {
+
   const chartState = useState<ChartStateType>(() => {
     return {
       title: chart?.title || "",
