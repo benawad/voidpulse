@@ -32,6 +32,8 @@ export const updateChartDataSchemaFields = {
   globalFilters: z.array(eventFilterSchema).optional(),
   breakdowns: z.array(eventFilterSchema).max(1).optional(),
   combinations: z.array(eventCombinationSchema).optional().nullable(),
+  ltvType: z.nativeEnum(LtvType).optional().nullable(),
+  ltvWindowType: z.nativeEnum(LtvWindowType).optional().nullable(),
   lineChartGroupByTimeType: z.nativeEnum(LineChartGroupByTimeType).optional(),
   data: chartDataSchema.optional(),
   timeRangeType: z.nativeEnum(ChartTimeRangeType).optional(),

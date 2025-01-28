@@ -207,6 +207,11 @@ ORDER BY cu.cohort_date${breakdownSelect ? `, cu.breakdown` : ``};
       dataMap[x.cohort_date] = x[key];
     });
 
+    const revenueMap: Record<string, number> = {};
+    data.forEach((x) => {
+      revenueMap[x.cohort_date] = x.total_revenue;
+    });
+
     return [
       [
         {
@@ -224,6 +229,21 @@ ORDER BY cu.cohort_date${breakdownSelect ? `, cu.breakdown` : ``};
           data: {
             ...dateMap,
             ...cohortSizeMap,
+          },
+        },
+        {
+          id: v4(),
+          eventLabel: "Revenue",
+          lineChartGroupByTimeType,
+          average_count: !data.length
+            ? 0
+            : Math.round(
+                (10 * data.reduce((a, b) => a + b.total_revenue, 0)) /
+                  dateHeaders.length
+              ) / 10,
+          data: {
+            ...dateMap,
+            ...revenueMap,
           },
         },
         {

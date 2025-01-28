@@ -113,10 +113,12 @@ export const prepareFiltersAndBreakdown = async ({
     breakdownSelect = `${breakdownSelect} as breakdown`;
   }
 
+  const dtRange = getDateRange({ timeRangeType, timezone, from, to });
+  console.log(dtRange);
   return {
     query_params: {
       projectId,
-      ...getDateRange({ timeRangeType, timezone, from, to }),
+      ...dtRange,
       eventName: metric.event.value,
       ...paramHandler.getParams(),
     },

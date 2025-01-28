@@ -25,7 +25,15 @@ const timeUnits = [
 export const ChartDateRangePicker: React.FC<
   ChartDateRangePickerProps
 > = ({}) => {
-  const [{ from, to, timeRangeType }, setState] = useChartStateContext();
+  const [
+    {
+      from,
+      to,
+      timeRangeType,
+      lineChartGroupByTimeType: currentLineChartGroupByTimeType,
+    },
+    setState,
+  ] = useChartStateContext();
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
   const [localTimeUnit, setLocalTimeUnit] = useState(timeRangeType);
   const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(
@@ -78,10 +86,13 @@ export const ChartDateRangePicker: React.FC<
               [ChartTimeRangeType.Yesterday]: LineChartGroupByTimeType.day,
               [ChartTimeRangeType["7D"]]: LineChartGroupByTimeType.day,
               [ChartTimeRangeType["30D"]]: LineChartGroupByTimeType.day,
-              [ChartTimeRangeType["3M"]]: LineChartGroupByTimeType.week,
+              [ChartTimeRangeType["3M"]]:
+                currentLineChartGroupByTimeType === LineChartGroupByTimeType.day
+                  ? LineChartGroupByTimeType.week
+                  : LineChartGroupByTimeType.month,
               [ChartTimeRangeType["6M"]]: LineChartGroupByTimeType.month,
               [ChartTimeRangeType["12M"]]: LineChartGroupByTimeType.month,
-              [ChartTimeRangeType.Custom]: prev.lineChartGroupByTimeType,
+              [ChartTimeRangeType.Custom]: currentLineChartGroupByTimeType,
             }[unit.value],
           }));
         },
@@ -129,11 +140,15 @@ export const ChartDateRangePicker: React.FC<
             }}
             onClose={({ startDate, endDate }) => {
               if (startDate && endDate) {
-                let lineChartGroupByTimeType = LineChartGroupByTimeType.day;
+                let lineChartGroupByTimeType = currentLineChartGroupByTimeType;
                 const daysDiff = endDate.diff(startDate, "days");
                 if (daysDiff > 93) {
                   lineChartGroupByTimeType = LineChartGroupByTimeType.month;
-                } else if (daysDiff > 31) {
+                } else if (
+                  daysDiff > 31 &&
+                  currentLineChartGroupByTimeType ===
+                    LineChartGroupByTimeType.day
+                ) {
                   lineChartGroupByTimeType = LineChartGroupByTimeType.week;
                 }
                 setState((prev) => ({

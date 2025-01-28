@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import {
   ChartTimeRangeType,
   DateHeader,
@@ -15,11 +16,24 @@ export const getDateHeaders = (
   const dateHeaders: DateHeader[] = [];
   const retentionHeaders: DateHeader[] = [];
   let startDate = from
-    ? DateTime.fromISO(from).setZone(timezone)
+    ? DateTime.fromFormat(from, "yyyy-MM-dd HH:mm:ss", { zone: timezone })
     : DateTime.now().setZone(timezone);
   let endDate = to
-    ? DateTime.fromISO(to).setZone(timezone)
+    ? DateTime.fromFormat(to, "yyyy-MM-dd HH:mm:ss", { zone: timezone })
     : DateTime.now().setZone(timezone);
+
+  if (startDate.invalidReason) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: `Invalid start date ${from}`,
+    });
+  }
+  if (endDate.invalidReason) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: `Invalid end date ${to}`,
+    });
+  }
 
   if (timeRangeType === ChartTimeRangeType.Yesterday) {
     startDate = DateTime.now().setZone(timezone).minus({ day: 1 });
@@ -49,8 +63,14 @@ export const getDateHeaders = (
   }
 
   const dateMap: Record<string, number> = {};
+  let count = 0;
   let idx = 0;
   while (startDate < endDate || startDate.toISODate() === endDate.toISODate()) {
+    // hard cap
+    count++;
+    if (count > 10_000) {
+      break;
+    }
     const lookupValue = `${(lineChartGroupByTimeType ===
     LineChartGroupByTimeType.month
       ? startDate.startOf("month")

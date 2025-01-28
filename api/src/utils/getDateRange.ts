@@ -2,6 +2,7 @@ import { ChartTimeRangeType } from "../app-router-type";
 import { startOfDay, endOfDay, subMonths } from "date-fns";
 import { DateTime } from "luxon";
 import { dateToClickhouseDateString } from "./dateToClickhouseDateString";
+import { TRPCError } from "@trpc/server";
 
 export const getDateRange = ({
   timeRangeType,
@@ -16,6 +17,12 @@ export const getDateRange = ({
 }) => {
   if (timeRangeType === ChartTimeRangeType.Custom) {
     if (from && to) {
+      if (new Date(from).getTime() > new Date(to).getTime()) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "From date is greater than to date",
+        });
+      }
       return { from, to };
     }
     const str = dateToClickhouseDateString(new Date());

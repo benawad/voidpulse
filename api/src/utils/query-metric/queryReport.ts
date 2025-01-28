@@ -193,7 +193,7 @@ export const queryReport = async ({
     )
   ).flat();
 
-  if (combinations?.length) {
+  if (combinations?.length && datas.length > 1) {
     const { eventIdx1, eventIdx2, operation } = combinations[0];
     const event1 = datas[eventIdx1];
     const event2 = datas[eventIdx2];
@@ -202,8 +202,8 @@ export const queryReport = async ({
     let sum = 0;
     const newData: Record<string, number> = {};
     const keys = new Set([
-      ...Object.keys(event1.data),
-      ...Object.keys(event2.data),
+      ...Object.keys(event1?.data || {}),
+      ...Object.keys(event2?.data || {}),
     ]);
     for (const key of keys) {
       const v1 = event1.data[key] || 0;
@@ -220,7 +220,7 @@ export const queryReport = async ({
     }
     datas.push({
       id: v4(),
-      eventLabel: `${event1.eventLabel} ${operation === NumOperation.multiply ? "*" : "/"} ${event2.eventLabel}`,
+      eventLabel: `${event1?.eventLabel} ${operation === NumOperation.multiply ? "*" : "/"} ${event2.eventLabel}`,
       measurement: MetricMeasurement.uniqueUsers,
       average_count: sum / count,
       data: newData,
