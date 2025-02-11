@@ -193,7 +193,7 @@ export const queryReport = async ({
     )
   ).flat();
 
-  if (combinations?.length && datas.length > 1) {
+  if (combinations?.length) {
     const { eventIdx1, eventIdx2, operation } = combinations[0];
     const event1 = datas[eventIdx1];
     const event2 = datas[eventIdx2];

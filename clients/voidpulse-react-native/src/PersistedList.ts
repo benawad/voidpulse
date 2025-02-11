@@ -29,7 +29,11 @@ export class PersistedList<T> {
       this.initialize();
     }
     this.list.push(...items);
-    Storage.setItemSync(this.key, JSON.stringify(this.list));
+    try {
+      Storage.setItemSync(this.key, JSON.stringify(this.list));
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public drain() {
@@ -39,7 +43,11 @@ export class PersistedList<T> {
     const list = this.list;
     this.list = [];
     if (list.length) {
-      Storage.removeItemSync(this.key);
+      try {
+        Storage.removeItemSync(this.key);
+      } catch (e) {
+        console.error(e);
+      }
     }
     return list;
   }

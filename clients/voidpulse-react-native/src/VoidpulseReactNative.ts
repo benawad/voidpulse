@@ -54,22 +54,26 @@ export class Voidpulse {
   }
 
   private loadDistinctId() {
-    const data = Storage.getItemSync("voidpulse_distinct_id");
-    if (!data) {
-      // give anon id
-      this.distinctId = v4();
-      Storage.setItemSync(
-        "voidpulse_distinct_id",
-        JSON.stringify({
-          distinctId: this.distinctId,
-          hasIdentified: false,
-        })
-      );
-    } else {
-      const { distinctId, hasIdentified } = JSON.parse(data);
-      // load from storage
-      this.distinctId = distinctId;
-      this.hasIdentified = hasIdentified;
+    try {
+      const data = Storage.getItemSync("voidpulse_distinct_id");
+      if (!data) {
+        // give anon id
+        this.distinctId = v4();
+        Storage.setItemSync(
+          "voidpulse_distinct_id",
+          JSON.stringify({
+            distinctId: this.distinctId,
+            hasIdentified: false,
+          })
+        );
+      } else {
+        const { distinctId, hasIdentified } = JSON.parse(data);
+        // load from storage
+        this.distinctId = distinctId;
+        this.hasIdentified = hasIdentified;
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -119,14 +123,18 @@ export class Voidpulse {
 
   private handleFirstIdentify() {
     this.hasIdentified = true;
-    Storage.setItemSync(
-      "voidpulse_distinct_id",
-      JSON.stringify({
-        distinctId: this.distinctId,
-        hasIdentified: true,
-      })
-    );
-    this.eventsQueue.push(...this.anonEventsQueue.drain());
+    try {
+      Storage.setItemSync(
+        "voidpulse_distinct_id",
+        JSON.stringify({
+          distinctId: this.distinctId,
+          hasIdentified: true,
+        })
+      );
+      this.eventsQueue.push(...this.anonEventsQueue.drain());
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   setUserProperties(properties: Record<string, any>) {
@@ -252,13 +260,17 @@ export class Voidpulse {
   reset() {
     this.distinctId = v4();
     this.hasIdentified = false;
-    Storage.setItemSync(
-      "voidpulse_distinct_id",
-      JSON.stringify({
-        distinctId: this.distinctId,
-        hasIdentified: false,
-      })
-    );
+    try {
+      Storage.setItemSync(
+        "voidpulse_distinct_id",
+        JSON.stringify({
+          distinctId: this.distinctId,
+          hasIdentified: false,
+        })
+      );
+    } catch (e) {
+      console.error(e);
+    }
 
     this.eventsQueue.drain();
     this.anonEventsQueue.drain();
