@@ -233,6 +233,7 @@ ORDER BY cu.cohort_date${breakdownSelect ? `, cu.breakdown` : ``};
         },
         {
           id: v4(),
+          tableOnly: true,
           eventLabel: "Revenue",
           lineChartGroupByTimeType,
           average_count: !data.length
