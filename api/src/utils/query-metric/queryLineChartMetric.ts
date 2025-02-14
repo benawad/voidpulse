@@ -215,7 +215,7 @@ export const queryLineChartMetric = async ({
           ? [
               {
                 id: v4(),
-                eventLabel: `Spend / ${eventLabel}`,
+                eventLabel: `Spend / ${x.breakdown}`,
                 tableOnly: false,
                 measurement: metric.type || MetricMeasurement.uniqueUsers,
                 lineChartGroupByTimeType,

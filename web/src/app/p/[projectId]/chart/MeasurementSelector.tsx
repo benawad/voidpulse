@@ -10,7 +10,9 @@ import { Metric } from "./metric-selector/Metric";
 import { FloatingTrigger } from "../../../ui/FloatingTrigger";
 import { FloatingMenu } from "../../../ui/FloatingMenu";
 import { FaFacebook } from "react-icons/fa";
+import { BsThreeDots } from "react-icons/bs";
 import { FbCampaignSelector } from "./FbCampaignSelector";
+import { genId } from "../../../utils/genId";
 
 interface MeasurementSelectorProps {
   metric?: Metric | null;
@@ -198,6 +200,33 @@ export const MeasurementSelector: React.FC<MeasurementSelectorProps> = ({
         >
           <FaFacebook className="w-4 h-4 text-[#1877F2]" />
         </button>
+
+        <FloatingTrigger
+          appearsOnClick
+          placement="bottom-end"
+          portal
+          floatingContent={() => (
+            <FloatingMenu>
+              <button
+                onClick={() => {
+                  if (metric) {
+                    setState((state) => ({
+                      ...state,
+                      metrics: [...state.metrics, { ...metric, id: genId() }],
+                    }));
+                  }
+                }}
+                className="w-full text-left px-2 py-1.5 hover:bg-accent transition-colors rounded-md"
+              >
+                Duplicate
+              </button>
+            </FloatingMenu>
+          )}
+        >
+          <button className="p-1.5 accent-hover opacity-0 group-hover:opacity-100 rounded-md transition-all">
+            <BsThreeDots className="w-4 h-4" />
+          </button>
+        </FloatingTrigger>
       </div>
       {showCampaignSelector || metric?.fbCampaignIds?.length ? (
         <FbCampaignSelector
