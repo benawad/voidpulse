@@ -270,7 +270,10 @@ export const queryLineChartMetric = async ({
     return [
       {
         id: v4(),
-        eventLabel,
+        eventLabel:
+          campaignSpend.length || !metric.customLabel
+            ? eventLabel
+            : metric.customLabel,
         tableOnly: !!campaignSpend.length,
         measurement: metric.type || MetricMeasurement.uniqueUsers,
         lineChartGroupByTimeType,
@@ -288,7 +291,7 @@ export const queryLineChartMetric = async ({
         ? [
             {
               id: v4(),
-              eventLabel: `Spend / ${eventLabel}`,
+              eventLabel: metric.customLabel || `Spend / ${eventLabel}`,
               measurement: metric.type || MetricMeasurement.uniqueUsers,
               lineChartGroupByTimeType,
               average_count: !Object.keys(campaignData).length

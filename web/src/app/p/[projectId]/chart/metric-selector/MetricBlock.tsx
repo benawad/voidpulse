@@ -237,6 +237,11 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
           ) : null}
         </div>
       </div>
+      {metric?.customLabel ? (
+        <div className="text-sm ml-2 text-primary-400">
+          {metric.customLabel}
+        </div>
+      ) : null}
     </div>
   );
 };

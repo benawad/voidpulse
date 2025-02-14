@@ -107,6 +107,7 @@ export const chartDataSchema = z.union([
           .nativeEnum(LineChartGroupByTimeType)
           .optional(),
         fbCampaignIds: z.array(z.string()).optional(),
+        customLabel: z.string().optional(),
         average_count: z.number(),
         data: z.record(z.number()),
       })

@@ -220,6 +220,32 @@ export const MeasurementSelector: React.FC<MeasurementSelectorProps> = ({
               >
                 Duplicate
               </button>
+              <button
+                onClick={() => {
+                  if (metric) {
+                    const label = prompt(
+                      "Enter custom label:",
+                      metric.customLabel || ""
+                    );
+                    if (label !== null) {
+                      setState((state) => ({
+                        ...state,
+                        metrics: state.metrics.map((m) =>
+                          m === metric
+                            ? {
+                                ...m,
+                                customLabel: label || undefined,
+                              }
+                            : m
+                        ),
+                      }));
+                    }
+                  }
+                }}
+                className="w-full text-left px-2 py-1.5 hover:bg-accent transition-colors rounded-md"
+              >
+                Edit label
+              </button>
             </FloatingMenu>
           )}
         >
