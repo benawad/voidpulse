@@ -16,9 +16,10 @@ export const FbCampaignSelector: React.FC<FbCampaignSelectorProps> = ({
   const [, setState] = useChartStateContext();
   const { data, isLoading } = trpc.getFbCampaigns.useQuery({});
 
-  return (
+  return isLoading ? null : (
     <MultiSelect
       selectLabel="Select campaign..."
+      isLoading={isLoading}
       opts={
         data?.campaigns.map((x) => ({
           value: x.name,
@@ -35,12 +36,16 @@ export const FbCampaignSelector: React.FC<FbCampaignSelectorProps> = ({
         setState((state) => {
           return {
             ...state,
-            metrics: state.metrics.map((m) => ({
-              ...m,
-              fbCampaignIds: values
-                .map((v) => data?.campaigns.find((c) => c.name === v)?.id)
-                .filter((v) => v !== undefined),
-            })),
+            metrics: state.metrics.map((m) =>
+              m === metric
+                ? {
+                    ...m,
+                    fbCampaignIds: values
+                      .map((v) => data?.campaigns.find((c) => c.name === v)?.id)
+                      .filter((v) => v !== undefined),
+                  }
+                : m
+            ),
           };
         });
       }}

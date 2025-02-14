@@ -78,6 +78,7 @@ export const createSpendRow = ({
   dateHeaders,
   lineChartGroupByTimeType,
   measurement,
+  customLabel,
 }: {
   spend: DbFbCampaignSpend[];
   dateMap: Record<string, number>;
@@ -87,6 +88,7 @@ export const createSpendRow = ({
   }>;
   lineChartGroupByTimeType: LineChartGroupByTimeType;
   measurement: MetricMeasurement;
+  customLabel?: string;
 }) => {
   const formattedDateMap = createSpendMap({
     spend,
@@ -106,7 +108,7 @@ export const createSpendRow = ({
   return {
     id: v4(),
     tableOnly: true,
-    eventLabel: "Ad spend",
+    eventLabel: `Ad spend${customLabel ? ` - ${customLabel}` : ""}`,
     measurement,
     lineChartGroupByTimeType,
     average_count: averageSpend,

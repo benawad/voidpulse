@@ -191,7 +191,12 @@ export const queryReport = async ({
         })
       )
     )
-  ).flat();
+  )
+    .flat()
+    .sort((a: any, b: any) => {
+      if (a.tableOnly === b.tableOnly) return 0;
+      return a.tableOnly ? 1 : -1;
+    });
 
   if (combinations?.length) {
     const { eventIdx1, eventIdx2, operation } = combinations[0];
