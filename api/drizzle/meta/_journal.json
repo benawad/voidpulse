@@ -190,6 +190,27 @@
       "when": 1735154800873,
       "tag": "0029_superb_deathbird",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "5",
+      "when": 1739497289937,
+      "tag": "0030_sharp_magus",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "5",
+      "when": 1739498462975,
+      "tag": "0031_clever_killmonger",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "5",
+      "when": 1739499713312,
+      "tag": "0032_dazzling_goblin_queen",
+      "breakpoints": true
     }
   ]
 }

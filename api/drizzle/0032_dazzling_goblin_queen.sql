@@ -1,0 +1,1 @@
+ALTER TABLE "fb_campaign_spend" ALTER COLUMN "spend" SET DATA TYPE double precision;

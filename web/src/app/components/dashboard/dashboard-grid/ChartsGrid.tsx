@@ -169,6 +169,7 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
 
           return (
             <VerticalResizableRow
+              key={row.rowId}
               onHeight={(height) => {
                 setPositions((prev) => {
                   return prev.map((x, idx) => {

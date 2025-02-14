@@ -13,6 +13,7 @@ import { __cloud__, __prod__ } from "./constants/prod";
 import { sleep } from "./utils/sleep";
 import { tryToConnect } from "./utils/tryToConnect";
 import { normalizeOsDataMigration } from "./data-migrations/normalizeOs";
+import { loadInitialFbSpend } from "./utils/fb/loadInitialFbSpend";
 
 const startServer = async () => {
   console.log("about to migrate postgres");
@@ -44,6 +45,9 @@ const startServer = async () => {
   console.log("connected to kafka");
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
+  loadInitialFbSpend().catch((err) => {
+    console.error(err);
+  });
 
   // if (__prod__) {
   //   normalizeOsDataMigration();

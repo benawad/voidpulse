@@ -12,6 +12,7 @@ import { projectUsers } from "./schema/project-users";
 import { projects } from "./schema/projects";
 import { users } from "./schema/users";
 import { eventPropTypes } from "./schema/event-prop-types";
+import { fbCampaignSpend } from "./schema/fbCampaignSpend";
 
 const devDbUrl =
   "postgresql://postgres:postgres@localhost/voidpulse?schema=public&connection_limit=1&pool_timeout=1";
@@ -35,6 +36,7 @@ export const pool = new Pool(
 );
 
 export type DbUser = typeof users.$inferSelect;
+export type DbFbCampaignSpend = typeof fbCampaignSpend.$inferSelect;
 
 export const db = drizzle(pool, {
   // logger: !__prod__,
@@ -48,5 +50,6 @@ export const db = drizzle(pool, {
     peoplePropTypes,
     messages,
     eventPropTypes,
+    fbCampaignSpend,
   },
 });

@@ -11,7 +11,13 @@ declare global {
       MISTRAL_API_SECRET: string;
       POSTMARK_API_KEY: string;
       FROM_EMAIL: string;
+      CLOUD_CLICKHOUSE_URL: string;
+      CLOUD_KAFKA_HOST: string;
+      CLOUD_KAFKA_HOST_FOR_CLICKHOUSE: string;
       CLOUD: string;
+      GROK_API_KEY: string;
+      FB_ACCESS_TOKEN: string;
+      FB_AD_ACCOUNT_ID: string;
     }
   }
 }

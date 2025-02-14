@@ -100,11 +100,13 @@ export const chartDataSchema = z.union([
       z.object({
         id: z.string(),
         breakdown: breakdownSchema.optional(),
+        tableOnly: z.boolean().optional(),
         eventLabel: z.string(),
         measurement: z.nativeEnum(MetricMeasurement),
         lineChartGroupByTimeType: z
           .nativeEnum(LineChartGroupByTimeType)
           .optional(),
+        fbCampaignIds: z.array(z.string()).optional(),
         average_count: z.number(),
         data: z.record(z.number()),
       })

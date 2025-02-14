@@ -114,7 +114,7 @@ export const prepareFiltersAndBreakdown = async ({
   }
 
   const dtRange = getDateRange({ timeRangeType, timezone, from, to });
-  console.log(dtRange);
+
   return {
     query_params: {
       projectId,

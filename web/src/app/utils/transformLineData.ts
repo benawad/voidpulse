@@ -41,6 +41,7 @@ export const transformLineData = ({
     }
     return visibleDataMap[d.id];
   });
+
   const lastDataNotDone =
     dateHeader.length > 0 &&
     moment(dateHeader[dateHeader.length - 1].lookupValue).isSame(

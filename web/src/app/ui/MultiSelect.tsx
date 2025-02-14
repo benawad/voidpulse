@@ -24,6 +24,7 @@ interface DropdownProps {
   isLoading?: boolean;
   onConfirm: (values: string[]) => void;
   noCaret?: boolean;
+  selectLabel?: string;
 }
 
 const formatValues = (values: string[]) => {
@@ -52,6 +53,7 @@ export function MultiSelect({
   isLoading,
   onConfirm,
   noCaret,
+  selectLabel = "Select value...",
 }: DropdownProps) {
   const [values, setValues] = useState(startingValues);
   const [isOpen, setIsOpen] = useState(!startingValues.length);
@@ -320,9 +322,7 @@ export function MultiSelect({
         ref={refs.setReference}
         className="text-primary-400 text-xs accent-hover px-2 py-2 rounded-md flex items-center"
       >
-        {startingValues.length
-          ? formatValues(startingValues)
-          : "Select value..."}
+        {startingValues.length ? formatValues(startingValues) : selectLabel}
         {noCaret ? null : <IoIosArrowDown className="ml-1" />}
       </button>
     </>

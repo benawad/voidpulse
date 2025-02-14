@@ -34,6 +34,7 @@ import { sendProjectInvite } from "./routes/projects/sendProjectInvite";
 import { setPassword } from "./routes/auth/setPassword";
 import { addUser } from "./routes/auth/addUser";
 import { syncProperties } from "./routes/charts/syncProperties";
+import { getFbCampaigns } from "./routes/fb/getFbCampaigns";
 
 export const appRouter = t.router({
   getBoards,
@@ -65,6 +66,7 @@ export const appRouter = t.router({
   sendProjectInvite,
   addUser,
   syncProperties,
+  getFbCampaigns,
 });
 
 export const app = express();

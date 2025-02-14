@@ -18,6 +18,14 @@ import { metricToEventLabel } from "./metricToEventLabel";
 import { prepareFiltersAndBreakdown } from "./prepareFiltersAndBreakdown";
 import { eventTime } from "../eventTime";
 import { getAggFn } from "./getAggFn";
+import { db } from "../../db";
+import { fbCampaignSpend } from "../../schema/fbCampaignSpend";
+import { and, between, inArray } from "drizzle-orm";
+import { getDateRange } from "../getDateRange";
+import {
+  createSpendRow,
+  infuseDataMapWithSpend,
+} from "../fb/infuseDataMapWithSpend";
 
 type BreakdownData = {
   id: string;
@@ -154,36 +162,116 @@ export const queryLineChartMetric = async ({
     return [];
   }
 
+  let campaignSpend: {
+    campaignId: string;
+    campaignName: string;
+    spend: number;
+    date: string;
+  }[] = [];
+
+  if (metric.fbCampaignIds) {
+    const dtRange = getDateRange({ timeRangeType, timezone, from, to });
+    campaignSpend = await db
+      .select()
+      .from(fbCampaignSpend)
+      .where(
+        and(
+          inArray(fbCampaignSpend.campaignId, metric.fbCampaignIds),
+          between(fbCampaignSpend.date, dtRange.from, dtRange.to)
+        )
+      );
+  }
+
   if (breakdownSelect) {
-    return (
+    const result = (
       data as unknown as (BreakdownData & { data: [string, number][] })[]
-    ).map((x) => {
+    ).flatMap((x) => {
       const dataMap: Record<string, number> = {};
       x.data.forEach((d) => {
         dataMap[d[0]] = d[1];
       });
-      return {
-        ...x,
-        id: v4(),
-        measurement: metric.type || MetricMeasurement.uniqueUsers,
-        lineChartGroupByTimeType,
-        eventLabel,
-        data: {
-          ...dateMap,
-          ...dataMap,
+      let campaignData: Record<string, number> = {};
+      if (campaignSpend.length) {
+        campaignData = infuseDataMapWithSpend({
+          dataMap,
+          campaignSpend,
+          groupByTimeType: lineChartGroupByTimeType,
+        });
+      }
+      return [
+        {
+          ...x,
+          id: v4(),
+          tableOnly: !!campaignSpend.length,
+          measurement: metric.type || MetricMeasurement.uniqueUsers,
+          lineChartGroupByTimeType,
+          eventLabel,
+          data: {
+            ...dateMap,
+            ...dataMap,
+          },
         },
-      };
+        ...(campaignSpend.length
+          ? [
+              {
+                id: v4(),
+                eventLabel: `Spend / ${eventLabel}`,
+                tableOnly: false,
+                measurement: metric.type || MetricMeasurement.uniqueUsers,
+                lineChartGroupByTimeType,
+                average_count: !Object.keys(campaignData).length
+                  ? 0
+                  : Math.round(
+                      (10 *
+                        Object.values(campaignData).reduce(
+                          (a, b) => a + b,
+                          0
+                        )) /
+                        dateHeaders.length
+                    ) / 10,
+                data: {
+                  ...dateMap,
+                  ...campaignData,
+                },
+              },
+            ]
+          : []),
+      ];
     });
+
+    if (campaignSpend.length) {
+      result.unshift(
+        createSpendRow({
+          spend: campaignSpend,
+          dateMap,
+          dateHeaders,
+          lineChartGroupByTimeType,
+          measurement: metric.type || MetricMeasurement.uniqueUsers,
+        })
+      );
+    }
+
+    return result;
   } else {
     const dataMap: Record<string, number> = {};
     data.forEach((x) => {
       dataMap[x.day] = x.count;
     });
 
+    let campaignData: Record<string, number> = {};
+    if (campaignSpend.length) {
+      campaignData = infuseDataMapWithSpend({
+        dataMap,
+        campaignSpend,
+        groupByTimeType: lineChartGroupByTimeType,
+      });
+    }
+
     return [
       {
         id: v4(),
         eventLabel,
+        tableOnly: !!campaignSpend.length,
         measurement: metric.type || MetricMeasurement.uniqueUsers,
         lineChartGroupByTimeType,
         average_count: !data.length
@@ -196,6 +284,34 @@ export const queryLineChartMetric = async ({
           ...dataMap,
         },
       },
+      ...(campaignSpend.length
+        ? [
+            {
+              id: v4(),
+              eventLabel: `Spend / ${eventLabel}`,
+              measurement: metric.type || MetricMeasurement.uniqueUsers,
+              lineChartGroupByTimeType,
+              average_count: !Object.keys(campaignData).length
+                ? 0
+                : Math.round(
+                    (10 *
+                      Object.values(campaignData).reduce((a, b) => a + b, 0)) /
+                      dateHeaders.length
+                  ) / 10,
+              data: {
+                ...dateMap,
+                ...campaignData,
+              },
+            },
+            createSpendRow({
+              spend: campaignSpend,
+              dateMap,
+              measurement: metric.type || MetricMeasurement.uniqueUsers,
+              dateHeaders,
+              lineChartGroupByTimeType,
+            }),
+          ]
+        : []),
     ];
   }
 };

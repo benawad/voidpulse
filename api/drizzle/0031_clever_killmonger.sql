@@ -1,0 +1,1 @@
+ALTER TABLE "fb_campaign_spend" ALTER COLUMN "campaign_id" SET DATA TYPE text;

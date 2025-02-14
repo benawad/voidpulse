@@ -42,6 +42,7 @@ export const metricSchema = z.object({
     .optional(),
   andOr: z.nativeEnum(FilterAndOr).optional(),
   filters: z.array(eventFilterSchema),
+  fbCampaignIds: z.array(z.string()).optional(),
 });
 
 export const eventCombinationSchema = z.object({
