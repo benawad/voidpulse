@@ -2,20 +2,14 @@ import { sql } from "drizzle-orm";
 import { db } from "../../db";
 import { fbAdAccount } from "../../fb";
 import { fbCampaignSpend } from "../../schema/fbCampaignSpend";
-import fs from "fs";
+import cron from "node-cron";
 
-export const loadInitialFbSpend = async () => {
-  const currCampaignSpend = await db.query.fbCampaignSpend.findFirst();
-  if (currCampaignSpend) {
-    console.log("campaign spend already loaded");
-    return;
-  }
-
+const load = async (date_preset: string) => {
   const insights = await fbAdAccount.getInsights(
     ["campaign_id", "campaign_name", "spend", "date_start"],
     {
       level: "campaign",
-      date_preset: "maximum",
+      date_preset,
       limit: 1000,
       time_increment: 1,
       filtering: [
@@ -45,9 +39,35 @@ export const loadInitialFbSpend = async () => {
     .onConflictDoUpdate({
       target: [fbCampaignSpend.campaignId, fbCampaignSpend.date],
       set: {
-        spend: sql`${fbCampaignSpend.spend}`,
-        campaignName: sql`${fbCampaignSpend.campaignName}`,
+        spend: sql`excluded.spend`,
+        campaignName: sql`excluded.campaign_name`,
       },
     });
-  console.log("campaign spend loaded");
+};
+
+const getTodayDateStr = () => {
+  const today = new Date();
+  return today.toISOString().split("T")[0];
+};
+
+let lastDt = "";
+export const loadInitialFbSpend = async () => {
+  const currCampaignSpend = await db.query.fbCampaignSpend.findFirst();
+  if (!currCampaignSpend) {
+    await load("last_3d");
+    console.log("campaign spend loaded");
+  } else {
+    // await load("last_3d");
+    console.log("campaign spend already loaded");
+  }
+
+  cron.schedule("30 * * * *", () => {
+    const td = getTodayDateStr();
+    if (td !== lastDt) {
+      lastDt = td;
+      load("last_3d");
+    } else {
+      load("today");
+    }
+  });
 };
