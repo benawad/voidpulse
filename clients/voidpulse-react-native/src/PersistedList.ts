@@ -10,11 +10,13 @@ export class PersistedList<T> {
   }
 
   private initialize() {
-    const list = Storage.getItemSync(this.key);
-    if (list) {
-      this.list.unshift(...JSON.parse(list));
-    }
-    this.initialized = true;
+    try {
+      const list = Storage.getItemSync(this.key);
+      if (list) {
+        this.list.unshift(...JSON.parse(list));
+      }
+      this.initialized = true;
+    } catch {}
   }
 
   public get() {
