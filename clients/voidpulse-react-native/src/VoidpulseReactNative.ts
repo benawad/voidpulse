@@ -1,7 +1,7 @@
+import "react-native-get-random-values";
 import Storage from "expo-sqlite/kv-store";
 import { AppState, Platform } from "react-native";
 import { v4 } from "uuid";
-import "react-native-get-random-values";
 import { PersistedList } from "./PersistedList";
 import * as Application from "expo-application";
 import Constants from "expo-constants";
@@ -19,6 +19,7 @@ export class Voidpulse {
   private apiKey: string;
   private hostUrl: string;
   private skipIpLookup: boolean = false;
+  private incomingDistinctId: string = "";
   private distinctId: string = "";
   private hasIdentified: boolean = false;
   private eventsQueue = new PersistedList<Event>("voidpulse_events");
@@ -54,27 +55,34 @@ export class Voidpulse {
   }
 
   private loadDistinctId() {
-    try {
-      const data = Storage.getItemSync("voidpulse_distinct_id");
+    Storage.getItemAsync("voidpulse_distinct_id").then((data) => {
       if (!data) {
-        // give anon id
-        this.distinctId = v4();
-        Storage.setItemSync(
-          "voidpulse_distinct_id",
-          JSON.stringify({
-            distinctId: this.distinctId,
-            hasIdentified: false,
-          })
-        );
+        // identify called before initial load
+        if (this.incomingDistinctId) {
+          this.handleFirstIdentify(this.incomingDistinctId);
+        } else {
+          // give anon id
+          this.distinctId = v4();
+          Storage.setItemAsync(
+            "voidpulse_distinct_id",
+            JSON.stringify({
+              distinctId: this.distinctId,
+              hasIdentified: false,
+            })
+          );
+        }
       } else {
         const { distinctId, hasIdentified } = JSON.parse(data);
-        // load from storage
-        this.distinctId = distinctId;
-        this.hasIdentified = hasIdentified;
+        // identify called before initial load
+        if (this.incomingDistinctId && this.incomingDistinctId !== distinctId) {
+          this.handleFirstIdentify(this.incomingDistinctId);
+        } else {
+          // load from storage
+          this.distinctId = distinctId;
+          this.hasIdentified = hasIdentified;
+        }
       }
-    } catch (e) {
-      console.error(e);
-    }
+    });
   }
 
   getDefaultProps() {
@@ -115,33 +123,37 @@ export class Voidpulse {
   identify(distinctId: string) {
     if (this.distinctId === distinctId) {
       return;
+    } else if (!this.distinctId) {
+      this.incomingDistinctId = distinctId;
     } else if (distinctId) {
-      this.distinctId = distinctId;
-      this.handleFirstIdentify();
+      this.handleFirstIdentify(distinctId);
     }
   }
 
-  private handleFirstIdentify() {
+  private handleFirstIdentify(distinctId: string) {
+    this.distinctId = distinctId;
     this.hasIdentified = true;
-    try {
-      Storage.setItemSync(
-        "voidpulse_distinct_id",
-        JSON.stringify({
-          distinctId: this.distinctId,
-          hasIdentified: true,
-        })
-      );
-      this.eventsQueue.push(...this.anonEventsQueue.drain());
-    } catch (e) {
-      console.error(e);
-    }
+    Storage.setItemAsync(
+      "voidpulse_distinct_id",
+      JSON.stringify({
+        distinctId: this.distinctId,
+        hasIdentified: true,
+      })
+    );
+    this.eventsQueue.push(...this.anonEventsQueue.drain());
   }
 
   setUserProperties(properties: Record<string, any>) {
+    if (!this.hasIdentified) {
+      throw new Error("Must call identify before setting user properties");
+    }
     this.userPropQueue.push(properties);
   }
 
   unsetUserProperties(propertiesKeys: string[]) {
+    if (!this.hasIdentified) {
+      throw new Error("Must call identify before setting user properties");
+    }
     this.userPropQueue.push(propertiesKeys);
   }
 
@@ -183,6 +195,8 @@ export class Voidpulse {
         );
       }
 
+      // save events
+      // we will resend them after identifying
       if (!this.hasIdentified) {
         this.anonEventsQueue.push(...events);
       }
@@ -243,8 +257,12 @@ export class Voidpulse {
   }
 
   flush() {
+    // if we don't have a distinct id, we can't send events
+    if (!this.distinctId) {
+      return;
+    }
     const events = this.eventsQueue.drain();
-    const userProps = this.hasIdentified ? this.userPropQueue.drain() : [];
+    const userProps = this.userPropQueue.drain();
     const promises: Promise<void>[] = [];
     if (events.length) {
       promises.push(this.sendEvents(events));
@@ -260,20 +278,18 @@ export class Voidpulse {
   reset() {
     this.distinctId = v4();
     this.hasIdentified = false;
-    try {
-      Storage.setItemSync(
-        "voidpulse_distinct_id",
-        JSON.stringify({
-          distinctId: this.distinctId,
-          hasIdentified: false,
-        })
-      );
-    } catch (e) {
-      console.error(e);
-    }
+    Storage.setItemAsync(
+      "voidpulse_distinct_id",
+      JSON.stringify({
+        distinctId: this.distinctId,
+        hasIdentified: false,
+      })
+    );
 
     this.eventsQueue.drain();
     this.anonEventsQueue.drain();
     this.userPropQueue.drain();
+
+    this.incomingDistinctId = "";
   }
 }

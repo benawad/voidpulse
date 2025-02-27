@@ -7,49 +7,42 @@ export class PersistedList<T> {
 
   constructor(key: string) {
     this.key = key;
-  }
-
-  private initialize() {
-    try {
-      const list = Storage.getItemSync(this.key);
+    Storage.getItemAsync(key).then((list) => {
+      const shouldSave = this.list.length;
       if (list) {
         this.list.unshift(...JSON.parse(list));
       }
       this.initialized = true;
-    } catch {}
+
+      if (shouldSave) {
+        Storage.setItemAsync(this.key, JSON.stringify(this.list));
+      }
+    });
+  }
+
+  public isReady() {
+    return this.initialized;
   }
 
   public get() {
-    if (!this.initialized) {
-      this.initialize();
-    }
     return this.list;
   }
 
   public push(...items: T[]) {
-    if (!this.initialized) {
-      this.initialize();
-    }
     this.list.push(...items);
-    try {
-      Storage.setItemSync(this.key, JSON.stringify(this.list));
-    } catch (e) {
-      console.error(e);
+    if (this.initialized) {
+      Storage.setItemAsync(this.key, JSON.stringify(this.list));
     }
   }
 
   public drain() {
     if (!this.initialized) {
-      this.initialize();
+      return [];
     }
     const list = this.list;
     this.list = [];
     if (list.length) {
-      try {
-        Storage.removeItemSync(this.key);
-      } catch (e) {
-        console.error(e);
-      }
+      Storage.removeItemAsync(this.key);
     }
     return list;
   }
