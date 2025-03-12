@@ -22,6 +22,10 @@ const load = async (date_preset: string) => {
     }
   );
 
+  if (!insights.length) {
+    return;
+  }
+
   // fs.writeFileSync("insights.json", JSON.stringify(insights, null, 2));
   // const insightsJson = fs.readFileSync("insights.json", "utf8");
   // const insights = JSON.parse(insightsJson).map((x: any) => x._data);
@@ -65,9 +69,13 @@ export const loadInitialFbSpend = async () => {
     const td = getTodayDateStr();
     if (td !== lastDt) {
       lastDt = td;
-      load("last_3d");
+      load("last_3d").catch((err) => {
+        console.error(err);
+      });
     } else {
-      load("today");
+      load("today").catch((err) => {
+        console.error(err);
+      });
     }
   });
 };

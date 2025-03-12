@@ -144,16 +144,10 @@ export class Voidpulse {
   }
 
   setUserProperties(properties: Record<string, any>) {
-    if (!this.hasIdentified) {
-      throw new Error("Must call identify before setting user properties");
-    }
     this.userPropQueue.push(properties);
   }
 
   unsetUserProperties(propertiesKeys: string[]) {
-    if (!this.hasIdentified) {
-      throw new Error("Must call identify before setting user properties");
-    }
     this.userPropQueue.push(propertiesKeys);
   }
 
