@@ -1,6 +1,6 @@
 {
   "name": "@voidpulse/react-native",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "",
   "publishConfig": {
     "access": "public"
@@ -9,7 +9,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prebuild": "node ./scripts/set-version.js",
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "watch": "tsc -w",
     "test": "jest"
   },
