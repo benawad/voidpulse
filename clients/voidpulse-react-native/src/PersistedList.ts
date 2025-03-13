@@ -7,7 +7,10 @@ export class PersistedList<T> {
 
   constructor(key: string) {
     this.key = key;
-    Storage.getItemAsync(key).then((list) => {
+  }
+
+  init() {
+    return Storage.getItemAsync(this.key).then((list) => {
       const shouldSave = this.list.length;
       if (list) {
         this.list.unshift(...JSON.parse(list));

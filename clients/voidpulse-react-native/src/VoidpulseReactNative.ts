@@ -1,11 +1,11 @@
-import "react-native-get-random-values";
-import Storage from "expo-sqlite/kv-store";
-import { AppState, Platform } from "react-native";
-import { v4 } from "uuid";
-import { PersistedList } from "./PersistedList";
 import * as Application from "expo-application";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
+import Storage from "expo-sqlite/kv-store";
+import { AppState, Platform } from "react-native";
+import "react-native-get-random-values";
+import { v4 } from "uuid";
+import { PersistedList } from "./PersistedList";
 import { version } from "./version";
 
 type Event = {
@@ -33,16 +33,20 @@ export class Voidpulse {
     hostUrl,
     skipIpLookup = false,
     noInterval = false,
+    skipInitialization = false,
   }: {
     apiKey: string;
     hostUrl: string;
     skipIpLookup?: boolean;
     noInterval?: boolean;
+    skipInitialization?: boolean;
   }) {
     this.skipIpLookup = skipIpLookup;
     this.apiKey = apiKey;
     this.hostUrl = hostUrl;
-    this.loadDistinctId();
+    if (!skipInitialization) {
+      this.init();
+    }
     AppState.addEventListener("change", () => {
       this.flush();
     });
@@ -54,8 +58,17 @@ export class Voidpulse {
     }
   }
 
+  init() {
+    return Promise.all([
+      this.loadDistinctId(),
+      this.eventsQueue.init(),
+      this.anonEventsQueue.init(),
+      this.userPropQueue.init(),
+    ]);
+  }
+
   private loadDistinctId() {
-    Storage.getItemAsync("voidpulse_distinct_id").then((data) => {
+    return Storage.getItemAsync("voidpulse_distinct_id").then((data) => {
       if (!data) {
         // identify called before initial load
         if (this.incomingDistinctId) {
