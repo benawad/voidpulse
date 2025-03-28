@@ -45,7 +45,7 @@ export class Voidpulse {
     this.apiKey = apiKey;
     this.hostUrl = hostUrl;
     if (!skipInitialization) {
-      this.init();
+      this.init(true);
     }
     AppState.addEventListener("change", () => {
       this.flush();
@@ -58,13 +58,21 @@ export class Voidpulse {
     }
   }
 
-  init() {
-    return Promise.all([
-      this.loadDistinctId(),
-      this.eventsQueue.init(),
-      this.anonEventsQueue.init(),
-      this.userPropQueue.init(),
-    ]);
+  async init(parallel = false) {
+    if (parallel) {
+      await Promise.all([
+        this.loadDistinctId(),
+        this.eventsQueue.init(),
+        this.anonEventsQueue.init(),
+        this.userPropQueue.init(),
+      ]);
+    } else {
+      // try to prevent ANRs by waterfalling
+      await this.loadDistinctId();
+      await this.eventsQueue.init();
+      await this.anonEventsQueue.init();
+      await this.userPropQueue.init();
+    }
   }
 
   private loadDistinctId() {
