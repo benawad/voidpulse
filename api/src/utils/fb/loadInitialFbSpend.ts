@@ -3,6 +3,7 @@ import { db } from "../../db";
 import { fbAdAccount } from "../../fb";
 import { fbCampaignSpend } from "../../schema/fbCampaignSpend";
 import cron from "node-cron";
+import { __prod__ } from "../../constants/prod";
 
 const load = async (date_preset: string) => {
   const insights = await fbAdAccount.getInsights(
@@ -56,6 +57,9 @@ const getTodayDateStr = () => {
 
 let lastDt = "";
 export const loadInitialFbSpend = async () => {
+  if (!__prod__) {
+    return;
+  }
   const currCampaignSpend = await db.query.fbCampaignSpend.findFirst();
   if (!currCampaignSpend) {
     await load("last_3d");

@@ -35,6 +35,7 @@ import { setPassword } from "./routes/auth/setPassword";
 import { addUser } from "./routes/auth/addUser";
 import { syncProperties } from "./routes/charts/syncProperties";
 import { getFbCampaigns } from "./routes/fb/getFbCampaigns";
+import { getEventsForUser } from "./routes/users/getEventsForUser";
 
 export const appRouter = t.router({
   getBoards,
@@ -67,6 +68,7 @@ export const appRouter = t.router({
   addUser,
   syncProperties,
   getFbCampaigns,
+  getEventsForUser,
 });
 
 export const app = express();

@@ -1,13 +1,16 @@
 import { faker } from "@faker-js/faker";
 import { addDays, endOfDay, startOfDay, subDays } from "date-fns";
 import { v4 } from "uuid";
-import { DataType } from "../app-router-type";
+import { DataType, ProjectRoleId } from "../app-router-type";
 import { clickhouse } from "../clickhouse";
 import { db } from "../db";
 import { people } from "../schema/people";
 import { peoplePropTypes } from "../schema/people-prop-types";
 import { dateToClickhouseDateString } from "../utils/dateToClickhouseDateString";
 import { eq } from "drizzle-orm";
+import { projects } from "../schema/projects";
+import { projectUsers } from "../schema/project-users";
+import { boards } from "../schema/boards";
 
 const shake = (n: number, percent = 0.05, isInt = true) => {
   let v = n * percent * (Math.random() > 0.5 ? 1 : -1);
@@ -267,10 +270,32 @@ const runSimulation = () => {
 };
 
 const main = async () => {
-  const project = await db.query.projects.findFirst();
+  let project = await db.query.projects.findFirst();
   if (!project) {
-    console.log("Create a user before running this script.");
-    return;
+    const user = await db.query.users.findFirst();
+    if (!user) {
+      console.log("Create a user before running this script.");
+      return;
+    }
+    [project] = await db
+      .insert(projects)
+      .values({
+        name: "Default Project",
+        timezone: "America/Chicago",
+        apiKey: v4(),
+        createdAt: new Date(),
+      })
+      .returning();
+    await db.insert(projectUsers).values({
+      projectId: project.id,
+      userId: user.id,
+      role: ProjectRoleId.admin,
+    });
+    await db.insert(boards).values({
+      title: "Default Board",
+      projectId: project.id,
+      creatorId: user.id,
+    });
   }
   const { id: project_id } = project;
 

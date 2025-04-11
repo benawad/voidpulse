@@ -2,7 +2,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { IoIosSettings } from "react-icons/io";
-import { IoFolderOutline, IoStatsChart, IoTelescope } from "react-icons/io5";
+import {
+  IoFolderOutline,
+  IoPeople,
+  IoStatsChart,
+  IoTelescope,
+} from "react-icons/io5";
 import { PlusIcon } from "../p/[projectId]/chart/manual-sidebars/PlusIcon";
 import { CreateProjectModal } from "../components/CreateProjectModal";
 import { useFetchProjectBoards } from "../utils/useFetchProjectBoards";
