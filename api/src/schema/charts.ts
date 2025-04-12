@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -44,6 +45,7 @@ export const charts = pgTable("charts", {
   lineChartGroupByTimeType: integer(
     "line_chart_group_by_time_type"
   ).$type<LineChartGroupByTimeType>(),
+  isOverTime: boolean("is_over_time"),
   retentionNumFormat: integer(
     "retention_num_format"
   ).$type<RetentionNumFormat>(),

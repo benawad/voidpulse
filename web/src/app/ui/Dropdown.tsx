@@ -79,7 +79,7 @@ export const DropdownOption: Kids<{
 
   const inside = (
     <>
-      <div className="flex flex-row justify-start">
+      <div className="flex flex-row justify-start items-center">
         {icon ? <div className="mr-2">{icon}</div> : null}
         <span>{children}</span>
       </div>

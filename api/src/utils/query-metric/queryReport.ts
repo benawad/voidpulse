@@ -24,6 +24,7 @@ import { getProject } from "../cache/getProject";
 import { TRPCError } from "@trpc/server";
 import { v4 } from "uuid";
 import { queryLTV } from "./queryLTV";
+import { queryFunnelOverTime } from "./queryFunnelOverTime";
 
 export const reportInputSchema = z.object({
   noCache: z.boolean().optional(),
@@ -35,6 +36,7 @@ export const reportInputSchema = z.object({
   reportType: z.nativeEnum(ReportType),
   chartType: z.nativeEnum(ChartType),
   ltvType: z.nativeEnum(LtvType).optional().nullable(),
+  isOverTime: z.boolean().optional().nullable(),
   ltvWindowType: z.nativeEnum(LtvWindowType).optional().nullable(),
   timeRangeType: z.nativeEnum(ChartTimeRangeType),
   globalFilters: z.array(eventFilterSchema),
@@ -53,6 +55,7 @@ export const queryReport = async ({
   chartType,
   reportType,
   ltvType,
+  isOverTime,
   ltvWindowType,
   timeRangeType,
   lineChartGroupByTimeType = LineChartGroupByTimeType.day,
@@ -78,25 +81,43 @@ export const queryReport = async ({
   );
 
   if (ReportType.funnel === reportType) {
-    return {
+    const sharedOpts = {
+      dateMap,
+      dateHeaders,
+      projectId,
+      from,
+      to,
+      metrics,
+      globalFilters,
+      breakdowns,
+      timeRangeType,
+      timezone: project.timezone,
+      isOverTime,
+      lineChartGroupByTimeType,
+    };
+    const sharedReturn = {
       computedAt: new Date(),
       reportType,
       chartType,
       labels: metrics.map((x, i) => `${i + 1} ${x.event.name}`),
-      datas:
-        metrics.length < 2
-          ? []
-          : await queryFunnel({
-              projectId,
-              from,
-              to,
-              metrics,
-              globalFilters,
-              breakdowns,
-              timeRangeType,
-              timezone: project.timezone,
-            }),
+      lineChartGroupByTimeType,
+      isOverTime,
+      dateHeaders,
+      dateMap,
     };
+    if (isOverTime) {
+      return {
+        ...sharedReturn,
+        isOverTime: true,
+        datas: metrics.length < 2 ? [] : await queryFunnelOverTime(sharedOpts),
+      } as const;
+    } else {
+      return {
+        ...sharedReturn,
+        isOverTime: false,
+        datas: await queryFunnel(sharedOpts),
+      } as const;
+    }
   }
 
   if (ReportType.retention === reportType) {

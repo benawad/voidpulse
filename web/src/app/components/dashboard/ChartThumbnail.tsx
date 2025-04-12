@@ -103,16 +103,36 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
       </div>
     );
   } else if (chart.data.reportType === ReportType.funnel) {
-    chartToDisplay = (
-      <FunnelChart
-        {...transformFunnelChartData({
-          datas: chart.data.datas,
-          visibleDataMap: chart.visibleDataMap,
-          colorOrder,
-          labels: chart.data.labels,
-        })}
-      />
-    );
+    if ("isOverTime" in chart.data && chart.data.isOverTime) {
+      chartToDisplay = (
+        <LineChart
+          yPercent={true}
+          disableAnimations
+          {...transformLineData({
+            dateHeader: chart.data.dateHeaders,
+            colorOrder,
+            numMetrics: chart.metrics.length,
+            lineChartStyle: chartStyle.line,
+            isPercentage: true,
+            datas: chart.data.datas,
+            visibleDataMap: chart.visibleDataMap,
+            lineChartGroupByTimeType:
+              chart.lineChartGroupByTimeType || LineChartGroupByTimeType.day,
+          })}
+        />
+      );
+    } else {
+      chartToDisplay = (
+        <FunnelChart
+          {...transformFunnelChartData({
+            datas: chart.data.datas,
+            visibleDataMap: chart.visibleDataMap,
+            colorOrder,
+            labels: chart.data.labels,
+          })}
+        />
+      );
+    }
   } else if (chart.data.chartType === ChartType.line) {
     chartToDisplay = (
       <LineChart

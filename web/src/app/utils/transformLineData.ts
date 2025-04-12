@@ -19,6 +19,7 @@ export const transformLineData = ({
   lineChartStyle,
   lineChartGroupByTimeType,
   numMetrics,
+  isPercentage,
 }: {
   datas: Extract<
     RouterOutput["getReport"]["datas"],
@@ -31,6 +32,7 @@ export const transformLineData = ({
   visibleDataMap?: Record<string, boolean> | null;
   lineChartGroupByTimeType: LineChartGroupByTimeType;
   highlightedId?: string | null;
+  isPercentage?: boolean;
 }) => {
   const filteredData = datas.filter((d, i) => {
     if ("tableOnly" in d && d.tableOnly) {
@@ -90,8 +92,14 @@ export const transformLineData = ({
         subtitle: typeof breakdown === "undefined" ? "" : "" + breakdown,
         dateString: dateHeader[dataIndex].fullLabel,
         label: {
-          highlight: data[dataIndex].toLocaleString(),
-          annotation: measurement ? measurementAnnotationMap[measurement] : "",
+          highlight: isPercentage
+            ? data[dataIndex].toLocaleString() + "%"
+            : data[dataIndex].toLocaleString(),
+          annotation: isPercentage
+            ? "converted"
+            : measurement
+              ? measurementAnnotationMap[measurement]
+              : "",
         },
         stripeColor: borderColor,
         percentChange:

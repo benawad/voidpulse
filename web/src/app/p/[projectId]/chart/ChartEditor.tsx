@@ -15,7 +15,10 @@ import {
   PiChartBar,
   PiChartDonut,
   PiChartLine,
+  PiGraph,
+  PiLineSegment,
   PiMoney,
+  PiPercent,
   PiSuitcaseSimple,
   PiUsers,
 } from "react-icons/pi";
@@ -97,6 +100,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       ltvWindowType,
       globalFilters,
       combinations,
+      isOverTime,
     },
     setState,
   ] = useChartStateContext();
@@ -121,6 +125,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     from: from ? dateToClickhouseDateString(from) : undefined,
     to: to ? dateToClickhouseDateString(to) : undefined,
     projectId: projectId,
+    isOverTime,
   };
   const { data, isLoading } = trpc.getReport.useQuery(getReportVars, {
     enabled:
@@ -213,13 +218,26 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
       };
     }
 
-    return transformFunnelChartData({
-      datas: data.datas,
-      labels: data.labels,
-      colorOrder,
-      visibleDataMap,
-      highlightedId: highlightedRowId,
-    });
+    return data.isOverTime
+      ? transformLineData({
+          datas: data.datas,
+          dateHeader: data.dateHeaders,
+          colorOrder,
+          visibleDataMap,
+          highlightedId: highlightedRowId,
+          lineChartStyle: chartStyle.line,
+          lineChartGroupByTimeType:
+            lineChartGroupByTimeType || LineChartGroupByTimeType.day,
+          numMetrics: metrics.length,
+          isPercentage: true,
+        })
+      : transformFunnelChartData({
+          datas: data.datas,
+          labels: data.labels,
+          colorOrder,
+          visibleDataMap,
+          highlightedId: highlightedRowId,
+        });
   }, [data, visibleDataMap, highlightedRowId, colorOrder]);
 
   const dataStr = useMemo(() => {
@@ -306,8 +324,35 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     />
                   </div>
                 ) : null}
+                {reportType === ReportType.funnel ? (
+                  <div className="my-auto standard card shadow-lg">
+                    <Dropdown
+                      autoWidth
+                      value={isOverTime || false}
+                      opts={[
+                        {
+                          label: "Over time",
+                          value: true,
+                          Icon: <PiLineSegment />,
+                        },
+                        {
+                          label: "Conversion",
+                          value: false,
+                          Icon: <PiPercent />,
+                        },
+                      ]}
+                      onSelect={(value) => {
+                        setState((prev) => ({
+                          ...prev,
+                          isOverTime: value,
+                        }));
+                      }}
+                    />
+                  </div>
+                ) : null}
                 {reportType === ReportType.insight ||
-                reportType === ReportType.ltv ? (
+                reportType === ReportType.ltv ||
+                isOverTime ? (
                   <>
                     {/* Group by time selector */}
                     <div className="my-auto standard card shadow-lg">
@@ -575,9 +620,13 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
 
               {/* Funnel bar graph */}
               {data?.datas.length && data.reportType === ReportType.funnel ? (
-                <div>
-                  <FunnelChart {...funnelData} />
-                </div>
+                data.isOverTime ? (
+                  <LineChart yPercent disableAnimations {...funnelData} />
+                ) : (
+                  <div className="-mb-4">
+                    <FunnelChart {...funnelData} />
+                  </div>
+                )
               ) : null}
 
               {/* Insight bar graph */}
@@ -698,6 +747,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
           {data?.datas.length &&
           ((data?.reportType === ReportType.insight &&
             data.chartType === ChartType.line) ||
+            ("isOverTime" in data && data.isOverTime) ||
             data?.reportType === ReportType.ltv) ? (
             <ChartDataTable
               datas={data.datas}
@@ -728,13 +778,24 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   id: "c",
                   header: "Average",
                   size: 100,
-                  accessorFn: (row: any) => row.average_count.toLocaleString(),
+                  accessorFn: (row: any) => {
+                    if (data.reportType === ReportType.funnel) {
+                      return row.average_count.toLocaleString() + "%";
+                    }
+                    return row.average_count.toLocaleString();
+                  },
                 },
               ]}
               mainColumns={
                 data.dateHeaders.map((dateHeader) => {
                   return {
                     accessorFn: (row: any) => {
+                      if (data.reportType === ReportType.funnel) {
+                        return (
+                          row.data[dateHeader.lookupValue].toLocaleString() +
+                          "%"
+                        );
+                      }
                       return row.data[dateHeader.lookupValue].toLocaleString();
                     },
                     header: dateHeader.label,

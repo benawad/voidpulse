@@ -15,6 +15,21 @@ const dateHeaderSchema = z.object({
 });
 const breakdownSchema = z.union([z.string(), z.number()]).optional();
 
+const lineDatas = z.array(
+  z.object({
+    id: z.string(),
+    breakdown: breakdownSchema.optional(),
+    tableOnly: z.boolean().optional(),
+    eventLabel: z.string(),
+    measurement: z.nativeEnum(MetricMeasurement),
+    lineChartGroupByTimeType: z.nativeEnum(LineChartGroupByTimeType).optional(),
+    fbCampaignIds: z.array(z.string()).optional(),
+    customLabel: z.string().optional(),
+    average_count: z.number(),
+    data: z.record(z.number()),
+  })
+);
+
 export const ltvDataSchema = z.object({
   reportType: z.literal(ReportType.ltv),
   chartType: z.nativeEnum(ChartType),
@@ -53,6 +68,16 @@ export const chartDataSchema = z.union([
         ),
       })
     ),
+  }),
+  // funnel over time
+  z.object({
+    dateHeaders: z.array(dateHeaderSchema),
+    reportType: z.literal(ReportType.funnel),
+    chartType: z.nativeEnum(ChartType),
+    labels: z.array(z.string()),
+    lineChartGroupByTimeType: z.nativeEnum(LineChartGroupByTimeType).optional(),
+    isOverTime: z.boolean().optional(),
+    datas: lineDatas,
   }),
   // retention
   z.object({
@@ -96,22 +121,7 @@ export const chartDataSchema = z.union([
     reportType: z.literal(ReportType.insight),
     chartType: z.literal(ChartType.line),
     dateHeaders: z.array(dateHeaderSchema),
-    datas: z.array(
-      z.object({
-        id: z.string(),
-        breakdown: breakdownSchema.optional(),
-        tableOnly: z.boolean().optional(),
-        eventLabel: z.string(),
-        measurement: z.nativeEnum(MetricMeasurement),
-        lineChartGroupByTimeType: z
-          .nativeEnum(LineChartGroupByTimeType)
-          .optional(),
-        fbCampaignIds: z.array(z.string()).optional(),
-        customLabel: z.string().optional(),
-        average_count: z.number(),
-        data: z.record(z.number()),
-      })
-    ),
+    datas: lineDatas,
   }),
   // bar & donut
   z.object({

@@ -1,0 +1,1 @@
+ALTER TABLE "charts" ADD COLUMN "is_over_time" boolean;

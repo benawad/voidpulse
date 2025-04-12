@@ -35,6 +35,7 @@ export const updateChartDataSchemaFields = {
   ltvType: z.nativeEnum(LtvType).optional().nullable(),
   ltvWindowType: z.nativeEnum(LtvWindowType).optional().nullable(),
   lineChartGroupByTimeType: z.nativeEnum(LineChartGroupByTimeType).optional(),
+  isOverTime: z.boolean().optional(),
   data: chartDataSchema.optional(),
   timeRangeType: z.nativeEnum(ChartTimeRangeType).optional(),
   retentionNumFormat: z.nativeEnum(RetentionNumFormat).optional().nullable(),

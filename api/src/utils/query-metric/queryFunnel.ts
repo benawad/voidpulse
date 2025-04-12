@@ -2,6 +2,7 @@ import {
   BreakdownType,
   ChartTimeRangeType,
   FilterAndOr,
+  LineChartGroupByTimeType,
   PropOrigin,
 } from "../../app-router-type";
 import { ClickHouseQueryResponse, clickhouse } from "../../clickhouse";
@@ -14,12 +15,7 @@ import { filtersToSql } from "../filtersToSql";
 import { getDateRange } from "../getDateRange";
 import { QueryParamHandler } from "./QueryParamHandler";
 import { breakdownSelectProperty } from "./breakdownSelectProperty";
-
-/*
-sequenceMatch('(?1)')(time, name = 'Event A') AS sequenceA,
-sequenceMatch('(?1).*(?2)')(time, name = 'Event A', name = 'Event B') AS sequenceAB,
-sequenceMatch('(?1).*(?2).*(?3)')(time, name = 'Event A', name = 'Event B', name = 'Event C') AS sequenceABC
-*/
+import { queryFunnelOverTime } from "./queryFunnelOverTime";
 
 export const queryFunnel = async ({
   projectId,
@@ -30,6 +26,7 @@ export const queryFunnel = async ({
   timeRangeType,
   globalFilters,
   timezone,
+  useWindowLimit = true, // Flag to determine if we should use a window limit
 }: {
   globalFilters: MetricFilter[];
   projectId: string;
@@ -39,7 +36,38 @@ export const queryFunnel = async ({
   breakdowns: MetricFilter[];
   metrics: InputMetric[];
   timezone: string;
+  useWindowLimit?: boolean; // Optional parameter to control window limiting
 }) => {
+  // Compute windowSize based on from and to dates
+  // Using a value approaching UINT32_MAX but leaving margin for safety
+  // 2^31 - 1 = 2147483647 (about 68 years in seconds)
+  let windowSize = 2147483647;
+
+  // Only compute a limited window size if useWindowLimit is true
+  if (useWindowLimit && from && to) {
+    try {
+      const fromDate = new Date(from);
+      const toDate = new Date(to);
+
+      // Calculate the difference in seconds
+      const diffInSeconds = Math.floor(
+        (toDate.getTime() - fromDate.getTime()) / 1000
+      );
+
+      // Set the window size to a reasonable portion of the total time range
+      // Using 20% of the total time range as the window size, with minimums and maximums
+      windowSize = Math.max(
+        1800, // Minimum window: 30 minutes
+        Math.min(
+          Math.floor(diffInSeconds * 0.2),
+          86400 * 7 // Maximum window: 7 days
+        )
+      );
+    } catch (e) {
+      // In case of any errors in date parsing, keep the default large value
+      console.error("Error computing windowSize from date strings:", e);
+    }
+  }
   const paramHandler = new QueryParamHandler();
   const peopleJoin = `inner join people as p on e.distinct_id = p.distinct_id`;
   const breakdownSelect = breakdowns.length
@@ -59,7 +87,8 @@ export const queryFunnel = async ({
     paramHandler
   );
 
-  const whereStringsArray = metrics.map((m) => {
+  // Create conditions for each metric step
+  const funnelConditions = metrics.map((m) => {
     const whereStrings = filtersToSql(m.filters, paramHandler).whereStrings;
     return [
       `name = {${paramHandler.add(m.event.value)}:String}`,
@@ -72,9 +101,24 @@ export const queryFunnel = async ({
         : []),
     ].join(" AND ");
   });
-  // const sequenceMatchConds = metrics.map(
-  //   (m) => `name = {${paramHandler.add(m.event.value)}:String}`
-  // );
+
+  // Build the funnel part of the query
+  // If useWindowLimit is false, use a different approach for the funnel (without window constraints)
+  const funnelQueryPart = useWindowLimit
+    ? `windowFunnel({windowSize:UInt32})(
+        time,
+        ${funnelConditions.map((cond, i) => `${cond} AS step${i + 1}`).join(",\n        ")}
+      )`
+    : `CASE
+        ${metrics
+          .map((_, i) => {
+            const currentMetrics = metrics.slice(0, i + 1);
+            return `WHEN ${currentMetrics.map((_, j) => `max(${funnelConditions[j]}) = 1`).join(" AND ")} THEN ${i + 1}`;
+          })
+          .join("\n        ")}
+        WHEN max(${funnelConditions[0]}) = 1 THEN 1
+        ELSE 0
+      END`;
 
   const query = `
   ${
@@ -94,67 +138,50 @@ export const queryFunnel = async ({
   }
 
   SELECT
-  ${breakdownSelect ? `breakdown,` : ""}
-  toInt32(COUNT(DISTINCT IF(step0, distinct_id, NULL))) AS step0_reached,
-  ${metrics
-    .map(
-      (_, i) =>
-        `toInt32(COUNT(DISTINCT if(step${i}, distinct_id, NULL))) AS step${i}_reached`
-    )
-    .slice(1)
-    .join(",")}
-FROM (
-  SELECT
+    ${breakdownSelect ? `breakdown,` : ""}
+    countIf(level >= 1) AS step0_reached,
+    ${metrics
+      .map((_, i) => `countIf(level >= ${i + 2}) AS step${i + 1}_reached`)
+      .join(",\n    ")}
+  FROM (
+    SELECT
       distinct_id,
-      ${breakdownSelect ? `max(${breakdownSelect}) AS breakdown,` : ""}
-      MAX(${whereStringsArray[0]}) AS step0,
-      ${metrics
-        .map((_, i) => {
-          const currMetrics = metrics.slice(0, i + 1);
-          return `sequenceMatch('${currMetrics
-            .map((_, k) => `(?${k + 1})`)
-            .join(".*")}')(time, ${whereStringsArray
-            .slice(0, i + 1)
-            .join(", ")}) as step${i}`;
-        })
-        .slice(1)
-        .join(",")}
-  FROM events as e
-  ${needsPeopleJoin ? peopleJoin : ""}
-  WHERE time >= toDate({from:DateTime}) AND time <= toDate({to:DateTime})
-  AND e.project_id = {projectId:String}
-  AND (
-  ${whereStringsArray.map((x) => `(${x})`).join(" OR ")}
-  )
-  ${
-    globalFilterWhereStrings.length
-      ? `AND ${globalFilterWhereStrings.join(" AND ")}`
-      : ""
-  }
-  ${
-    breakdownSelect
-      ? `AND ${breakdownSelect} IN (SELECT breakdown FROM top_breakdown)`
-      : ""
-  }
-
-  GROUP BY
+      ${breakdownSelect ? `${breakdownSelect} AS breakdown,` : ""}
+      ${funnelQueryPart} AS level
+    FROM events as e
+    ${needsPeopleJoin ? peopleJoin : ""}
+    WHERE time >= toDate({from:DateTime}) AND time <= toDate({to:DateTime})
+    AND e.project_id = {projectId:String}
+    AND (
+      ${funnelConditions.map((x) => `(${x})`).join(" OR ")}
+    )
+    ${
+      globalFilterWhereStrings.length
+        ? `AND ${globalFilterWhereStrings.join(" AND ")}`
+        : ""
+    }
+    ${
+      breakdownSelect
+        ? `AND ${breakdownSelect} IN (SELECT breakdown FROM top_breakdown)`
+        : ""
+    }
+    GROUP BY
       distinct_id
-      )
-${
-  breakdownSelect
-    ? `
-GROUP BY breakdown`
-    : ""
-}
+      ${breakdownSelect ? `, breakdown` : ""}
+  )
+  ${breakdownSelect ? `GROUP BY breakdown` : ""}
   `;
+
   const resp = await clickhouse.query({
     query,
     query_params: {
+      windowSize,
       projectId,
       ...getDateRange({ timeRangeType, timezone, from, to }),
       ...paramHandler.getParams(),
     },
   });
+
   const { data } = await resp.json<
     ClickHouseQueryResponse<{
       [key: `step${number}_reached`]: number;
@@ -165,12 +192,10 @@ GROUP BY breakdown`
   const d = data.map((item) => {
     const { breakdown, ...steps } = item;
     const stepKeys = Object.keys(steps).sort(); // Ensure steps are in order
-    // let previousValue = 0;
 
     const transformedSteps = stepKeys.map((key, index) => {
       const value = steps[key as keyof typeof steps];
       const percent = index === 0 ? 100 : (value / item["step0_reached"]) * 100;
-      // previousValue = value; // Update previousValue for the next iteration
 
       return { value, percent: parseFloat(percent.toFixed(2)) }; // Keeping two decimal places for percent
     });
@@ -180,5 +205,6 @@ GROUP BY breakdown`
       steps: transformedSteps,
     };
   });
+
   return d;
 };

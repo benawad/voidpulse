@@ -5,7 +5,6 @@ import {
   LineChartGroupByTimeType,
   LtvType,
   LtvWindowType,
-  NumOperation,
   ReportType,
   RetentionNumFormat,
 } from "@voidpulse/api";
@@ -15,7 +14,6 @@ import {
   Metric,
   MetricFilter,
 } from "../src/app/p/[projectId]/chart/metric-selector/Metric";
-import { genId } from "../src/app/utils/genId";
 import { RouterOutput } from "../src/app/utils/trpc";
 
 type ChartStateType = {
@@ -28,6 +26,7 @@ type ChartStateType = {
   timeRangeType: ChartTimeRangeType;
   visibleDataMap?: Record<string, boolean> | null;
   lineChartGroupByTimeType?: LineChartGroupByTimeType | null;
+  isOverTime?: boolean | null;
   metrics: Metric[];
   globalFilters: MetricFilter[];
   breakdowns: MetricFilter[];
@@ -62,7 +61,6 @@ export const ChartStateProvider: React.FC<
     chart?: RouterOutput["getCharts"]["charts"][0] | null;
   }>
 > = ({ children, chart }) => {
-
   const chartState = useState<ChartStateType>(() => {
     return {
       title: chart?.title || "",
@@ -74,6 +72,10 @@ export const ChartStateProvider: React.FC<
       ltvType: chart?.ltvType,
       ltvWindowType: chart?.ltvWindowType,
       lineChartGroupByTimeType: chart?.lineChartGroupByTimeType,
+      isOverTime:
+        chart?.data && "isOverTime" in chart.data
+          ? chart?.data.isOverTime
+          : false,
       timeRangeType: chart?.timeRangeType || ChartTimeRangeType["30D"],
       retentionNumFormat: chart?.retentionNumFormat,
       from: chart?.from ? moment(chart.from) : null,

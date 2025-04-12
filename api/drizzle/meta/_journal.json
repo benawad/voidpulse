@@ -211,6 +211,13 @@
       "when": 1739499713312,
       "tag": "0032_dazzling_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "5",
+      "when": 1744475476101,
+      "tag": "0033_worthless_crusher_hogan",
+      "breakpoints": true
     }
   ]
 }
