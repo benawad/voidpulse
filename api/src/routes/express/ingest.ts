@@ -89,6 +89,7 @@ export const addIngestRoute = (app: Express) => {
         if (new Date(event.time).getTime() > acceptableFutureTime) {
           event.time = dateToClickhouseDateString(new Date());
         }
+        // @deprecated
         if (
           properties.$lib_version === "1.0.0" &&
           properties.$os &&

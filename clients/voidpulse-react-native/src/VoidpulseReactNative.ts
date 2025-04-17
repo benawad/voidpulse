@@ -7,6 +7,7 @@ import "react-native-get-random-values";
 import { v4 } from "uuid";
 import { PersistedList } from "./PersistedList";
 import { version } from "./version";
+import { SimpleList } from "./SimpleList";
 
 type Event = {
   name: string;
@@ -22,11 +23,12 @@ export class Voidpulse {
   private incomingDistinctId: string = "";
   private distinctId: string = "";
   private hasIdentified: boolean = false;
-  private eventsQueue = new PersistedList<Event>("voidpulse_events");
-  private anonEventsQueue = new PersistedList<Event>("voidpulse_anon_events");
-  private userPropQueue = new PersistedList<string[] | Record<string, any>>(
-    "voidpulse_user_props"
-  );
+  private eventsQueue: SimpleList<Event> | PersistedList<Event>;
+  private anonEventsQueue: SimpleList<Event> | PersistedList<Event>;
+  private userPropQueue:
+    | SimpleList<string[] | Record<string, any>>
+    | PersistedList<string[] | Record<string, any>>;
+  private lowOverhead: boolean;
 
   constructor({
     apiKey,
@@ -34,16 +36,30 @@ export class Voidpulse {
     skipIpLookup = false,
     noInterval = false,
     skipInitialization = false,
+    lowOverhead = false,
   }: {
     apiKey: string;
     hostUrl: string;
     skipIpLookup?: boolean;
     noInterval?: boolean;
     skipInitialization?: boolean;
+    lowOverhead?: boolean;
   }) {
     this.skipIpLookup = skipIpLookup;
     this.apiKey = apiKey;
     this.hostUrl = hostUrl;
+    this.lowOverhead = lowOverhead;
+    if (lowOverhead) {
+      this.eventsQueue = new SimpleList();
+      this.anonEventsQueue = new SimpleList();
+      this.userPropQueue = new SimpleList();
+    } else {
+      this.eventsQueue = new PersistedList<Event>("voidpulse_events");
+      this.anonEventsQueue = new PersistedList<Event>("voidpulse_anon_events");
+      this.userPropQueue = new PersistedList<string[] | Record<string, any>>(
+        "voidpulse_user_props"
+      );
+    }
     if (!skipInitialization) {
       this.init(true);
     }
@@ -69,9 +85,11 @@ export class Voidpulse {
     } else {
       // try to prevent ANRs by waterfalling
       await this.loadDistinctId();
-      await this.eventsQueue.init();
-      await this.anonEventsQueue.init();
-      await this.userPropQueue.init();
+      if (!this.lowOverhead) {
+        await this.eventsQueue.init();
+        await this.anonEventsQueue.init();
+        await this.userPropQueue.init();
+      }
     }
   }
 
