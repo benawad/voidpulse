@@ -41,7 +41,8 @@ export const queryFunnel = async ({
   // Compute windowSize based on from and to dates
   // Using a value approaching UINT32_MAX but leaving margin for safety
   // 2^31 - 1 = 2147483647 (about 68 years in seconds)
-  let windowSize = 2147483647;
+  // 30 days
+  let windowSize = 30 * 24 * 60 * 60;
 
   // Only compute a limited window size if useWindowLimit is true
   if (useWindowLimit && from && to) {
@@ -184,7 +185,7 @@ export const queryFunnel = async ({
 
   const { data } = await resp.json<
     ClickHouseQueryResponse<{
-      [key: `step${number}_reached`]: number;
+      [key: `step${number}_reached`]: string;
       breakdown?: BreakdownType;
     }>
   >();
@@ -193,9 +194,10 @@ export const queryFunnel = async ({
     const { breakdown, ...steps } = item;
     const stepKeys = Object.keys(steps).sort(); // Ensure steps are in order
 
+    const step0Reached = parseInt(steps["step0_reached"]);
     const transformedSteps = stepKeys.map((key, index) => {
-      const value = steps[key as keyof typeof steps];
-      const percent = index === 0 ? 100 : (value / item["step0_reached"]) * 100;
+      const value = parseInt(steps[key as keyof typeof steps]);
+      const percent = index === 0 ? 100 : (value / step0Reached) * 100;
 
       return { value, percent: parseFloat(percent.toFixed(2)) }; // Keeping two decimal places for percent
     });
