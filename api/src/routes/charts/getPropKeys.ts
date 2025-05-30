@@ -52,6 +52,7 @@ const insertEventPropTypes = async (
         propTypes: propsToTypes(JSON.parse(e.properties)),
       }))
     )
+    .onConflictDoNothing()
     .returning();
 };
 
