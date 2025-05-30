@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NEXT_PUBLIC_API_URL=http://localhost:4001 next dev",
+    "dev": "cross-env NEXT_PUBLIC_API_URL=http://localhost:4001 next dev --turbopack",
     "build": "NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start",
     "pages:build": "pnpm dlx @cloudflare/next-on-pages@1",
@@ -32,13 +32,13 @@
     "downshift": "^8.3.1",
     "emoji-picker-react": "^4.7.11",
     "moment": "^2.30.1",
-    "next": "14.1.0",
-    "react": "^18",
+    "next": "15.3.3",
+    "react": "19.1.0",
     "react-chartjs-2": "^5.2.0",
     "react-dates": "^21.8.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "react-dom": "^18",
+    "react-dom": "19.1.0",
     "react-hook-form": "^7.49.3",
     "react-icons": "^5.0.1",
     "react-modal": "^3.16.1",
@@ -53,8 +53,8 @@
     "@svgr/cli": "^8.1.0",
     "@types/css": "^0.0.37",
     "@types/node": "^20.11.10",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "19.1.6",
+    "@types/react-dom": "19.1.5",
     "@types/react-window": "^1.8.8",
     "autoprefixer": "^10.0.1",
     "cross-env": "^7.0.3",
@@ -64,5 +64,11 @@
     "ts-node": "^10.9.2",
     "typescript": "^5",
     "wrangler": "^3.29.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.1.6",
+      "@types/react-dom": "19.1.5"
+    }
   }
 }

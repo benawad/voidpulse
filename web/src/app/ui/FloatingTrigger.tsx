@@ -95,7 +95,7 @@ export const FloatingTrigger: React.FC<
 
   return (
     <>
-      <button
+      <div
         {...getReferenceProps()}
         ref={refs.setReference}
         className={className}
@@ -104,7 +104,7 @@ export const FloatingTrigger: React.FC<
           {children}
         </div>
         {noCloseOnClick ? null : menu}
-      </button>
+      </div>
       {/* Floating content */}
       {noCloseOnClick ? menu : null}
     </>

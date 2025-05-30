@@ -12,7 +12,7 @@ interface DropdownProps<T> {
   opts: {
     label: string;
     value: T;
-    Icon?: ReactElement;
+    Icon?: ReactElement<any>;
     optClassName?: string;
   }[];
   value: T;
@@ -54,7 +54,7 @@ export const DropdownOption: Kids<{
   onClick: () => void;
   className?: string;
   active: boolean;
-  icon?: ReactElement;
+  icon?: ReactElement<any>;
   showCheckmark?: boolean;
 }> = ({
   metric,
@@ -174,7 +174,7 @@ export const DropdownOption: Kids<{
 };
 
 export const DropdownStartButton: Kids<{
-  icon?: ReactElement;
+  icon?: ReactElement<any>;
   noCaret?: boolean;
   upAndDownCaret?: boolean;
   buttonClassName?: string;

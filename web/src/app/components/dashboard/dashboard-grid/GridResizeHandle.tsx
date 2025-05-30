@@ -4,7 +4,7 @@ import { ItemTypes } from "./DraggableChartContainer";
 import { DropTargetMonitor, useDrop } from "react-dnd";
 
 interface GridResizeHandleProps {
-  parentRef: React.RefObject<HTMLDivElement>;
+  parentRef: React.RefObject<HTMLDivElement | null>;
   index: number;
   highlight: boolean;
   onDrop: (chartId: string) => void;

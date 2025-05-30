@@ -28,7 +28,7 @@ interface ResizableGridProps {
   setExpandedDataRows?: React.Dispatch<
     React.SetStateAction<Record<string, boolean>>
   >;
-  chartContainerRef: React.RefObject<HTMLDivElement>;
+  chartContainerRef: React.RefObject<HTMLDivElement | null>;
   expandedDataRows?: Record<string, boolean>;
 }
 

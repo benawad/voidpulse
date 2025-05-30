@@ -10,7 +10,7 @@ interface DropdownProps<T> {
     label: string;
     value: T;
     searchValue: string;
-    Icon?: ReactElement;
+    Icon?: ReactElement<any>;
     optClassName?: string;
   }[];
   value: T;

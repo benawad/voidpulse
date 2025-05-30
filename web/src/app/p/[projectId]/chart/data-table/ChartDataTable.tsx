@@ -17,7 +17,7 @@ interface ChartDataTableProps {
   setHighlightedRow: (rowId: string | null) => void;
   stickyColumns: ColumnDef<any>[];
   mainColumns: ColumnDef<any>[];
-  chartContainerRef: React.RefObject<HTMLDivElement>;
+  chartContainerRef: React.RefObject<HTMLDivElement | null>;
   setExpandedDataRows?: React.Dispatch<
     React.SetStateAction<Record<string, boolean>>
   >;
@@ -111,7 +111,7 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
               >
                 {virtualPaddingLeft ? (
                   //fake empty column to the left for virtualization scroll padding
-                  <th style={{ display: "flex", width: virtualPaddingLeft }} />
+                  (<th style={{ display: "flex", width: virtualPaddingLeft }} />)
                 ) : null}
                 {virtualColumns.map((vc) => {
                   const header = headerGroup.headers[vc.index];
@@ -136,12 +136,12 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                 })}
                 {virtualPaddingRight ? (
                   //fake empty column to the right for virtualization scroll padding
-                  <th
+                  (<th
                     style={{
                       display: "flex",
                       width: virtualPaddingRight,
                     }}
-                  />
+                  />)
                 ) : null}
               </tr>
             ))}
@@ -175,9 +175,9 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                 >
                   {virtualPaddingLeft ? (
                     //fake empty column to the left for virtualization scroll padding
-                    <td
+                    (<td
                       style={{ display: "flex", width: virtualPaddingLeft }}
-                    />
+                    />)
                   ) : null}
                   {virtualColumns.map((vc) => {
                     const cell = visibleCells[vc.index];
@@ -208,9 +208,9 @@ export const ChartDataTable: React.FC<ChartDataTableProps> = ({
                   })}
                   {virtualPaddingRight ? (
                     //fake empty column to the right for virtualization scroll padding
-                    <td
+                    (<td
                       style={{ display: "flex", width: virtualPaddingRight }}
-                    />
+                    />)
                   ) : null}
                 </tr>
               );
