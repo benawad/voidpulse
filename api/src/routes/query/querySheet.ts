@@ -30,8 +30,9 @@ export default async function handler(req: Request, res: Response) {
   }
 
   // Accept params from req.query only
-  const input = req.query;
+  let input = req.query;
   input.projectId = project.id;
+  input = coerceQueryParams(input);
 
   // Validate input using reportInputSchema
   const parseResult = reportInputSchema.safeParse(input);
@@ -49,4 +50,72 @@ export default async function handler(req: Request, res: Response) {
       .status(500)
       .json({ error: err.message || "Internal server error" });
   }
+}
+
+// Utility to coerce query params to expected types
+function coerceQueryParams(query: any) {
+  const out: any = { ...query };
+
+  // Booleans
+  if ("noCache" in out) out.noCache = out.noCache === "true";
+  if ("isOverTime" in out) out.isOverTime = out.isOverTime === "true";
+
+  // Number enums
+  if ("reportType" in out) out.reportType = parseInt(out.reportType, 10);
+  if ("chartType" in out) out.chartType = parseInt(out.chartType, 10);
+  if ("timeRangeType" in out)
+    out.timeRangeType = parseInt(out.timeRangeType, 10);
+  if (
+    "ltvType" in out &&
+    out.ltvType !== undefined &&
+    out.ltvType !== null &&
+    out.ltvType !== ""
+  )
+    out.ltvType = parseInt(out.ltvType, 10);
+  if (
+    "ltvWindowType" in out &&
+    out.ltvWindowType !== undefined &&
+    out.ltvWindowType !== null &&
+    out.ltvWindowType !== ""
+  )
+    out.ltvWindowType = parseInt(out.ltvWindowType, 10);
+  if (
+    "lineChartGroupByTimeType" in out &&
+    out.lineChartGroupByTimeType !== undefined &&
+    out.lineChartGroupByTimeType !== null &&
+    out.lineChartGroupByTimeType !== ""
+  )
+    out.lineChartGroupByTimeType = parseInt(out.lineChartGroupByTimeType, 10);
+
+  // Arrays (expecting JSON-encoded arrays)
+  if (typeof out.globalFilters === "string") {
+    try {
+      out.globalFilters = JSON.parse(out.globalFilters);
+    } catch {
+      out.globalFilters = [];
+    }
+  }
+  if (typeof out.breakdowns === "string") {
+    try {
+      out.breakdowns = JSON.parse(out.breakdowns);
+    } catch {
+      out.breakdowns = [];
+    }
+  }
+  if (typeof out.metrics === "string") {
+    try {
+      out.metrics = JSON.parse(out.metrics);
+    } catch {
+      out.metrics = [];
+    }
+  }
+  if (typeof out.combinations === "string") {
+    try {
+      out.combinations = JSON.parse(out.combinations);
+    } catch {
+      out.combinations = undefined;
+    }
+  }
+
+  return out;
 }
