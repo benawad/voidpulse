@@ -1,0 +1,52 @@
+import { db } from "../../db";
+import { projects } from "../../schema/projects";
+import { eq } from "drizzle-orm";
+import { Request, Response } from "express";
+import {
+  queryReport,
+  reportInputSchema,
+} from "../../utils/query-metric/queryReport";
+import { z } from "zod";
+
+// Express-style handler: (req, res)
+export default async function handler(req: Request, res: Response) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const queryApiKey = req.query.queryApiKey || req.headers["x-query-api-key"];
+  if (!queryApiKey || typeof queryApiKey !== "string") {
+    return res.status(400).json({ error: "Missing queryApiKey" });
+  }
+
+  const project = await db.query.projects.findFirst({
+    where: eq(projects.queryApiKey, queryApiKey),
+  });
+
+  if (!project) {
+    return res
+      .status(404)
+      .json({ error: "Project not found for this queryApiKey" });
+  }
+
+  // Accept params from req.query only
+  const input = req.query;
+  input.projectId = project.id;
+
+  // Validate input using reportInputSchema
+  const parseResult = reportInputSchema.safeParse(input);
+  if (!parseResult.success) {
+    return res
+      .status(400)
+      .json({ error: "Invalid input", details: parseResult.error.errors });
+  }
+
+  try {
+    const data = await queryReport(parseResult.data);
+    return res.status(200).json(data);
+  } catch (err: any) {
+    return res
+      .status(500)
+      .json({ error: err.message || "Internal server error" });
+  }
+}

@@ -218,6 +218,13 @@
       "when": 1744475476101,
       "tag": "0033_worthless_crusher_hogan",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "5",
+      "when": 1753198400117,
+      "tag": "0034_flat_silverclaw",
+      "breakpoints": true
     }
   ]
 }

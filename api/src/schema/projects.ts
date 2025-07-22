@@ -20,7 +20,8 @@ export const projects = pgTable(
       .default(sql`uuid_generate_v4()`),
     name: text("name").notNull(),
     timezone: text("timezone").notNull(),
-    apiKey: text("api_key").notNull(),
+    apiKey: text("api_key").notNull().unique(),
+    queryApiKey: text("query_api_key").unique(),
     createdAt: timestamp("created_at")
       .notNull()
       .default(sql`now()`),
@@ -28,6 +29,7 @@ export const projects = pgTable(
   (table) => {
     return {
       apiKeyIdx: index("api_key_idx").on(table.apiKey),
+      queryApiKeyIdx: index("query_api_key_idx").on(table.queryApiKey),
     };
   }
 );

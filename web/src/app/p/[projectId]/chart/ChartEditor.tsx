@@ -51,6 +51,8 @@ import { ChartDataTable } from "./data-table/ChartDataTable";
 import moment from "moment";
 import { msToDurationString } from "../../../utils/msToDurationString";
 import { RiWindowLine } from "react-icons/ri";
+import { toast } from "react-toastify";
+import { FiCopy } from "react-icons/fi";
 interface ChartEditorProps {
   chart?: RouterOutput["getCharts"]["charts"][0];
 }
@@ -203,7 +205,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
     }
     return retData;
   }, [data, expandedDataRows]);
-  const { board } = useFetchProjectBoards();
+  const { board, project } = useFetchProjectBoards();
   const [highlightedRowId, setHighlightedRow] = React.useState<string | null>(
     null
   );
@@ -252,6 +254,36 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
               : "",
         });
   }, [data]);
+
+  // Helper to build query string for querySheet
+  function buildQuerySheetUrl() {
+    if (!project?.queryApiKey) return "";
+    const params: Record<string, any> = {
+      ...getReportVars,
+      queryApiKey: project.queryApiKey,
+    };
+    // Serialize arrays/objects as JSON strings
+    const keysToJson = [
+      "metrics",
+      "breakdowns",
+      "globalFilters",
+      "combinations",
+    ];
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value === undefined || value === null) continue;
+      if (keysToJson.includes(key)) {
+        searchParams.set(key, JSON.stringify(value));
+      } else {
+        searchParams.set(key, String(value));
+      }
+    }
+    // Use NEXT_PUBLIC_API_URL or fallback to window.location.origin
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL ||
+      (typeof window !== "undefined" ? window.location.origin : "");
+    return `${baseUrl.replace(/\/$/, "")}/query?${searchParams.toString()}`;
+  }
 
   return (
     <>
@@ -488,50 +520,69 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                   </>
                 ) : null}
               </div>
-              <Button
-                loading={pendingCreateChart || pendingUpdateChart}
-                onClick={async () => {
-                  if (metrics.length && data) {
-                    const fields = {
-                      title,
-                      description,
-                      chartType,
-                      reportType,
-                      metrics,
-                      lineChartGroupByTimeType:
-                        lineChartGroupByTimeType || undefined,
-                      timeRangeType,
-                      from: from?.toISOString(),
-                      to: to?.toISOString(),
-                      visibleDataMap,
-                      retentionNumFormat,
-                      breakdowns,
-                      globalFilters,
-                      data: data as any,
-                      ltvType,
-                      ltvWindowType,
-                      combinations,
-                    };
-                    if (chart) {
-                      await updateChart({
-                        id: chart.id,
-                        projectId,
-                        updateData: fields,
-                      });
-                    } else {
-                      await createChart({
-                        projectId,
-                        boardId,
-                        boardIdx: parseInt(searchParams.get("idx") || "0"),
-                        ...fields,
-                      });
+              {/* Save and Copy Link buttons */}
+              <div className="flex flex-row space-x-2 items-center">
+                <Button
+                  loading={pendingCreateChart || pendingUpdateChart}
+                  onClick={async () => {
+                    if (metrics.length && data) {
+                      const fields = {
+                        title,
+                        description,
+                        chartType,
+                        reportType,
+                        metrics,
+                        lineChartGroupByTimeType:
+                          lineChartGroupByTimeType || undefined,
+                        timeRangeType,
+                        from: from?.toISOString(),
+                        to: to?.toISOString(),
+                        visibleDataMap,
+                        retentionNumFormat,
+                        breakdowns,
+                        globalFilters,
+                        data: data as any,
+                        ltvType,
+                        ltvWindowType,
+                        combinations,
+                      };
+                      if (chart) {
+                        await updateChart({
+                          id: chart.id,
+                          projectId,
+                          updateData: fields,
+                        });
+                      } else {
+                        await createChart({
+                          projectId,
+                          boardId,
+                          boardIdx: parseInt(searchParams.get("idx") || "0"),
+                          ...fields,
+                        });
+                      }
+                      router.push(`/p/${projectId}`);
                     }
-                    router.push(`/p/${projectId}`);
-                  }
-                }}
-              >
-                Save chart
-              </Button>
+                  }}
+                >
+                  Save chart
+                </Button>
+                <Button
+                  type="button"
+                  buttonType="neutral"
+                  onClick={async () => {
+                    const url = buildQuerySheetUrl();
+                    if (!url) {
+                      toast.error("No query API key available");
+                      return;
+                    }
+                    await navigator.clipboard.writeText(url);
+                    toast.success("Query link copied to clipboard!");
+                  }}
+                  title="Copy query link to clipboard"
+                >
+                  <FiCopy className="inline mr-2" /> Copy Query Link
+                </Button>
+              </div>
             </div>
             <ChartDateRangePicker />
 

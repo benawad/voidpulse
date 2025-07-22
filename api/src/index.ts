@@ -14,6 +14,7 @@ import { sleep } from "./utils/sleep";
 import { tryToConnect } from "./utils/tryToConnect";
 import { normalizeOsDataMigration } from "./data-migrations/normalizeOs";
 import { loadInitialFbSpend } from "./utils/fb/loadInitialFbSpend";
+import querySheetHandler from "./routes/query/querySheet";
 
 const startServer = async () => {
   console.log("about to migrate postgres");
@@ -31,7 +32,6 @@ const startServer = async () => {
     });
     await systemClient.close();
   }
-  console.log("try clickhouse connection");
   await tryToConnect(
     () => clickhouse.query({ query: "SELECT 1" }),
     "clickhouse"
@@ -45,6 +45,7 @@ const startServer = async () => {
   console.log("connected to kafka");
   addIngestRoute(app);
   addUpdatePeopleRoute(app);
+  app.get("/query", querySheetHandler);
   loadInitialFbSpend().catch((err) => {
     console.error(err);
   });

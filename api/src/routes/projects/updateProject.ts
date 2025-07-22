@@ -18,6 +18,7 @@ export const updateProject = protectedProcedure
         name: z.string().optional(),
         timezone: z.string().optional(),
         revokeApiKey: z.boolean().optional(),
+        revokeQueryApiKey: z.boolean().optional(),
       }),
     })
   )
@@ -42,13 +43,17 @@ export const updateProject = protectedProcedure
       });
     }
 
-    const { revokeApiKey, timezone, ...values } = data;
+    const { revokeApiKey, revokeQueryApiKey, timezone, ...values } = data;
 
     const setData: Partial<InferInsertModel<typeof projects>> = values;
 
     if (revokeApiKey) {
       delete apiKeyCache[project.apiKey];
       setData.apiKey = genApiKey();
+    }
+
+    if (revokeQueryApiKey) {
+      setData.queryApiKey = genApiKey();
     }
 
     if (timezone && timezones.has(timezone)) {

@@ -18,6 +18,7 @@ import { AddUserForm } from "./AddUserForm";
 export const SettingsPage: React.FC = ({}) => {
   const { mutateAsync: logout } = trpc.logout.useMutation();
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
+  const [isQueryKeyRevealed, setIsQueryKeyRevealed] = useState<boolean>(false);
   const { project, board } = useFetchProjectBoards();
   const utils = trpc.useUtils();
   const { mutateAsync, isPending } = trpc.updateProject.useMutation({
@@ -152,6 +153,50 @@ export const SettingsPage: React.FC = ({}) => {
                   id: project?.id!,
                   data: {
                     revokeApiKey: true,
+                  },
+                });
+              }}
+            >
+              Revoke
+            </Button>
+          </div>
+          <LineSeparator />
+          <div className={sectionStyle}>
+            <div className={headerLabelStyle}>QUERY API KEY</div>
+            <input
+              type="text"
+              id="queryApiKey"
+              style={{ width: 350, height: 48 }}
+              className="rounded-lg p-3 bg-primary-800 text-primary-100"
+              value={
+                isQueryKeyRevealed
+                  ? project?.queryApiKey || ""
+                  : Array(project?.queryApiKey?.length || 0)
+                      .fill("•")
+                      .join("")
+              }
+              readOnly
+            />
+            <Button
+              className="mx-4"
+              onClick={() => setIsQueryKeyRevealed(!isQueryKeyRevealed)}
+            >
+              {isQueryKeyRevealed ? "Hide" : "Reveal"}
+            </Button>
+            <Button
+              buttonType="negative"
+              disabled={isPending || !project}
+              onClick={() => {
+                const y = window.confirm(
+                  "Are you sure you want to revoke your QUERY API key?"
+                );
+                if (!y) {
+                  return;
+                }
+                mutateAsync({
+                  id: project?.id!,
+                  data: {
+                    revokeQueryApiKey: true,
                   },
                 });
               }}
