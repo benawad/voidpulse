@@ -44,6 +44,21 @@ export default async function handler(req: Request, res: Response) {
 
   try {
     const data = await queryReport(parseResult.data);
+
+    // CSV output support
+    const format = req.query.format || "csv";
+    if (format === "csv") {
+      try {
+        const csv = toCsvFromQueryReport(data);
+        res.setHeader("Content-Type", "text/csv");
+        return res.status(200).send(csv);
+      } catch (err: any) {
+        return res.status(400).json({
+          error: err.message || "CSV export not supported for this report type",
+        });
+      }
+    }
+
     return res.status(200).json(data);
   } catch (err: any) {
     return res
@@ -118,4 +133,42 @@ function coerceQueryParams(query: any) {
   }
 
   return out;
+}
+
+// Utility to convert queryReport result to CSV string
+function toCsvFromQueryReport(data: any): string {
+  const rows = [];
+  const dateHeaders = data.dateHeaders || [];
+  const datas = data.datas || [];
+  // Type guards
+  const hasDataProp = (
+    d: any
+  ): d is { data: Record<string, number>; breakdown?: string } =>
+    typeof d.data === "object" && d.data !== null;
+  const hasValueProp = (d: any): d is { value: number; breakdown?: string } =>
+    typeof d.value === "number";
+  if (datas.length && hasDataProp(datas[0])) {
+    rows.push(["date", "breakdown", "value"]);
+    for (const d of datas) {
+      if (!hasDataProp(d)) continue;
+      for (const dateHeader of dateHeaders) {
+        const date = dateHeader.lookupValue;
+        const value = d.data[date] ?? "";
+        const breakdown = d.breakdown ?? "";
+        rows.push([date, breakdown, value]);
+      }
+    }
+  } else if (datas.length && hasValueProp(datas[0])) {
+    // Bar chart: one row per item
+    rows.push(["breakdown", "value"]);
+    for (const d of datas) {
+      if (!hasValueProp(d)) continue;
+      rows.push([d.breakdown ?? "", d.value]);
+    }
+  } else {
+    // Not supported (funnel/retention)
+    throw new Error("CSV export not supported for this report type");
+  }
+  // Convert to CSV string
+  return rows.map((row) => row.map(String).join(",")).join("\n");
 }
