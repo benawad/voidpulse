@@ -209,6 +209,7 @@ export const queryReport = async ({
           combinations,
           lineChartGroupByTimeType,
           timezone: project.timezone,
+          ltvWindowType,
         })
       )
     )

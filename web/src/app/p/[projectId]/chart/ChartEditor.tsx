@@ -455,39 +455,52 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                     </div>
                   </>
                 ) : null}
-                {reportType === ReportType.ltv ? (
+                {reportType === ReportType.ltv ||
+                reportType === ReportType.insight ? (
                   <>
                     {/* Chart type selector */}
-                    <div className="my-auto standard card shadow-lg">
-                      <Dropdown
-                        autoWidth
-                        value={ltvType || LtvType.payingUsers}
-                        opts={[
-                          {
-                            label: "Paying users",
-                            value: LtvType.payingUsers,
-                            Icon: <PiMoney />,
-                          },
-                          {
-                            label: "All users",
-                            value: LtvType.allUsers,
-                            Icon: <PiUsers />,
-                          },
-                        ]}
-                        onSelect={(value) => {
-                          setState((prev) => ({
-                            ...prev,
-                            ltvType: value,
-                          }));
-                        }}
-                      />
-                    </div>
+                    {reportType === ReportType.ltv ? (
+                      <div className="my-auto standard card shadow-lg">
+                        <Dropdown
+                          autoWidth
+                          value={ltvType || LtvType.payingUsers}
+                          opts={[
+                            {
+                              label: "Paying users",
+                              value: LtvType.payingUsers,
+                              Icon: <PiMoney />,
+                            },
+                            {
+                              label: "All users",
+                              value: LtvType.allUsers,
+                              Icon: <PiUsers />,
+                            },
+                          ]}
+                          onSelect={(value) => {
+                            setState((prev) => ({
+                              ...prev,
+                              ltvType: value,
+                            }));
+                          }}
+                        />
+                      </div>
+                    ) : null}
                     {/* LTV window */}
                     <div className="my-auto standard card shadow-lg">
                       <Dropdown
                         autoWidth
-                        value={ltvWindowType || LtvWindowType.AllTime}
+                        value={
+                          ltvWindowType ||
+                          (reportType === ReportType.ltv
+                            ? LtvWindowType.AllTime
+                            : LtvWindowType.NoWindow)
+                        }
                         opts={[
+                          {
+                            label: "No window",
+                            value: LtvWindowType.NoWindow,
+                            Icon: <MdWindow />,
+                          },
                           {
                             label: "7 days",
                             value: LtvWindowType.d7,

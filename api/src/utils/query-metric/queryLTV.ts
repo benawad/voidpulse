@@ -119,6 +119,7 @@ purchase_data AS (
     JOIN cohort_users cu ON e.distinct_id = cu.distinct_id
     WHERE name = {endEventName:String} ${
       {
+        [LtvWindowType.NoWindow]: ``,
         [LtvWindowType.d7]: `AND ${eventTime(timezone, "e.")} <= cu.start_date + INTERVAL 7 DAY`,
         [LtvWindowType.d30]: `AND ${eventTime(timezone, "e.")} <= cu.start_date + INTERVAL 30 DAY`,
         [LtvWindowType.d90]: `AND ${eventTime(timezone, "e.")} <= cu.start_date + INTERVAL 90 DAY`,

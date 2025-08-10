@@ -4,6 +4,7 @@ import {
   ANY_EVENT_VALUE,
   DataType,
   ChartTimeRangeType,
+  LtvWindowType,
 } from "../../app-router-type";
 import { clickhouse, ClickHouseQueryResponse } from "../../clickhouse";
 import { __prod__ } from "../../constants/prod";
@@ -27,6 +28,7 @@ export const prepareFiltersAndBreakdown = async ({
   to,
   timezone,
   doPeopleJoin,
+  ltvWindowType,
 }: {
   timezone: string;
   projectId: string;
@@ -37,6 +39,7 @@ export const prepareFiltersAndBreakdown = async ({
   globalFilters: MetricFilter[];
   breakdowns: MetricFilter[];
   doPeopleJoin?: boolean;
+  ltvWindowType?: LtvWindowType | null;
 }) => {
   const paramHandler = new QueryParamHandler();
   const { whereStrings, needsPeopleJoin } = filtersToSql(
@@ -115,6 +118,43 @@ export const prepareFiltersAndBreakdown = async ({
 
   const dtRange = getDateRange({ timeRangeType, timezone, from, to });
 
+  // If LTV window is specified, we need to restructure the query to use cohort-based filtering
+  if (
+    ltvWindowType &&
+    ltvWindowType !== LtvWindowType.AllTime &&
+    ltvWindowType !== LtvWindowType.NoWindow
+  ) {
+    // For LTV window queries, we need to identify users based on their first event
+    // and then filter events to only include those within the window
+    const cohortWhereSection = `
+    project_id = {projectId:UUID}
+      AND ${eventTime(timezone)} >= ${inputTime("from", timezone)}
+      AND ${eventTime(timezone)} <= ${inputTime("to", timezone)}
+      ${
+        metric.event.value !== ANY_EVENT_VALUE
+          ? `AND name = {eventName:String}`
+          : ``
+      }
+      ${whereStrings.length ? `AND (${whereStrings.join(whereCombiner)})` : ""}
+    `;
+
+    return {
+      query_params: {
+        projectId,
+        ...dtRange,
+        eventName: metric.event.value,
+        ...paramHandler.getParams(),
+      },
+      joinSection,
+      whereSection: cohortWhereSection,
+      breakdownSelect,
+      breakdownJoin,
+      breakdownBucketMinMaxQuery,
+      ltvWindowType,
+      needsLtvWindow: true,
+    };
+  }
+
   return {
     query_params: {
       projectId,
@@ -127,5 +167,7 @@ export const prepareFiltersAndBreakdown = async ({
     breakdownSelect,
     breakdownJoin,
     breakdownBucketMinMaxQuery,
+    ltvWindowType,
+    needsLtvWindow: false,
   };
 };

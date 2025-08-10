@@ -103,6 +103,7 @@ export enum LtvWindowType {
   d30,
   d90,
   AllTime,
+  NoWindow,
 }
 
 export enum LineChartGroupByTimeType {

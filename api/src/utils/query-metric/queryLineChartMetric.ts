@@ -5,6 +5,7 @@ import {
   ChartTimeRangeType,
   EventCombination,
   LineChartGroupByTimeType,
+  LtvWindowType,
   MetricMeasurement,
   PropOrigin,
 } from "../../app-router-type";
@@ -65,6 +66,7 @@ export const queryLineChartMetric = async ({
   metric: InputMetric;
   lineChartGroupByTimeType?: LineChartGroupByTimeType;
   timezone: string;
+  ltvWindowType?: LtvWindowType | null;
 }): Promise<BreakdownData[]> => {
   const isAggProp = metric.type === MetricMeasurement.aggProp;
   const {
