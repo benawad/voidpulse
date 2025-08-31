@@ -193,7 +193,12 @@ export const queryFunnel = async ({
 
   const d = data.map((item) => {
     const { breakdown, ...steps } = item;
-    const stepKeys = Object.keys(steps).sort(); // Ensure steps are in order
+    const stepKeys = Object.keys(steps).sort((a, b) => {
+      // Extract step numbers and sort numerically instead of lexicographically
+      const stepA = parseInt(a.replace("step", "").replace("_reached", ""));
+      const stepB = parseInt(b.replace("step", "").replace("_reached", ""));
+      return stepA - stepB;
+    }); // Ensure steps are in order
 
     const step0Reached = parseInt(steps["step0_reached"]);
     const transformedSteps = stepKeys.map((key, index) => {
