@@ -687,7 +687,7 @@ export const ChartEditor: React.FC<ChartEditorProps> = ({ chart }) => {
                 data.isOverTime ? (
                   <LineChart yPercent disableAnimations {...funnelData} />
                 ) : (
-                  <div className="-mb-4">
+                  <div className="mt-4">
                     <FunnelChart {...funnelData} />
                   </div>
                 )

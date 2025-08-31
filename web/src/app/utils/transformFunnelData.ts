@@ -72,7 +72,9 @@ export const transformFunnelChartData = ({
       const percent = steps[dataIndex].percent;
       const value = steps[dataIndex].value;
       return {
-        title: typeof breakdown === "undefined" ? "Overall" : "" + breakdown,
+        title:
+          labels[dataIndex] ||
+          (typeof breakdown === "undefined" ? "Overall" : "" + breakdown),
         label: {
           highlight: `${dropOffBar ? (100 - percent).toFixed(2) : percent}%`,
           annotation: dropOffBar ? "drop-off" : "converted",

@@ -142,6 +142,7 @@ export const queryFunnel = async ({
     ${breakdownSelect ? `breakdown,` : ""}
     countIf(level >= 1) AS step0_reached,
     ${metrics
+      .slice(0, metrics.length - 1)
       .map((_, i) => `countIf(level >= ${i + 2}) AS step${i + 1}_reached`)
       .join(",\n    ")}
   FROM (
