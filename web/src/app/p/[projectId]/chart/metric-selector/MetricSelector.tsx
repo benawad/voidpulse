@@ -87,7 +87,9 @@ export const MetricSelector: React.FC<MetricSelectorProps> = ({
             className="w-full"
             {...getRootProps({}, { suppressRefError: true })}
           >
-            <Input {...getInputProps({ autoFocus: true })} />
+            <Input
+              {...getInputProps({ autoFocus: true, "data-lpignore": "true" })}
+            />
           </div>
 
           {/* Shows the list of event names */}
