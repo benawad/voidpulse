@@ -94,13 +94,15 @@ export const MetricBlock: React.FC<MetricBlockProps> = ({
             ) : null}
           </div>
           {/* Main middle section for selecting events and units */}
-          <div className={`flex flex-col w-full`}>
+          <div className={`flex flex-col w-full flex-1`}>
             {/* Metric selector */}
-            <div className={`flex justify-between items-center group`}>
+            <div
+              className={`grid grid-cols-[1fr_auto_auto] items-center group gap-2`}
+            >
               <button
                 {...getReferenceProps()}
                 ref={refs.setReference}
-                className={`w-full text-primary-100 flex text-sm accent-hover p-2 font-semibold rounded-md ${
+                className={`truncate text-primary-100 text-sm accent-hover p-2 font-semibold rounded-md text-left ${
                   metric?.event.name ? "" : "text-accent-100"
                 }`}
               >
