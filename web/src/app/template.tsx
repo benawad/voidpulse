@@ -12,6 +12,7 @@ const publicPathsStartWiths = [
   "/confirm-email/",
   "/accept-invite/",
   "/set-password/",
+  "/shared/",
 ];
 
 function Template({ children }: { children: React.ReactNode }) {

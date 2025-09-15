@@ -32,6 +32,7 @@ import { RouterOutput, trpc } from "../../utils/trpc";
 interface ChartThumbnailProps {
   dragRef: any;
   chart: RouterOutput["getCharts"]["charts"][0];
+  isViewOnly?: boolean;
 }
 
 const ONE_HOUR = 1000 * 60 * 60;
@@ -39,6 +40,7 @@ const ONE_HOUR = 1000 * 60 * 60;
 export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
   chart,
   dragRef,
+  isViewOnly = false,
 }) => {
   const { projectId } = useParams<{ projectId: string }>();
   const vars = {
@@ -201,14 +203,16 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
         {/* Space out the drag handle, title, and more options buttons */}
 
         <div className="flex flex-row justify-between">
-          <Link href={`/p/${projectId}/chart/${chart.id}`}>
-            <div className="absolute top-4 left-1 mx-auto cursor-grab opacity-0 group-hover:opacity-100">
-              <RxDragHandleDots2 />
-            </div>
+          <div>
+            {!isViewOnly && (
+              <div className="absolute top-4 left-1 mx-auto cursor-grab opacity-0 group-hover:opacity-100">
+                <RxDragHandleDots2 />
+              </div>
+            )}
             {/* Title and description */}
             <div>
               <div
-                className={`text-l mb-1 font-semibold text-primary-100 group-hover:text-accent-100 transition-colors truncate`}
+                className={`text-l mb-1 font-semibold text-primary-100 ${!isViewOnly ? "group-hover:text-accent-100 transition-colors" : ""} truncate`}
               >
                 {chart.title || "Untitled"}
               </div>
@@ -218,22 +222,26 @@ export const ChartThumbnail: React.FC<ChartThumbnailProps> = ({
                 {chart.description ? ` • ${chart.description}` : ""}
               </p>
             </div>
-          </Link>
+          </div>
 
-          {isLoading ? (
-            <LoadingSpinner size={30} />
-          ) : (
-            <div
-              onMouseEnter={() => {
-                setIsMoreOptionsHovered(true);
-              }}
-              onMouseLeave={() => {
-                setIsMoreOptionsHovered(false);
-              }}
-              className="items-center"
-            >
-              <MoreChartOptionsButton chartId={chart.id} />
-            </div>
+          {!isViewOnly && (
+            <>
+              {isLoading ? (
+                <LoadingSpinner size={30} />
+              ) : (
+                <div
+                  onMouseEnter={() => {
+                    setIsMoreOptionsHovered(true);
+                  }}
+                  onMouseLeave={() => {
+                    setIsMoreOptionsHovered(false);
+                  }}
+                  className="items-center"
+                >
+                  <MoreChartOptionsButton chartId={chart.id} />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

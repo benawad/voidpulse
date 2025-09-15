@@ -12,7 +12,8 @@ export const VerticalResizableRow: Kids<{
   startingHeight: number;
   onHeight: (height: number) => void;
   onDrop: (chartId: string) => void;
-}> = ({ children, onDrop, startingHeight, onHeight }) => {
+  isViewOnly?: boolean;
+}> = ({ children, onDrop, startingHeight, onHeight, isViewOnly = false }) => {
   const handler = (item: any, __: DropTargetMonitor<any, unknown>) => {
     onDrop(item.chartId);
   };
@@ -20,7 +21,7 @@ export const VerticalResizableRow: Kids<{
   handlerRef.current = handler;
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.CHART,
-    canDrop: (item: any) => true,
+    canDrop: (item: any) => !isViewOnly,
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
@@ -88,19 +89,21 @@ export const VerticalResizableRow: Kids<{
       className="flex flex-col"
     >
       {children}
-      <div
-        ref={drop}
-        className="w-full p-1 group"
-        style={{
-          height: HANDLE_WIDTH,
-          cursor: "ns-resize",
-        }}
-        onMouseDown={startResizing}
-      >
+      {!isViewOnly && (
         <div
-          className={`w-full h-full group-hover:bg-accent-100/30 rounded-lg ${isOver || isResizing ? "bg-accent-100/30" : ""}`}
-        />
-      </div>
+          ref={drop}
+          className="w-full p-1 group"
+          style={{
+            height: HANDLE_WIDTH,
+            cursor: "ns-resize",
+          }}
+          onMouseDown={startResizing}
+        >
+          <div
+            className={`w-full h-full group-hover:bg-accent-100/30 rounded-lg ${isOver || isResizing ? "bg-accent-100/30" : ""}`}
+          />
+        </div>
+      )}
     </div>
   );
 };

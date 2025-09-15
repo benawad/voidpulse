@@ -14,9 +14,14 @@ import { genId } from "../../../utils/genId";
 interface ChartsGridProps {
   charts: DbChart[];
   board: RouterOutput["getBoards"]["boards"][0];
+  isViewOnly?: boolean;
 }
 
-export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
+export const ChartsGrid: React.FC<ChartsGridProps> = ({
+  board,
+  charts,
+  isViewOnly = false,
+}) => {
   const { mutateAsync } = useUpdateBoard();
   const divRef = useRef<HTMLDivElement>(null);
   const { boardId, projectId } = useProjectBoardContext();
@@ -71,43 +76,47 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
       firstRender.current = false;
       return;
     }
-    debouncedMutateAsync({
-      id: boardId,
-      projectId,
-      data: {
-        positions,
-      },
-    });
-  }, [positions]);
+    if (!isViewOnly) {
+      debouncedMutateAsync({
+        id: boardId,
+        projectId,
+        data: {
+          positions,
+        },
+      });
+    }
+  }, [positions, isViewOnly]);
 
   return (
     <div className="p-8 flex-1">
       <div ref={divRef} className="flex flex-col w-full relative">
-        <div
-          style={{
-            top: -HANDLE_WIDTH,
-          }}
-          className="absolute w-full"
-        >
-          <TopDropHandle
-            onDrop={(idToMove) => {
-              const newPositions = positions
-                .map((newRow) => ({
-                  ...newRow,
-                  cols: newRow.cols.filter((col) => col.chartId !== idToMove),
-                }))
-                .filter((newRow) => newRow.cols.length > 0);
-              setPositions([
-                {
-                  rowId: genId(),
-                  height: 400,
-                  cols: [{ chartId: idToMove, width: 100 }],
-                },
-                ...newPositions,
-              ]);
+        {!isViewOnly && (
+          <div
+            style={{
+              top: -HANDLE_WIDTH,
             }}
-          />
-        </div>
+            className="absolute w-full"
+          >
+            <TopDropHandle
+              onDrop={(idToMove) => {
+                const newPositions = positions
+                  .map((newRow) => ({
+                    ...newRow,
+                    cols: newRow.cols.filter((col) => col.chartId !== idToMove),
+                  }))
+                  .filter((newRow) => newRow.cols.length > 0);
+                setPositions([
+                  {
+                    rowId: genId(),
+                    height: 400,
+                    cols: [{ chartId: idToMove, width: 100 }],
+                  },
+                  ...newPositions,
+                ]);
+              }}
+            />
+          </div>
+        )}
         {positions.map((row, rowIdx) => {
           if (!row?.cols?.length) {
             setPositions((prev) => prev.filter((_, idx) => idx !== rowIdx));
@@ -201,47 +210,53 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
                   ...newPositions.slice(rowIdx + 1),
                 ]);
               }}
+              isViewOnly={isViewOnly}
             >
               <div className="flex-1 h-full flex relative">
                 <HorizontalResizableProvider
                   onWidths={(newWidths) => {
-                    setPositions((prev) => {
-                      return prev.map((w, idx) => {
-                        if (idx === rowIdx) {
-                          return {
-                            ...w,
-                            cols: w.cols.map((col, colIdx) => ({
-                              ...col,
-                              width: newWidths[colIdx],
-                            })),
-                          };
-                        }
-                        return w;
+                    if (!isViewOnly) {
+                      setPositions((prev) => {
+                        return prev.map((w, idx) => {
+                          if (idx === rowIdx) {
+                            return {
+                              ...w,
+                              cols: w.cols.map((col, colIdx) => ({
+                                ...col,
+                                width: newWidths[colIdx],
+                              })),
+                            };
+                          }
+                          return w;
+                        });
                       });
-                    });
+                    }
                   }}
                   startingWidths={row.cols.map((x) => x.width)}
                   numItems={row.cols.length}
+                  isViewOnly={isViewOnly}
                 >
-                  <div
-                    style={{
-                      left: -HANDLE_WIDTH,
-                    }}
-                    className="absolute h-full"
-                  >
-                    <GridResizeHandle
-                      parentRef={divRef}
-                      index={-1}
-                      highlight={
-                        row.cols[0].chartId === hoverInfo?.chartId &&
-                        hoverInfo?.side === "left"
-                      }
-                      row={row.cols.map((x) => x.chartId)}
-                      onDrop={(chartIdDropped) =>
-                        onDrop(chartIdDropped, row.cols[0].chartId, "left")
-                      }
-                    />
-                  </div>
+                  {!isViewOnly && (
+                    <div
+                      style={{
+                        left: -HANDLE_WIDTH,
+                      }}
+                      className="absolute h-full"
+                    >
+                      <GridResizeHandle
+                        parentRef={divRef}
+                        index={-1}
+                        highlight={
+                          row.cols[0].chartId === hoverInfo?.chartId &&
+                          hoverInfo?.side === "left"
+                        }
+                        row={row.cols.map((x) => x.chartId)}
+                        onDrop={(chartIdDropped) =>
+                          onDrop(chartIdDropped, row.cols[0].chartId, "left")
+                        }
+                      />
+                    </div>
+                  )}
                   {row.cols.map((col, k) => {
                     const chart = chartMap[col.chartId];
 
@@ -280,7 +295,7 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
                     return (
                       <React.Fragment key={chart.id}>
                         <MyPanel index={k}>
-                          {k ? (
+                          {k && !isViewOnly ? (
                             <GridResizeHandle
                               parentRef={divRef}
                               index={k - 1}
@@ -302,34 +317,37 @@ export const ChartsGrid: React.FC<ChartsGridProps> = ({ board, charts }) => {
                               onDrop(chartIdDropped, chart.id, side)
                             }
                             classname={`w-full h-full`}
+                            isViewOnly={isViewOnly}
                           />
                         </MyPanel>
                       </React.Fragment>
                     );
                   })}
-                  <div
-                    style={{
-                      right: -HANDLE_WIDTH,
-                    }}
-                    className="absolute h-full"
-                  >
-                    <GridResizeHandle
-                      parentRef={divRef}
-                      index={-1}
-                      highlight={
-                        row.cols[row.cols.length - 1].chartId ===
-                          hoverInfo?.chartId && hoverInfo?.side === "right"
-                      }
-                      row={row.cols.map((x) => x.chartId)}
-                      onDrop={(chartIdDropped) =>
-                        onDrop(
-                          chartIdDropped,
-                          row.cols[row.cols.length - 1].chartId,
-                          "right"
-                        )
-                      }
-                    />
-                  </div>
+                  {!isViewOnly && (
+                    <div
+                      style={{
+                        right: -HANDLE_WIDTH,
+                      }}
+                      className="absolute h-full"
+                    >
+                      <GridResizeHandle
+                        parentRef={divRef}
+                        index={-1}
+                        highlight={
+                          row.cols[row.cols.length - 1].chartId ===
+                            hoverInfo?.chartId && hoverInfo?.side === "right"
+                        }
+                        row={row.cols.map((x) => x.chartId)}
+                        onDrop={(chartIdDropped) =>
+                          onDrop(
+                            chartIdDropped,
+                            row.cols[row.cols.length - 1].chartId,
+                            "right"
+                          )
+                        }
+                      />
+                    </div>
+                  )}
                 </HorizontalResizableProvider>
               </div>
             </VerticalResizableRow>

@@ -8,6 +8,7 @@ import { EditableTextField } from "../../ui/EditableTextField";
 import { useProjectBoardContext } from "../../../../providers/ProjectBoardProvider";
 import { useLastSelectedProjectBoardStore } from "../../../../stores/useLastSelectedProjectBoardStore";
 import { BoardEmojiPicker } from "./BoardEmojiPicker";
+import { ShareButton } from "./ShareButton";
 import { useParams } from "next/navigation";
 
 interface DashboardStickyHeaderProps {
@@ -88,8 +89,10 @@ export const DashboardStickyHeader: React.FC<DashboardStickyHeaderProps> = ({
         </div>
       </div>
 
-      {/* Placeholder bank for little buttons */}
-      <div></div>
+      {/* Share button */}
+      <div className="mr-4">
+        <ShareButton board={board} />
+      </div>
 
       {/* New chart button */}
       <Link href={`/p/${projectId}/chart?idx=${board.positions?.length || 0}`}>

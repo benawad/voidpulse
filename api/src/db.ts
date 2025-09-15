@@ -3,7 +3,7 @@ import "./utils/custom-dotenv";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { __cloud__, __prod__ } from "./constants/prod";
-import { boards } from "./schema/boards";
+import { boards, boardRelations } from "./schema/boards";
 import { charts } from "./schema/charts";
 import { messages } from "./schema/messages";
 import { people } from "./schema/people";
@@ -45,6 +45,7 @@ export const db = drizzle(pool, {
     projects,
     projectUsers,
     boards,
+    boardRelations,
     charts,
     people,
     peoplePropTypes,

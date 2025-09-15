@@ -26,11 +26,12 @@ interface HorizontalResizableProviderProps {
   numItems: number;
   startingWidths?: number[];
   onWidths: (widths: number[]) => void;
+  isViewOnly?: boolean;
 }
 
 export const HorizontalResizableProvider: React.FC<
   HorizontalResizableProviderProps
-> = ({ children, numItems, startingWidths, onWidths }) => {
+> = ({ children, numItems, startingWidths, onWidths, isViewOnly = false }) => {
   const [widths, setWidths] = useState<number[]>(
     () => startingWidths || Array(numItems).fill(100 / numItems)
   ); // Initialize with 2 elements at 50% width
@@ -49,6 +50,8 @@ export const HorizontalResizableProvider: React.FC<
   );
   const handleResize = useCallback(
     (index: number, delta: number) => {
+      if (isViewOnly) return;
+
       setWidths((currentWidths) => {
         const nextWidths = [...currentWidths];
         if (index < nextWidths.length - 1) {
@@ -71,7 +74,7 @@ export const HorizontalResizableProvider: React.FC<
         return nextWidths;
       });
     },
-    [numItems]
+    [numItems, isViewOnly]
   );
 
   // Memoize the context value to prevent unnecessary re-renders

@@ -22,6 +22,7 @@ export const boards = pgTable("boards", {
   >(),
   projectId: uuid("project_id").notNull(),
   creatorId: uuid("creator_id").notNull(),
+  shareToken: text("share_token"),
 });
 
 export const boardRelations = relations(boards, ({ one, many }) => ({

@@ -16,7 +16,17 @@ export const DraggableChartContainer: Kids<{
   onHover: (id: string, side: "left" | "right") => void;
   clearHover: () => void;
   chart: DbChart;
-}> = ({ children, classname, onDrop, row, chart, onHover, clearHover }) => {
+  isViewOnly?: boolean;
+}> = ({
+  children,
+  classname,
+  onDrop,
+  row,
+  chart,
+  onHover,
+  clearHover,
+  isViewOnly = false,
+}) => {
   const divRef = React.useRef<HTMLDivElement>(null);
   const canDrop = (item: any) => row.length < 4 || row.includes(item.chartId);
   const canDropRef = React.useRef(canDrop);
@@ -48,7 +58,7 @@ export const DraggableChartContainer: Kids<{
   handlerRef.current = handler;
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.CHART,
-    canDrop: (item: any) => canDropRef.current(item),
+    canDrop: (item: any) => !isViewOnly && canDropRef.current(item),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
@@ -65,8 +75,9 @@ export const DraggableChartContainer: Kids<{
       collect: (monitor) => ({
         opacity: monitor.isDragging() ? 0.5 : 1,
       }),
+      canDrag: () => !isViewOnly,
     }),
-    []
+    [isViewOnly]
   );
 
   const clearHoverRef = React.useRef(clearHover);
@@ -89,7 +100,11 @@ export const DraggableChartContainer: Kids<{
       style={{ opacity }}
     >
       <div className="w-full h-full" ref={drop}>
-        <ChartThumbnail chart={chart} dragRef={dragRef} />
+        <ChartThumbnail
+          chart={chart}
+          dragRef={dragRef}
+          isViewOnly={isViewOnly}
+        />
       </div>
     </div>
   );

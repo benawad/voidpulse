@@ -15,6 +15,11 @@ import {
   updateBoard,
   updateBoardOrder,
 } from "./routes/boards/board-crud";
+import {
+  generateShareToken,
+  disableSharing,
+  getSharedBoard,
+} from "./routes/boards/board-sharing";
 import { createProject } from "./routes/projects/createProject";
 import { updateProject } from "./routes/projects/updateProject";
 import { createChart } from "./routes/charts/createChart";
@@ -69,6 +74,9 @@ export const appRouter = t.router({
   syncProperties,
   getFbCampaigns,
   getEventsForUser,
+  generateShareToken,
+  disableSharing,
+  getSharedBoard,
 });
 
 export const app = express();

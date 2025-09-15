@@ -225,6 +225,13 @@
       "when": 1753198400117,
       "tag": "0034_flat_silverclaw",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "5",
+      "when": 1757970481845,
+      "tag": "0035_sticky_robbie_robertson",
+      "breakpoints": true
     }
   ]
 }
