@@ -7,6 +7,8 @@ import { FullScreenLoading } from "../../ui/FullScreenLoading";
 import { ErrorMessage } from "../../ui/ErrorMessage";
 import { SharedBoardView } from "./SharedBoardView";
 
+export const runtime = "edge";
+
 function SharedBoardPage() {
   const { shareToken } = useParams<{ shareToken: string }>();
 
